@@ -1,0 +1,393 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		DC61BCE42FB90CE500179D2E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC61BCE32FB90CE500179D2E /* AppDelegate.swift */; };
+		DC61BCE62FB90CE500179D2E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */; };
+		DC61BCEB2FB90CE500179D2E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC61BCE92FB90CE500179D2E /* Main.storyboard */; };
+		DC61BCF02FB90CE700179D2E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC61BCEE2FB90CE700179D2E /* LaunchScreen.storyboard */; };
+		DC760F712FD6141E00FC5D0A /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = DC760F6F2FD6141D00FC5D0A /* fonts */; };
+		DC8DC2902FE5372A002D9A13 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC8DC28F2FE5372A002D9A13 /* Media.xcassets */; };
+		DCB3A9BE2FC211A800DC0B76 /* adhan-kouchi.caf in Resources */ = {isa = PBXBuildFile; fileRef = DCB3A9B82FC210CA00DC0B76 /* adhan-kouchi.caf */; };
+		DCC83AB92FE7364000A7BE4F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC83AB82FE7364000A7BE4F /* ViewController.swift */; };
+		DCC83AC92FE87AF200A7BE4F /* Misbaha-Standalone.html in Resources */ = {isa = PBXBuildFile; fileRef = DCC83AC82FE87AF100A7BE4F /* Misbaha-Standalone.html */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		DC61BCE02FB90CE500179D2E /* ALAE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ALAE.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DC61BCE32FB90CE500179D2E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		DC61BCEA2FB90CE500179D2E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		DC61BCEF2FB90CE700179D2E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		DC760F6F2FD6141D00FC5D0A /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fonts; sourceTree = "<group>"; };
+		DC8DC28F2FE5372A002D9A13 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		DCB3A9B82FC210CA00DC0B76 /* adhan-kouchi.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-kouchi.caf"; sourceTree = "<group>"; };
+		DCB3A9B92FC210CA00DC0B76 /* adhan-hadioui.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-hadioui.caf"; sourceTree = "<group>"; };
+		DCB3A9BA2FC210CA00DC0B76 /* adhan-tarek.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-tarek.caf"; sourceTree = "<group>"; };
+		DCB3A9BB2FC210D200DC0B76 /* adhan-mecca.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-mecca.caf"; sourceTree = "<group>"; };
+		DCB3A9BC2FC210D200DC0B76 /* adhan-madinah.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-madinah.caf"; sourceTree = "<group>"; };
+		DCB3A9BD2FC210D200DC0B76 /* adhan-harouz.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-harouz.caf"; sourceTree = "<group>"; };
+		DCC83AB82FE7364000A7BE4F /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = ../../../../Downloads/ViewController.swift; sourceTree = "<group>"; };
+		DCC83AC82FE87AF100A7BE4F /* Misbaha-Standalone.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "Misbaha-Standalone.html"; path = "../../../../Downloads/Misbaha-Standalone.html"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DC61BCDD2FB90CE500179D2E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		DC61BCD72FB90CE400179D2E = {
+			isa = PBXGroup;
+			children = (
+				DC61BCE22FB90CE500179D2E /* ALAE */,
+				DC760F6F2FD6141D00FC5D0A /* fonts */,
+				DC61BCE12FB90CE500179D2E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		DC61BCE12FB90CE500179D2E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DC61BCE02FB90CE500179D2E /* ALAE.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DC61BCE22FB90CE500179D2E /* ALAE */ = {
+			isa = PBXGroup;
+			children = (
+				DCC83AC82FE87AF100A7BE4F /* Misbaha-Standalone.html */,
+				DCB3A9B92FC210CA00DC0B76 /* adhan-hadioui.caf */,
+				DCB3A9B82FC210CA00DC0B76 /* adhan-kouchi.caf */,
+				DCB3A9BA2FC210CA00DC0B76 /* adhan-tarek.caf */,
+				DCB3A9BD2FC210D200DC0B76 /* adhan-harouz.caf */,
+				DCB3A9BC2FC210D200DC0B76 /* adhan-madinah.caf */,
+				DCB3A9BB2FC210D200DC0B76 /* adhan-mecca.caf */,
+				DC61BCE32FB90CE500179D2E /* AppDelegate.swift */,
+				DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */,
+				DCC83AB82FE7364000A7BE4F /* ViewController.swift */,
+				DC8DC28F2FE5372A002D9A13 /* Media.xcassets */,
+				DC61BCE92FB90CE500179D2E /* Main.storyboard */,
+				DC61BCEE2FB90CE700179D2E /* LaunchScreen.storyboard */,
+			);
+			path = ALAE;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		DC61BCDF2FB90CE500179D2E /* ALAE */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DC61BCF42FB90CE700179D2E /* Build configuration list for PBXNativeTarget "ALAE" */;
+			buildPhases = (
+				DC61BCDC2FB90CE500179D2E /* Sources */,
+				DC61BCDD2FB90CE500179D2E /* Frameworks */,
+				DC61BCDE2FB90CE500179D2E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ALAE;
+			productName = ALAE;
+			productReference = DC61BCE02FB90CE500179D2E /* ALAE.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DC61BCD82FB90CE400179D2E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1420;
+				LastUpgradeCheck = 1420;
+				TargetAttributes = {
+					DC61BCDF2FB90CE500179D2E = {
+						CreatedOnToolsVersion = 14.2;
+					};
+				};
+			};
+			buildConfigurationList = DC61BCDB2FB90CE400179D2E /* Build configuration list for PBXProject "ALAE" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = DC61BCD72FB90CE400179D2E;
+			productRefGroup = DC61BCE12FB90CE500179D2E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				DC61BCDF2FB90CE500179D2E /* ALAE */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DC61BCDE2FB90CE500179D2E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DC61BCF02FB90CE700179D2E /* LaunchScreen.storyboard in Resources */,
+				DC8DC2902FE5372A002D9A13 /* Media.xcassets in Resources */,
+				DC760F712FD6141E00FC5D0A /* fonts in Resources */,
+				DCC83AC92FE87AF200A7BE4F /* Misbaha-Standalone.html in Resources */,
+				DCB3A9BE2FC211A800DC0B76 /* adhan-kouchi.caf in Resources */,
+				DC61BCEB2FB90CE500179D2E /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DC61BCDC2FB90CE500179D2E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DCC83AB92FE7364000A7BE4F /* ViewController.swift in Sources */,
+				DC61BCE42FB90CE500179D2E /* AppDelegate.swift in Sources */,
+				DC61BCE62FB90CE500179D2E /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		DC61BCE92FB90CE500179D2E /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DC61BCEA2FB90CE500179D2E /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		DC61BCEE2FB90CE700179D2E /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DC61BCEF2FB90CE700179D2E /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		DC61BCF22FB90CE700179D2E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		DC61BCF32FB90CE700179D2E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		DC61BCF52FB90CE700179D2E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NUD4HZ572C;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ALAE/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Alae;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Pour afficher les horaires de prière exacts et la direction de la Qibla selon votre position.\nPour afficher les horaires de prière exacts et la direction de la Qibla selon votre position.";
+				INFOPLIST_KEY_NSMotionUsageDescription = "Pour vous orienter vers la Qibla grâce à la boussole de votre iPhone.";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = l;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DC61BCF62FB90CE700179D2E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NUD4HZ572C;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ALAE/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Alae;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Pour afficher les horaires de prière exacts et la direction de la Qibla selon votre position.\nPour afficher les horaires de prière exacts et la direction de la Qibla selon votre position.";
+				INFOPLIST_KEY_NSMotionUsageDescription = "Pour vous orienter vers la Qibla grâce à la boussole de votre iPhone.";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = l;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		DC61BCDB2FB90CE400179D2E /* Build configuration list for PBXProject "ALAE" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DC61BCF22FB90CE700179D2E /* Debug */,
+				DC61BCF32FB90CE700179D2E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DC61BCF42FB90CE700179D2E /* Build configuration list for PBXNativeTarget "ALAE" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DC61BCF52FB90CE700179D2E /* Debug */,
+				DC61BCF62FB90CE700179D2E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DC61BCD82FB90CE400179D2E /* Project object */;
+}
