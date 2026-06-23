@@ -14,7 +14,6 @@ workflows:
           keychain initialize
       - name: Certificat et profil
         script: |
-          # On nettoie automatiquement le certificat de la session précédente pour libérer le slot chez Apple
           for TYPE in DISTRIBUTION IOS_DISTRIBUTION; do
             for CID in $(app-store-connect list-certificates --type $TYPE --json | jq -r '.[].id'); do
               echo "Nettoyage automatique du certificat temporaire $TYPE: $CID"
@@ -34,10 +33,16 @@ workflows:
           echo "Fichiers references depuis /Downloads :"
           grep -o "/Downloads/[^\";]*" ALAE.xcodeproj/project.pbxproj | sort -u
           sed -i '' "s#/Downloads/#$CM_BUILD_DIR/#g" ALAE.xcodeproj/project.pbxproj
-      - name: Forcer l'incrémentation du numéro de build
+      - name: Configurer la version, le Bundle ID et cibler uniquement l'iPhone
         script: |
           echo "Incrémentation forcée du build à : $BUILD_NUMBER"
           sed -i '' "s/CURRENT_PROJECT_VERSION = [0-9]*/CURRENT_PROJECT_VERSION = $BUILD_NUMBER/g" ALAE.xcodeproj/project.pbxproj
+          
+          echo "Forçage du Bundle ID en MAJUSCULES pour correspondre à App Store Connect"
+          sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER = [^;]*/PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE/g' ALAE.xcodeproj/project.pbxproj
+          
+          echo "Forçage de la cible sur iPhone uniquement (supprime les restrictions iPad)"
+          sed -i '' 's/TARGETED_DEVICE_FAMILY = [^;]*/TARGETED_DEVICE_FAMILY = "1"/g' ALAE.xcodeproj/project.pbxproj
       - name: Build IPA
         script: |
           xcode-project build-ipa --project "ALAE.xcodeproj" --scheme "ALAE"
