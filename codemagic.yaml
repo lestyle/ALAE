@@ -22,10 +22,12 @@ workflows:
       - name: Profils
         script: |
           xcode-project use-profiles
-      - name: Copier le HTML au chemin attendu
+      - name: Corriger le chemin du HTML dans le projet
         script: |
-          sudo mkdir -p /Downloads
-          sudo cp "$CM_BUILD_DIR/Misbaha-Standalone.html" /Downloads/Misbaha-Standalone.html
+          HTML=$(find "$CM_BUILD_DIR" -name "Misbaha-Standalone.html" | head -1)
+          echo "Fichier HTML trouve: $HTML"
+          sed -i '' "s#/Downloads/Misbaha-Standalone.html#$HTML#g" ALAE.xcodeproj/project.pbxproj
+          echo "Chemin corrige dans project.pbxproj"
       - name: Build IPA
         script: |
           xcode-project build-ipa --project "ALAE.xcodeproj" --scheme "ALAE"
