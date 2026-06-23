@@ -14,6 +14,13 @@ workflows:
           keychain initialize
       - name: Certificat et profil
         script: |
+          # On nettoie automatiquement le certificat de la session précédente pour libérer le slot chez Apple
+          for TYPE in DISTRIBUTION IOS_DISTRIBUTION; do
+            for CID in $(app-store-connect list-certificates --type $TYPE --json | jq -r '.[].id'); do
+              echo "Nettoyage automatique du certificat temporaire $TYPE: $CID"
+              app-store-connect delete-certificate "$CID" || true
+            done
+          done
           openssl genrsa -out /tmp/ios_dist_key.pem 2048
           app-store-connect fetch-signing-files "com.alae.misbaha.ALAE" --type IOS_APP_STORE --certificate-key=@file:/tmp/ios_dist_key.pem --create
       - name: Ajouter certificat
