@@ -22,6 +22,10 @@ workflows:
       - name: Profils
         script: |
           xcode-project use-profiles
+      - name: Copier le HTML au chemin attendu
+        script: |
+          sudo mkdir -p /Downloads
+          sudo cp "$CM_BUILD_DIR/Misbaha-Standalone.html" /Downloads/Misbaha-Standalone.html
       - name: Build IPA
         script: |
           xcode-project build-ipa --project "ALAE.xcodeproj" --scheme "ALAE"
