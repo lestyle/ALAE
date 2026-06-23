@@ -4,18 +4,26 @@ workflows:
     instance_type: mac_mini_m2
     max_build_duration: 60
     integrations:
-      app_store_connect: ALAE Build
+      app_store_connect: ALAE API Key
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.alae.misbaha.ALAE
       xcode: latest
       cocoapods: default
     scripts:
-      - name: Configurer la signature (profils + certificat via cle API)
+      - name: Initialiser le trousseau
+        script: |
+          keychain initialize
+      - name: Creer ou recuperer le certificat et le profil
+        script: |
+          app-store-connect fetch-signing-files "com.alae.misbaha.ALAE" \
+            --type IOS_APP_STORE \
+            --create
+      - name: Ajouter le certificat au trousseau
+        script: |
+          keychain add-certificates
+      - name: Appliquer les profils au projet Xcode
         script: |
           xcode-project use-profiles
-      - name: Construire l'IPA pour l'App Store
+      - name: Construire l IPA pour l App Store
         script: |
           xcode-project build-ipa \
             --project "ALAE.xcodeproj" \
