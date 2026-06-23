@@ -14,6 +14,10 @@ workflows:
           keychain initialize
       - name: Certificat et profil
         script: |
+          for CID in $(app-store-connect list-certificates --type IOS_DISTRIBUTION --json | jq -r '.[].id'); do
+            echo "Revoque ancien certificat: $CID"
+            app-store-connect delete-certificate "$CID" || true
+          done
           openssl genrsa -out /tmp/ios_dist_key.pem 2048
           app-store-connect fetch-signing-files "com.alae.misbaha.ALAE" --type IOS_APP_STORE --certificate-key=@file:/tmp/ios_dist_key.pem --create
       - name: Ajouter certificat
@@ -27,7 +31,6 @@ workflows:
           echo "Fichiers references depuis /Downloads :"
           grep -o "/Downloads/[^\";]*" ALAE.xcodeproj/project.pbxproj | sort -u
           sed -i '' "s#/Downloads/#$CM_BUILD_DIR/#g" ALAE.xcodeproj/project.pbxproj
-          echo "Chemins corriges vers $CM_BUILD_DIR"
       - name: Build IPA
         script: |
           xcode-project build-ipa --project "ALAE.xcodeproj" --scheme "ALAE"
