@@ -14,9 +14,11 @@ workflows:
           keychain initialize
       - name: Certificat et profil
         script: |
-          for CID in $(app-store-connect list-certificates --type IOS_DISTRIBUTION --json | jq -r '.[].id'); do
-            echo "Revoque ancien certificat: $CID"
-            app-store-connect delete-certificate "$CID" || true
+          for TYPE in DISTRIBUTION IOS_DISTRIBUTION; do
+            for CID in $(app-store-connect list-certificates --type $TYPE --json | jq -r '.[].id'); do
+              echo "Revoque certificat $TYPE: $CID"
+              app-store-connect delete-certificate "$CID" || true
+            done
           done
           openssl genrsa -out /tmp/ios_dist_key.pem 2048
           app-store-connect fetch-signing-files "com.alae.misbaha.ALAE" --type IOS_APP_STORE --certificate-key=@file:/tmp/ios_dist_key.pem --create
