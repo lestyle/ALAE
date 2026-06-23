@@ -14,13 +14,6 @@ workflows:
           keychain initialize
       - name: Certificat et profil
         script: |
-          # La révocation automatique est commentée pour éviter de tout casser à chaque build
-          # for TYPE in DISTRIBUTION IOS_DISTRIBUTION; do
-          #   for CID in $(app-store-connect list-certificates --type $TYPE --json | jq -r '.[].id'); do
-          #     echo "Revoque certificat $TYPE: $CID"
-          #     app-store-connect delete-certificate "$CID" || true
-          #   done
-          # done
           openssl genrsa -out /tmp/ios_dist_key.pem 2048
           app-store-connect fetch-signing-files "com.alae.misbaha.ALAE" --type IOS_APP_STORE --certificate-key=@file:/tmp/ios_dist_key.pem --create
       - name: Ajouter certificat
@@ -34,10 +27,10 @@ workflows:
           echo "Fichiers references depuis /Downloads :"
           grep -o "/Downloads/[^\";]*" ALAE.xcodeproj/project.pbxproj | sort -u
           sed -i '' "s#/Downloads/#$CM_BUILD_DIR/#g" ALAE.xcodeproj/project.pbxproj
-      - name: Incrémenter le numéro de build
+      - name: Forcer l'incrémentation du numéro de build
         script: |
-          cd $CM_BUILD_DIR
-          agvtool new-version -all $BUILD_NUMBER
+          echo "Incrémentation forcée du build à : $BUILD_NUMBER"
+          sed -i '' "s/CURRENT_PROJECT_VERSION = [0-9]*/CURRENT_PROJECT_VERSION = $BUILD_NUMBER/g" ALAE.xcodeproj/project.pbxproj
       - name: Build IPA
         script: |
           xcode-project build-ipa --project "ALAE.xcodeproj" --scheme "ALAE"
