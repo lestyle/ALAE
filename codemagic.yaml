@@ -9,28 +9,45 @@ workflows:
       xcode: latest
       cocoapods: default
     scripts:
-      - name: Initialiser le trousseau
+      - name: Trousseau
         script: |
           keychain initialize
-      - name: Creer / recuperer le certificat et le profil (via cle API)
+      - name: Certificat et profil
         script: |
-          app-store-connect fetch-signing-files "com.alae.misbaha.ALAE" \
-            --type IOS_APP_STORE \
-            --create
-      - name: Ajouter le certificat au trousseau
+          for TYPE in DISTRIBUTION IOS_DISTRIBUTION; do
+            for CID in $(app-store-connect list-certificates --type $TYPE --json | jq -r '.[].id'); do
+              echo "Nettoyage automatique du certificat temporaire $TYPE: $CID"
+              app-store-connect delete-certificate "$CID" || true
+            done
+          done
+          openssl genrsa -out /tmp/ios_dist_key.pem 2048
+          app-store-connect fetch-signing-files "com.alae.misbaha.ALAE" --type IOS_APP_STORE --certificate-key=@file:/tmp/ios_dist_key.pem --create
+      - name: Ajouter certificat
         script: |
           keychain add-certificates
-      - name: Appliquer les profils au projet Xcode
+      - name: Profils
         script: |
           xcode-project use-profiles
-      - name: Construire l'IPA pour l'App Store
+      - name: Corriger les chemins absolus dans le projet
         script: |
-          xcode-project build-ipa \
-            --project "ALAE.xcodeproj" \
-            --scheme "ALAE"
+          echo "Fichiers references depuis /Downloads :"
+          grep -o "/Downloads/[^\";]*" ALAE.xcodeproj/project.pbxproj | sort -u
+          sed -i '' "s#/Downloads/#$CM_BUILD_DIR/#g" ALAE.xcodeproj/project.pbxproj
+      - name: Configurer la version, le Bundle ID et cibler uniquement l'iPhone
+        script: |
+          echo "Incrémentation forcée du build à : $BUILD_NUMBER"
+          sed -i '' "s/CURRENT_PROJECT_VERSION = [0-9]*/CURRENT_PROJECT_VERSION = $BUILD_NUMBER/g" ALAE.xcodeproj/project.pbxproj
+          
+          echo "Forçage du Bundle ID en MAJUSCULES pour correspondre à App Store Connect"
+          sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER = [^;]*/PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE/g' ALAE.xcodeproj/project.pbxproj
+          
+          echo "Forçage de la cible sur iPhone uniquement (supprime les restrictions iPad)"
+          sed -i '' 's/TARGETED_DEVICE_FAMILY = [^;]*/TARGETED_DEVICE_FAMILY = "1"/g' ALAE.xcodeproj/project.pbxproj
+      - name: Build IPA
+        script: |
+          xcode-project build-ipa --project "ALAE.xcodeproj" --scheme "ALAE"
     artifacts:
       - build/ios/ipa/*.ipa
-      - /tmp/xcodebuild_logs/*.log
     publishing:
       app_store_connect:
         auth: integration
