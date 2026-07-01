@@ -39,9 +39,15 @@ workflows:
           sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER = [^;]*/PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE/g' ALAE.xcodeproj/project.pbxproj
           sed -i '' 's/TARGETED_DEVICE_FAMILY = [^;]*/TARGETED_DEVICE_FAMILY = "1,2"/g' ALAE.xcodeproj/project.pbxproj
           PLIST=$(find . -name "Info.plist" | grep -v Pods | head -1)
-          echo "Info.plist trouvé : $PLIST"
+          echo "Info.plist : $PLIST"
           /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString 1.0.1" "$PLIST" || /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string 1.0.1" "$PLIST"
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "$PLIST" || /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string $BUILD_NUMBER" "$PLIST"
+          /usr/libexec/PlistBuddy -c "Delete :UISupportedInterfaceOrientations~ipad" "$PLIST" 2>/dev/null || true
+          /usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations~ipad array" "$PLIST"
+          /usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations~ipad: string UIInterfaceOrientationPortrait" "$PLIST"
+          /usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations~ipad: string UIInterfaceOrientationPortraitUpsideDown" "$PLIST"
+          /usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations~ipad: string UIInterfaceOrientationLandscapeLeft" "$PLIST"
+          /usr/libexec/PlistBuddy -c "Add :UISupportedInterfaceOrientations~ipad: string UIInterfaceOrientationLandscapeRight" "$PLIST"
       - name: Build IPA
         script: |
           xcode-project build-ipa --project "ALAE.xcodeproj" --scheme "ALAE"
