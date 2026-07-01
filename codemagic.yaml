@@ -30,16 +30,18 @@ workflows:
       - name: Corriger les chemins absolus dans le projet
         script: |
           sed -i '' "s#/Downloads/#$CM_BUILD_DIR/#g" ALAE.xcodeproj/project.pbxproj
-      - name: Configurer la version et le Bundle ID
+      - name: Configurer la version, le Bundle ID et iPhone seul
         script: |
           echo "Build : $BUILD_NUMBER"
           sed -i '' "s/CURRENT_PROJECT_VERSION = [0-9]*/CURRENT_PROJECT_VERSION = $BUILD_NUMBER/g" ALAE.xcodeproj/project.pbxproj
           sed -i '' "s/MARKETING_VERSION = [^\";]*/MARKETING_VERSION = 1.0.1/g" ALAE.xcodeproj/project.pbxproj
           sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER = [^;]*/PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE/g' ALAE.xcodeproj/project.pbxproj
+          sed -i '' 's/TARGETED_DEVICE_FAMILY = [^;]*/TARGETED_DEVICE_FAMILY = "1"/g' ALAE.xcodeproj/project.pbxproj
           PLIST=$(find . -name "Info.plist" | grep -v Pods | head -1)
           echo "Info.plist : $PLIST"
           /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString 1.0.1" "$PLIST" || /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string 1.0.1" "$PLIST"
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "$PLIST" || /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string $BUILD_NUMBER" "$PLIST"
+          /usr/libexec/PlistBuddy -c "Delete :UISupportedInterfaceOrientations~ipad" "$PLIST" 2>/dev/null || true
       - name: Build IPA
         script: |
           xcode-project build-ipa --project "ALAE.xcodeproj" --scheme "ALAE"
