@@ -79,9 +79,9 @@
 				DC61BCE32FB90CE500179D2E /* AppDelegate.swift */,
 				DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */,
 				DCC83AB82FE7364000A7BE4F /* ViewController.swift */,
+				DCA952152FFA6E2F008B3E0E /* AdhanManager.swift */,
 				DC8DC28F2FE5372A002D9A13 /* Media.xcassets */,
 				DC61BCE92FB90CE500179D2E /* Main.storyboard */,
-				DCA952152FFA6E2F008B3E0E /* AdhanManager.swift */,
 				DC61BCEE2FB90CE700179D2E /* LaunchScreen.storyboard */,
 			);
 			path = ALAE;
