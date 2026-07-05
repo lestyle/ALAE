@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  ALAE — v13 (notifications + adhan + partage image)
+//  ALAE — v12 (avec notifications + adhan)
 //
 
 import UIKit
@@ -26,7 +26,6 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         webView.uiDelegate = self
         webView.scrollView.bounces = false
         webView.scrollView.isScrollEnabled = false
-        webView.allowsBackForwardNavigationGestures = false  // Désactive le swipe iOS "retour" qui sortait de l'app
         // Plein écran edge-to-edge : empêche iOS d'ajouter un encart de safe-area
         // (sinon barre sombre en haut/bas, le fond ne remplit pas tout l'écran).
         webView.scrollView.contentInsetAdjustmentBehavior = .never
@@ -43,6 +42,14 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
             webView.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
         }
         UNUserNotificationCenter.current().delegate = (UIApplication.shared.delegate as? UNUserNotificationCenterDelegate)
+        // Prépare la session audio pour l'adhan complet en arrière-plan
+        AdhanManager.shared.reschedule()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // Reprogramme l'adhan complet quand l'app revient au premier plan
+        AdhanManager.shared.reschedule()
     }
 
     // MARK: - Open external links in Safari
@@ -92,29 +99,6 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
             return
         }
 
-        // Partage d'une IMAGE (carte dou'a "صباح الخير") — reçoit un dataURL base64 + texte
-        if type == "shareImage" {
-            let dataUrl = body["image"] as? String ?? ""
-            let text = body["text"] as? String ?? ""
-            DispatchQueue.main.async {
-                guard let comma = dataUrl.range(of: ","),
-                      let data = Data(base64Encoded: String(dataUrl[comma.upperBound...])),
-                      let image = UIImage(data: data) else { return }
-                var items: [Any] = [image]
-                if !text.isEmpty { items.append(text) }
-                let activityVC = UIActivityViewController(activityItems: items, applicationActivities: nil)
-                if let pop = activityVC.popoverPresentationController {
-                    pop.sourceView = self.webView
-                    pop.sourceRect = CGRect(x: self.webView.bounds.midX,
-                                            y: self.webView.bounds.midY,
-                                            width: 0, height: 0)
-                    pop.permittedArrowDirections = []
-                }
-                self.present(activityVC, animated: true)
-            }
-            return
-        }
-
         if type == "haptic" {
             let style = body["style"] as? String ?? "soft"
             DispatchQueue.main.async {
@@ -140,9 +124,12 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
     private func handleUpdateNotifications(_ body: [String: Any]) {
         let enabled    = body["enabled"] as? Bool ?? false
         let minutes    = body["minutesBefore"] as? Int ?? 5
-        let reciter    = body["reciter"] as? String ?? "rouchi"
+        let reciter    = body["reciter"] as? String ?? "kouchi"
         let timings    = body["timings"] as? [String: String] ?? [:]
         let city       = body["city"] as? String ?? ""
+
+        // ── Adhan COMPLET en arrière-plan (lecteur audio, pas de limite 30s) ──
+        AdhanManager.shared.update(enabled: enabled, reciter: reciter, timings: timings)
 
         // 1) Clear all existing scheduled notifications
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
