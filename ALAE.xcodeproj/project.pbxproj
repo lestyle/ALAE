@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DC0E33D930019C5E00884060 /* Misbaha-Standalone.html in Resources */ = {isa = PBXBuildFile; fileRef = DC0E33D830019C5E00884060 /* Misbaha-Standalone.html */; };
 		DC61BCE42FB90CE500179D2E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC61BCE32FB90CE500179D2E /* AppDelegate.swift */; };
 		DC61BCE62FB90CE500179D2E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */; };
 		DC61BCEB2FB90CE500179D2E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC61BCE92FB90CE500179D2E /* Main.storyboard */; };
@@ -15,10 +16,10 @@
 		DC8DC2902FE5372A002D9A13 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC8DC28F2FE5372A002D9A13 /* Media.xcassets */; };
 		DCB3A9BE2FC211A800DC0B76 /* adhan-kouchi.caf in Resources */ = {isa = PBXBuildFile; fileRef = DCB3A9B82FC210CA00DC0B76 /* adhan-kouchi.caf */; };
 		DCC83AB92FE7364000A7BE4F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC83AB82FE7364000A7BE4F /* ViewController.swift */; };
-		DCC83AC92FE87AF200A7BE4F /* Misbaha-Standalone.html in Resources */ = {isa = PBXBuildFile; fileRef = DCC83AC82FE87AF100A7BE4F /* Misbaha-Standalone.html */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DC0E33D830019C5E00884060 /* Misbaha-Standalone.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "Misbaha-Standalone.html"; path = "../../../../Downloads/Misbaha-Standalone.html"; sourceTree = "<group>"; };
 		DC61BCE02FB90CE500179D2E /* ALAE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ALAE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC61BCE32FB90CE500179D2E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -33,7 +34,6 @@
 		DCB3A9BC2FC210D200DC0B76 /* adhan-madinah.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-madinah.caf"; sourceTree = "<group>"; };
 		DCB3A9BD2FC210D200DC0B76 /* adhan-harouz.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-harouz.caf"; sourceTree = "<group>"; };
 		DCC83AB82FE7364000A7BE4F /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = ../../../../Downloads/ViewController.swift; sourceTree = "<group>"; };
-		DCC83AC82FE87AF100A7BE4F /* Misbaha-Standalone.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "Misbaha-Standalone.html"; path = "../../../../Downloads/Misbaha-Standalone.html"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,7 +67,7 @@
 		DC61BCE22FB90CE500179D2E /* ALAE */ = {
 			isa = PBXGroup;
 			children = (
-				DCC83AC82FE87AF100A7BE4F /* Misbaha-Standalone.html */,
+				DC0E33D830019C5E00884060 /* Misbaha-Standalone.html */,
 				DCB3A9B92FC210CA00DC0B76 /* adhan-hadioui.caf */,
 				DCB3A9B82FC210CA00DC0B76 /* adhan-kouchi.caf */,
 				DCB3A9BA2FC210CA00DC0B76 /* adhan-tarek.caf */,
@@ -145,7 +145,7 @@
 				DC61BCF02FB90CE700179D2E /* LaunchScreen.storyboard in Resources */,
 				DC8DC2902FE5372A002D9A13 /* Media.xcassets in Resources */,
 				DC760F712FD6141E00FC5D0A /* fonts in Resources */,
-				DCC83AC92FE87AF200A7BE4F /* Misbaha-Standalone.html in Resources */,
+				DC0E33D930019C5E00884060 /* Misbaha-Standalone.html in Resources */,
 				DCB3A9BE2FC211A800DC0B76 /* adhan-kouchi.caf in Resources */,
 				DC61BCEB2FB90CE500179D2E /* Main.storyboard in Resources */,
 			);
