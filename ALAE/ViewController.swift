@@ -1,12 +1,19 @@
 //
 //  ViewController.swift
-//  ALAE — v12 (avec notifications + adhan)
+//  ALAE — v13 (ViewController + AdhanManager FUSIONNÉS dans un seul fichier)
+//
+//  ⚠️ AdhanManager est inclus À LA FIN de ce fichier pour garantir sa compilation
+//     (le projet n'arrivait pas à compiler AdhanManager.swift séparément).
+//     => Assure-toi que AdhanManager.swift N'EST PAS coché dans la target ALAE,
+//        sinon "duplicate AdhanManager". Le plus simple : supprime AdhanManager.swift
+//        de la target (Remove Reference) — son code vit maintenant ici.
 //
 
 import UIKit
 import WebKit
 import UserNotifications
 import AVFoundation
+import WidgetKit
 
 class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler {
 
@@ -26,7 +33,6 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         webView.uiDelegate = self
         webView.scrollView.bounces = false
         webView.scrollView.isScrollEnabled = false
-        webView.allowsBackForwardNavigationGestures = false  // Désactive le swipe iOS "retour" qui sortait de l'app
         // Plein écran edge-to-edge : empêche iOS d'ajouter un encart de safe-area
         // (sinon barre sombre en haut/bas, le fond ne remplit pas tout l'écran).
         webView.scrollView.contentInsetAdjustmentBehavior = .never
@@ -37,96 +43,20 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         view = webView
     }
 
-    // Overlay natif affiché pendant le chargement du HTML — disparaît en fondu dès que la page est prête
-    private var splashOverlay: UIView?
-
-    private func showSplash() {
-        let bg = UIColor(red: 0.043, green: 0.051, blue: 0.063, alpha: 1.0)
-        let gold = UIColor(red: 0.784, green: 0.725, blue: 0.357, alpha: 1.0)
-
-        let overlay = UIView(frame: view.bounds)
-        overlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        overlay.backgroundColor = bg
-
-        // Halo doré derrière le texte
-        let halo = UIView()
-        halo.backgroundColor = UIColor(red: 0.784, green: 0.725, blue: 0.357, alpha: 0.08)
-        halo.layer.cornerRadius = 80
-        halo.translatesAutoresizingMaskIntoConstraints = false
-        overlay.addSubview(halo)
-
-        // Texte آلاء centré
-        let label = UILabel()
-        label.text = "آلاء"
-        label.textColor = gold
-        label.font = UIFont(name: "AmiriQuran", size: 56) ?? UIFont(name: "Amiri", size: 56) ?? UIFont.systemFont(ofSize: 56, weight: .thin)
-        label.textAlignment = .center
-        label.alpha = 1.0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        overlay.addSubview(label)
-
-        // Ligne dorée sous le texte
-        let line = UIView()
-        line.backgroundColor = gold.withAlphaComponent(0.3)
-        line.layer.cornerRadius = 1
-        line.translatesAutoresizingMaskIntoConstraints = false
-        overlay.addSubview(line)
-
-        NSLayoutConstraint.activate([
-            halo.centerXAnchor.constraint(equalTo: overlay.centerXAnchor),
-            halo.centerYAnchor.constraint(equalTo: overlay.centerYAnchor, constant: -10),
-            halo.widthAnchor.constraint(equalToConstant: 160),
-            halo.heightAnchor.constraint(equalToConstant: 160),
-
-            label.centerXAnchor.constraint(equalTo: overlay.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: overlay.centerYAnchor, constant: -10),
-
-            line.centerXAnchor.constraint(equalTo: overlay.centerXAnchor),
-            line.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 16),
-            line.widthAnchor.constraint(equalToConstant: 48),
-            line.heightAnchor.constraint(equalToConstant: 1.5)
-        ])
-
-        view.addSubview(overlay)
-        splashOverlay = overlay
-
-        // Pulsation douce du halo UNIQUEMENT — label reste stable
-        UIView.animate(withDuration: 2.0, delay: 0, options: [.repeat, .autoreverse, .allowUserInteraction], animations: {
-            halo.backgroundColor = UIColor(red: 0.784, green: 0.725, blue: 0.357, alpha: 0.18)
-            halo.transform = CGAffineTransform(scaleX: 1.15, y: 1.15)
-        }, completion: nil)
-    }
-
-    private func hideSplash() {
-        guard let overlay = splashOverlay else { return }
-        UIView.animate(withDuration: 0.6, delay: 0.2, options: [], animations: {
-            overlay.alpha = 0
-        }, completion: { _ in
-            overlay.removeFromSuperview()
-            self.splashOverlay = nil
-        })
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
-        showSplash()
         if let url = Bundle.main.url(forResource: "Misbaha-Standalone", withExtension: "html") {
             webView.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
         }
-        // Filet de sécurité — cache le splash après 4s max même si didFinish tarde
-        DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) { [weak self] in
-            self?.hideSplash()
-        }
         UNUserNotificationCenter.current().delegate = (UIApplication.shared.delegate as? UNUserNotificationCenterDelegate)
+        // Prépare la session audio pour l'adhan complet en arrière-plan
+        AdhanManager.shared.reschedule()
     }
 
-    // MARK: - WKNavigationDelegate
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        hideSplash()
-    }
-
-    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        hideSplash()
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // Reprogramme l'adhan complet quand l'app revient au premier plan
+        AdhanManager.shared.reschedule()
     }
 
     // MARK: - Open external links in Safari
@@ -192,6 +122,16 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
             return
         }
 
+        if type == "playAdhan" {
+            let reciter = body["reciter"] as? String ?? "hadioui"
+            AdhanManager.shared.playPreview(reciter: reciter)
+            return
+        }
+        if type == "stopAdhan" {
+            AdhanManager.shared.stopPreview()
+            return
+        }
+
         if type == "updateNotifications" {
             handleUpdateNotifications(body)
         }
@@ -201,9 +141,15 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
     private func handleUpdateNotifications(_ body: [String: Any]) {
         let enabled    = body["enabled"] as? Bool ?? false
         let minutes    = body["minutesBefore"] as? Int ?? 5
-        let reciter    = body["reciter"] as? String ?? "rouchi"
+        let reciter    = body["reciter"] as? String ?? "kouchi"
         let timings    = body["timings"] as? [String: String] ?? [:]
         let city       = body["city"] as? String ?? ""
+
+        // ── Adhan COMPLET en arrière-plan (lecteur audio, pas de limite 30s) ──
+        AdhanManager.shared.update(enabled: enabled, reciter: reciter, timings: timings)
+
+        // ── Widget : écrire les horaires + ville dans l'App Group partagé ──
+        writeWidgetData(timings: timings, city: city)
 
         // 1) Clear all existing scheduled notifications
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
@@ -241,7 +187,10 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
 
                     // Custom adhan sound (if reciter has audio file)
                     if reciter != "silent" {
-                        let soundName = "adhan-\(reciter).caf"  // .caf or .mp3 in bundle
+                        // Version COURTE (≤ 30 s) dédiée à la notification (règle Apple).
+                        // Repli sur hadioui si le récitateur choisi n'a pas encore de fichier.
+                        let hasOwn = Bundle.main.url(forResource: "adhan-\(reciter)-notif", withExtension: "caf") != nil
+                        let soundName = hasOwn ? "adhan-\(reciter)-notif.caf" : "adhan-hadioui-notif.caf"
                         content.sound = UNNotificationSound(named: UNNotificationSoundName(soundName))
                     } else {
                         content.sound = nil
@@ -265,4 +214,193 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
 
     override var prefersStatusBarHidden: Bool { return false }
     override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
+
+    // MARK: - Widget (App Group partagé)
+    private func writeWidgetData(timings: [String: String], city: String) {
+        // ⚠️ Doit être IDENTIQUE à kAppGroup dans ALAEWidget.swift
+        let appGroup = "group.com.alae.misbaha.ALAE.shared"
+        guard let ud = UserDefaults(suiteName: appGroup) else {
+            print("[Widget] App Group introuvable — vérifie l'entitlement.")
+            return
+        }
+        ud.set(timings, forKey: "prayerTimings")
+        ud.set(city, forKey: "prayerCity")
+        // Recharge le widget écran d'accueil.
+        WidgetCenter.shared.reloadAllTimelines()
+    }
 }
+
+
+// =====================================================================
+// ============  AdhanManager (fusionné ici — ne pas dupliquer)  ========
+// =====================================================================
+final class AdhanManager: NSObject {
+
+    static let shared = AdhanManager()
+
+    private var adhanPlayer: AVAudioPlayer?
+    private var keepAlivePlayer: AVAudioPlayer?
+    private var previewPlayer: AVAudioPlayer?
+    private var timers: [Timer] = []
+
+    private var enabled = false
+    private var reciter = "kouchi"
+    private var timings: [String: String] = [:]
+
+    private let prayerKeys = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"]
+
+    // MARK: - Session audio
+
+    private func activateSession(duckOthers: Bool) {
+        let session = AVAudioSession.sharedInstance()
+        do {
+            // .playback = joue même en silencieux / écran verrouillé.
+            let options: AVAudioSession.CategoryOptions = duckOthers ? [.duckOthers] : [.mixWithOthers]
+            try session.setCategory(.playback, mode: .default, options: options)
+            try session.setActive(true)
+        } catch {
+            print("[Adhan] session error: \(error)")
+        }
+    }
+
+    // MARK: - API publique (appelée depuis ViewController)
+
+    /// Reçoit les réglages + horaires depuis le JS et (re)programme l'adhan complet.
+    func update(enabled: Bool, reciter: String, timings: [String: String]) {
+        self.enabled = enabled
+        self.reciter = reciter
+        self.timings = timings
+
+        cancelTimers()
+
+        guard enabled, reciter != "silent", !timings.isEmpty else {
+            stopKeepAlive()
+            return
+        }
+
+        // Keep-alive en arrière-plan DÉSACTIVÉ (conformité App Store, règle 2.5.4).
+        // L'adhan à l'heure passe uniquement par la notification (.caf ≤ 30 s).
+        // L'adhan complet s'écoute dans l'app.
+        stopKeepAlive()
+        return
+    }
+
+    /// À rappeler quand l'app revient au premier plan (pour reprogrammer proprement).
+    func reschedule() {
+        guard enabled, reciter != "silent", !timings.isEmpty else { return }
+        cancelTimers()
+        scheduleRemainingToday()
+    }
+
+    // MARK: - Keep-alive (silence en boucle)
+
+    private func startKeepAlive() {
+        guard keepAlivePlayer == nil else { return }
+        guard let url = Bundle.main.url(forResource: "silence", withExtension: "wav")
+                     ?? Bundle.main.url(forResource: "silence", withExtension: "caf") else {
+            print("[Adhan] silence.wav/.caf introuvable dans le bundle")
+            return
+        }
+        activateSession(duckOthers: false)
+        keepAlivePlayer = try? AVAudioPlayer(contentsOf: url)
+        keepAlivePlayer?.numberOfLoops = -1   // boucle infinie
+        keepAlivePlayer?.volume = 0.0         // silencieux
+        keepAlivePlayer?.play()
+    }
+
+    private func stopKeepAlive() {
+        keepAlivePlayer?.stop()
+        keepAlivePlayer = nil
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+    }
+
+    // MARK: - Programmation des minuteurs
+
+    private func cancelTimers() {
+        timers.forEach { $0.invalidate() }
+        timers.removeAll()
+    }
+
+    private func scheduleRemainingToday() {
+        let cal = Calendar.current
+        let now = Date()
+
+        for key in prayerKeys {
+            guard let raw = timings[key] else { continue }
+            let hhmm = String(raw.prefix(5))                 // "05:23 (CEST)" → "05:23"
+            let parts = hhmm.split(separator: ":").compactMap { Int($0) }
+            guard parts.count == 2 else { continue }
+
+            var comps = cal.dateComponents([.year, .month, .day], from: now)
+            comps.hour = parts[0]
+            comps.minute = parts[1]
+            comps.second = 0
+            guard let fire = cal.date(from: comps), fire > now else { continue }
+
+            let interval = fire.timeIntervalSince(now)
+            let t = Timer(timeInterval: interval, repeats: false) { [weak self] _ in
+                self?.playAdhan()
+            }
+            RunLoop.main.add(t, forMode: .common)
+            timers.append(t)
+        }
+    }
+
+    // MARK: - Lecture de l'adhan complet
+
+    // MARK: - Écoute in-app (premier plan, à la demande — 100 % sûr App Store)
+
+    func playPreview(reciter: String) {
+        let url = Bundle.main.url(forResource: "adhan-\(reciter)", withExtension: "mp3")
+               ?? Bundle.main.url(forResource: "adhan-\(reciter)", withExtension: "caf")
+               ?? Bundle.main.url(forResource: "adhan-hadioui", withExtension: "mp3")
+               ?? Bundle.main.url(forResource: "adhan-hadioui", withExtension: "caf")
+        guard let fileURL = url else { print("[Adhan] preview introuvable"); return }
+        activateSession(duckOthers: true)
+        previewPlayer?.stop()
+        previewPlayer = try? AVAudioPlayer(contentsOf: fileURL)
+        previewPlayer?.numberOfLoops = 0
+        previewPlayer?.volume = 1.0
+        previewPlayer?.play()
+    }
+
+    func stopPreview() {
+        previewPlayer?.stop()
+        previewPlayer = nil
+        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+    }
+
+    func playAdhan() {
+        // mp3 complet en priorité, sinon .caf si présent.
+        let url = Bundle.main.url(forResource: "adhan-\(reciter)", withExtension: "mp3")
+               ?? Bundle.main.url(forResource: "adhan-\(reciter)", withExtension: "caf")
+               // repli : si le fichier du récitateur choisi manque, joue un adhan présent dans le bundle
+               ?? Bundle.main.url(forResource: "adhan-hadioui", withExtension: "mp3")
+               ?? Bundle.main.url(forResource: "adhan-hadioui", withExtension: "caf")
+        guard let fileURL = url else {
+            print("[Adhan] fichier adhan-\(reciter) introuvable")
+            return
+        }
+        activateSession(duckOthers: true)  // baisse la musique en cours pendant l'adhan
+        adhanPlayer = try? AVAudioPlayer(contentsOf: fileURL)
+        adhanPlayer?.numberOfLoops = 0
+        adhanPlayer?.volume = 1.0
+        adhanPlayer?.delegate = self
+        adhanPlayer?.play()
+
+        // reprogramme les prières suivantes (au cas où)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            self?.reschedule()
+        }
+    }
+}
+
+extension AdhanManager: AVAudioPlayerDelegate {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        // Fin de l'adhan : on revient à la session keep-alive silencieuse.
+        if player == adhanPlayer {
+            activateSession(duckOthers: false)
+        }
+    }
+}
+
