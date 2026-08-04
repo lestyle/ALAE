@@ -32,8 +32,8 @@
 		DCF94B3130212EC50093910E /* ALAEWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF94B3030212EC50093910E /* ALAEWidget.swift */; };
 		DCF94B3330212ECA0093910E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B3230212ECA0093910E /* Assets.xcassets */; };
 		DCF94B3730212ECA0093910E /* ALAEWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DCF94B2730212EC40093910E /* ALAEWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		DCF94B3F30213A480093910E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF94B3E30213A480093910E /* ViewController.swift */; };
 		DCF94B4530227A6A0093910E /* Misbaha-Standalone.html in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B4430227A6A0093910E /* Misbaha-Standalone.html */; };
+		DCF94B493022A5D50093910E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF94B483022A5D50093910E /* ViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +92,7 @@
 		DCF94B3D302136D50093910E /* ALAEWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ALAEWidgetExtension.entitlements; sourceTree = "<group>"; };
 		DCF94B3E30213A480093910E /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = ../../../../.Trash/ViewController.swift; sourceTree = "<group>"; };
 		DCF94B4430227A6A0093910E /* Misbaha-Standalone.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "Misbaha-Standalone.html"; sourceTree = SOURCE_ROOT; };
+		DCF94B483022A5D50093910E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +118,7 @@
 		DC61BCD72FB90CE400179D2E = {
 			isa = PBXGroup;
 			children = (
+				DCF94B483022A5D50093910E /* ViewController.swift */,
 				DCF94B3D302136D50093910E /* ALAEWidgetExtension.entitlements */,
 				DC61BCE22FB90CE500179D2E /* ALAE */,
 				DC760F6F2FD6141D00FC5D0A /* fonts */,
@@ -301,7 +303,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DCF94B3F30213A480093910E /* ViewController.swift in Sources */,
+				DCF94B493022A5D50093910E /* ViewController.swift in Sources */,
 				DC61BCE42FB90CE500179D2E /* AppDelegate.swift in Sources */,
 				DC61BCE62FB90CE500179D2E /* SceneDelegate.swift in Sources */,
 			);
