@@ -12,7 +12,7 @@ workflows:
       - name: Trousseau
         script: |
           keychain initialize
-      - name: Certificat et profil
+      - name: Certificat de distribution
         script: |
           for TYPE in DISTRIBUTION IOS_DISTRIBUTION; do
             for CID in $(app-store-connect list-certificates --type $TYPE --json | jq -r '.[].id'); do
@@ -21,30 +21,56 @@ workflows:
           done
           openssl genrsa -out /tmp/ios_dist_key.pem 2048
           app-store-connect fetch-signing-files "com.alae.misbaha.ALAE" --type IOS_APP_STORE --certificate-key=@file:/tmp/ios_dist_key.pem --create
-      - name: Ajouter certificat
+      - name: Ajouter certificat au trousseau
         script: |
           keychain add-certificates
-      - name: Profils
-        script: |
-          xcode-project use-profiles
-      - name: Corriger les chemins absolus dans le projet
-        script: |
-          sed -i '' "s#/Downloads/#$CM_BUILD_DIR/#g" ALAE.xcodeproj/project.pbxproj
-      - name: Configurer la version, le Bundle ID et iPhone seul
+      - name: Version 1.0.4 + iPhone seul
         script: |
           echo "Build : $BUILD_NUMBER"
           sed -i '' "s/CURRENT_PROJECT_VERSION = [0-9]*/CURRENT_PROJECT_VERSION = $BUILD_NUMBER/g" ALAE.xcodeproj/project.pbxproj
-          sed -i '' "s/MARKETING_VERSION = [^\";]*/MARKETING_VERSION = 1.0.3/g" ALAE.xcodeproj/project.pbxproj
-          sed -i '' 's/PRODUCT_BUNDLE_IDENTIFIER = [^;]*/PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE/g' ALAE.xcodeproj/project.pbxproj
+          sed -i '' "s/MARKETING_VERSION = [^\";]*/MARKETING_VERSION = 1.0.4/g" ALAE.xcodeproj/project.pbxproj
           sed -i '' 's/TARGETED_DEVICE_FAMILY = [^;]*/TARGETED_DEVICE_FAMILY = "1"/g' ALAE.xcodeproj/project.pbxproj
-          PLIST=$(find . -name "Info.plist" | grep -v Pods | head -1)
-          echo "Info.plist : $PLIST"
-          /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString 1.0.3" "$PLIST" || /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string 1.0.3" "$PLIST"
-          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "$PLIST" || /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string $BUILD_NUMBER" "$PLIST"
-          /usr/libexec/PlistBuddy -c "Delete :UISupportedInterfaceOrientations~ipad" "$PLIST" 2>/dev/null || true
-      - name: Build IPA
+          for PLIST in $(find . -name "Info.plist" | grep -v Pods); do
+            echo "Info.plist : $PLIST"
+            /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString 1.0.4" "$PLIST" 2>/dev/null || /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string 1.0.4" "$PLIST" || true
+            /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "$PLIST" 2>/dev/null || /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string $BUILD_NUMBER" "$PLIST" || true
+            /usr/libexec/PlistBuddy -c "Delete :UISupportedInterfaceOrientations~ipad" "$PLIST" 2>/dev/null || true
+          done
+      - name: Archive + Export (signature auto app + widget)
         script: |
-          xcode-project build-ipa --project "ALAE.xcodeproj" --scheme "ALAE"
+          set -e
+          KEYDIR="$HOME/private_keys"
+          mkdir -p "$KEYDIR"
+          KEYFILE="$KEYDIR/AuthKey_${APP_STORE_CONNECT_KEY_IDENTIFIER}.p8"
+          printf '%s' "$APP_STORE_CONNECT_PRIVATE_KEY" > "$KEYFILE"
+          echo "== ARCHIVE =="
+          xcodebuild -project "ALAE.xcodeproj" -scheme "ALAE" -configuration Release \
+            -archivePath "$CM_BUILD_DIR/build/ios/xcarchive/ALAE.xcarchive" \
+            -destination "generic/platform=iOS" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$KEYFILE" \
+            -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
+            archive
+          echo "== EXPORT =="
+          cat > "$CM_BUILD_DIR/ExportOptions.plist" <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+          <key>method</key><string>app-store</string>
+          <key>teamID</key><string>NUD4HZ572C</string>
+          <key>signingStyle</key><string>automatic</string>
+          <key>uploadSymbols</key><true/>
+          </dict></plist>
+          PLIST
+          xcodebuild -exportArchive \
+            -archivePath "$CM_BUILD_DIR/build/ios/xcarchive/ALAE.xcarchive" \
+            -exportPath "$CM_BUILD_DIR/build/ios/ipa" \
+            -exportOptionsPlist "$CM_BUILD_DIR/ExportOptions.plist" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$KEYFILE" \
+            -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID"
     artifacts:
       - build/ios/ipa/*.ipa
     publishing:
