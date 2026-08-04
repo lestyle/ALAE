@@ -7,19 +7,61 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		DC0E33D930019C5E00884060 /* Misbaha-Standalone.html in Resources */ = {isa = PBXBuildFile; fileRef = DC0E33D830019C5E00884060 /* Misbaha-Standalone.html */; };
+		DC403D552FF9B59F00D408BE /* silence.caf in Resources */ = {isa = PBXBuildFile; fileRef = DC403D4D2FF9B59E00D408BE /* silence.caf */; };
 		DC61BCE42FB90CE500179D2E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC61BCE32FB90CE500179D2E /* AppDelegate.swift */; };
 		DC61BCE62FB90CE500179D2E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */; };
 		DC61BCEB2FB90CE500179D2E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC61BCE92FB90CE500179D2E /* Main.storyboard */; };
 		DC61BCF02FB90CE700179D2E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC61BCEE2FB90CE700179D2E /* LaunchScreen.storyboard */; };
 		DC760F712FD6141E00FC5D0A /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = DC760F6F2FD6141D00FC5D0A /* fonts */; };
 		DC8DC2902FE5372A002D9A13 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC8DC28F2FE5372A002D9A13 /* Media.xcassets */; };
-		DCB3A9BE2FC211A800DC0B76 /* adhan-kouchi.caf in Resources */ = {isa = PBXBuildFile; fileRef = DCB3A9B82FC210CA00DC0B76 /* adhan-kouchi.caf */; };
-		DCC83AB92FE7364000A7BE4F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCC83AB82FE7364000A7BE4F /* ViewController.swift */; };
+		DCB099CA2FF854F1009122CE /* quran-img in Resources */ = {isa = PBXBuildFile; fileRef = DCB099C92FF854ED009122CE /* quran-img */; };
+		DCF94B0D3020FC0E0093910E /* adhan-younes.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B013020FC0D0093910E /* adhan-younes.mp3 */; };
+		DCF94B0E3020FC0E0093910E /* adhan-kouchi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B023020FC0E0093910E /* adhan-kouchi.mp3 */; };
+		DCF94B0F3020FC0E0093910E /* adhan-mecca-notif.caf in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B033020FC0E0093910E /* adhan-mecca-notif.caf */; };
+		DCF94B103020FC0E0093910E /* adhan-kouchi-notif.caf in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B043020FC0E0093910E /* adhan-kouchi-notif.caf */; };
+		DCF94B113020FC0E0093910E /* adhan-karaca.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B053020FC0E0093910E /* adhan-karaca.mp3 */; };
+		DCF94B123020FC0E0093910E /* adhan-kzabri.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B063020FC0E0093910E /* adhan-kzabri.mp3 */; };
+		DCF94B133020FC0E0093910E /* adhan-hadioui-notif.caf in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B073020FC0E0093910E /* adhan-hadioui-notif.caf */; };
+		DCF94B143020FC0E0093910E /* adhan-kzabri-notif.caf in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B083020FC0E0093910E /* adhan-kzabri-notif.caf */; };
+		DCF94B153020FC0E0093910E /* adhan-karaca-notif.caf in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B093020FC0E0093910E /* adhan-karaca-notif.caf */; };
+		DCF94B163020FC0E0093910E /* adhan-mecca.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B0A3020FC0E0093910E /* adhan-mecca.mp3 */; };
+		DCF94B173020FC0E0093910E /* adhan-hadioui.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B0B3020FC0E0093910E /* adhan-hadioui.mp3 */; };
+		DCF94B183020FC0E0093910E /* adhan-younes-notif.caf in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B0C3020FC0E0093910E /* adhan-younes-notif.caf */; };
+		DCF94B2A30212EC40093910E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF94B2930212EC40093910E /* WidgetKit.framework */; };
+		DCF94B2C30212EC40093910E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF94B2B30212EC40093910E /* SwiftUI.framework */; };
+		DCF94B3130212EC50093910E /* ALAEWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF94B3030212EC50093910E /* ALAEWidget.swift */; };
+		DCF94B3330212ECA0093910E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B3230212ECA0093910E /* Assets.xcassets */; };
+		DCF94B3730212ECA0093910E /* ALAEWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DCF94B2730212EC40093910E /* ALAEWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		DCF94B3F30213A480093910E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF94B3E30213A480093910E /* ViewController.swift */; };
+		DCF94B4530227A6A0093910E /* Misbaha-Standalone.html in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B4430227A6A0093910E /* Misbaha-Standalone.html */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		DCF94B3530212ECA0093910E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC61BCD82FB90CE400179D2E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DCF94B2630212EC40093910E;
+			remoteInfo = ALAEWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		DCF94B3B30212ECA0093910E /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				DCF94B3730212ECA0093910E /* ALAEWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		DC0E33D830019C5E00884060 /* Misbaha-Standalone.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "Misbaha-Standalone.html"; path = "../../../../Downloads/Misbaha-Standalone.html"; sourceTree = "<group>"; };
+		DC403D4D2FF9B59E00D408BE /* silence.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = silence.caf; sourceTree = "<group>"; };
 		DC61BCE02FB90CE500179D2E /* ALAE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ALAE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC61BCE32FB90CE500179D2E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -27,13 +69,29 @@
 		DC61BCEF2FB90CE700179D2E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		DC760F6F2FD6141D00FC5D0A /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fonts; sourceTree = "<group>"; };
 		DC8DC28F2FE5372A002D9A13 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
-		DCB3A9B82FC210CA00DC0B76 /* adhan-kouchi.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-kouchi.caf"; sourceTree = "<group>"; };
-		DCB3A9B92FC210CA00DC0B76 /* adhan-hadioui.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-hadioui.caf"; sourceTree = "<group>"; };
-		DCB3A9BA2FC210CA00DC0B76 /* adhan-tarek.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-tarek.caf"; sourceTree = "<group>"; };
-		DCB3A9BB2FC210D200DC0B76 /* adhan-mecca.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-mecca.caf"; sourceTree = "<group>"; };
-		DCB3A9BC2FC210D200DC0B76 /* adhan-madinah.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-madinah.caf"; sourceTree = "<group>"; };
-		DCB3A9BD2FC210D200DC0B76 /* adhan-harouz.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-harouz.caf"; sourceTree = "<group>"; };
-		DCC83AB82FE7364000A7BE4F /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = ../../../../Downloads/ViewController.swift; sourceTree = "<group>"; };
+		DCB099C92FF854ED009122CE /* quran-img */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "quran-img"; sourceTree = "<group>"; };
+		DCF94B013020FC0D0093910E /* adhan-younes.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "adhan-younes.mp3"; sourceTree = "<group>"; };
+		DCF94B023020FC0E0093910E /* adhan-kouchi.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "adhan-kouchi.mp3"; sourceTree = "<group>"; };
+		DCF94B033020FC0E0093910E /* adhan-mecca-notif.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-mecca-notif.caf"; sourceTree = "<group>"; };
+		DCF94B043020FC0E0093910E /* adhan-kouchi-notif.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-kouchi-notif.caf"; sourceTree = "<group>"; };
+		DCF94B053020FC0E0093910E /* adhan-karaca.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "adhan-karaca.mp3"; sourceTree = "<group>"; };
+		DCF94B063020FC0E0093910E /* adhan-kzabri.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "adhan-kzabri.mp3"; sourceTree = "<group>"; };
+		DCF94B073020FC0E0093910E /* adhan-hadioui-notif.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-hadioui-notif.caf"; sourceTree = "<group>"; };
+		DCF94B083020FC0E0093910E /* adhan-kzabri-notif.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-kzabri-notif.caf"; sourceTree = "<group>"; };
+		DCF94B093020FC0E0093910E /* adhan-karaca-notif.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-karaca-notif.caf"; sourceTree = "<group>"; };
+		DCF94B0A3020FC0E0093910E /* adhan-mecca.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "adhan-mecca.mp3"; sourceTree = "<group>"; };
+		DCF94B0B3020FC0E0093910E /* adhan-hadioui.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "adhan-hadioui.mp3"; sourceTree = "<group>"; };
+		DCF94B0C3020FC0E0093910E /* adhan-younes-notif.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-younes-notif.caf"; sourceTree = "<group>"; };
+		DCF94B2730212EC40093910E /* ALAEWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ALAEWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCF94B2930212EC40093910E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		DCF94B2B30212EC40093910E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		DCF94B3030212EC50093910E /* ALAEWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALAEWidget.swift; sourceTree = "<group>"; };
+		DCF94B3230212ECA0093910E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DCF94B3430212ECA0093910E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DCF94B3C302136340093910E /* ALAE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ALAE.entitlements; sourceTree = "<group>"; };
+		DCF94B3D302136D50093910E /* ALAEWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ALAEWidgetExtension.entitlements; sourceTree = "<group>"; };
+		DCF94B3E30213A480093910E /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ViewController.swift; path = ../../../../.Trash/ViewController.swift; sourceTree = "<group>"; };
+		DCF94B4430227A6A0093910E /* Misbaha-Standalone.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "Misbaha-Standalone.html"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,14 +102,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DCF94B2430212EC40093910E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DCF94B2C30212EC40093910E /* SwiftUI.framework in Frameworks */,
+				DCF94B2A30212EC40093910E /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		DC61BCD72FB90CE400179D2E = {
 			isa = PBXGroup;
 			children = (
+				DCF94B3D302136D50093910E /* ALAEWidgetExtension.entitlements */,
 				DC61BCE22FB90CE500179D2E /* ALAE */,
 				DC760F6F2FD6141D00FC5D0A /* fonts */,
+				DCF94B2D30212EC40093910E /* ALAEWidget */,
+				DCF94B2830212EC40093910E /* Frameworks */,
 				DC61BCE12FB90CE500179D2E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -60,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				DC61BCE02FB90CE500179D2E /* ALAE.app */,
+				DCF94B2730212EC40093910E /* ALAEWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -67,21 +138,49 @@
 		DC61BCE22FB90CE500179D2E /* ALAE */ = {
 			isa = PBXGroup;
 			children = (
-				DC0E33D830019C5E00884060 /* Misbaha-Standalone.html */,
-				DCB3A9B92FC210CA00DC0B76 /* adhan-hadioui.caf */,
-				DCB3A9B82FC210CA00DC0B76 /* adhan-kouchi.caf */,
-				DCB3A9BA2FC210CA00DC0B76 /* adhan-tarek.caf */,
-				DCB3A9BD2FC210D200DC0B76 /* adhan-harouz.caf */,
-				DCB3A9BC2FC210D200DC0B76 /* adhan-madinah.caf */,
-				DCB3A9BB2FC210D200DC0B76 /* adhan-mecca.caf */,
+				DCF94B4430227A6A0093910E /* Misbaha-Standalone.html */,
+				DCF94B3C302136340093910E /* ALAE.entitlements */,
+				DCF94B073020FC0E0093910E /* adhan-hadioui-notif.caf */,
+				DCF94B0B3020FC0E0093910E /* adhan-hadioui.mp3 */,
+				DCF94B093020FC0E0093910E /* adhan-karaca-notif.caf */,
+				DCF94B053020FC0E0093910E /* adhan-karaca.mp3 */,
+				DCF94B043020FC0E0093910E /* adhan-kouchi-notif.caf */,
+				DCF94B023020FC0E0093910E /* adhan-kouchi.mp3 */,
+				DCF94B083020FC0E0093910E /* adhan-kzabri-notif.caf */,
+				DCF94B063020FC0E0093910E /* adhan-kzabri.mp3 */,
+				DCF94B033020FC0E0093910E /* adhan-mecca-notif.caf */,
+				DCF94B0A3020FC0E0093910E /* adhan-mecca.mp3 */,
+				DCF94B0C3020FC0E0093910E /* adhan-younes-notif.caf */,
+				DCF94B013020FC0D0093910E /* adhan-younes.mp3 */,
+				DCB099C92FF854ED009122CE /* quran-img */,
+				DC403D4D2FF9B59E00D408BE /* silence.caf */,
 				DC61BCE32FB90CE500179D2E /* AppDelegate.swift */,
+				DCF94B3E30213A480093910E /* ViewController.swift */,
 				DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */,
-				DCC83AB82FE7364000A7BE4F /* ViewController.swift */,
 				DC8DC28F2FE5372A002D9A13 /* Media.xcassets */,
 				DC61BCE92FB90CE500179D2E /* Main.storyboard */,
 				DC61BCEE2FB90CE700179D2E /* LaunchScreen.storyboard */,
 			);
 			path = ALAE;
+			sourceTree = "<group>";
+		};
+		DCF94B2830212EC40093910E /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DCF94B2930212EC40093910E /* WidgetKit.framework */,
+				DCF94B2B30212EC40093910E /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		DCF94B2D30212EC40093910E /* ALAEWidget */ = {
+			isa = PBXGroup;
+			children = (
+				DCF94B3030212EC50093910E /* ALAEWidget.swift */,
+				DCF94B3230212ECA0093910E /* Assets.xcassets */,
+				DCF94B3430212ECA0093910E /* Info.plist */,
+			);
+			path = ALAEWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -94,15 +193,34 @@
 				DC61BCDC2FB90CE500179D2E /* Sources */,
 				DC61BCDD2FB90CE500179D2E /* Frameworks */,
 				DC61BCDE2FB90CE500179D2E /* Resources */,
+				DCF94B3B30212ECA0093910E /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				DCF94B3630212ECA0093910E /* PBXTargetDependency */,
 			);
 			name = ALAE;
 			productName = ALAE;
 			productReference = DC61BCE02FB90CE500179D2E /* ALAE.app */;
 			productType = "com.apple.product-type.application";
+		};
+		DCF94B2630212EC40093910E /* ALAEWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DCF94B3830212ECA0093910E /* Build configuration list for PBXNativeTarget "ALAEWidgetExtension" */;
+			buildPhases = (
+				DCF94B2330212EC40093910E /* Sources */,
+				DCF94B2430212EC40093910E /* Frameworks */,
+				DCF94B2530212EC40093910E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ALAEWidgetExtension;
+			productName = ALAEWidgetExtension;
+			productReference = DCF94B2730212EC40093910E /* ALAEWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -115,6 +233,9 @@
 				LastUpgradeCheck = 1420;
 				TargetAttributes = {
 					DC61BCDF2FB90CE500179D2E = {
+						CreatedOnToolsVersion = 14.2;
+					};
+					DCF94B2630212EC40093910E = {
 						CreatedOnToolsVersion = 14.2;
 					};
 				};
@@ -133,6 +254,7 @@
 			projectRoot = "";
 			targets = (
 				DC61BCDF2FB90CE500179D2E /* ALAE */,
+				DCF94B2630212EC40093910E /* ALAEWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -142,12 +264,33 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCF94B4530227A6A0093910E /* Misbaha-Standalone.html in Resources */,
+				DCF94B143020FC0E0093910E /* adhan-kzabri-notif.caf in Resources */,
+				DC403D552FF9B59F00D408BE /* silence.caf in Resources */,
+				DCF94B0F3020FC0E0093910E /* adhan-mecca-notif.caf in Resources */,
+				DCF94B0E3020FC0E0093910E /* adhan-kouchi.mp3 in Resources */,
+				DCF94B183020FC0E0093910E /* adhan-younes-notif.caf in Resources */,
+				DCF94B0D3020FC0E0093910E /* adhan-younes.mp3 in Resources */,
 				DC61BCF02FB90CE700179D2E /* LaunchScreen.storyboard in Resources */,
+				DCF94B153020FC0E0093910E /* adhan-karaca-notif.caf in Resources */,
 				DC8DC2902FE5372A002D9A13 /* Media.xcassets in Resources */,
+				DCB099CA2FF854F1009122CE /* quran-img in Resources */,
+				DCF94B133020FC0E0093910E /* adhan-hadioui-notif.caf in Resources */,
+				DCF94B173020FC0E0093910E /* adhan-hadioui.mp3 in Resources */,
 				DC760F712FD6141E00FC5D0A /* fonts in Resources */,
-				DC0E33D930019C5E00884060 /* Misbaha-Standalone.html in Resources */,
-				DCB3A9BE2FC211A800DC0B76 /* adhan-kouchi.caf in Resources */,
+				DCF94B163020FC0E0093910E /* adhan-mecca.mp3 in Resources */,
 				DC61BCEB2FB90CE500179D2E /* Main.storyboard in Resources */,
+				DCF94B113020FC0E0093910E /* adhan-karaca.mp3 in Resources */,
+				DCF94B103020FC0E0093910E /* adhan-kouchi-notif.caf in Resources */,
+				DCF94B123020FC0E0093910E /* adhan-kzabri.mp3 in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DCF94B2530212EC40093910E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DCF94B3330212ECA0093910E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -158,13 +301,29 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DCC83AB92FE7364000A7BE4F /* ViewController.swift in Sources */,
+				DCF94B3F30213A480093910E /* ViewController.swift in Sources */,
 				DC61BCE42FB90CE500179D2E /* AppDelegate.swift in Sources */,
 				DC61BCE62FB90CE500179D2E /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DCF94B2330212EC40093910E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DCF94B3130212EC50093910E /* ALAEWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		DCF94B3630212ECA0093910E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DCF94B2630212EC40093910E /* ALAEWidgetExtension */;
+			targetProxy = DCF94B3530212ECA0093910E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		DC61BCE92FB90CE500179D2E /* Main.storyboard */ = {
@@ -303,11 +462,13 @@
 		DC61BCF52FB90CE700179D2E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = ALAE/ALAE.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 65;
 				DEVELOPMENT_TEAM = NUD4HZ572C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ALAE/Info.plist;
@@ -324,7 +485,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -336,11 +497,13 @@
 		DC61BCF62FB90CE700179D2E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = ALAE/ALAE.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 65;
 				DEVELOPMENT_TEAM = NUD4HZ572C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ALAE/Info.plist;
@@ -357,9 +520,65 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		DCF94B3930212ECA0093910E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = ALAEWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NUD4HZ572C;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ALAEWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ALAEWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE.ALAEWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DCF94B3A30212ECA0093910E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = ALAEWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NUD4HZ572C;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ALAEWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ALAEWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE.ALAEWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -383,6 +602,15 @@
 			buildConfigurations = (
 				DC61BCF52FB90CE700179D2E /* Debug */,
 				DC61BCF62FB90CE700179D2E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DCF94B3830212ECA0093910E /* Build configuration list for PBXNativeTarget "ALAEWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DCF94B3930212ECA0093910E /* Debug */,
+				DCF94B3A30212ECA0093910E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
