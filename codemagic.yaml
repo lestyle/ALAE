@@ -36,7 +36,7 @@ workflows:
           sed -i '' 's/TARGETED_DEVICE_FAMILY = [^;]*/TARGETED_DEVICE_FAMILY = "1"/g' ALAE.xcodeproj/project.pbxproj
           for PLIST in $(find . -name "Info.plist" | grep -v Pods); do
             echo "Info.plist : $PLIST"
-            /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString 1.0.5" "$PLIST" 2>/dev/null || /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string 1.0.5" "$PLIST" || true
+            /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString 1.0.7" "$PLIST" 2>/dev/null || /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string 1.0.7" "$PLIST" || true
             /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "$PLIST" 2>/dev/null || /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string $BUILD_NUMBER" "$PLIST" || true
             /usr/libexec/PlistBuddy -c "Delete :UISupportedInterfaceOrientations~ipad" "$PLIST" 2>/dev/null || true
           done
