@@ -198,13 +198,10 @@ struct AlaeWidgetView: View {
     let entry: AlaeEntry
 
     var body: some View {
-        ZStack {
-            AlaeBackground()
-            content
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .clipShape(ContainerRelativeShape())
-        .overlay(GoldFrameView())
+        content
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .overlay(GoldFrameView())
+            .modifier(WidgetBGModifier())
     }
 
     @ViewBuilder private var content: some View {
@@ -313,6 +310,17 @@ struct AlaeWidgetView: View {
         }
         .padding(.horizontal, 18)
         .padding(.vertical, 16)
+    }
+}
+
+// MARK: - Fond widget : containerBackground obligatoire iOS 17+ (sinon widget noir/vide)
+private struct WidgetBGModifier: ViewModifier {
+    @ViewBuilder func body(content: Content) -> some View {
+        if #available(iOSApplicationExtension 17.0, *) {
+            content.containerBackground(for: .widget) { AlaeBackground() }
+        } else {
+            content.background(AlaeBackground())
+        }
     }
 }
 
