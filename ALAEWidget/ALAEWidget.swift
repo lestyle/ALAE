@@ -1,13 +1,14 @@
 //
 //  ALAEWidget.swift
-//  ALAE — Widget écran d'accueil : prochaine prière + compte à rebours + date Hijri + 5 horaires
+//  ALAE — Widget écran d'accueil : PROCHAINE PRIÈRE + compte à rebours + date Hijri
 //
 //  ⚠️ Ce fichier appartient à la TARGET DU WIDGET (ALAEWidgetExtension),
 //     PAS à la target ALAE de l'app. (Voir WIDGET-XCODE.md.)
 //
-//  Données : lues depuis l'App Group partagé "group.com.alae.shared".
-//  L'app (ViewController) y écrit les horaires + ville à chaque calcul.
-//  La date Hijri est calculée localement (Calendar islamique), pas besoin de réseau.
+//  Données : lues depuis l'App Group partagé "group.com.alae.misbaha.ALAE.shared".
+//  L'app (ViewController) y écrit les horaires de prière (prayerTimings) + la ville.
+//  Le compte à rebours utilise Text(date, style:.relative) → se met à jour tout seul.
+//  Conforme App Store : aucun son, aucune vibration — affichage uniquement.
 //
 
 import WidgetKit
@@ -15,108 +16,181 @@ import SwiftUI
 
 // MARK: - App Group (doit être IDENTIQUE côté app et côté widget)
 let kAppGroup = "group.com.alae.misbaha.ALAE.shared"
-// MARK: - Modèle d'une prière
-struct Prayer {
-    let key: String       // "Fajr", "Dhuhr", ...
-    let labelAr: String   // affichage arabe
-    let date: Date        // heure du jour
-}
 
-// MARK: - Palette (accordée à l'app)
-private let kBg      = Color(red: 0.043, green: 0.051, blue: 0.063)   // #0B0D10
-private let kBg2     = Color(red: 0.11,  green: 0.08,  blue: 0.045)   // brun profond
-private let kGold    = Color(red: 0.78,  green: 0.647, blue: 0.357)   // #C7A55B
-private let kGoldLt  = Color(red: 0.957, green: 0.847, blue: 0.608)   // #F4D89B
+// MARK: - Palette (accordée à l'app : Noir & Or)
+private let kBg      = Color(red: 0.055, green: 0.063, blue: 0.078)
+private let kBg2     = Color(red: 0.13,  green: 0.10,  blue: 0.055)
+private let kGold    = Color(red: 0.78,  green: 0.647, blue: 0.357)
+private let kGoldLt  = Color(red: 0.957, green: 0.847, blue: 0.608)
 private let kText    = Color(red: 0.96,  green: 0.93,  blue: 0.86)
-private let kTextDim = Color(red: 0.62,  green: 0.58,  blue: 0.50)
+private let kTextDim = Color(red: 0.66,  green: 0.61,  blue: 0.52)
+
+// MARK: - Prières (ordre + libellés)
+// Clés telles qu'écrites par l'app dans prayerTimings.
+private let kPrayerKeys = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"]
+// Libellés FR translittérés voulus par l'utilisateur.
+private let kPrayerFr   = ["Sobh", "Chourouk", "Dohr", "Aasr", "Magreb", "Ichaa"]
+private let kPrayerAr   = ["الفجر", "الشروق", "الظهر", "العصر", "المغرب", "العشاء"]
+
+// Dhikr affiché en bas du widget.
+private let kDhikr = "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ سُبْحَانَ اللَّهِ الْعَظيمِ"
+
+// Police Moshaf (naskh coranique) : fichier AmiriQuran.ttf ajouté à la target du widget.
+// Repli automatique sur la police système si absente.
+private func arFont(_ size: CGFloat) -> Font { Font.custom("AmiriQuran-Regular", size: size) }
+
+struct PrayerItem { let fr: String; let ar: String; let time: String; let date: Date }
 
 // MARK: - Timeline Entry
 struct AlaeEntry: TimelineEntry {
     let date: Date
-    let prayers: [Prayer]
-    let next: Prayer?
+    let nextFr: String
+    let nextAr: String
+    let nextTime: String     // "23:40"
+    let nextDate: Date       // pour le compte à rebours
     let city: String
     let hijri: String
+    let all: [PrayerItem]    // toutes les prières du jour (format moyen)
 }
 
-// MARK: - Lecture des données partagées + calcul
+// MARK: - Lecture des données partagées
 enum AlaeData {
-    static func loadPrayers() -> (prayers: [Prayer], city: String) {
-        let order: [(String, String)] = [
-            ("Fajr", "الفجر"), ("Dhuhr", "الظهر"), ("Asr", "العصر"),
-            ("Maghrib", "المغرب"), ("Isha", "العشاء")
-        ]
-        guard let ud = UserDefaults(suiteName: kAppGroup),
-              let timings = ud.dictionary(forKey: "prayerTimings") as? [String: String]
-        else { return ([], "") }
-
-        let city = ud.string(forKey: "prayerCity") ?? ""
-        let cal = Calendar.current
-        let today = Date()
-        var result: [Prayer] = []
-        for (key, label) in order {
-            guard let raw = timings[key] else { continue }
-            let hhmm = String(raw.prefix(5))                     // "05:23 (CEST)" -> "05:23"
-            let parts = hhmm.split(separator: ":").compactMap { Int($0) }
-            guard parts.count == 2 else { continue }
-            var comp = cal.dateComponents([.year, .month, .day], from: today)
-            comp.hour = parts[0]; comp.minute = parts[1]
-            if let d = cal.date(from: comp) {
-                result.append(Prayer(key: key, labelAr: label, date: d))
-            }
-        }
-        return (result, city)
-    }
-
-    /// Prochaine prière à partir de `from` (sinon Fajr du lendemain).
-    static func nextPrayer(_ prayers: [Prayer], from: Date) -> Prayer? {
-        if let up = prayers.first(where: { $0.date > from }) { return up }
-        // après Isha -> Fajr demain
-        guard let fajr = prayers.first else { return nil }
-        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: fajr.date)
-        return tomorrow.map { Prayer(key: fajr.key, labelAr: fajr.labelAr, date: $0) }
-    }
-
-    /// Date Hijri en arabe (ex. "١٥ جمادى الأولى ١٤٤٧").
     static func hijriString(for date: Date) -> String {
         var cal = Calendar(identifier: .islamicUmmAlQura)
         cal.locale = Locale(identifier: "ar")
         let df = DateFormatter()
         df.calendar = cal
-        df.locale = Locale(identifier: "ar")
+        df.locale = Locale(identifier: "ar_SA@numbers=latn")
         df.dateFormat = "d MMMM yyyy"
         return df.string(from: date)
+    }
+
+    /// Construit la liste des prières du jour + trouve la prochaine.
+    static func compute(now: Date = Date()) -> AlaeEntry {
+        let ud = UserDefaults(suiteName: kAppGroup)
+        let timings = (ud?.dictionary(forKey: "prayerTimings") as? [String: String]) ?? [:]
+        let city = ud?.string(forKey: "prayerCity") ?? ""
+        let hijri = hijriString(for: now)
+
+        let cal = Calendar.current
+        let startOfDay = cal.startOfDay(for: now)
+
+        var items: [PrayerItem] = []
+        for (i, key) in kPrayerKeys.enumerated() {
+            guard let t = timings[key], t.contains(":") else { continue }
+            let parts = t.split(separator: ":")
+            guard parts.count >= 2, let h = Int(parts[0]), let m = Int(parts[1]) else { continue }
+            let d = cal.date(byAdding: .minute, value: h * 60 + m, to: startOfDay) ?? now
+            items.append(PrayerItem(fr: kPrayerFr[i], ar: kPrayerAr[i], time: String(format: "%02d:%02d", h, m), date: d))
+        }
+
+        // Prochaine prière = première dont l'heure est > maintenant ; sinon Fajr de demain.
+        var next = items.first(where: { $0.date > now })
+        if next == nil, let first = items.first {
+            let tomorrow = cal.date(byAdding: .day, value: 1, to: first.date) ?? first.date
+            next = PrayerItem(fr: first.fr, ar: first.ar, time: first.time, date: tomorrow)
+        }
+
+        let n = next ?? PrayerItem(fr: "—", ar: "", time: "--:--", date: now.addingTimeInterval(3600))
+        return AlaeEntry(date: now, nextFr: n.fr, nextAr: n.ar, nextTime: n.time,
+                         nextDate: n.date, city: city, hijri: hijri, all: items)
     }
 }
 
 // MARK: - Provider
 struct AlaeProvider: TimelineProvider {
-    func placeholder(in context: Context) -> AlaeEntry {
-        AlaeEntry(date: Date(), prayers: [], next: nil, city: "—", hijri: AlaeData.hijriString(for: Date()))
-    }
-
+    func placeholder(in context: Context) -> AlaeEntry { AlaeData.compute() }
     func getSnapshot(in context: Context, completion: @escaping (AlaeEntry) -> Void) {
-        completion(makeEntry(at: Date()))
+        completion(AlaeData.compute())
     }
-
     func getTimeline(in context: Context, completion: @escaping (Timeline<AlaeEntry>) -> Void) {
-        let now = Date()
-        let entry = makeEntry(at: now)
-        // Rafraîchir à la prochaine prière (pour changer la cible du compte à rebours),
-        // sinon dans 15 min au plus tard.
-        let refresh = entry.next?.date ?? Calendar.current.date(byAdding: .minute, value: 15, to: now)!
-        let capped = min(refresh, Calendar.current.date(byAdding: .minute, value: 30, to: now)!)
-        completion(Timeline(entries: [entry], policy: .after(capped)))
-    }
-
-    private func makeEntry(at date: Date) -> AlaeEntry {
-        let (prayers, city) = AlaeData.loadPrayers()
-        let next = AlaeData.nextPrayer(prayers, from: date)
-        return AlaeEntry(date: date, prayers: prayers, next: next,
-                         city: city.isEmpty ? "—" : city,
-                         hijri: AlaeData.hijriString(for: date))
+        let entry = AlaeData.compute()
+        // Rafraîchit à l'heure de la prochaine prière (+5 s) pour passer à la suivante ;
+        // filet de sécurité à 30 min max.
+        let soon = min(entry.nextDate.addingTimeInterval(5),
+                       Date().addingTimeInterval(30 * 60))
+        completion(Timeline(entries: [entry], policy: .after(soon)))
     }
 }
+
+// MARK: - Fond commun : SOIE noir & or dessinée en SwiftUI (aucune image externe requise)
+private struct AlaeBackground: View {
+    private let g0 = Color(red: 0.05,  green: 0.045, blue: 0.03)   // presque noir chaud
+    private let g1 = Color(red: 0.17,  green: 0.12,  blue: 0.05)   // brun doré sombre
+    private let g2 = Color(red: 0.42,  green: 0.30,  blue: 0.10)   // or moyen
+    private let g3 = Color(red: 0.72,  green: 0.55,  blue: 0.22)   // or clair (reflet)
+
+    var body: some View {
+        ZStack {
+            LinearGradient(colors: [g1, g0], startPoint: .topLeading, endPoint: .bottomTrailing)
+            LinearGradient(
+                stops: [
+                    .init(color: g0.opacity(0.0),  location: 0.00),
+                    .init(color: g3.opacity(0.55), location: 0.16),
+                    .init(color: g1.opacity(0.0),  location: 0.30),
+                    .init(color: g2.opacity(0.45), location: 0.46),
+                    .init(color: g0.opacity(0.0),  location: 0.60),
+                    .init(color: g3.opacity(0.40), location: 0.78),
+                    .init(color: g0.opacity(0.0),  location: 1.00)
+                ],
+                startPoint: .topTrailing, endPoint: .bottomLeading
+            )
+            RadialGradient(colors: [g3.opacity(0.35), .clear],
+                           center: .init(x: 0.5, y: 0.42), startRadius: 6, endRadius: 240)
+            RadialGradient(colors: [Color.clear, Color.black.opacity(0.35)],
+                           center: .center, startRadius: 30, endRadius: 230)
+            LinearGradient(colors: [Color.white.opacity(0.08), .clear],
+                           startPoint: .top, endPoint: .center)
+            Image("WidgetSilk")
+                .resizable()
+                .scaledToFill()
+                .opacity(1.0)
+                .brightness(0.12)
+                .saturation(1.15)
+            LinearGradient(colors: [Color.black.opacity(0.04), Color.black.opacity(0.16)],
+                           startPoint: .top, endPoint: .bottom)
+            RadialGradient(colors: [Color.clear, Color.clear, Color.black.opacity(0.5)],
+                           center: .center, startRadius: 60, endRadius: 250)
+        }
+        .clipShape(ContainerRelativeShape())
+    }
+}
+
+// MARK: - Cadre OR fin & élégant (incrusté 3 pt → jamais tronqué par les coins)
+private struct GoldFrameView: View {
+    private let brown = Color(red: 0.30, green: 0.18, blue: 0.04)
+    private let gold  = Color(red: 1.00, green: 0.78, blue: 0.20)
+    private let light = Color(red: 1.00, green: 0.93, blue: 0.62)
+    private let glint = Color(red: 1.00, green: 1.00, blue: 1.00)
+    private var sheen: AngularGradient {
+        AngularGradient(gradient: Gradient(stops: [
+            .init(color: brown, location: 0.00),
+            .init(color: gold,  location: 0.08),
+            .init(color: glint, location: 0.14),
+            .init(color: gold,  location: 0.20),
+            .init(color: brown, location: 0.34),
+            .init(color: light, location: 0.46),
+            .init(color: glint, location: 0.52),
+            .init(color: gold,  location: 0.60),
+            .init(color: brown, location: 0.72),
+            .init(color: light, location: 0.84),
+            .init(color: glint, location: 0.90),
+            .init(color: brown, location: 1.00)
+        ]), center: .center)
+    }
+    var body: some View {
+        ZStack {
+            ContainerRelativeShape()
+                .strokeBorder(Color.black.opacity(0.85), lineWidth: 8)
+            ContainerRelativeShape()
+                .strokeBorder(sheen, lineWidth: 5)
+            ContainerRelativeShape()
+                .strokeBorder(glint.opacity(0.95), lineWidth: 1)
+        }
+    }
+}
+
+// MARK: - Toile du widget : fond soie + cadre or incrusté (compile iOS 16 & 17)
 
 // MARK: - Vues
 struct AlaeWidgetView: View {
@@ -125,103 +199,120 @@ struct AlaeWidgetView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(colors: [kBg2, kBg], startPoint: .top, endPoint: .bottom)
-            switch family {
-            case .systemSmall:  smallView
-            case .systemMedium: mediumView
-            default:            mediumView
-            }
+            AlaeBackground()
+            content
         }
-        .widgetBackgroundCompat()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .clipShape(ContainerRelativeShape())
+        .overlay(GoldFrameView())
     }
 
-    // — Petit : prochaine prière + compte à rebours —
+    @ViewBuilder private var content: some View {
+        switch family {
+        case .systemSmall:  smallView
+        default:            mediumView
+        }
+    }
+
+    // — Petit : prochaine prière + heure + compte à rebours + dhikr —
     private var smallView: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(spacing: 2) {
             Text("آلَاء")
-                .font(.system(size: 13, weight: .semibold))
+                .font(.system(size: 11, weight: .semibold))
                 .foregroundColor(kGold)
             Spacer(minLength: 0)
-            if let n = entry.next {
-                Text(n.labelAr)
-                    .font(.system(size: 26, weight: .bold))
-                    .foregroundColor(kGoldLt)
-                Text(n.date, style: .time)
-                    .font(.system(size: 15, weight: .medium))
-                    .foregroundColor(kText)
-                Text(n.date, style: .timer)
-                    .font(.system(size: 13, weight: .semibold))
-                    .monospacedDigit()
-                    .foregroundColor(kGold)
-            } else {
-                Text("Ouvre l'app").font(.system(size: 13)).foregroundColor(kTextDim)
-            }
-            Spacer(minLength: 0)
-            Text(entry.hijri)
-                .font(.system(size: 10, weight: .medium))
-                .foregroundColor(kTextDim)
+            Text(entry.nextAr)
+                .font(arFont(20))
+                .foregroundColor(kGoldLt)
                 .lineLimit(1).minimumScaleFactor(0.7)
+            Text(entry.nextFr)
+                .font(.system(size: 11.5, weight: .medium))
+                .foregroundColor(kTextDim)
+            Text(entry.nextTime)
+                .font(.system(size: 34, weight: .bold, design: .serif))
+                .foregroundColor(kText)
+                .shadow(color: kGold.opacity(0.35), radius: 8)
+                .minimumScaleFactor(0.6).lineLimit(1)
+            Text(entry.nextDate, style: .relative)
+                .font(.system(size: 10, weight: .semibold))
+                .foregroundColor(kGold)
+                .multilineTextAlignment(.center)
+                .lineLimit(1).minimumScaleFactor(0.6)
+            Spacer(minLength: 0)
+            Text(kDhikr)
+                .font(.system(size: 10, weight: .regular))
+                .foregroundColor(kGoldLt.opacity(0.9))
+                .multilineTextAlignment(.center)
+                .lineLimit(2).minimumScaleFactor(0.6)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-        .padding(14)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal, 18)
+        .padding(.vertical, 16)
     }
 
-    // — Moyen : compte à rebours + les 5 horaires —
+    // — Moyen : prochaine prière (gauche) + liste du jour (droite) —
     private var mediumView: some View {
         HStack(spacing: 14) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("آلَاء · \(entry.city)")
+            VStack(alignment: .leading, spacing: 3) {
+                Text(entry.city.isEmpty ? "آلَاء" : entry.city)
                     .font(.system(size: 11, weight: .semibold))
-                    .foregroundColor(kGold).lineLimit(1)
+                    .foregroundColor(kGold)
+                    .lineLimit(1)
                 Spacer(minLength: 0)
-                if let n = entry.next {
-                    Text(n.labelAr)
-                        .font(.system(size: 24, weight: .bold))
-                        .foregroundColor(kGoldLt)
-                    Text(n.date, style: .timer)
-                        .font(.system(size: 16, weight: .semibold))
-                        .monospacedDigit()
-                        .foregroundColor(kText)
-                }
+                Text(entry.nextAr)
+                    .font(arFont(28))
+                    .foregroundColor(kGoldLt)
+                    .lineLimit(1).minimumScaleFactor(0.6)
+                Text(entry.nextFr)
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundColor(kTextDim)
+                Text(entry.nextTime)
+                    .font(.system(size: 40, weight: .bold, design: .serif))
+                    .foregroundColor(kText)
+                    .shadow(color: kGold.opacity(0.35), radius: 8)
+                    .lineLimit(1).minimumScaleFactor(0.6)
+                Text(entry.nextDate, style: .relative)
+                    .font(.system(size: 10.8, weight: .semibold))
+                    .foregroundColor(kGold)
+                    .lineLimit(1).minimumScaleFactor(0.6)
                 Spacer(minLength: 0)
+                Text(kDhikr)
+                    .font(.system(size: 10.5, weight: .regular))
+                    .foregroundColor(kGoldLt.opacity(0.9))
+                    .lineLimit(2).minimumScaleFactor(0.7)
                 Text(entry.hijri)
-                    .font(.system(size: 10, weight: .medium))
+                    .font(.system(size: 10.5, weight: .medium))
                     .foregroundColor(kTextDim)
                     .lineLimit(1).minimumScaleFactor(0.7)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            // Colonne des 5 horaires
-            VStack(spacing: 6) {
-                ForEach(entry.prayers, id: \.key) { p in
+            // Liste des prières du jour
+            VStack(spacing: 0) {
+                ForEach(Array(entry.all.enumerated()), id: \.offset) { _, p in
+                    let isNext = (p.fr == entry.nextFr && p.time == entry.nextTime)
                     HStack {
-                        Text(p.labelAr)
-                            .font(.system(size: 12, weight: isNext(p) ? .bold : .regular))
-                            .foregroundColor(isNext(p) ? kGoldLt : kText)
-                        Spacer()
-                        Text(p.date, style: .time)
-                            .font(.system(size: 12, weight: isNext(p) ? .bold : .regular))
-                            .monospacedDigit()
-                            .foregroundColor(isNext(p) ? kGoldLt : kTextDim)
+                        Text(p.fr)
+                            .font(.system(size: 12, weight: isNext ? .bold : .medium))
+                            .foregroundColor(isNext ? kGoldLt : kTextDim)
+                        Spacer(minLength: 6)
+                        Text(p.time)
+                            .font(.system(size: 12, weight: isNext ? .bold : .medium, design: .serif))
+                            .foregroundColor(isNext ? kText : kTextDim)
                     }
+                    .padding(.vertical, 3.5)
+                    .padding(.horizontal, 8)
+                    .background(
+                        isNext
+                        ? RoundedRectangle(cornerRadius: 8).fill(kGold.opacity(0.14))
+                        : RoundedRectangle(cornerRadius: 8).fill(Color.clear)
+                    )
                 }
             }
-            .frame(width: 132)
-            .padding(.vertical, 2)
+            .frame(width: 130)
         }
-        .padding(14)
-    }
-
-    private func isNext(_ p: Prayer) -> Bool {
-        entry.next?.key == p.key && Calendar.current.isDate(entry.next!.date, inSameDayAs: p.date)
-    }
-}
-
-// Fond compatible iOS 17+ (containerBackground) et versions antérieures.
-extension View {
-    @ViewBuilder func widgetBackgroundCompat() -> some View {
-        self
-        
+        .padding(.horizontal, 18)
+        .padding(.vertical, 16)
     }
 }
 
@@ -232,8 +323,8 @@ struct ALAEWidget: Widget {
         StaticConfiguration(kind: kind, provider: AlaeProvider()) { entry in
             AlaeWidgetView(entry: entry)
         }
-        .configurationDisplayName("Horaires de prière")
-        .description("Prochaine prière, compte à rebours et date Hijri.")
+        .configurationDisplayName("Prière — آلاء")
+        .description("La prochaine prière, son heure et le compte à rebours.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
@@ -242,4 +333,3 @@ struct ALAEWidget: Widget {
 struct ALAEWidgetBundle: WidgetBundle {
     var body: some Widget { ALAEWidget() }
 }
-

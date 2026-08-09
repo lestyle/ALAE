@@ -44,9 +44,9 @@ html,body{margin:0;padding:0;background:#0B0D10;height:100%;overflow:hidden}
 @keyframes alaeShine{0%{background-position:130% 0;filter:drop-shadow(0 0 4px rgba(244,216,155,0.25))}50%{background-position:-30% 0;filter:drop-shadow(0 0 9px rgba(255,228,150,0.45))}100%{background-position:130% 0;filter:drop-shadow(0 0 4px rgba(244,216,155,0.25))}}
 @keyframes nightToastIn{from{opacity:0;transform:translate(-50%,-14px) scale(0.94)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
 </style>
-<script defer src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script defer src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script defer src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script defer src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+<script def src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+<script defer src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
 </head><body><template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0d0a06"/><circle cx="50" cy="50" r="26" fill="none" stroke="#E8B97A" stroke-width="3"/><rect x="44" y="30" width="12" height="11" rx="1.5" fill="#0A0808" stroke="#F4D89B" stroke-width="2"/><path d="M50 44 L46 60 L54 60 Z" fill="#F4D89B"/></svg></template><div id="silk-wallpaper" aria-hidden="true"></div><div id="root"></div>
 <!-- Écran de démarrage STATIQUE (HTML pur) : s'affiche tout de suite, avant que React/Babel ne soient prêts -->
 <div id="boot-splash" aria-hidden="true" style="position:fixed;inset:0;z-index:2;pointer-events:none;opacity:1;transition:opacity .6s ease">
@@ -224,7 +224,7 @@ window.I18N = {
   },
   fr: {
     appName: 'آلَاء', tagline: 'فَبِأَيِّ آلَاءِ رَبِّكُمَا تُكَذِّبَانِ',
-    onboardingTitle: ['SubḥānAllāhi wa biḥamdih, SubḥānAllāhil-ʿAẓīm', 'Lā ilāha illā anta subḥānaka innī kuntu minaẓ-ẓālimīn', 'Astaghfirullāhal-ʿAẓīm'],
+    onboardingTitle: ['Gloire à Allah et louange à Lui, gloire à Allah l’Immense.', 'Nulle divinité sauf Toi ; gloire à Toi. En vérité, j’étais du nombre des injustes.', 'Je demande pardon à Allah l’Immense.'],
     onboardingRef: ['Hadith', 'Al-Anbiyā · 87', 'Istighfār'],
     onboardingSubtitle: [
       'Un chapelet sculpté dans le calme du soir.',
@@ -2739,7 +2739,7 @@ function SettingsScreen({ lang = 'fr', setLang }) {
           <div style={{ width:5, height:5, transform:'rotate(45deg)', background:'#F4D89B', boxShadow:'0 0 5px rgba(255,225,150,0.85), 0 1px 2px rgba(0,0,0,0.6)', animation:'starSparkle 2.4s ease-in-out infinite', animationDelay:'1s' }}/>
         </div>
         <div style={{ fontFamily:'"Amiri Quran","Amiri",serif', fontSize:17, color:T.text, direction:'rtl', textAlign:'center', lineHeight:1.7, opacity:0.98, width:260, whiteSpace:'normal', wordBreak:'keep-all', boxSizing:'border-box', textShadow:'0 1px 4px rgba(0,0,0,0.6)', marginTop:10 }}>{I.tagline}</div>
-        <div style={{ fontFamily:'Inter', fontSize:9, letterSpacing:'0.3em', color:T.textDim, textTransform:'uppercase', marginTop:12 }}>v 1.0.4</div>
+        <div style={{ fontFamily:'Inter', fontSize:9, letterSpacing:'0.3em', color:T.textDim, textTransform:'uppercase', marginTop:12 }}>v 1.0.6</div>
       </div>
 
       <div className="settings-scroll" style={{ position:'absolute', top:330, left:20, right:20, bottom:24, overflowY:'auto', WebkitOverflowScrolling:'touch', zIndex:2, display:'flex', flexDirection:'column', gap:0 }}>
@@ -3961,7 +3961,7 @@ function PrayerScreen({ lang = 'ar' }) {
   // ─── Labels & i18n ──────────────────────────────────────────────────
   const PRAYERS = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
   const PRAYER_LABELS = {
-    fr: ['Fajr', 'Chourouk', 'Dhuhr', 'Asr', 'Maghrib', 'Icha'],
+    fr: ['Sobh', 'Chourouk', 'Dohr', 'Aasr', 'Magreb', 'Ichaa'],
     en: ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'],
     ar: ['الفجر', 'الشروق', 'الظهر', 'العصر', 'المغرب', 'العشاء'],
     nl: ['Fajr', 'Zonsopgang', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'],
@@ -5486,7 +5486,7 @@ function MorningCardScreen({ lang = "fr", onBack }) {
         </div>
         <div style={{ position:"relative", width:"100%", display:"flex", justifyContent:"center", alignItems:"center" }}>
           {onBack && (<button onClick={onBack} aria-label="back" style={{ position:"absolute", [isAr?"right":"left"]: 2, top:"50%", transform:"translateY(-32%)", background:"transparent", border:"none", cursor:"pointer", color:T.gold, padding:8, display:"flex", filter:"drop-shadow(0 2px 5px rgba(0,0,0,0.7))" }}><svg width="22" height="22" viewBox="0 0 16 16" fill="none"><path d={isAr ? "M6 4l6 4-6 4" : "M10 4l-6 4 6 4"} stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/></svg></button>)}
-          <div style={{ fontFamily:"\"Noto Nastaliq Urdu\",\"ArefRuqaa\",\"Amiri\",serif", fontSize:30, fontWeight:700, background:"linear-gradient(180deg,#FFF1C8 0%,#F4D89B 25%,#E8B97A 55%,#C7935B 85%,#7E5025 100%)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text", lineHeight:1.95, letterSpacing:"0.02em", direction:"rtl", filter:"drop-shadow(0 0 10px rgba(232,185,122,0.4))" }}>{isAr ? "دُعَاء صَبَاحي" : (lang === "fr" ? "Dou3a Sabahi" : "Morning du’a")}</div>
+          <div style={{ fontFamily:"\"Noto Nastaliq Urdu\",\"ArefRuqaa\",\"Amiri\",serif", fontSize:30, fontWeight:700, background:"linear-gradient(180deg,#FFF1C8 0%,#F4D89B 25%,#E8B97A 55%,#C7935B 85%,#7E5025 100%)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", backgroundClip:"text", lineHeight:1.95, letterSpacing:"0.02em", direction:"rtl", filter:"drop-shadow(0 0 10px rgba(232,185,122,0.4))" }}>{isAr ? "دُعَاء صَبَاحي" : (lang === "fr" ? "Prière matinale" : "Morning du’a")}</div>
         </div>
         <div style={{ fontFamily:"Amiri,serif", fontSize:13, color:T.textMuted, marginTop:6, opacity:0.85, textAlign:"center" }}>{isAr?"\u062F\u064F\u0639\u064E\u0627\u0621 \u0644\u0643\u0644 \u0635\u0628\u0627\u062D \u2014 \u0634\u0627\u0631\u0643\u0647\u0627 \u0645\u0639 \u0623\u062D\u0628\u0627\u0626\u0643":(lang==="fr"?"Une dou3a chaque matin \u2014 \u00E0 envoyer \u00E0 tes proches":"A morning du\u2019a each day \u2014 share it with your loved ones")}</div>
         <div style={{ display:"flex", alignItems:"center", justifyContent:"center", gap:16, margin:"18px 0 16px", direction:"ltr" }}>
@@ -5687,7 +5687,7 @@ function DuaaScreen({ lang = 'ar', randomDuaa = false, onTap }) {
   });
 
   const L = {
-    fr: { eyebrow:"DOU'A DU JOUR", sub:'Une invocation chaque jour', share:'Partager', meaning:'Sens' },
+    fr: { eyebrow:"PRIÈRE JOURNALIÈRE", sub:'Une invocation chaque jour', share:'Partager', meaning:'Sens' },
     en: { eyebrow:"TODAY'S DUAA", sub:'One invocation a day', share:'Share', meaning:'Meaning' },
     ar: { eyebrow:'دُعَاء اليَوم', sub:'دعاء جديد كل يوم', share:'مشاركة', meaning:'المعنى' },
     nl: { eyebrow:'DUA VAN DE DAG', sub:'Elke dag een smeekbede', share:'Delen', meaning:'Betekenis' },
@@ -6313,8 +6313,29 @@ window.AsmaScreen = AsmaScreen;
       const keys = Object.keys(s.daily).sort();
       if (keys.length > 60) keys.slice(0, keys.length - 60).forEach(k => delete s.daily[k]);
       saveState(s);
+      try { window.syncWidgetSibha(dhikrId); } catch (_) {}
     } catch (e) {}
   };
+  // ─── Widget : envoie le dhikr courant + compteurs au natif (App Group) ───
+  window.syncWidgetSibha = function syncWidgetSibha(dhikrId) {
+    try {
+      const s = loadState();
+      const today = dayKey();
+      const id = dhikrId || (window.DHIKRS[s.dhikrIdx || 0] || {}).id;
+      const dObj = (window.DHIKRS || []).find(x => x.id === id) || {};
+      const todayCount = (s.daily && s.daily[today] && s.daily[today].total) || 0;
+      const h = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.alae;
+      if (h) h.postMessage({
+        type: 'widgetSibha',
+        dhikrAr: dObj.ar || '',
+        dhikrTr: dObj.tr || '',
+        count: todayCount,
+        total: s.totalCount || 0,
+        goal: s.dailyGoal || 1000
+      });
+    } catch (e) {}
+  };
+  try { window.addEventListener('load', function () { setTimeout(function () { try { window.syncWidgetSibha(); } catch (_) {} }, 600); }); } catch (_) {}
   window.getHistoryStats = function getHistoryStats(lang) {
     const s = loadState();
     const daily = s.daily || {};
@@ -6460,7 +6481,7 @@ window.AsmaScreen = AsmaScreen;
     const items = [
       { id: 'compteur', label: I.tabs.counter, icon: 'circle' },
       { id: 'onboarding', label: isAr ? 'النِّيَّة' : (lang === 'fr' ? "L'intention" : lang === 'nl' ? 'Intentie' : 'Intention'), icon: 'star' },
-      { id: 'morningcard', label: isAr ? 'دُعَاء صَبَاحي' : (lang === 'fr' ? 'Dou3a Sabahi' : lang === 'nl' ? 'Ochtenddoua' : 'Morning du\'a'), icon: 'sun' },
+      { id: 'morningcard', label: isAr ? 'دُعَاء صَبَاحي' : (lang === 'fr' ? 'Prière matinale' : lang === 'nl' ? 'Ochtenddoua' : 'Morning du\'a'), icon: 'sun' },
       { id: 'prayer',   label: isAr ? 'مَوَاقِيت الصَّلَاة' : (lang === 'fr' ? 'Prières' : lang === 'nl' ? 'Gebeden' : 'Prayers'), icon: 'mosque' },
       { id: 'qibla',    label: isAr ? 'القبلة' : (lang === 'fr' ? 'Qibla' : 'Qibla'), icon: 'compass' },
       { id: 'duaa',     label: isAr ? 'دُعَاء اليوم' : (lang === 'fr' ? 'Dou\'a du jour' : lang === 'nl' ? 'Dua van de dag' : 'Daily du\'a'), icon: 'heart' },
@@ -6619,7 +6640,7 @@ window.AsmaScreen = AsmaScreen;
               paddingTop:12, borderTop:`0.5px solid ${T.hairline}`,
               fontFamily:'Inter', fontSize:9, letterSpacing:'0.3em',
               color:T.textDim, textTransform:'uppercase', textAlign: isAr ? 'right' : 'left',
-            }}>v 1.0.4 · <a href="https://www.lestyle.be" target="_blank" rel="noopener noreferrer" style={{ color:T.goldLight, textDecoration:'none', pointerEvents:'auto' }}>LESTYLE</a></div>
+            }}>v 1.0.6 · <a href="https://www.lestyle.be" target="_blank" rel="noopener noreferrer" style={{ color:T.goldLight, textDecoration:'none', pointerEvents:'auto' }}>LESTYLE</a></div>
           </div>
         </div>
       </>
@@ -6795,6 +6816,7 @@ window.AsmaScreen = AsmaScreen;
       const s = loadState();
       s.dhikrIdx = idx;
       saveState(s);
+      try { const dd = window.DHIKRS[idx]; if (dd && window.syncWidgetSibha) window.syncWidgetSibha(dd.id); } catch (_) {}
     };
 
     const toggleEyesClosed = () => {

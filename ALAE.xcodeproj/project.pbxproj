@@ -8,13 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		DC403D552FF9B59F00D408BE /* silence.caf in Resources */ = {isa = PBXBuildFile; fileRef = DC403D4D2FF9B59E00D408BE /* silence.caf */; };
+		DC4F0BB43027DE2E00E781B6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC4F0BB33027DE2E00E781B6 /* ViewController.swift */; };
 		DC61BCE42FB90CE500179D2E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC61BCE32FB90CE500179D2E /* AppDelegate.swift */; };
-		DC61BCE62FB90CE500179D2E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */; };
 		DC61BCEB2FB90CE500179D2E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC61BCE92FB90CE500179D2E /* Main.storyboard */; };
 		DC61BCF02FB90CE700179D2E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC61BCEE2FB90CE700179D2E /* LaunchScreen.storyboard */; };
 		DC760F712FD6141E00FC5D0A /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = DC760F6F2FD6141D00FC5D0A /* fonts */; };
 		DC8DC2902FE5372A002D9A13 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC8DC28F2FE5372A002D9A13 /* Media.xcassets */; };
 		DCB099CA2FF854F1009122CE /* quran-img in Resources */ = {isa = PBXBuildFile; fileRef = DCB099C92FF854ED009122CE /* quran-img */; };
+		DCF6CEB230286E6700A71E54 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCF6CEAF30286E6600A71E54 /* Assets.xcassets */; };
+		DCF6CEB330286E6700A71E54 /* ALAEWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF6CEB030286E6600A71E54 /* ALAEWidget.swift */; };
+		DCF6CEB8302907DB00A71E54 /* react.development.js in Resources */ = {isa = PBXBuildFile; fileRef = DCF6CEB5302907D900A71E54 /* react.development.js */; };
+		DCF6CEB9302907DB00A71E54 /* babel.min.js in Resources */ = {isa = PBXBuildFile; fileRef = DCF6CEB6302907DA00A71E54 /* babel.min.js */; };
+		DCF6CEBA302907DB00A71E54 /* react-dom.development.js in Resources */ = {isa = PBXBuildFile; fileRef = DCF6CEB7302907DB00A71E54 /* react-dom.development.js */; };
+		DCF6CEBD30290D6700A71E54 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */; };
+		DCF6CEBF3029127C00A71E54 /* Misbaha-Standalone.html in Resources */ = {isa = PBXBuildFile; fileRef = DCF6CEBE3029127C00A71E54 /* Misbaha-Standalone.html */; };
 		DCF94B0D3020FC0E0093910E /* adhan-younes.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B013020FC0D0093910E /* adhan-younes.mp3 */; };
 		DCF94B0E3020FC0E0093910E /* adhan-kouchi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B023020FC0E0093910E /* adhan-kouchi.mp3 */; };
 		DCF94B0F3020FC0E0093910E /* adhan-mecca-notif.caf in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B033020FC0E0093910E /* adhan-mecca-notif.caf */; };
@@ -29,10 +36,7 @@
 		DCF94B183020FC0E0093910E /* adhan-younes-notif.caf in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B0C3020FC0E0093910E /* adhan-younes-notif.caf */; };
 		DCF94B2A30212EC40093910E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF94B2930212EC40093910E /* WidgetKit.framework */; };
 		DCF94B2C30212EC40093910E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF94B2B30212EC40093910E /* SwiftUI.framework */; };
-		DCF94B3130212EC50093910E /* ALAEWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCF94B3030212EC50093910E /* ALAEWidget.swift */; };
-		DCF94B3330212ECA0093910E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B3230212ECA0093910E /* Assets.xcassets */; };
 		DCF94B3730212ECA0093910E /* ALAEWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DCF94B2730212EC40093910E /* ALAEWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		DCF94B4530227A6A0093910E /* Misbaha-Standalone.html in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B4430227A6A0093910E /* Misbaha-Standalone.html */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +65,7 @@
 
 /* Begin PBXFileReference section */
 		DC403D4D2FF9B59E00D408BE /* silence.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = silence.caf; sourceTree = "<group>"; };
+		DC4F0BB33027DE2E00E781B6 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		DC61BCE02FB90CE500179D2E /* ALAE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ALAE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC61BCE32FB90CE500179D2E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -69,6 +74,13 @@
 		DC760F6F2FD6141D00FC5D0A /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fonts; sourceTree = "<group>"; };
 		DC8DC28F2FE5372A002D9A13 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		DCB099C92FF854ED009122CE /* quran-img */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "quran-img"; sourceTree = "<group>"; };
+		DCF6CEAF30286E6600A71E54 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		DCF6CEB030286E6600A71E54 /* ALAEWidget.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALAEWidget.swift; sourceTree = "<group>"; };
+		DCF6CEB130286E6600A71E54 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DCF6CEB5302907D900A71E54 /* react.development.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = react.development.js; sourceTree = "<group>"; };
+		DCF6CEB6302907DA00A71E54 /* babel.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = babel.min.js; sourceTree = "<group>"; };
+		DCF6CEB7302907DB00A71E54 /* react-dom.development.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "react-dom.development.js"; sourceTree = "<group>"; };
+		DCF6CEBE3029127C00A71E54 /* Misbaha-Standalone.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "Misbaha-Standalone.html"; sourceTree = "<group>"; };
 		DCF94B013020FC0D0093910E /* adhan-younes.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "adhan-younes.mp3"; sourceTree = "<group>"; };
 		DCF94B023020FC0E0093910E /* adhan-kouchi.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "adhan-kouchi.mp3"; sourceTree = "<group>"; };
 		DCF94B033020FC0E0093910E /* adhan-mecca-notif.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "adhan-mecca-notif.caf"; sourceTree = "<group>"; };
@@ -84,12 +96,10 @@
 		DCF94B2730212EC40093910E /* ALAEWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ALAEWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCF94B2930212EC40093910E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		DCF94B2B30212EC40093910E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		DCF94B3030212EC50093910E /* ALAEWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALAEWidget.swift; sourceTree = "<group>"; };
 		DCF94B3230212ECA0093910E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DCF94B3430212ECA0093910E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DCF94B3C302136340093910E /* ALAE.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ALAE.entitlements; sourceTree = "<group>"; };
 		DCF94B3D302136D50093910E /* ALAEWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ALAEWidgetExtension.entitlements; sourceTree = "<group>"; };
-		DCF94B4430227A6A0093910E /* Misbaha-Standalone.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "Misbaha-Standalone.html"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,7 +146,10 @@
 		DC61BCE22FB90CE500179D2E /* ALAE */ = {
 			isa = PBXGroup;
 			children = (
-				DCF94B4430227A6A0093910E /* Misbaha-Standalone.html */,
+				DCF6CEBE3029127C00A71E54 /* Misbaha-Standalone.html */,
+				DCF6CEB6302907DA00A71E54 /* babel.min.js */,
+				DCF6CEB7302907DB00A71E54 /* react-dom.development.js */,
+				DCF6CEB5302907D900A71E54 /* react.development.js */,
 				DCF94B3C302136340093910E /* ALAE.entitlements */,
 				DCF94B073020FC0E0093910E /* adhan-hadioui-notif.caf */,
 				DCF94B0B3020FC0E0093910E /* adhan-hadioui.mp3 */,
@@ -153,12 +166,23 @@
 				DCB099C92FF854ED009122CE /* quran-img */,
 				DC403D4D2FF9B59E00D408BE /* silence.caf */,
 				DC61BCE32FB90CE500179D2E /* AppDelegate.swift */,
+				DC4F0BB33027DE2E00E781B6 /* ViewController.swift */,
 				DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */,
 				DC8DC28F2FE5372A002D9A13 /* Media.xcassets */,
 				DC61BCE92FB90CE500179D2E /* Main.storyboard */,
 				DC61BCEE2FB90CE700179D2E /* LaunchScreen.storyboard */,
 			);
 			path = ALAE;
+			sourceTree = "<group>";
+		};
+		DCF6CEAE30286E6600A71E54 /* ALAEWidget */ = {
+			isa = PBXGroup;
+			children = (
+				DCF6CEAF30286E6600A71E54 /* Assets.xcassets */,
+				DCF6CEB030286E6600A71E54 /* ALAEWidget.swift */,
+				DCF6CEB130286E6600A71E54 /* Info.plist */,
+			);
+			name = ALAEWidget;
 			sourceTree = "<group>";
 		};
 		DCF94B2830212EC40093910E /* Frameworks */ = {
@@ -173,7 +197,7 @@
 		DCF94B2D30212EC40093910E /* ALAEWidget */ = {
 			isa = PBXGroup;
 			children = (
-				DCF94B3030212EC50093910E /* ALAEWidget.swift */,
+				DCF6CEAE30286E6600A71E54 /* ALAEWidget */,
 				DCF94B3230212ECA0093910E /* Assets.xcassets */,
 				DCF94B3430212ECA0093910E /* Info.plist */,
 			);
@@ -261,16 +285,19 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DCF94B4530227A6A0093910E /* Misbaha-Standalone.html in Resources */,
 				DCF94B143020FC0E0093910E /* adhan-kzabri-notif.caf in Resources */,
 				DC403D552FF9B59F00D408BE /* silence.caf in Resources */,
 				DCF94B0F3020FC0E0093910E /* adhan-mecca-notif.caf in Resources */,
 				DCF94B0E3020FC0E0093910E /* adhan-kouchi.mp3 in Resources */,
 				DCF94B183020FC0E0093910E /* adhan-younes-notif.caf in Resources */,
 				DCF94B0D3020FC0E0093910E /* adhan-younes.mp3 in Resources */,
+				DCF6CEB8302907DB00A71E54 /* react.development.js in Resources */,
 				DC61BCF02FB90CE700179D2E /* LaunchScreen.storyboard in Resources */,
+				DCF6CEB9302907DB00A71E54 /* babel.min.js in Resources */,
+				DCF6CEBF3029127C00A71E54 /* Misbaha-Standalone.html in Resources */,
 				DCF94B153020FC0E0093910E /* adhan-karaca-notif.caf in Resources */,
 				DC8DC2902FE5372A002D9A13 /* Media.xcassets in Resources */,
+				DCF6CEBA302907DB00A71E54 /* react-dom.development.js in Resources */,
 				DCB099CA2FF854F1009122CE /* quran-img in Resources */,
 				DCF94B133020FC0E0093910E /* adhan-hadioui-notif.caf in Resources */,
 				DCF94B173020FC0E0093910E /* adhan-hadioui.mp3 in Resources */,
@@ -287,7 +314,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DCF94B3330212ECA0093910E /* Assets.xcassets in Resources */,
+				DCF6CEB230286E6700A71E54 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,8 +325,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC4F0BB43027DE2E00E781B6 /* ViewController.swift in Sources */,
 				DC61BCE42FB90CE500179D2E /* AppDelegate.swift in Sources */,
-				DC61BCE62FB90CE500179D2E /* SceneDelegate.swift in Sources */,
+				DCF6CEBD30290D6700A71E54 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -307,7 +335,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DCF94B3130212EC50093910E /* ALAEWidget.swift in Sources */,
+				DCF6CEB330286E6700A71E54 /* ALAEWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

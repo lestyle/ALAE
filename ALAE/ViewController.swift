@@ -1,14 +1,18 @@
 //
 //  ViewController.swift
-//  ALAE — v12 (avec notifications + adhan)
+//  ALAE — v13 (WebView + notifications adhan + ALIMENTATION DU WIDGET via App Group)
 //
 
 import UIKit
 import WebKit
 import UserNotifications
 import AVFoundation
+import WidgetKit
 
 class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler {
+
+    // App Group partagé avec le widget (doit être identique côté widget)
+    private let appGroupID = "group.com.alae.misbaha.ALAE.shared"
 
     var webView: WKWebView!
 
@@ -26,9 +30,7 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         webView.uiDelegate = self
         webView.scrollView.bounces = false
         webView.scrollView.isScrollEnabled = false
-        webView.allowsBackForwardNavigationGestures = false  // Désactive le swipe iOS "retour" qui sortait de l'app
-        // Plein écran edge-to-edge : empêche iOS d'ajouter un encart de safe-area
-        // (sinon barre sombre en haut/bas, le fond ne remplit pas tout l'écran).
+        webView.allowsBackForwardNavigationGestures = false
         webView.scrollView.contentInsetAdjustmentBehavior = .never
         webView.scrollView.contentInset = .zero
         webView.scrollView.verticalScrollIndicatorInsets = .zero
@@ -37,64 +39,18 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         view = webView
     }
 
-    // Overlay natif affiché pendant le chargement du HTML — disparaît en fondu dès que la page est prête
+    // Overlay natif affiché pendant le chargement du HTML
     private var splashOverlay: UIView?
 
     private func showSplash() {
         let bg = UIColor(red: 0.043, green: 0.051, blue: 0.063, alpha: 1.0)
-        let gold = UIColor(red: 0.784, green: 0.725, blue: 0.357, alpha: 1.0)
-
+        // Simple fond sombre le temps que la WebView peigne son propre écran
+        // de démarrage HTML (battement de cœur : Bismillah / Fabi ayyi âlaâi / Sadaqa Allah).
         let overlay = UIView(frame: view.bounds)
         overlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         overlay.backgroundColor = bg
-
-        // Halo doré derrière le texte
-        let halo = UIView()
-        halo.backgroundColor = UIColor(red: 0.784, green: 0.725, blue: 0.357, alpha: 0.08)
-        halo.layer.cornerRadius = 80
-        halo.translatesAutoresizingMaskIntoConstraints = false
-        overlay.addSubview(halo)
-
-        // Texte آلاء centré
-        let label = UILabel()
-        label.text = "آلاء"
-        label.textColor = gold
-        label.font = UIFont(name: "AmiriQuran", size: 56) ?? UIFont(name: "Amiri", size: 56) ?? UIFont.systemFont(ofSize: 56, weight: .thin)
-        label.textAlignment = .center
-        label.alpha = 1.0
-        label.translatesAutoresizingMaskIntoConstraints = false
-        overlay.addSubview(label)
-
-        // Ligne dorée sous le texte
-        let line = UIView()
-        line.backgroundColor = gold.withAlphaComponent(0.3)
-        line.layer.cornerRadius = 1
-        line.translatesAutoresizingMaskIntoConstraints = false
-        overlay.addSubview(line)
-
-        NSLayoutConstraint.activate([
-            halo.centerXAnchor.constraint(equalTo: overlay.centerXAnchor),
-            halo.centerYAnchor.constraint(equalTo: overlay.centerYAnchor, constant: -10),
-            halo.widthAnchor.constraint(equalToConstant: 160),
-            halo.heightAnchor.constraint(equalToConstant: 160),
-
-            label.centerXAnchor.constraint(equalTo: overlay.centerXAnchor),
-            label.centerYAnchor.constraint(equalTo: overlay.centerYAnchor, constant: -10),
-
-            line.centerXAnchor.constraint(equalTo: overlay.centerXAnchor),
-            line.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 16),
-            line.widthAnchor.constraint(equalToConstant: 48),
-            line.heightAnchor.constraint(equalToConstant: 1.5)
-        ])
-
         view.addSubview(overlay)
         splashOverlay = overlay
-
-        // Pulsation douce du halo UNIQUEMENT — label reste stable
-        UIView.animate(withDuration: 2.0, delay: 0, options: [.repeat, .autoreverse, .allowUserInteraction], animations: {
-            halo.backgroundColor = UIColor(red: 0.784, green: 0.725, blue: 0.357, alpha: 0.18)
-            halo.transform = CGAffineTransform(scaleX: 1.15, y: 1.15)
-        }, completion: nil)
     }
 
     private func hideSplash() {
@@ -113,7 +69,6 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         if let url = Bundle.main.url(forResource: "Misbaha-Standalone", withExtension: "html") {
             webView.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
         }
-        // Filet de sécurité — cache le splash après 4s max même si didFinish tarde
         DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) { [weak self] in
             self?.hideSplash()
         }
@@ -163,7 +118,6 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
                 if let s = urlString, let u = URL(string: s) { items.append(u) }
                 guard !items.isEmpty else { return }
                 let activityVC = UIActivityViewController(activityItems: items, applicationActivities: nil)
-                // iPad: ancre le popover au centre (sinon crash sur iPad)
                 if let pop = activityVC.popoverPresentationController {
                     pop.sourceView = self.webView
                     pop.sourceRect = CGRect(x: self.webView.bounds.midX,
@@ -193,7 +147,30 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         }
 
         if type == "updateNotifications" {
+            saveTimingsForWidget(body)          // ← alimente le widget (App Group)
             handleUpdateNotifications(body)
+        }
+    }
+
+    // MARK: - Widget : sauvegarde des horaires dans l'App Group + refresh
+    private func saveTimingsForWidget(_ body: [String: Any]) {
+        guard let ud = UserDefaults(suiteName: appGroupID) else { return }
+        let timings = body["timings"] as? [String: String] ?? [:]
+        let city    = body["city"] as? String ?? ""
+        let hijri   = body["hijri"] as? String ?? ""
+
+        if !timings.isEmpty {
+            // Le widget lit un dictionnaire [String:String] via dictionary(forKey:)
+            var clean: [String: String] = [:]
+            for (k, v) in timings { clean[k] = String(v.prefix(5)) }
+            ud.set(clean, forKey: "prayerTimings")
+        }
+        if !city.isEmpty  { ud.set(city,  forKey: "prayerCity") }
+        if !hijri.isEmpty { ud.set(hijri, forKey: "hijri") }
+        ud.set(Date().timeIntervalSince1970, forKey: "updatedAt")
+
+        if #available(iOS 14.0, *) {
+            WidgetCenter.shared.reloadAllTimelines()
         }
     }
 
@@ -205,12 +182,10 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         let timings    = body["timings"] as? [String: String] ?? [:]
         let city       = body["city"] as? String ?? ""
 
-        // 1) Clear all existing scheduled notifications
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
 
         if !enabled || timings.isEmpty { return }
 
-        // 2) Request permission then schedule
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
             guard granted else { return }
 
@@ -225,7 +200,7 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
 
                 for prayer in prayers {
                     guard let raw = timings[prayer.key] else { continue }
-                    let hhmm = String(raw.prefix(5))           // "05:23 (CEST)" → "05:23"
+                    let hhmm = String(raw.prefix(5))
                     let parts = hhmm.split(separator: ":").compactMap { Int($0) }
                     guard parts.count == 2 else { continue }
                     var hour = parts[0]
@@ -239,9 +214,8 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
                         ? "حان وقت صلاة \(prayer.label) — \(city)"
                         : "\(prayer.label) خلال \(minutes) دقيقة — \(city)"
 
-                    // Custom adhan sound (if reciter has audio file)
                     if reciter != "silent" {
-                        let soundName = "adhan-\(reciter).caf"  // .caf or .mp3 in bundle
+                        let soundName = "adhan-\(reciter).caf"
                         content.sound = UNNotificationSound(named: UNNotificationSoundName(soundName))
                     } else {
                         content.sound = nil
