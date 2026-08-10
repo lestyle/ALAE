@@ -37,7 +37,10 @@ private let kDhikr = "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ
 
 // Police Moshaf (naskh coranique) : fichier AmiriQuran.ttf ajouté à la target du widget.
 // Repli automatique sur la police système si absente.
-private func arFont(_ size: CGFloat) -> Font { Font.custom("AmiriQuran-Regular", size: size) }
+// Police Moshaf Médine (QPC V4 Tajweed) : fichier QPC-V4-Tajweed.ttf ajouté à la target du widget.
+// ⚠️ Vérifie le nom exact de la police dans Xcode (double-clic sur le .ttf, ou via Font Book) :
+//    si "QCF_P528" ne s'affiche pas, remplace la chaîne ci-dessous par le nom réel affiché.
+private func arFont(_ size: CGFloat) -> Font { Font.custom("QCF_P528", size: size) }
 
 struct PrayerItem { let fr: String; let ar: String; let time: String; let date: Date }
 
@@ -151,6 +154,7 @@ private struct AlaeBackground: View {
                            startPoint: .top, endPoint: .bottom)
             RadialGradient(colors: [Color.clear, Color.clear, Color.black.opacity(0.5)],
                            center: .center, startRadius: 60, endRadius: 250)
+            Color.black.opacity(0.30) // voile sombre pour la lisibilité du texte
         }
         .clipShape(ContainerRelativeShape())
     }
@@ -158,24 +162,31 @@ private struct AlaeBackground: View {
 
 // MARK: - Cadre OR fin & élégant (incrusté 3 pt → jamais tronqué par les coins)
 private struct GoldFrameView: View {
-    private let brown = Color(red: 0.30, green: 0.18, blue: 0.04)
-    private let gold  = Color(red: 1.00, green: 0.78, blue: 0.20)
-    private let light = Color(red: 1.00, green: 0.93, blue: 0.62)
-    private let glint = Color(red: 1.00, green: 1.00, blue: 1.00)
+    private let redDeep = Color(red: 0.48, green: 0.18, blue: 0.06)   // #7a2f10
+    private let redAmb  = Color(red: 0.76, green: 0.40, blue: 0.06)   // #c1650f
+    private let goldLt  = Color(red: 1.00, green: 0.91, blue: 0.66)   // #ffe9a8
+    private let glint   = Color(red: 1.00, green: 0.99, blue: 0.94)   // #fffdf0
+    private let amber   = Color(red: 0.72, green: 0.48, blue: 0.10)   // #b8791a
+    private let bronze  = Color(red: 0.48, green: 0.20, blue: 0.06)   // #7a3410
+    private let gold    = Color(red: 0.91, green: 0.63, blue: 0.13)   // #e8a020
+    private let cream   = Color(red: 1.00, green: 0.96, blue: 0.85)   // #fff6d8
     private var sheen: AngularGradient {
         AngularGradient(gradient: Gradient(stops: [
-            .init(color: brown, location: 0.00),
-            .init(color: gold,  location: 0.08),
-            .init(color: glint, location: 0.14),
-            .init(color: gold,  location: 0.20),
-            .init(color: brown, location: 0.34),
-            .init(color: light, location: 0.46),
-            .init(color: glint, location: 0.52),
-            .init(color: gold,  location: 0.60),
-            .init(color: brown, location: 0.72),
-            .init(color: light, location: 0.84),
-            .init(color: glint, location: 0.90),
-            .init(color: brown, location: 1.00)
+            .init(color: redDeep, location: 0.00),
+            .init(color: redAmb,  location: 0.06),
+            .init(color: goldLt,  location: 0.13),
+            .init(color: glint,   location: 0.18),
+            .init(color: amber,   location: 0.26),
+            .init(color: bronze,  location: 0.34),
+            .init(color: gold,    location: 0.42),
+            .init(color: cream,   location: 0.50),
+            .init(color: amber,   location: 0.58),
+            .init(color: bronze,  location: 0.66),
+            .init(color: goldLt,  location: 0.74),
+            .init(color: glint,   location: 0.80),
+            .init(color: amber,   location: 0.88),
+            .init(color: redDeep, location: 0.94),
+            .init(color: goldLt,  location: 1.00)
         ]), center: .center)
     }
     var body: some View {
@@ -184,8 +195,14 @@ private struct GoldFrameView: View {
                 .strokeBorder(Color.black.opacity(0.85), lineWidth: 8)
             ContainerRelativeShape()
                 .strokeBorder(sheen, lineWidth: 5)
+                .shadow(color: goldLt.opacity(0.4), radius: 6)
             ContainerRelativeShape()
                 .strokeBorder(glint.opacity(0.95), lineWidth: 1)
+            ContainerRelativeShape()
+                .stroke(LinearGradient(colors: [.clear, .white.opacity(0.5), .clear],
+                                       startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 5)
+                .blendMode(.overlay)
+                .opacity(0.55)
         }
     }
 }
@@ -215,7 +232,7 @@ struct AlaeWidgetView: View {
     private var smallView: some View {
         VStack(spacing: 2) {
             Text("آلَاء")
-                .font(.system(size: 11, weight: .semibold))
+                .font(.system(size: 15, weight: .semibold))
                 .foregroundColor(kGold)
             Spacer(minLength: 0)
             Text(entry.nextAr)
@@ -236,7 +253,7 @@ struct AlaeWidgetView: View {
                 .multilineTextAlignment(.center)
                 .lineLimit(1).minimumScaleFactor(0.6)
             Text(kDhikr)
-                .font(.system(size: 10, weight: .regular))
+                .font(arFont(11))
                 .foregroundColor(kGoldLt.opacity(0.9))
                 .multilineTextAlignment(.center)
                 .lineLimit(2).minimumScaleFactor(0.6)
@@ -251,7 +268,7 @@ struct AlaeWidgetView: View {
         HStack(spacing: 14) {
             VStack(alignment: .leading, spacing: 3) {
                 Text(entry.city.isEmpty ? "آلَاء" : entry.city)
-                    .font(.system(size: 11, weight: .semibold))
+                    .font(.system(size: entry.city.isEmpty ? 15 : 11, weight: .semibold))
                     .foregroundColor(kGold)
                     .lineLimit(1)
                 Spacer(minLength: 0)
@@ -272,7 +289,7 @@ struct AlaeWidgetView: View {
                     .foregroundColor(kGold)
                     .lineLimit(1).minimumScaleFactor(0.6)
                 Text(kDhikr)
-                    .font(.system(size: 10.5, weight: .regular))
+                    .font(arFont(11.5))
                     .foregroundColor(kGoldLt.opacity(0.9))
                     .lineLimit(2).minimumScaleFactor(0.7)
                 Text(entry.hijri)
@@ -284,6 +301,11 @@ struct AlaeWidgetView: View {
 
             // Liste des prières du jour
             VStack(spacing: 0) {
+                Text("مَوَاقيتُ الصَّلَاة")
+                    .font(arFont(11))
+                    .foregroundColor(kGold.opacity(0.9))
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding(.bottom, 3)
                 ForEach(Array(entry.all.enumerated()), id: \.offset) { _, p in
                     let isNext = (p.fr == entry.nextFr && p.time == entry.nextTime)
                     HStack {
@@ -332,6 +354,7 @@ struct ALAEWidget: Widget {
         .configurationDisplayName("Prière — آلاء")
         .description("La prochaine prière, son heure et le compte à rebours.")
         .supportedFamilies([.systemSmall, .systemMedium])
+        .contentMarginsDisabled()
     }
 }
 
