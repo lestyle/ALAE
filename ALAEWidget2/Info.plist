@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSExtension</key>
+	<dict>
+		<key>NSExtensionPointIdentifier</key>
+		<string>com.apple.widgetkit-extension</string>
+	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>ScheherazadeNew-Medium.ttf</string>
+		<string>Amiri-Regular.ttf</string>
+		<string>ArefRuqaa-Regular.ttf</string>
+		<string>ArefRuqaa-Bold.ttf </string>
+		<string>QPC-V4-Tajweed.ttf</string>
+		<string>ReemKufi-Medium.ttf</string>
+		<string>QCF2047.ttf</string>
+		<string>Amiri-Bold.ttf</string>
+		<string>CormorantGaramond-Medium.ttf</string>
+		<string>AmiriQuran.ttf</string>
+		<string>ScheherazadeNew-Regular.ttf</string>
+	</array>
+</dict>
+</plist>
