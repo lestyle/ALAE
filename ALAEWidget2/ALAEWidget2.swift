@@ -253,6 +253,53 @@ private struct GoldFrameView: View {
 
 // MARK: - Toile du widget : fond soie + cadre or incrusté (compile iOS 16 & 17)
 
+// MARK: - Fond pleine surface
+// .background() ne couvre que la zone de contenu : sur iOS 17+ les marges que le systeme
+// ajoute autour restent au fond blanc par defaut (bandes blanches a gauche et a droite).
+// .containerBackground remplit tout le widget, marges comprises. Repli sur .background
+// pour iOS 16 et pour une compilation avec un SDK anterieur a iOS 17.
+private extension View {
+    @ViewBuilder func alaeFullBleedBackground() -> some View {
+        #if compiler(>=5.9)
+        if #available(iOSApplicationExtension 17.0, *) {
+            self.containerBackground(for: .widget) { AlaeBackground() }
+        } else {
+            self.background(AlaeBackground())
+        }
+        #else
+        self.background(AlaeBackground())
+        #endif
+    }
+}
+
+// MARK: - Toile mise a l'echelle
+// Les offset(x:y:) des deux vues sont cales en dur sur les toiles des mockups HTML :
+// 158x158 pt pour le petit, 338x158 pt pour le moyen. Le widget reel est plus grand
+// (ou plus petit) selon le modele d'iPhone. Sans mise a l'echelle, le texte de droite
+// et du bas sort du cadre et se fait couper, et le cadre or ne suit plus les bords.
+// On dessine donc a taille fixe, puis on met l'ensemble a l'echelle pour tenir
+// exactement dans la place que le systeme accorde.
+private struct AlaeScaledCanvas<Content: View>: View {
+    let canvas: CGSize
+    let alignment: Alignment
+    let content: Content
+    init(_ canvas: CGSize, alignment: Alignment = .topLeading, @ViewBuilder content: () -> Content) {
+        self.canvas = canvas
+        self.alignment = alignment
+        self.content = content()
+    }
+    var body: some View {
+        GeometryReader { geo in
+            let s = min(geo.size.width / canvas.width, geo.size.height / canvas.height)
+            content
+                .frame(width: canvas.width, height: canvas.height, alignment: alignment)
+                .scaleEffect(s, anchor: .topLeading)
+                .offset(x: (geo.size.width  - canvas.width  * s) / 2,
+                        y: (geo.size.height - canvas.height * s) / 2)
+        }
+    }
+}
+
 // MARK: - Vues
 struct AlaeWidgetView: View {
     @Environment(\.widgetFamily) var family
@@ -262,7 +309,7 @@ struct AlaeWidgetView: View {
         content
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .overlay(GoldFrameView(scale: family == .systemSmall ? 0.45 : 0.7))
-            .background(AlaeBackground())
+            .alaeFullBleedBackground()
             .widgetURL(URL(string: "alae://prayer"))
     }
 
@@ -277,6 +324,7 @@ struct AlaeWidgetView: View {
     // Positionnement libre, calqué sur Apercu-Widget-Petit.html : chaque élément
     // a sa taille et son offset(x:y:) propres, sans arbitrage de place entre eux.
     private var smallView: some View {
+        AlaeScaledCanvas(CGSize(width: 158, height: 158), alignment: .top) {
         ZStack(alignment: .top) {
             Text("آلَاء")
                 .font(prayerNameFont(18))
@@ -322,12 +370,12 @@ struct AlaeWidgetView: View {
                 .frame(height: 32, alignment: .top)
                 .offset(x: 0, y: 145)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .padding(-16)
+        }
     }
 
     // — Moyen : prochaine prière (gauche) + liste du jour (droite) — calqué sur Apercu-Widget-ALAE.html (.medium)
     private var mediumView: some View {
+        AlaeScaledCanvas(CGSize(width: 338, height: 158), alignment: .topLeading) {
         ZStack(alignment: .topLeading) {
             Text(entry.city.isEmpty ? "آلَاء" : entry.city)
                 .font(amiriRegularFont(16))
@@ -424,8 +472,7 @@ struct AlaeWidgetView: View {
             }
             .offset(x: 237, y: 44)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding(-16)
+        }
     }
 }
 
