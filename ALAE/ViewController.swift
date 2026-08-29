@@ -12,6 +12,24 @@ import UserNotifications
 import AVFoundation
 import WidgetKit
 
+/// Delegue de notifications de l'app.
+/// Son seul role : autoriser banniere + SON + entree dans le centre de notifications
+/// meme lorsque l'app est au premier plan. Sans delegue, iOS supprime silencieusement
+/// ces notifications, donc l'adhan ne sonne pas si l'app est ouverte.
+final class AlaeNotifDelegate: NSObject, UNUserNotificationCenterDelegate {
+    static let shared = AlaeNotifDelegate()
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        if #available(iOS 14.0, *) {
+            completionHandler([.banner, .list, .sound])
+        } else {
+            completionHandler([.alert, .sound])
+        }
+    }
+}
+
 class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler {
 
     // App Group partagé avec le widget (doit être identique côté widget)
@@ -81,7 +99,11 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         DispatchQueue.main.asyncAfter(deadline: .now() + 25.0) { [weak self] in
             self?.hideSplash()
         }
-        UNUserNotificationCenter.current().delegate = (UIApplication.shared.delegate as? UNUserNotificationCenterDelegate)
+        // Delegue de notifications : sans lui, iOS SUPPRIME en silence toute
+        // notification qui arrive pendant que l'app est ouverte (ni banniere, ni son).
+        // L'ancienne ligne castait AppDelegate en UNUserNotificationCenterDelegate,
+        // ce qu'il n'est pas : le cast renvoyait nil et le delegue restait vide.
+        UNUserNotificationCenter.current().delegate = AlaeNotifDelegate.shared
     }
 
     // MARK: - WKNavigationDelegate
@@ -358,4 +380,3 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
     override var prefersStatusBarHidden: Bool { return false }
     override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
 }
-

@@ -31,17 +31,18 @@ private let kTextDim = Color(red: 0.66,  green: 0.61,  blue: 0.52)
 private let goldGradient = LinearGradient(colors: [kGoldLt, kGold, kGoldDeep], startPoint: .top, endPoint: .bottom)
 private func textShadow<V: View>(_ v: V) -> some View { v.shadow(color: .black.opacity(0.85), radius: 3, x: 0, y: 1).shadow(color: .black.opacity(0.6), radius: 6) }
 // Dégradé « soie dorée » horizontal, réservé à l'heure (comme l'animation CSS du mockup).
+// Dégradé « soie dorée » horizontal, réservé à l'heure (comme l'animation CSS du mockup).
 private let shineGradient = LinearGradient(colors: [
-    Color(red:0.42,green:0.26,blue:0.08), Color(red:0.72,green:0.50,blue:0.20),
-    Color(red:0.95,green:0.78,blue:0.48), Color(red:1.0,green:0.98,blue:0.90),
-    Color(red:1.0,green:0.93,blue:0.68), Color(red:0.85,green:0.58,blue:0.15),
-    Color(red:0.55,green:0.34,blue:0.10), Color(red:0.95,green:0.78,blue:0.48),
-    Color(red:1.0,green:0.96,blue:0.80)
+    Color(red:0.52,green:0.28,blue:0.10), Color(red:0.78,green:0.48,blue:0.18),
+    Color(red:0.96,green:0.72,blue:0.34), Color(red:1.0, green:0.90,blue:0.58),
+    Color(red:1.0, green:0.95,blue:0.72), Color(red:0.98,green:0.76,blue:0.38),
+    Color(red:0.68,green:0.38,blue:0.14), Color(red:0.94,green:0.68,blue:0.30),
+    Color(red:1.0, green:0.88,blue:0.54)
 ], startPoint: .topLeading, endPoint: .bottomTrailing)
 // Version adoucie du même dégradé — pour la liste des prières (moins de contraste).
 private let softShineGradient = LinearGradient(colors: [
-    Color(red:0.80,green:0.62,blue:0.32), Color(red:0.95,green:0.82,blue:0.56),
-    Color(red:1.0,green:0.96,blue:0.86), Color(red:0.92,green:0.76,blue:0.46),
+    Color(red:0.86,green:0.58,blue:0.26), Color(red:0.98,green:0.78,blue:0.44),
+    Color(red:1.0, green:0.93,blue:0.70), Color(red:0.96,green:0.74,blue:0.38),
     Color(red:0.98,green:0.90,blue:0.72)
 ], startPoint: .topLeading, endPoint: .bottomTrailing)
 
@@ -95,14 +96,38 @@ private func arFontMedium(_ size: CGFloat) -> Font {
 }
 // Police du nom de prière (الفجر…) : même police « Amiri Quran » que la page Horaires de l'app.
 // Fichier AmiriQuran.ttf à ajouter à la target du widget (Fonts provided by application).
+// ESSAI — Aref Ruqaa (calligraphie Ruq'ah), pour le nom de priere arabe du widget MOYEN.
+// Fichier ArefRuqaa-Bold.ttf a ajouter a la target du widget + Info.plist.
+private func arefFont(_ size: CGFloat) -> Font {
+    for name in ["ArefRuqaa-Regular", "ArefRuqaa-Bold"] {
+        if UIFont(name: name, size: size) != nil { return Font.custom(name, size: size) }
+    }
+    return arFontMedium(size)
+}
 private func prayerNameFont(_ size: CGFloat) -> Font {
-    Font.custom("Amiri-Bold", size: size)
+    for name in ["Amiri-Bold", "Amiri-Regular", "ScheherazadeNew-Medium"] {
+        if UIFont(name: name, size: size) != nil { return Font.custom(name, size: size) }
+    }
+    return .system(size: size, weight: .bold)
 }
 private func amiriRegularFont(_ size: CGFloat) -> Font {
     prayerNameFont(size)
 }
+// Nom PostScript reel du fichier AmiriQuran.ttf : « AmiriQuran-Regular ».
+private func quranFont(_ size: CGFloat) -> Font {
+    for name in ["AmiriQuran-Regular", "AmiriQuran", "ScheherazadeNew-Regular"] {
+        if UIFont(name: name, size: size) != nil { return Font.custom(name, size: size) }
+    }
+    return .system(size: size, weight: .medium)
+}
+// ATTENTION : le fichier livre sous le nom « CormorantGaramond-Medium.ttf » contient
+// en realite la graisse Light — son nom PostScript est « CormorantGaramond-Light ».
+// On essaie donc les deux noms, sinon iOS ne trouve rien et tombe sur la police systeme.
 private func serifFont(_ size: CGFloat, weight: Font.Weight = .semibold) -> Font {
-    UIFont(name: "CormorantGaramond-Medium", size: size) != nil ? Font.custom("CormorantGaramond-Medium", size: size) : .system(size: size, weight: weight, design: .serif)
+    for name in ["CormorantGaramond-Medium", "CormorantGaramond-Light", "CormorantGaramond-Regular"] {
+        if UIFont(name: name, size: size) != nil { return Font.custom(name, size: size) }
+    }
+    return .system(size: size, weight: weight, design: .serif)
 }
 
 struct PrayerItem { let fr: String; let ar: String; let time: String; let date: Date }
@@ -203,6 +228,9 @@ private struct AlaeBackground: View {
             Image("WidgetSilkDark")
                 .resizable()
                 .scaledToFill()
+            // La photo de fond accroche trop la lumiere : on la ternit legerement
+            // pour que l'or du texte reste au premier plan.
+            Color.black.opacity(0.38)
         }
         .clipShape(ContainerRelativeShape())
     }
@@ -218,40 +246,116 @@ private struct GoldFrameView: View {
     private let bronze  = Color(red: 0.48, green: 0.20, blue: 0.06)   // #7a3410
     private let gold    = Color(red: 0.91, green: 0.63, blue: 0.13)   // #e8a020
     private let cream   = Color(red: 1.00, green: 0.96, blue: 0.85)   // #fff6d8
+    // Cadre noir : noir mat de base, parcouru de quelques reflets gris brillants
+    // (meme construction angulaire que la version or, seules les couleurs changent).
+    private let inkDeep = Color(red: 0.03, green: 0.03, blue: 0.035)  // noir profond
+    private let ink     = Color(red: 0.09, green: 0.09, blue: 0.10)   // noir mat
+    private let inkLift = Color(red: 0.20, green: 0.20, blue: 0.22)   // gris ardoise
+    private let sheenLt = Color(red: 0.42, green: 0.42, blue: 0.45)   // reflet brillant
     private var sheen: AngularGradient {
         AngularGradient(gradient: Gradient(stops: [
-            .init(color: redDeep, location: 0.00),
-            .init(color: redAmb,  location: 0.06),
-            .init(color: goldLt,  location: 0.13),
-            .init(color: glint,   location: 0.18),
-            .init(color: amber,   location: 0.26),
-            .init(color: bronze,  location: 0.34),
-            .init(color: gold,    location: 0.42),
-            .init(color: cream,   location: 0.50),
-            .init(color: amber,   location: 0.58),
-            .init(color: bronze,  location: 0.66),
-            .init(color: goldLt,  location: 0.74),
-            .init(color: glint,   location: 0.80),
-            .init(color: amber,   location: 0.88),
-            .init(color: redDeep, location: 0.94),
-            .init(color: redDeep, location: 1.00)
+            .init(color: inkDeep, location: 0.00),
+            .init(color: ink,     location: 0.08),
+            .init(color: inkLift, location: 0.15),
+            .init(color: sheenLt, location: 0.19),
+            .init(color: inkLift, location: 0.25),
+            .init(color: ink,     location: 0.34),
+            .init(color: inkDeep, location: 0.44),
+            .init(color: inkLift, location: 0.50),
+            .init(color: sheenLt, location: 0.54),
+            .init(color: ink,     location: 0.64),
+            .init(color: inkLift, location: 0.74),
+            .init(color: sheenLt, location: 0.80),
+            .init(color: ink,     location: 0.88),
+            .init(color: inkDeep, location: 0.94),
+            .init(color: inkDeep, location: 1.00)
         ]), center: .center)
     }
     let scale: CGFloat
     var body: some View {
+        // Un seul tracé partagé : strokeBorder insère chaque trait vers l'intérieur de
+        // lineWidth/2. Avec des largeurs différentes, chaque trait avait donc son propre
+        // rayon de coin → le cadre paraissait décalé dans les angles. Ici les trois traits
+        // ont la MÊME largeur, donc le même centre et le même arrondi.
+        // Noir mat sur toute la longueur, avec DEUX endroits seulement ou la lumiere
+        // accroche (haut-droit et bas-gauche), comme un fil tordu qui capte un reflet.
+        let w = 3.5 * scale
+        let lit = AngularGradient(gradient: Gradient(stops: [
+            .init(color: ink,     location: 0.00),
+            .init(color: ink,     location: 0.10),
+            .init(color: inkLift, location: 0.15),
+            .init(color: sheenLt, location: 0.19),
+            .init(color: inkLift, location: 0.23),
+            .init(color: ink,     location: 0.30),
+            .init(color: ink,     location: 0.60),
+            .init(color: inkLift, location: 0.65),
+            .init(color: sheenLt, location: 0.69),
+            .init(color: inkLift, location: 0.73),
+            .init(color: ink,     location: 0.80),
+            .init(color: ink,     location: 1.00)
+        ]), center: .center)
         ZStack {
             ContainerRelativeShape()
-                .strokeBorder(Color.black.opacity(0.6), lineWidth: 3 * scale)
+                .strokeBorder(ink, lineWidth: w)
+                .shadow(color: Color.black.opacity(0.7), radius: 3 * scale)
             ContainerRelativeShape()
-                .strokeBorder(sheen, lineWidth: 2.6 * scale)
-                .shadow(color: goldLt.opacity(0.35), radius: 3 * scale)
-            ContainerRelativeShape()
-                .strokeBorder(glint.opacity(0.9), lineWidth: 0.6 * scale)
+                .strokeBorder(lit, lineWidth: w)
         }
     }
 }
 
 // MARK: - Toile du widget : fond soie + cadre or incrusté (compile iOS 16 & 17)
+
+// MARK: - Fond pleine surface
+// .background() ne couvre que la zone de contenu : sur iOS 17+ les marges que le systeme
+// ajoute autour restent au fond blanc par defaut (bandes blanches a gauche et a droite).
+// .containerBackground remplit tout le widget, marges comprises. Repli sur .background
+// pour iOS 16 et pour une compilation avec un SDK anterieur a iOS 17.
+private extension View {
+    @ViewBuilder func alaeFullBleedBackground() -> some View {
+        #if compiler(>=5.9)
+        if #available(iOSApplicationExtension 17.0, *) {
+            self.containerBackground(for: .widget) { AlaeBackground() }
+        } else {
+            self.background(AlaeBackground())
+        }
+        #else
+        self.background(AlaeBackground())
+        #endif
+    }
+}
+
+// MARK: - Toile mise a l'echelle
+// Les offset(x:y:) des deux vues sont cales en dur sur les toiles des mockups HTML :
+// 158x158 pt pour le petit, 338x158 pt pour le moyen. Le widget reel est plus grand
+// (ou plus petit) selon le modele d'iPhone. Sans mise a l'echelle, le texte de droite
+// et du bas sort du cadre et se fait couper, et le cadre or ne suit plus les bords.
+// On dessine donc a taille fixe, puis on met l'ensemble a l'echelle pour tenir
+// exactement dans la place que le systeme accorde.
+private struct AlaeScaledCanvas<Content: View>: View {
+    let canvas: CGSize
+    let alignment: Alignment
+    let margin: CGFloat
+    let content: Content
+    init(_ canvas: CGSize, alignment: Alignment = .topLeading, margin: CGFloat = 10, @ViewBuilder content: () -> Content) {
+        self.canvas = canvas
+        self.alignment = alignment
+        self.margin = margin
+        self.content = content()
+    }
+    var body: some View {
+        GeometryReader { geo in
+            let avail = CGSize(width: max(1, geo.size.width - margin * 2),
+                               height: max(1, geo.size.height - margin * 2))
+            let s = min(avail.width / canvas.width, avail.height / canvas.height)
+            content
+                .frame(width: canvas.width, height: canvas.height, alignment: alignment)
+                .scaleEffect(s, anchor: .topLeading)
+                .offset(x: (geo.size.width  - canvas.width  * s) / 2,
+                        y: (geo.size.height - canvas.height * s) / 2)
+        }
+    }
+}
 
 // MARK: - Vues
 struct AlaeWidgetView: View {
@@ -262,7 +366,7 @@ struct AlaeWidgetView: View {
         content
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .overlay(GoldFrameView(scale: family == .systemSmall ? 0.45 : 0.7))
-            .background(AlaeBackground())
+            .alaeFullBleedBackground()
             .widgetURL(URL(string: "alae://prayer"))
     }
 
@@ -277,57 +381,63 @@ struct AlaeWidgetView: View {
     // Positionnement libre, calqué sur Apercu-Widget-Petit.html : chaque élément
     // a sa taille et son offset(x:y:) propres, sans arbitrage de place entre eux.
     private var smallView: some View {
+// 158 x 169 : le dernier dhikr est pose a y=137 et mesure 32 pt, donc le contenu
+// descend jusqu'a 169 et non 158. Declarer 158 faisait deborder le texte hors du
+// cadre or. La marge de 12 pt tient le contenu a l'interieur du lisere.
+        AlaeScaledCanvas(CGSize(width: 180, height: 180), alignment: .top, margin: 12) {
         ZStack(alignment: .top) {
             Text("آلَاء")
-                .font(prayerNameFont(18))
+                .font(prayerNameFont(26))
                 .foregroundStyle(shineGradient)
                 .shadow(color: .black.opacity(0.8), radius: 3, y: 1)
-                .frame(height: 18, alignment: .top)
-                .offset(x: 0, y: 25)
+                .frame(height: 30, alignment: .center)
+                .offset(x: 0, y: 2)
             Text(entry.nextAr)
-                .font(amiriRegularFont(50))
+                .font(arefFont(32))
                 .foregroundStyle(shineGradient)
                 .shadow(color: .black.opacity(0.8), radius: 3, y: 1)
                 .lineLimit(1).minimumScaleFactor(0.5)
-                .frame(height: 50, alignment: .top)
-                .offset(x: 0, y: 43)
+                .frame(height: 34, alignment: .center)
+                .offset(x: 0, y: 40)
             Text(entry.nextTime)
-                .font(serifFont(54))
+                .font(serifFont(55))
                 .foregroundStyle(shineGradient)
                 .shadow(color: .black.opacity(0.85), radius: 4, y: 1)
                 .lineLimit(1).minimumScaleFactor(0.4)
-                .frame(height: 54, alignment: .top)
-                .offset(x: 0, y: 64)
+                .frame(height: 55, alignment: .center)
+                .offset(x: 0, y: 62)
             Text(countdownString(entry.nextDate))
-                .font(serifFont(15))
+                .font(serifFont(14))
                 .foregroundStyle(kGold)
                 .shadow(color: .black.opacity(0.8), radius: 2, y: 1)
                 .lineLimit(1)
-                .frame(height: 15, alignment: .top)
-                .offset(x: 0, y: 112)
+                .frame(height: 14, alignment: .center)
+                .offset(x: 0, y: 122)
             Text(kDhikr1)
-                .font(arFont(33))
+                .font(arFont(16))
                 .foregroundStyle(softShineGradient)
                 .shadow(color: .black.opacity(0.8), radius: 3, y: 1)
                 .shadow(color: kGold.opacity(0.6), radius: 2)
                 .lineLimit(1).minimumScaleFactor(0.5)
-                .frame(height: 33, alignment: .top)
-                .offset(x: 0, y: 124)
+                .frame(height: 16, alignment: .center)
+                .offset(x: 0, y: 141)
             Text(kDhikr2)
-                .font(arFont(32))
+                .font(arFont(16))
                 .foregroundStyle(softShineGradient)
                 .shadow(color: .black.opacity(0.8), radius: 3, y: 1)
                 .shadow(color: kGold.opacity(0.6), radius: 2)
                 .lineLimit(1).minimumScaleFactor(0.5)
-                .frame(height: 32, alignment: .top)
-                .offset(x: 0, y: 139)
+                .frame(height: 16, alignment: .center)
+                .offset(x: 0, y: 163)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .padding(-16)
+        }
     }
 
     // — Moyen : prochaine prière (gauche) + liste du jour (droite) — calqué sur Apercu-Widget-ALAE.html (.medium)
     private var mediumView: some View {
+// 338 x 172 : la date hijri (y=155, h=15) et le compteur de dhikr (y=157) descendent
+// sous les 158 pt declares, comme la liste des six prieres. Meme cause, meme correction.
+        AlaeScaledCanvas(CGSize(width: 419, height: 180), alignment: .topLeading, margin: 12) {
         ZStack(alignment: .topLeading) {
             Text(entry.city.isEmpty ? "آلَاء" : entry.city)
                 .font(amiriRegularFont(16))
@@ -335,49 +445,50 @@ struct AlaeWidgetView: View {
                 .shadow(color: .black.opacity(0.8), radius: 2, y: 1)
                 .lineLimit(1)
                 .frame(height: 16, alignment: .top)
-                .offset(x: 30, y: 29)
+                .offset(x: 6, y: 4)
             Text(entry.nextAr)
-                .font(arFontMedium(39))
+                .font(arefFont(29))
                 .foregroundStyle(shineGradient)
                 .shadow(color: .black.opacity(0.8), radius: 3, y: 1)
                 .lineLimit(1).minimumScaleFactor(0.6)
-                .frame(height: 39, alignment: .top)
-                .offset(x: 28, y: 40)
+                .frame(width: 62, height: 34, alignment: .center)
+                .offset(x: 6, y: 32)
             Text(entry.nextFr)
-                .font(serifFont(11, weight: .medium))
+                .font(serifFont(14, weight: .medium))
                 .foregroundStyle(goldGradient)
                 .shadow(color: .black.opacity(0.8), radius: 2, y: 1)
                 .lineLimit(1)
-                .frame(height: 11, alignment: .top)
-                .offset(x: 31, y: 76)
+                .frame(height: 14, alignment: .top)
+                .offset(x: 6, y: 66)
             Text(entry.nextTime)
-                .font(serifFont(54))
+                .font(serifFont(46))
                 .foregroundStyle(softShineGradient)
                 .shadow(color: .black.opacity(0.85), radius: 4, y: 1)
                 .lineLimit(1).minimumScaleFactor(0.6)
-                .frame(height: 54, alignment: .top)
-                .offset(x: 29, y: 66)
+                .frame(height: 46, alignment: .top)
+                .offset(x: 6, y: 80)
             Text(countdownString(entry.nextDate))
                 .font(serifFont(14, weight: .medium))
                 .foregroundStyle(goldGradient)
                 .shadow(color: .black.opacity(0.8), radius: 2, y: 1)
                 .lineLimit(1).minimumScaleFactor(0.6)
                 .frame(height: 14, alignment: .top)
-                .offset(x: 29, y: 118)
+                .offset(x: 6, y: 126)
             Text(kDhikr1 + " " + kDhikr2)
-                .font(serifFont(16))
+                .font(arFont(16))
                 .foregroundStyle(shineGradient)
                 .shadow(color: .black.opacity(0.8), radius: 3, y: 1)
                 .lineLimit(1).minimumScaleFactor(0.7)
-                .frame(height: 16, alignment: .top)
-                .offset(x: 28, y: 134)
+                .frame(width: 260, height: 24, alignment: .leading)
+                .offset(x: 6, y: 140)
             Text(entry.hijri)
                 .font(arFont(15))
                 .foregroundStyle(softShineGradient)
                 .shadow(color: .black.opacity(0.8), radius: 2, y: 1)
                 .lineLimit(1).minimumScaleFactor(0.6)
+                .environment(\.layoutDirection, .rightToLeft)
                 .frame(height: 15, alignment: .top)
-                .offset(x: 28, y: 149)
+                .offset(x: 6, y: 164)
             HStack(spacing: 1.5) {
                 Circle().fill(kGoldLt).frame(width: 3, height: 3)
                 Circle().fill(kGoldLt).frame(width: 4.5, height: 4.5)
@@ -387,14 +498,14 @@ struct AlaeWidgetView: View {
                     .foregroundStyle(goldGradient)
             }
             .shadow(color: .black.opacity(0.6), radius: 1.5, y: 1)
-            .offset(x: 170, y: 151)
+            .offset(x: 200, y: 164)
             Text("مَوَاقيتُ الصَّلَاة")
-                .font(arFont(12))
+                .font(arFont(16))
                 .foregroundStyle(softShineGradient)
                 .lineLimit(1)
-                .frame(width: 121, height: 12, alignment: .trailing)
-                .offset(x: 223, y: 29)
-            VStack(spacing: -2) {
+                .frame(width: 138, height: 16, alignment: .trailing)
+                .offset(x: 275, y: 6)
+            VStack(spacing: 2) {
                 ForEach(Array(entry.all.enumerated()), id: \.offset) { _, p in
                     let isNext = (p.fr == entry.nextFr && p.time == entry.nextTime)
                     HStack(spacing: 6) {
@@ -402,18 +513,18 @@ struct AlaeWidgetView: View {
                             .fill(isNext ? AnyShapeStyle(goldGradient) : AnyShapeStyle(kGold))
                             .frame(width: 5, height: 5)
                         Text(p.fr)
-                            .font(serifFont(17, weight: isNext ? .bold : .medium))
+                            .font(serifFont(17, weight: .medium))
                             .foregroundStyle(softShineGradient)
-                            .lineLimit(1).minimumScaleFactor(0.75)
+                            .lineLimit(1).minimumScaleFactor(0.55)
                         Spacer(minLength: 2)
                         Text(p.time)
-                            .font(serifFont(17, weight: isNext ? .bold : .medium))
+                            .font(serifFont(17, weight: .medium))
                             .monospacedDigit()
                             .foregroundStyle(softShineGradient)
                             .lineLimit(1)
-                            .frame(width: 50, alignment: .trailing)
+                            .frame(width: 46, alignment: .trailing)
                     }
-                    .frame(width: 121, alignment: .leading)
+                    .frame(width: 138, alignment: .leading)
                     .padding(.vertical, 0)
                     .background(
                         isNext
@@ -422,10 +533,9 @@ struct AlaeWidgetView: View {
                     )
                 }
             }
-            .offset(x: 223, y: 44)
+            .offset(x: 275, y: 42)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .padding(-16)
+        }
     }
 }
 
@@ -451,7 +561,38 @@ struct ALAEWidget: Widget {
     }
 }
 
+// Meme widget, marges systeme desactivees : le cadre or se cale alors exactement
+// sur le bord et l'arrondi que iOS donne au widget, au lieu d'etre en retrait
+// d'une douzaine de points. contentMarginsDisabled n'existe qu'a partir d'iOS 17,
+// d'ou les deux structures : WidgetBundleBuilder choisit la bonne au demarrage.
+#if compiler(>=5.9)
+@available(iOSApplicationExtension 17.0, *)
+struct ALAEWidgetFlush: Widget {
+    let kind = "ALAEWidget"
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: kind, provider: AlaeProvider()) { entry in
+            AlaeWidgetView(entry: entry)
+        }
+        .configurationDisplayName("Prière — آلاء")
+        .description("La prochaine prière, son heure et le compte à rebours.")
+        .supportedFamilies([.systemSmall, .systemMedium])
+        .contentMarginsDisabled()
+    }
+}
+#endif
+
 @main
 struct ALAEWidgetBundle: WidgetBundle {
-    var body: some Widget { ALAEWidget() }
+    @WidgetBundleBuilder
+    var body: some Widget {
+        #if compiler(>=5.9)
+        if #available(iOSApplicationExtension 17.0, *) {
+            ALAEWidgetFlush()
+        } else {
+            ALAEWidget()
+        }
+        #else
+        ALAEWidget()
+        #endif
+    }
 }

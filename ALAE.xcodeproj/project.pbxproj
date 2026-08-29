@@ -34,6 +34,8 @@
 		DCAD7F53302BE2ED00069F6E /* ALAEWidget2Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DCAD7F46302BE2E900069F6E /* ALAEWidget2Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		DCAEDD37303239AA002284C8 /* Amiri-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DCAEDD36303239AA002284C8 /* Amiri-Bold.ttf */; };
 		DCB099CA2FF854F1009122CE /* quran-img in Resources */ = {isa = PBXBuildFile; fileRef = DCB099C92FF854ED009122CE /* quran-img */; };
+		DCC879EC3040F24A00BAC940 /* ScheherazadeNew-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DCAD7F63302D0B3900069F6E /* ScheherazadeNew-Medium.ttf */; };
+		DCED4B1130439F330034C4C0 /* AmiriQuran.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DCAD7F5A302CF89000069F6E /* AmiriQuran.ttf */; };
 		DCF6CEB8302907DB00A71E54 /* react.development.js in Resources */ = {isa = PBXBuildFile; fileRef = DCF6CEB5302907D900A71E54 /* react.development.js */; };
 		DCF6CEB9302907DB00A71E54 /* babel.min.js in Resources */ = {isa = PBXBuildFile; fileRef = DCF6CEB6302907DA00A71E54 /* babel.min.js */; };
 		DCF6CEBD30290D6700A71E54 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */; };
@@ -354,6 +356,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCED4B1130439F330034C4C0 /* AmiriQuran.ttf in Resources */,
+				DCC879EC3040F24A00BAC940 /* ScheherazadeNew-Medium.ttf in Resources */,
 				DC6622E23033A0B100C01655 /* CormorantGaramond-VariableFont_wght.ttf in Resources */,
 				DC6622DF30338E9E00C01655 /* ArefRuqaa-Regular.ttf in Resources */,
 				DC6622DD303388EC00C01655 /* Amiri-Regular.ttf in Resources */,

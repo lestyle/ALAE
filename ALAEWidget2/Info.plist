@@ -9,15 +9,15 @@
 	</dict>
 	<key>UIAppFonts</key>
 	<array>
+		<string>ArefRuqaa-Bold.ttf</string>
+		<string>ArefRuqaa-Regular.ttf</string>
+		<string>CormorantGaramond-Medium.ttf</string>
 		<string>ScheherazadeNew-Medium.ttf</string>
 		<string>Amiri-Regular.ttf</string>
-		<string>ArefRuqaa-Regular.ttf</string>
-		<string>ArefRuqaa-Bold.ttf </string>
 		<string>QPC-V4-Tajweed.ttf</string>
 		<string>ReemKufi-Medium.ttf</string>
 		<string>QCF2047.ttf</string>
 		<string>Amiri-Bold.ttf</string>
-		<string>CormorantGaramond-Medium.ttf</string>
 		<string>AmiriQuran.ttf</string>
 		<string>ScheherazadeNew-Regular.ttf</string>
 	</array>
