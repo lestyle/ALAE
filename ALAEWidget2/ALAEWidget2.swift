@@ -384,7 +384,7 @@ struct AlaeWidgetView: View {
 // 158 x 169 : le dernier dhikr est pose a y=137 et mesure 32 pt, donc le contenu
 // descend jusqu'a 169 et non 158. Declarer 158 faisait deborder le texte hors du
 // cadre or. La marge de 12 pt tient le contenu a l'interieur du lisere.
-        AlaeScaledCanvas(CGSize(width: 158, height: 180), alignment: .top, margin: 12) {
+        AlaeScaledCanvas(CGSize(width: 180, height: 180), alignment: .top, margin: 12) {
         ZStack(alignment: .top) {
             Text("آلَاء")
                 .font(prayerNameFont(26))
@@ -397,22 +397,22 @@ struct AlaeWidgetView: View {
                 .foregroundStyle(shineGradient)
                 .shadow(color: .black.opacity(0.8), radius: 3, y: 1)
                 .lineLimit(1).minimumScaleFactor(0.5)
-                .frame(height: 42, alignment: .center)
-                .offset(x: 0, y: 42)
+                .frame(height: 34, alignment: .center)
+                .offset(x: 0, y: 40)
             Text(entry.nextTime)
-                .font(serifFont(50))
+                .font(serifFont(55))
                 .foregroundStyle(shineGradient)
                 .shadow(color: .black.opacity(0.85), radius: 4, y: 1)
                 .lineLimit(1).minimumScaleFactor(0.4)
-                .frame(height: 50, alignment: .center)
-                .offset(x: 0, y: 66)
+                .frame(height: 55, alignment: .center)
+                .offset(x: 0, y: 62)
             Text(countdownString(entry.nextDate))
-                .font(serifFont(15))
+                .font(serifFont(14))
                 .foregroundStyle(kGold)
                 .shadow(color: .black.opacity(0.8), radius: 2, y: 1)
                 .lineLimit(1)
-                .frame(height: 15, alignment: .center)
-                .offset(x: 0, y: 120)
+                .frame(height: 14, alignment: .center)
+                .offset(x: 0, y: 122)
             Text(kDhikr1)
                 .font(arFont(16))
                 .foregroundStyle(softShineGradient)
@@ -420,7 +420,7 @@ struct AlaeWidgetView: View {
                 .shadow(color: kGold.opacity(0.6), radius: 2)
                 .lineLimit(1).minimumScaleFactor(0.5)
                 .frame(height: 16, alignment: .center)
-                .offset(x: 0, y: 143)
+                .offset(x: 0, y: 141)
             Text(kDhikr2)
                 .font(arFont(16))
                 .foregroundStyle(softShineGradient)
@@ -428,7 +428,7 @@ struct AlaeWidgetView: View {
                 .shadow(color: kGold.opacity(0.6), radius: 2)
                 .lineLimit(1).minimumScaleFactor(0.5)
                 .frame(height: 16, alignment: .center)
-                .offset(x: 0, y: 161)
+                .offset(x: 0, y: 163)
         }
         }
     }
@@ -451,36 +451,36 @@ struct AlaeWidgetView: View {
                 .foregroundStyle(shineGradient)
                 .shadow(color: .black.opacity(0.8), radius: 3, y: 1)
                 .lineLimit(1).minimumScaleFactor(0.6)
-                .frame(width: 62, height: 40, alignment: .center)
-                .offset(x: 6, y: 23)
+                .frame(width: 62, height: 34, alignment: .center)
+                .offset(x: 6, y: 32)
             Text(entry.nextFr)
-                .font(serifFont(15, weight: .medium))
+                .font(serifFont(14, weight: .medium))
                 .foregroundStyle(goldGradient)
                 .shadow(color: .black.opacity(0.8), radius: 2, y: 1)
                 .lineLimit(1)
-                .frame(height: 15, alignment: .top)
-                .offset(x: 6, y: 60)
+                .frame(height: 14, alignment: .top)
+                .offset(x: 6, y: 66)
             Text(entry.nextTime)
-                .font(serifFont(50))
+                .font(serifFont(46))
                 .foregroundStyle(softShineGradient)
                 .shadow(color: .black.opacity(0.85), radius: 4, y: 1)
                 .lineLimit(1).minimumScaleFactor(0.6)
-                .frame(height: 58, alignment: .top)
-                .offset(x: 6, y: 60)
+                .frame(height: 46, alignment: .top)
+                .offset(x: 6, y: 80)
             Text(countdownString(entry.nextDate))
-                .font(serifFont(15, weight: .medium))
+                .font(serifFont(14, weight: .medium))
                 .foregroundStyle(goldGradient)
                 .shadow(color: .black.opacity(0.8), radius: 2, y: 1)
                 .lineLimit(1).minimumScaleFactor(0.6)
-                .frame(height: 15, alignment: .top)
-                .offset(x: 6, y: 120)
+                .frame(height: 14, alignment: .top)
+                .offset(x: 6, y: 126)
             Text(kDhikr1 + " " + kDhikr2)
                 .font(arFont(16))
                 .foregroundStyle(shineGradient)
                 .shadow(color: .black.opacity(0.8), radius: 3, y: 1)
                 .lineLimit(1).minimumScaleFactor(0.7)
-                .frame(width: 260, height: 26, alignment: .leading)
-                .offset(x: 6, y: 135)
+                .frame(width: 260, height: 24, alignment: .leading)
+                .offset(x: 6, y: 140)
             Text(entry.hijri)
                 .font(arFont(15))
                 .foregroundStyle(softShineGradient)
@@ -583,16 +583,10 @@ struct ALAEWidgetFlush: Widget {
 
 @main
 struct ALAEWidgetBundle: WidgetBundle {
-    @WidgetBundleBuilder
+    // WidgetBundleBuilder n'accepte pas `if #available` (pas de buildEither) :
+    // un seul widget ici. ALAEWidget applique les marges systeme, ce qui
+    // correspond exactement au calage valide (146 pt disponibles, echelle 0,811).
     var body: some Widget {
-        #if compiler(>=5.9)
-        if #available(iOSApplicationExtension 17.0, *) {
-            ALAEWidgetFlush()
-        } else {
-            ALAEWidget()
-        }
-        #else
         ALAEWidget()
-        #endif
     }
 }
