@@ -549,6 +549,11 @@ private struct WidgetBGModifier: ViewModifier {
 }
 
 // MARK: - Widget
+// Deux structures pour un seul widget rendu : contentMarginsDisabled() n'existe
+// qu'a partir d'iOS 17, et le calage valide en depend (sans lui la place tombe
+// de 146 a 114 pt et AlaeScaledCanvas reduit tout a 0,63 au lieu de 0,81, cadre
+// compris). WidgetBundleBuilder refusant `if #available`, la selection se fait
+// par @available sur le bundle lui-meme, pas dans son corps.
 struct ALAEWidget: Widget {
     let kind = "ALAEWidget"
     var body: some WidgetConfiguration {
@@ -561,11 +566,6 @@ struct ALAEWidget: Widget {
     }
 }
 
-// Meme widget, marges systeme desactivees : le cadre or se cale alors exactement
-// sur le bord et l'arrondi que iOS donne au widget, au lieu d'etre en retrait
-// d'une douzaine de points. contentMarginsDisabled n'existe qu'a partir d'iOS 17,
-// d'ou les deux structures : WidgetBundleBuilder choisit la bonne au demarrage.
-#if compiler(>=5.9)
 @available(iOSApplicationExtension 17.0, *)
 struct ALAEWidgetFlush: Widget {
     let kind = "ALAEWidget"
@@ -579,14 +579,30 @@ struct ALAEWidgetFlush: Widget {
         .contentMarginsDisabled()
     }
 }
-#endif
 
-@main
-struct ALAEWidgetBundle: WidgetBundle {
-    // WidgetBundleBuilder n'accepte pas `if #available` (pas de buildEither) :
-    // un seul widget ici. ALAEWidget applique les marges systeme, ce qui
-    // correspond exactement au calage valide (146 pt disponibles, echelle 0,811).
+@available(iOSApplicationExtension 17.0, *)
+struct ALAEWidgetBundleModern: WidgetBundle {
+    var body: some Widget {
+        ALAEWidgetFlush()
+    }
+}
+
+struct ALAEWidgetBundleLegacy: WidgetBundle {
     var body: some Widget {
         ALAEWidget()
+    }
+}
+
+// Point d'entree : une fonction main() classique, pas @main sur un WidgetBundle.
+// C'est le seul endroit ou `if #available` est legal, puisqu'on est dans du code
+// imperatif et non dans un result builder.
+@main
+struct ALAEWidgetEntryPoint {
+    static func main() {
+        if #available(iOSApplicationExtension 17.0, *) {
+            ALAEWidgetBundleModern.main()
+        } else {
+            ALAEWidgetBundleLegacy.main()
+        }
     }
 }

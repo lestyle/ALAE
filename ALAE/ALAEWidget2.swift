@@ -549,25 +549,14 @@ private struct WidgetBGModifier: ViewModifier {
 }
 
 // MARK: - Widget
+// contentMarginsDisabled() : le cadre se cale sur le bord et l'arrondi que iOS
+// donne au widget, au lieu d'etre en retrait d'une douzaine de points. C'est
+// l'hypothese du calage valide : sans lui, la place tombe de 146 a 114 pt et
+// AlaeScaledCanvas reduit tout a 0,63 au lieu de 0,81.
+// Cet appel exige iOS 17 : la target ALAEWidget2Extension doit avoir
+// "Minimum Deployments = iOS 17.0". Pas de branche `if #available` possible,
+// WidgetBundleBuilder ne l'accepte pas (pas de buildEither).
 struct ALAEWidget: Widget {
-    let kind = "ALAEWidget"
-    var body: some WidgetConfiguration {
-        StaticConfiguration(kind: kind, provider: AlaeProvider()) { entry in
-            AlaeWidgetView(entry: entry)
-        }
-        .configurationDisplayName("Prière — آلاء")
-        .description("La prochaine prière, son heure et le compte à rebours.")
-        .supportedFamilies([.systemSmall, .systemMedium])
-    }
-}
-
-// Meme widget, marges systeme desactivees : le cadre or se cale alors exactement
-// sur le bord et l'arrondi que iOS donne au widget, au lieu d'etre en retrait
-// d'une douzaine de points. contentMarginsDisabled n'existe qu'a partir d'iOS 17,
-// d'ou les deux structures : WidgetBundleBuilder choisit la bonne au demarrage.
-#if compiler(>=5.9)
-@available(iOSApplicationExtension 17.0, *)
-struct ALAEWidgetFlush: Widget {
     let kind = "ALAEWidget"
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: AlaeProvider()) { entry in
@@ -579,20 +568,10 @@ struct ALAEWidgetFlush: Widget {
         .contentMarginsDisabled()
     }
 }
-#endif
 
 @main
 struct ALAEWidgetBundle: WidgetBundle {
-    @WidgetBundleBuilder
     var body: some Widget {
-        #if compiler(>=5.9)
-        if #available(iOSApplicationExtension 17.0, *) {
-            ALAEWidgetFlush()
-        } else {
-            ALAEWidget()
-        }
-        #else
         ALAEWidget()
-        #endif
     }
 }
