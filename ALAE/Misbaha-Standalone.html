@@ -1516,10 +1516,10 @@ function Onboarding({ step = 0, lang = 'fr', onContinue, onSkip, onSettings, onM
           `}</style>
           {count > 0 && (
             <span key={'cglow'+count} style={{
-              position:'absolute', top:'50%', left:'50%', width:210, height:210, borderRadius:'50%',
-              transform:'translate(-50%,-50%)', pointerEvents:'none', zIndex:0,
+              position:'absolute', top:58, left:'50%', width:210, height:210, borderRadius:'50%',
+              transform:'translate(-50%,-50%)', pointerEvents:'none', zIndex:0, opacity:0,
               background:'radial-gradient(circle, rgba(216,151,63,0.55) 0%, rgba(201,124,46,0.26) 38%, rgba(201,124,46,0) 70%)',
-              animation:'ctaCopperGlow 0.7s ease-out',
+              animation:'ctaCopperGlow 0.7s ease-out forwards',
             }}/>
           )}
           <button
@@ -2201,8 +2201,7 @@ function Chapelet({ count, target, y, style }) {
           x={SILK_OFFSET_X} y={0}
           width={SILK_W} height={SILK_H}>
           <image href={silkSrc} x="0" y="0" width={SILK_W} height={SILK_H}
-            preserveAspectRatio="none"
-            style={{ filter: 'brightness(0.92) saturate(1.08) contrast(1.05)' }} />
+            preserveAspectRatio="none" />
         </pattern>
         {/* Gold rim radial — ring of light around the silk window */}
         <radialGradient id={goldRimId} cx="0.5" cy="0.5" r="0.5">
@@ -5830,13 +5829,31 @@ function MorningCardScreen({ lang = "fr", onBack }) {
     try {
       let blob = null;
       try { blob = await window.alaeComposeMorning(card.src); } catch (e) {}
-      if (!blob) { const resp = await fetch(card.src); blob = await resp.blob(); }
-      if (blob && navigator.canShare) {
-        const file = new File([blob], "sabah-alae.jpg", { type: "image/jpeg" });
-        if (navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text }); tt(okMsg); return; }
+      if (!blob) { try { const resp = await fetch(card.src); blob = await resp.blob(); } catch (e) {} }
+      // navigator.share doit rester dans son propre try : sur iOS il echoue des que
+      // la composition de l'image a fait expirer le geste utilisateur, et l'exception
+      // emportait tout le reste — le partage natif ci-dessous n'etait jamais atteint.
+      // 1) iOS natif : la Web Share API fichiers n'existe pas dans une WKWebView,
+      //    l'image part donc par le pont Swift en base64 (type 'shareImage').
+      const pont = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.alae;
+      if (pont && blob) {
+        const dataURL = await new Promise((res) => {
+          const fr = new FileReader();
+          fr.onload = () => res(fr.result);
+          fr.onerror = () => res(null);
+          fr.readAsDataURL(blob);
+        });
+        if (dataURL) { pont.postMessage({ type: "shareImage", text, image: dataURL }); return; }
       }
-      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.alae) { window.webkit.messageHandlers.alae.postMessage({ type:"share", text, url:"https://www.lestyle.be/alaeApp" }); return; }
-      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "sabah-alae.jpg"; a.click(); tt(dlMsg);
+      if (blob && navigator.canShare) {
+        try {
+          const file = new File([blob], "sabah-alae.jpg", { type: "image/jpeg" });
+          if (navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text }); tt(okMsg); return; }
+        } catch (e) { if (e && e.name === "AbortError") return; }
+      }
+      if (pont) { pont.postMessage({ type:"share", text, url:"https://www.lestyle.be/alaeApp" }); return; }
+      if (navigator.share) { try { await navigator.share({ text }); tt(okMsg); return; } catch (e) { if (e && e.name === "AbortError") return; } }
+      if (blob) { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "sabah-alae.jpg"; a.click(); tt(dlMsg); }
     } catch (e) { if (e && e.name === "AbortError") return; }
   };
   const names = { "0": (isAr?"\u0627\u0644\u064A\u0648\u0645":(lang==="fr"?"Aujourd\u2019hui":"Today")), "1": (isAr?"\u063A\u062F\u064B\u0627":(lang==="fr"?"Demain":"Tomorrow")), "-1": (isAr?"\u0623\u0645\u0633":(lang==="fr"?"Hier":"Yesterday")) };

@@ -11,6 +11,46 @@ import WebKit
 import UserNotifications
 import AVFoundation
 import WidgetKit
+import BackgroundTasks
+
+/// Lecture de l'adhan COMPLET.
+///
+/// iOS plafonne le son d'une notification a 30 s : impossible d'y faire tenir
+/// l'adhan entier. Quand l'utilisateur touche la banniere, l'app s'ouvre et
+/// c'est ici qu'on joue le fichier complet (`adhan-<reciter>.mp3`, celui qui sert
+/// deja a l'ecoute dans les Reglages — a ne pas confondre avec `-notif.caf`, la
+/// version courte reservee a la notification).
+final class AlaeAdhanPlayer: NSObject {
+    static let shared = AlaeAdhanPlayer()
+    private var lecteur: AVAudioPlayer?
+
+    func jouerComplet(reciter: String) {
+        guard reciter != "silent" else { return }
+        let candidats = ["mp3", "m4a", "caf", "aac", "wav"]
+        var url: URL?
+        for ext in candidats {
+            if let u = Bundle.main.url(forResource: "adhan-\(reciter)", withExtension: ext) { url = u; break }
+        }
+        // Repli : la version courte, mieux que le silence
+        if url == nil { url = Bundle.main.url(forResource: "adhan-\(reciter)-notif", withExtension: "caf") }
+        guard let fichier = url else {
+            print("[Adhan] aucun fichier complet pour \(reciter)")
+            return
+        }
+        do {
+            // .playback : l'adhan s'entend meme si le bouton silencieux est actif.
+            try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
+            try AVAudioSession.sharedInstance().setActive(true)
+            lecteur?.stop()
+            lecteur = try AVAudioPlayer(contentsOf: fichier)
+            lecteur?.prepareToPlay()
+            lecteur?.play()
+            print("[Adhan] lecture complete : \(fichier.lastPathComponent)")
+        } catch {
+            print("[Adhan] lecture impossible : \(error)")
+        }
+    }
+}
 
 /// Delegue de notifications de l'app.
 /// Son seul role : autoriser banniere + SON + entree dans le centre de notifications
@@ -27,6 +67,77 @@ final class AlaeNotifDelegate: NSObject, UNUserNotificationCenterDelegate {
         } else {
             completionHandler([.alert, .sound])
         }
+    }
+
+    /// L'utilisateur a touche la notification : on ouvre l'app et on joue
+    /// l'adhan COMPLET. Uniquement pour l'adhan lui-meme — pas pour le preavis,
+    /// qui annonce une priere qui n'a pas encore commence.
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        let info = response.notification.request.content.userInfo
+        if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+           (info["genre"] as? String) == "adhan",
+           let reciter = info["reciter"] as? String {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                AlaeAdhanPlayer.shared.jouerComplet(reciter: reciter)
+            }
+        }
+        completionHandler()
+    }
+}
+
+/// Replanification en arriere-plan de l'adhan.
+///
+/// iOS ne garde que 64 notifications locales en attente : l'app en pose ~60 d'un coup,
+/// puis elles se consomment jour apres jour. Une fois epuisees, plus aucun adhan tant
+/// que l'utilisateur n'ouvre pas l'app. Ce module demande a iOS de reveiller l'app
+/// de temps en temps, sans intervention, juste le temps de reposer les 60 suivantes.
+///
+/// Le dernier calendrier envoye par le JS est memorise tel quel : la tache de fond
+/// n'a pas besoin de la WebView, elle rejoue simplement le meme message.
+enum AlaeReplanif {
+
+    static let tacheID = "be.lestyle.alae.replanif"
+    private static let cleCache = "alae.notif.dernierPayload"
+
+    /// Memorise le dernier message `updateNotifications` recu du JS.
+    static func memoriser(_ body: [String: Any]) {
+        guard JSONSerialization.isValidJSONObject(body),
+              let data = try? JSONSerialization.data(withJSONObject: body) else { return }
+        UserDefaults.standard.set(data, forKey: cleCache)
+    }
+
+    /// Rejoue le dernier calendrier connu. Sans WebView, sans reseau.
+    @discardableResult
+    static func rejouerDepuisCache() -> Bool {
+        guard let data = UserDefaults.standard.data(forKey: cleCache),
+              let body = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
+        else { return false }
+        ViewController.handleUpdateNotifications(body)
+        return true
+    }
+
+    /// A appeler UNE FOIS au lancement, avant la fin du demarrage
+    /// (dans `application(_:didFinishLaunchingWithOptions:)`).
+    static func enregistrer() {
+        guard #available(iOS 13.0, *) else { return }
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: tacheID, using: nil) { task in
+            // Toujours reprogrammer la suivante en premier : si on l'oublie,
+            // la chaine s'arrete apres un seul reveil.
+            programmer()
+            let ok = rejouerDepuisCache()
+            task.setTaskCompleted(success: ok)
+        }
+    }
+
+    /// Demande le prochain reveil. iOS choisit le moment reel selon l'usage de l'app.
+    static func programmer() {
+        guard #available(iOS 13.0, *) else { return }
+        let req = BGAppRefreshTaskRequest(identifier: tacheID)
+        req.earliestBeginDate = Date(timeIntervalSinceNow: 12 * 3600)   // au plus tot dans 12 h
+        do { try BGTaskScheduler.shared.submit(req) }
+        catch { print("[Adhan] replanification impossible : \(error)") }
     }
 }
 
@@ -104,6 +215,17 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         // L'ancienne ligne castait AppDelegate en UNUserNotificationCenterDelegate,
         // ce qu'il n'est pas : le cast renvoyait nil et le delegue restait vide.
         UNUserNotificationCenter.current().delegate = AlaeNotifDelegate.shared
+
+        // Adhan : demander un reveil en arriere-plan, et reposer les notifications
+        // a chaque retour au premier plan (filet si iOS n'a jamais accorde le reveil).
+        AlaeReplanif.programmer()
+        NotificationCenter.default.addObserver(
+            forName: UIApplication.willEnterForegroundNotification,
+            object: nil, queue: .main
+        ) { _ in
+            AlaeReplanif.rejouerDepuisCache()
+            AlaeReplanif.programmer()
+        }
     }
 
     // MARK: - WKNavigationDelegate
@@ -197,6 +319,46 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
             return
         }
 
+        // Partage d'une image (carte Sabah al-khayr, cartes de partage).
+        // Le JS envoie un data URL base64 ; la Web Share API fichiers n'existe pas
+        // dans une WKWebView, donc l'image doit passer par ici.
+        if type == "shareImage" {
+            let text = body["text"] as? String ?? ""
+            let dataURL = body["image"] as? String ?? ""
+            guard let comma = dataURL.firstIndex(of: ","),
+                  let data = Data(base64Encoded: String(dataURL[dataURL.index(after: comma)...]),
+                                  options: .ignoreUnknownCharacters),
+                  let image = UIImage(data: data) else {
+                // Repli : on partage au moins le texte
+                if !text.isEmpty {
+                    DispatchQueue.main.async {
+                        let vc = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+                        if let pop = vc.popoverPresentationController {
+                            pop.sourceView = self.webView
+                            pop.sourceRect = CGRect(x: self.webView.bounds.midX, y: self.webView.bounds.midY, width: 0, height: 0)
+                            pop.permittedArrowDirections = []
+                        }
+                        self.present(vc, animated: true)
+                    }
+                }
+                return
+            }
+            DispatchQueue.main.async {
+                var items: [Any] = [image]
+                if !text.isEmpty { items.append(text) }
+                let activityVC = UIActivityViewController(activityItems: items, applicationActivities: nil)
+                if let pop = activityVC.popoverPresentationController {
+                    pop.sourceView = self.webView
+                    pop.sourceRect = CGRect(x: self.webView.bounds.midX,
+                                            y: self.webView.bounds.midY,
+                                            width: 0, height: 0)
+                    pop.permittedArrowDirections = []
+                }
+                self.present(activityVC, animated: true)
+            }
+            return
+        }
+
         if type == "haptic" {
             let style = body["style"] as? String ?? "soft"
             DispatchQueue.main.async {
@@ -215,7 +377,9 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
 
         if type == "updateNotifications" {
             saveTimingsForWidget(body)          // ← alimente le widget (App Group)
-            handleUpdateNotifications(body)
+            AlaeReplanif.memoriser(body)        // ← permet de reposer les notifications sans la WebView
+            ViewController.handleUpdateNotifications(body)
+            AlaeReplanif.programmer()
         }
 
         // Compteur de dhikr du jour, envoyé par l'app à chaque tap (syncWidgetSibha).
@@ -261,7 +425,7 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
     ]
 
     /// Son de la notification : .caf COURT (≤ 30 s), sinon repli hadioui, sinon son système.
-    private func adhanSound(for reciter: String) -> UNNotificationSound? {
+    fileprivate static func adhanSound(for reciter: String) -> UNNotificationSound? {
         if reciter == "silent" { return nil }
         if Bundle.main.url(forResource: "adhan-\(reciter)-notif", withExtension: "caf") != nil {
             return UNNotificationSound(named: UNNotificationSoundName("adhan-\(reciter)-notif.caf"))
@@ -273,7 +437,7 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         return .default
     }
 
-    private func handleUpdateNotifications(_ body: [String: Any]) {
+    static func handleUpdateNotifications(_ body: [String: Any]) {
         let enabled    = body["enabled"] as? Bool ?? false
         let minutes    = body["minutesBefore"] as? Int ?? 5
         let reciter    = body["reciter"] as? String ?? "kouchi"
@@ -290,7 +454,7 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
             guard granted else { return }
 
             DispatchQueue.main.async {
-                let sound = self.adhanSound(for: reciter)
+                let sound = ViewController.adhanSound(for: reciter)
                 let center = UNUserNotificationCenter.current()
                 let cal = Calendar.current
                 let now = Date()
@@ -301,6 +465,8 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
                     c.title = "آلَاء · \(label)"
                     c.body  = "حان وقت صلاة \(label) — \(city)"
                     c.sound = sound
+                    // Marqueur lu au tap : c'est l'adhan, on peut jouer la version complete.
+                    c.userInfo = ["genre": "adhan", "reciter": reciter]
                     return c
                 }
 
@@ -311,6 +477,8 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
                     c.title = "آلَاء · \(label)"
                     c.body  = "\(label) خلال \(minutes) دقيقة — \(city)"
                     c.sound = (reciter == "silent") ? nil : .default
+                    // Pas de version complete au tap : la priere n'a pas encore commence.
+                    c.userInfo = ["genre": "preavis", "reciter": reciter]
                     return c
                 }
 
