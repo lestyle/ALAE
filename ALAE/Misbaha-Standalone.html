@@ -98,7 +98,23 @@ html,body{margin:0;padding:0;background:#0B0D10;height:100%;overflow:hidden}
   </div>
 </div>
 <script id="boot-intro-js">
+/* Mode leger : active par ViewController.swift quand le moteur web a ete tue.
+   L'intro est retiree tout de suite et les fonds photo sont remplaces par des
+   aplats — c'est ce qui empeche l'app de replanter, donc de redemarrer en boucle. */
+window.__alaeLeger = /[?&]leger=1/.test(location.search);
+if(window.__alaeLeger){
+  try{
+    var _bi=document.getElementById('boot-intro'); if(_bi) _bi.remove();
+    var _bs=document.getElementById('boot-splash'); if(_bs) _bs.remove();
+    window.__bootIntroDone=true;
+    document.documentElement.style.setProperty('--silk-img','none');
+    var _st=document.createElement('style');
+    _st.textContent='#silk-wallpaper::before{background:#0B0D10 !important}.silk-bg-layer{background-image:none !important;background:#0B0D10 !important}*{animation:none !important}';
+    document.head.appendChild(_st);
+  }catch(e){}
+}
 (function(){
+  if(window.__alaeLeger) return;
   var root=document.getElementById('boot-intro'); if(!root) return;
   var bg=root.querySelector('.bi-bg');
   var alae=root.querySelector('.bi-alae');
@@ -214,6 +230,7 @@ html,body{margin:0;padding:0;background:#0B0D10;height:100%;overflow:hidden}
   // On attend la fin de l'intro avant de lancer le code de l'app : sinon le travail
   // de traduction bloque le fil d'exécution et l'intro est sautée.
   function apresIntro(fn){
+    if(window.__alaeLeger) return fn();
     if(window.__bootIntroDone || !document.getElementById('boot-intro')) return fn();
     var lance=false;
     function go(){ if(lance) return; lance=true; fn(); }
@@ -239,7 +256,7 @@ window.ALAE_VOILES = {bahrayn:'none'};
    noyer les cartes des écrans (dou'a, horaires…). */
 window.ALAE_VOILES_DOUX = {bahrayn:'none'};
 try{var _t=(JSON.parse(localStorage.getItem('misbaha.v1')||'{}').theme)||'gold';window.ALAE_SILK=window.ALAE_FONDS[_t]||'assets/silk-bg-inline.jpg';if(_t==='bahrayn'){document.documentElement.style.setProperty('--silk-glow','radial-gradient(ellipse 26% 14% at 40% 45%, rgba(255,240,206,0.30) 0%, rgba(255,222,164,0.12) 50%, rgba(255,214,150,0) 80%), radial-gradient(ellipse 72% 26% at 48% 80%, rgba(255,208,146,0.34) 0%, rgba(255,186,112,0.16) 44%, rgba(250,170,96,0) 82%)');document.documentElement.style.setProperty('--silk-eclat','brightness(1.06) saturate(1.14) contrast(1.07)');}if(window.ALAE_VOILES[_t]){document.documentElement.style.setProperty('--silk-vignette',window.ALAE_VOILES[_t]);document.documentElement.style.setProperty('--silk-vignette-soft',window.ALAE_VOILES_DOUX[_t]);}}catch(e){window.ALAE_SILK='assets/silk-bg-inline.jpg';}
-try{document.documentElement.style.setProperty('--silk-img','url(\"'+window.ALAE_SILK+'\")');}catch(e){}
+try{if(!window.__alaeLeger)document.documentElement.style.setProperty('--silk-img','url(\"'+window.ALAE_SILK+'\")');}catch(e){}
 window.MOON_PHASES = ["assets/moon-1.png","assets/moon-2.png","assets/moon-3.png","assets/moon-4.png","assets/moon-5.png","assets/moon-6.png","assets/moon-7.png","assets/moon-8.png"];
 /* Calendrier des horaires : 14 jours d'avance, mis en cache pour marcher hors-ligne.
    C'est ce qui permet à chaque adhan de sonner à SON heure, jour par jour. */
@@ -5743,6 +5760,7 @@ window.MORNING_DOUAS = [
   /* Recompose la photo du matin dans le meme cadre or que l'app, pour que ce qui
      part sur WhatsApp ressemble a ce qu'on voit a l'ecran. Renvoie un Blob. */
   window.alaeComposeMorning=function(src){
+    if(window.__alaeLeger) return Promise.resolve(null);
     return new Promise(function(resolve){
       var img=new Image(); var url=null;
       var done=function(v){ if(url) try{ URL.revokeObjectURL(url); }catch(e){} resolve(v); };
@@ -7256,10 +7274,10 @@ window.AsmaScreen = AsmaScreen;
     const [route, setRoute] = useState('compteur');
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [showSplash, setShowSplash] = useState(false);
-    const [showDuaa, setShowDuaa] = useState(true);
+    const [showDuaa, setShowDuaa] = useState(() => typeof window === 'undefined' || !window.__alaeLeger);
     const [bootDone, setBootDone] = useState(() => (typeof window !== 'undefined' && !!window.__bootIntroDone));
     const [forceOnboarding, setForceOnboarding] = useState(false);
-    const [showNiyya, setShowNiyya] = useState(true);
+    const [showNiyya, setShowNiyya] = useState(() => typeof window === 'undefined' || !window.__alaeLeger);
     const [brightness, setBrightness] = useState(() => loadState().brightness ?? 1);
     const [darkMode, setDarkMode] = useState(() => loadState().darkMode || 'off');
     const [theme, setTheme] = useState(() => { const t = loadState().theme; return (!t || t === 'royal' || t === 'rose') ? 'gold' : t; });

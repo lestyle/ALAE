@@ -125,10 +125,30 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         hideSplash()
     }
 
+    // Nombre de fois que le moteur web a ete tue depuis le lancement.
+    private var nbPlantages = 0
+
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-        // Le moteur web a été tué — typiquement faute de mémoire sur un appareil réel.
-        print("[ALAE] LE MOTEUR WEB A ÉTÉ TUÉ (mémoire insuffisante ?) — rechargement")
-        webView.reload()
+        nbPlantages += 1
+        print("[ALAE] LE MOTEUR WEB A ETE TUE (plantage n°\(nbPlantages))")
+
+        // Au-dela de deux tentatives on arrete : recharger en boucle ne ferait
+        // que rejouer l'intro indefiniment, ce que l'utilisateur voit comme un
+        // demarrage sans fin.
+        guard nbPlantages <= 2 else {
+            print("[ALAE] trop de plantages — rechargement automatique abandonne")
+            return
+        }
+
+        // On repart en mode leger : l'intro est sautee et les fonds photo sont
+        // remplaces par des aplats, ce qui divise la memoire necessaire.
+        guard let url = Bundle.main.url(forResource: "Misbaha-Standalone", withExtension: "html") else {
+            webView.reload(); return
+        }
+        var comp = URLComponents(url: url, resolvingAgainstBaseURL: false)
+        comp?.query = "leger=1"
+        let cible = comp?.url ?? url
+        webView.loadFileURL(cible, allowingReadAccessTo: url.deletingLastPathComponent())
     }
 
     // MARK: - Open external links in Safari
