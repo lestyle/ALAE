@@ -563,6 +563,7 @@
 				INFOPLIST_FILE = ALAE/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Alae;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Pour afficher les horaires de prière exacts et la direction de la Qibla selon votre position.\nPour afficher les horaires de prière exacts et la direction de la Qibla selon votre position.";
 				INFOPLIST_KEY_NSMotionUsageDescription = "Pour vous orienter vers la Qibla grâce à la boussole de votre iPhone.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -598,6 +599,7 @@
 				INFOPLIST_FILE = ALAE/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Alae;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Pour afficher les horaires de prière exacts et la direction de la Qibla selon votre position.\nPour afficher les horaires de prière exacts et la direction de la Qibla selon votre position.";
 				INFOPLIST_KEY_NSMotionUsageDescription = "Pour vous orienter vers la Qibla grâce à la boussole de votre iPhone.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

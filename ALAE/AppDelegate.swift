@@ -9,19 +9,23 @@ import UIKit
 import UserNotifications
 
 @main
-class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Reçoit les notifications même quand l'app est ouverte
-        UNUserNotificationCenter.current().delegate = self
-        return true
-    }
+        // Delegue de notifications : AlaeNotifDelegate (defini dans ViewController.swift)
+        // gere l'affichage au premier plan ET le tap sur la banniere, qui joue l'adhan
+        // complet. Pose ici, avant tout le reste : si l'app est lancee PAR un tap sur
+        // une notification, iOS livre l'evenement avant que ViewController.viewDidLoad
+        // ne soit passe, et l'adhan ne partirait pas.
+        UNUserNotificationCenter.current().delegate = AlaeNotifDelegate.shared
 
-    // Affiche + joue le son de la notification même app au premier plan
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
-                                willPresent notification: UNNotification,
-                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler([.banner, .sound, .list])
+        // Adhan : enregistrement de la tache de replanification en arriere-plan.
+        // iOS ne garde que 64 notifications en attente ; sans ce reveil periodique
+        // l'adhan s'eteint au bout d'une a deux semaines si l'app n'est pas ouverte.
+        // DOIT etre appele avant la fin du lancement, sinon iOS leve une exception.
+        AlaeReplanif.enregistrer()
+
+        return true
     }
 
     // MARK: UISceneSession Lifecycle
