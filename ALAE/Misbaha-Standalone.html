@@ -30,8 +30,10 @@ html,body{margin:0;padding:0;background:#0B0D10;height:100%;overflow:hidden}
 /* Fond d'écran (soie) plein écran — derrière l'app, comble toute zone de letterbox / safe-area */
 #silk-wallpaper{position:fixed;inset:0;z-index:0;background:#0B0D10;pointer-events:none}
 #silk-wallpaper::before{content:"";position:absolute;inset:0;background:var(--silk-img, url("assets/silk-bg-inline.jpg")) center/cover no-repeat;filter:var(--silk-filter)}
-#silk-wallpaper::after{content:"";position:absolute;inset:0;background:var(--silk-vignette, radial-gradient(ellipse 120% 100% at 50% 45%,rgba(11,13,16,0.05),var(--silk-veil) 98%));transition:background 0.6s ease;animation:silkVeilIn 2.6s cubic-bezier(.33,.7,.3,1) both}
-@keyframes silkVeilIn{0%{opacity:.08}22%{opacity:.2}100%{opacity:1}}
+#silk-wallpaper::after{content:"";position:absolute;inset:0;background:var(--silk-vignette, radial-gradient(ellipse 120% 100% at 50% 45%,rgba(11,13,16,0.05),var(--silk-veil) 98%));transition:background 0.6s ease}
+/* silkVeilIn retire le 31/08 : le voile montait de 8 % a 100 % sur 2,6 s, ce qui
+   laissait la soie nue et eblouissante entre l'intro et le Dou'a du jour. Il est
+   maintenant a pleine densite des la premiere image. */
 @keyframes tapHint{0%,100%{opacity:0.5}50%{opacity:1}}
 @keyframes dhSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 @keyframes cadreNeon{0%,100%{box-shadow:0 0 12px rgba(255,232,180,0.45),0 0 26px rgba(255,205,120,0.32),0 0 52px rgba(232,185,122,0.22),0 8px 24px rgba(0,0,0,0.4),inset 0 0 14px rgba(255,220,150,0.15)}50%{box-shadow:0 0 20px rgba(255,238,195,0.7),0 0 42px rgba(255,210,130,0.5),0 0 78px rgba(232,185,122,0.36),0 8px 24px rgba(0,0,0,0.4),inset 0 0 20px rgba(255,225,160,0.24)}}
@@ -162,9 +164,14 @@ if(window.__alaeLeger){
   var START=1000,GAP=1550,BEATS=3,i;
   var LAST=START+(BEATS-1)*GAP;
   var ended=false;
-  function done(){ if(ended) return; ended=true; root.classList.add('bi-out'); setTimeout(function(){ if(root&&root.parentNode) root.parentNode.removeChild(root); var s=document.getElementById('boot-intro-css'); if(s&&s.parentNode) s.parentNode.removeChild(s); window.__bootIntroDone=true; try{ window.dispatchEvent(new Event('boot-intro-done')); }catch(e){} },1100); }
+  function done(rapide){ if(ended) return; ended=true; if(rapide){ root.style.animationDuration='.28s'; } root.classList.add('bi-out'); setTimeout(function(){ if(root&&root.parentNode) root.parentNode.removeChild(root); var s=document.getElementById('boot-intro-css'); if(s&&s.parentNode) s.parentNode.removeChild(s); window.__bootIntroDone=true; try{ window.dispatchEvent(new Event('boot-intro-done')); }catch(e){} }, rapide?320:1100); }
+  /* Toucher n'importe ou passe l'intro : sortie en 0,28 s au lieu de 1 s.
+     Pas de bouton — le voile entier est la zone tactile. */
+  function passer(){ done(true); }
+  root.addEventListener('pointerdown', passer, {passive:true});
+  root.addEventListener('touchstart', passer, {passive:true});
   for(var k=0;k<BEATS;k++){ setTimeout(beat,START+k*GAP); }
-  setTimeout(done,LAST+900);
+  setTimeout(function(){ done(false); },LAST+900);
 })();
 </script>
 <script id="alae-react-loader">
