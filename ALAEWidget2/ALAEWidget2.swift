@@ -454,12 +454,12 @@ struct AlaeWidgetView: View {
                 .frame(height: 16, alignment: .top)
                 .offset(x: 6, y: 4)
             Text(entry.nextAr)
-                .font(arefFont(34))
+                .font(arefFont(40))
                 .foregroundStyle(shineGradient)
                 .shadow(color: .black.opacity(0.9), radius: 3, y: 1)
                 .lineLimit(1).minimumScaleFactor(0.6)
-                .frame(width: 74, height: 40, alignment: .center)
-                .offset(x: 6, y: 24)
+                .frame(width: 92, height: 46, alignment: .leading)
+                .offset(x: 6, y: 20)
             Text(entry.nextFr)
                 .font(serifFont(16, weight: .medium))
                 .foregroundStyle(goldGradient)
@@ -482,13 +482,13 @@ struct AlaeWidgetView: View {
                 .frame(height: 14, alignment: .top)
                 .offset(x: 6, y: 124)
             Text(kDhikr1 + " " + kDhikr2)
-                .font(arFont(18))
+                .font(arFont(20))
                 .foregroundStyle(legibleGold)
                 .shadow(color: .black.opacity(0.95), radius: 3, y: 1)
                 .shadow(color: .black.opacity(0.7), radius: 6)
                 .lineLimit(1).minimumScaleFactor(0.8)
-                .frame(width: 268, height: 22, alignment: .leading)
-                .offset(x: 6, y: 140)
+                .frame(width: 268, height: 24, alignment: .leading)
+                .offset(x: 6, y: 138)
             Text(entry.hijri)
                 .font(arFont(18))
                 .foregroundStyle(legibleGold)
@@ -542,7 +542,7 @@ struct AlaeWidgetView: View {
                     )
                 }
             }
-            .offset(x: 275, y: 42)
+            .offset(x: 275, y: 32)
         }
         }
     }
