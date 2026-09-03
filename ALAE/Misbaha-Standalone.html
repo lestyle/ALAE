@@ -1,4 +1,9 @@
-<!doctype html><html lang="ar" dir="rtl" translate="no"><head><meta charset="utf-8"><meta name="google" content="notranslate"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><title>آلَاء</title><script>/* Afficheur d'erreurs sur appareil : sans inspecteur Safari, une erreur JS
+<!doctype html><html lang="ar" dir="rtl" translate="no"><head>
+<meta charset="utf-8"><meta name="google" content="notranslate"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><title>آلَاء</title>
+<!-- Fond de l'intro decode en priorite : sans ce prechargement le premier
+     dixieme de seconde reste noir avant que la soie n'apparaisse. -->
+<link rel="preload" as="image" href="assets/silk-boot.jpg">
+<script>/* Afficheur d'erreurs sur appareil : sans inspecteur Safari, une erreur JS
    laisse un écran blanc muet. Ici elle s'écrit en clair par-dessus la page. */
 (function(){function show(m){try{var d=document.getElementById('__err')||document.createElement('div');d.id='__err';d.style.cssText='position:fixed;inset:0;z-index:2147483647;background:#140708;color:#ffb4a2;font:13px/1.5 ui-monospace,monospace;padding:24px;overflow:auto;white-space:pre-wrap;direction:ltr;text-align:left';d.textContent=(d.textContent?d.textContent+'\n\n':'')+m;(document.body||document.documentElement).appendChild(d);}catch(e){}}
 var BENIGNE=/ResizeObserver loop|Script error\.?$|Non-Error promise rejection/i;
@@ -18,7 +23,7 @@ if(Date.now()-t0<60000)return;clearInterval(id);var m=[];if(!window.React)m.push
 @font-face { font-family: 'Amiri'; src: url('fonts/Amiri-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
 @font-face { font-family: 'Amiri Quran'; src: url('fonts/AmiriQuran.ttf') format('truetype'); font-weight: 400; font-display: block; }
 @font-face { font-family: 'QPCV4Tajweed'; src: url('fonts/QPC-V4-Tajweed.ttf') format('truetype'); font-weight: 400; font-display: swap; }
-html,body{margin:0;padding:0;background:#0B0D10;height:100%;overflow:hidden}
+html,body{margin:0;padding:0;background:url("assets/silk-boot.jpg") center/cover no-repeat,radial-gradient(ellipse 120% 96% at 50% 42%,#3A2E1E 0%,#241C12 44%,#15100A 74%,#0B0D10 100%);height:100%;overflow:hidden}
 /* Masquer toutes les barres de défilement (iOS / WebKit) */
 *::-webkit-scrollbar{width:0;height:0;display:none}
 *{scrollbar-width:none;-ms-overflow-style:none}
@@ -64,11 +69,11 @@ html,body{margin:0;padding:0;background:#0B0D10;height:100%;overflow:hidden}
 </head><body>
 <style id="boot-intro-css">
 @font-face { font-family: 'QPC'; src: url('fonts/QPC-V2.woff2') format('woff2'); font-weight: 400; font-display: block; }
-#boot-intro{position:fixed;inset:0;z-index:99999;overflow:hidden;background:#0B0D10;display:flex;align-items:center;justify-content:center;opacity:0;animation:biIn .3s ease forwards;will-change:transform;}
+#boot-intro{position:fixed;inset:0;z-index:99999;overflow:hidden;background:#0B0D10;display:flex;align-items:center;justify-content:center;will-change:transform;}
 #boot-intro.bi-out{animation:biOut 1s ease forwards;pointer-events:none;}
 @keyframes biIn{from{opacity:0}to{opacity:1}}
 @keyframes biOut{from{opacity:1}to{opacity:0;visibility:hidden}}
-#boot-intro .bi-bg{position:absolute;inset:-14px;background:#0B0D10 center/cover no-repeat;filter:brightness(.95) saturate(1.32) contrast(1.13);}
+#boot-intro .bi-bg{position:absolute;inset:-14px;background:url("assets/silk-boot.jpg") center/cover no-repeat;filter:brightness(.95) saturate(1.32) contrast(1.13);}
 #boot-intro .bi-veil{position:absolute;inset:0;background:radial-gradient(ellipse 92% 74% at 50% 45%,rgba(11,13,16,.12) 0%,rgba(9,10,13,.5) 62%,rgba(6,7,9,.74) 100%);}
 #boot-intro .bi-scrim{display:none;}
 #boot-intro .bi-warm{position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;background:radial-gradient(ellipse 118% 96% at 50% 52%,rgba(255,206,138,.72) 0%,rgba(246,178,96,.44) 56%,rgba(228,150,70,.10) 90%);}
@@ -124,8 +129,7 @@ if(window.__alaeLeger){
   var bg=root.querySelector('.bi-bg');
   var alae=root.querySelector('.bi-alae');
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function setBg(){ var s=(window.ASSETS&&window.ASSETS['assets/silk-bg.png'])||'assets/silk-bg-inline.jpg'; if(bg) bg.style.backgroundImage='url("'+s+'")'; }
-  setBg(); setTimeout(setBg,0);
+  /* Plus de photo de soie sur l'intro : le fond vient du degrade CSS (.bi-bg). */
   // —— Révèle le texte UNIQUEMENT quand la calligraphie (QPC + Amiri Quran) est prête —
   //     supprime le flash en police de secours (la « première version ») ——
   (function(){
@@ -141,7 +145,7 @@ if(window.__alaeLeger){
         if(document.fonts.ready && document.fonts.ready.then){ document.fonts.ready.then(reveal); }
       }
     } catch(e){}
-    setTimeout(reveal, 900); // filet de sécurité
+    setTimeout(reveal, 260); // filet de sécurité
   })();
   function haptic(){ try{ if(window.webkit&&window.webkit.messageHandlers&&window.webkit.messageHandlers.alae){ var h=window.webkit.messageHandlers.alae; h.postMessage({type:'haptic',style:'heavy'}); setTimeout(function(){ try{h.postMessage({type:'haptic',style:'heavy'});}catch(e){} },70); setTimeout(function(){ try{h.postMessage({type:'haptic',style:'rigid'});}catch(e){} },140); } }catch(e){} if(navigator.vibrate){ try{ navigator.vibrate([55,35,55,35,70]); }catch(e){} } }
   function shake(){ if(reduce||!root.animate) return; root.animate([{transform:'translate(0,0)'},{transform:'translate(-1px,0.5px)',offset:.3},{transform:'translate(1px,-0.5px)',offset:.6},{transform:'translate(0,0)'}],{duration:460,easing:'ease-in-out'}); }
@@ -167,12 +171,44 @@ if(window.__alaeLeger){
   var START=1000,GAP=1550,BEATS=3,i;
   var LAST=START+(BEATS-1)*GAP;
   var ended=false;
-  function done(rapide){ if(ended) return; ended=true; if(rapide){ root.style.animationDuration='.28s'; } root.classList.add('bi-out'); setTimeout(function(){ if(root&&root.parentNode) root.parentNode.removeChild(root); var s=document.getElementById('boot-intro-css'); if(s&&s.parentNode) s.parentNode.removeChild(s); window.__bootIntroDone=true; try{ window.dispatchEvent(new Event('boot-intro-done')); }catch(e){} }, rapide?320:1100); }
-  /* Toucher n'importe ou passe l'intro : sortie en 0,28 s au lieu de 1 s.
-     Pas de bouton — le voile entier est la zone tactile. */
-  function passer(){ done(true); }
+  function fini(){ if(root&&root.parentNode) root.parentNode.removeChild(root); var s=document.getElementById('boot-intro-css'); if(s&&s.parentNode) s.parentNode.removeChild(s); window.__bootIntroDone=true; try{ window.dispatchEvent(new Event('boot-intro-done')); }catch(e){} }
+  function retirer(rapide){
+    if(rapide){
+      /* Sortie au doigt : fondu en ligne (pas les keyframes biOut, qui repartent
+         de opacity:1 et annuleraient l'accuse de reception du toucher). */
+      root.style.transition='opacity .22s ease';
+      root.style.opacity='0';
+      root.style.pointerEvents='none';
+      setTimeout(fini,240);
+    } else {
+      root.classList.add('bi-out');
+      setTimeout(fini,1100);
+    }
+  }
+  /* L'intro ne se retire QUE quand l'app a peint son premier ecran (le Dou'a du
+     jour). Sinon on decouvre la soie nue une a deux secondes, le temps que React
+     monte : c'est l'ecran d'attente qui coupait l'enchainement. */
+  function done(rapide){
+    if(ended) return; ended=true;
+    if(window.__alaePeint) return retirer(rapide);
+    var lance=false;
+    function go(){ if(lance) return; lance=true; retirer(rapide); }
+    window.addEventListener('alae-peint', go);
+    setTimeout(go, 6000); // filet de securite (large : en apercu web React vient du CDN)
+  }
+  /* Toucher n'importe ou entre dans l'app TOUT DE SUITE : on retire l'intro sans
+     attendre alae-peint, car le splash statique (meme fond, meme voile) prend le
+     relais et ne s'efface qu'une fois le Dou'a peint. Pas de bouton : le voile
+     entier est la zone tactile. */
+  function passer(){
+    if(ended) return; ended=true;
+    var c=root.querySelector('.bi-col');
+    if(c){ c.style.transition='opacity .18s ease, transform .18s ease'; c.style.opacity='0'; c.style.transform='translateY(-30px) scale(.97)'; }
+    retirer(true);
+  }
   root.addEventListener('pointerdown', passer, {passive:true});
   root.addEventListener('touchstart', passer, {passive:true});
+  root.addEventListener('click', passer);
   for(var k=0;k<BEATS;k++){ setTimeout(beat,START+k*GAP); }
   setTimeout(function(){ done(false); },LAST+900);
 })();
@@ -245,7 +281,7 @@ if(window.__alaeLeger){
     var lance=false;
     function go(){ if(lance) return; lance=true; fn(); }
     window.addEventListener('boot-intro-done', go);
-    setTimeout(go, 8000); // filet de sécurité
+    setTimeout(go, 12000); // filet de sécurité
   }
   function quandReact(fn){ if(window.__reactPret) return fn(); window.addEventListener('react-pret', fn); }
   function demarrer(){ apresIntro(function(){ quandReact(boot); }); }
@@ -254,7 +290,8 @@ if(window.__alaeLeger){
 </script>
 <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0d0a06"/><circle cx="50" cy="50" r="26" fill="none" stroke="#E8B97A" stroke-width="3"/><rect x="44" y="30" width="12" height="11" rx="1.5" fill="#0A0808" stroke="#F4D89B" stroke-width="2"/><path d="M50 44 L46 60 L54 60 Z" fill="#F4D89B"/></svg></template><div id="silk-wallpaper" aria-hidden="true"></div><div id="root"></div>
 <!-- Écran de démarrage STATIQUE (HTML pur) : s'affiche tout de suite, avant que React/Babel ne soient prêts -->
-<div id="boot-splash" aria-hidden="true" style="position:fixed;inset:0;z-index:2;pointer-events:none;opacity:1;transition:opacity .6s ease">
+<div id="boot-splash" aria-hidden="true" style="position:fixed;inset:0;z-index:2;pointer-events:none;opacity:1;transition:opacity .6s ease;background:#0B0D10 url('assets/silk-boot.jpg') center/cover no-repeat">
+<div style="position:absolute;inset:0;background:radial-gradient(ellipse 120% 100% at 50% 45%,rgba(11,13,16,.05),rgba(11,13,16,.82) 98%)"></div>
 </div>
 <script>/* calligraphies inline (data-URI) — affichage garanti hors-ligne */
 window.ASSETS = {"assets/mihrab-floral.png": "assets/floral-frame.png", "assets/logo.png": "assets/logo.png", "assets/silk-bg.png": "assets/silk-bg-inline.jpg"};
@@ -1133,7 +1170,7 @@ function Onboarding({ step = 0, lang = 'fr', onContinue, onSkip, onSettings, onM
       <window.SilkBg opacity={0.9} />
       {/* ☀️ Rayons de soleil chauds projetés sur le fond — réalistes, le jour seulement, écran astaghfirullah uniquement */}
       {alaeIsDay() && step === 0 && (
-        <div aria-hidden="true" style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', overflow:'hidden' }}>
+        <div aria-hidden="true" style={{ position:'absolute', inset:0, zIndex:1, pointerEvents:'none', overflow:'hidden', opacity:1 }}>
           <style>{`
             @keyframes alaeRayDrift { 0% { transform: rotate(-5deg) scale(1); opacity:.72; } 38% { transform: rotate(1.5deg) scale(1.02); opacity:.94; } 64% { transform: rotate(-1deg) scale(1.01); opacity:.82; } 100% { transform: rotate(-5deg) scale(1); opacity:.72; } }
             @keyframes alaeHeatShimmer { 0%,100% { opacity:.45; transform:translateY(0) scaleY(1); } 50% { opacity:.85; transform:translateY(-2%) scaleY(1.05); } }
@@ -3018,7 +3055,7 @@ function SettingsScreen({ lang = 'fr', setLang }) {
           <div style={{ width:4, height:4, transform:'rotate(45deg)', background:'#E8C88C', boxShadow:'0 0 4px rgba(255,225,150,0.8), 0 1px 2px rgba(0,0,0,0.6)', animation:'starSparkle 1.3s ease-in-out infinite', animationDelay:'0.88s' }}/>
         </div>
         <div style={{ fontFamily:'"Amiri Quran","Amiri",serif', fontSize:17, color:T.text, direction:'rtl', textAlign:'center', lineHeight:1.7, opacity:0.98, width:260, whiteSpace:'normal', wordBreak:'keep-all', boxSizing:'border-box', textShadow:'0 1px 4px rgba(0,0,0,0.6)', marginTop:13 }}>{I.tagline}</div>
-        <div style={{ fontFamily:'Inter', fontSize:9, letterSpacing:'0.3em', color:T.textDim, marginTop:12 }}>v 1.0.12</div>
+        <div style={{ fontFamily:'Inter', fontSize:9, letterSpacing:'0.3em', color:T.textDim, marginTop:12 }}>v 1.0.13</div>
       </div>
 
       <div className="settings-scroll" style={{ position:'absolute', top:330, left:20, right:20, bottom:24, overflowY:'auto', WebkitOverflowScrolling:'touch', zIndex:2, display:'flex', flexDirection:'column', gap:0 }}>
@@ -7076,7 +7113,7 @@ window.AsmaScreen = AsmaScreen;
               paddingTop:12, borderTop:`0.5px solid ${T.hairline}`,
               fontFamily:'Inter', fontSize:9, letterSpacing:'0.3em',
               color:T.textDim, textAlign: isAr ? 'right' : 'left',
-            }}>v 1.0.12 <a href="https://www.lestyle.be" target="_blank" rel="noopener noreferrer" style={{ color:T.goldLight, textDecoration:'none', pointerEvents:'auto' }}>Lestyle</a></div>
+            }}>v 1.0.13 <a href="https://www.lestyle.be" target="_blank" rel="noopener noreferrer" style={{ color:T.goldLight, textDecoration:'none', pointerEvents:'auto' }}>Lestyle</a></div>
           </div>
         </div>
       </>
@@ -7385,7 +7422,7 @@ window.AsmaScreen = AsmaScreen;
       if (theme === 'bordeaux') { hue = ' hue-rotate(-18deg)'; sat = 0.95; con = 1.03; veilRGB = '34,22,12'; }
       else if (theme === 'nuit') { hue = ''; sat = 1.0; con = 1.06; veilRGB = '9,11,14'; }
       else if (theme === 'bahrayn') { hue = ''; sat = 1.08; con = 1.04; veilRGB = '5,22,26'; brBoost = 0.92; veilBoost = 0; }
-      else if (theme === 'amouage') { hue = ''; sat = 1.06; con = 1.05; veilRGB = '4,18,24'; brBoost = 1; veilBoost = 0; veilOff = true; }
+      else if (theme === 'amouage') { hue = ''; sat = 1.06; con = 1.02; veilRGB = '4,18,24'; brBoost = 1.20; veilBoost = 0; veilOff = true; }
       else if (theme === 'rose') { hue = ' hue-rotate(-58deg)'; sat = 1.1; con = 1.03; veilRGB = '42,16,24'; }
       else if (theme === 'copper') { hue = ' hue-rotate(-9deg)'; sat = 1.34; con = 1.12; veilRGB = '30,16,9'; }
       // Multiplicateur de luminosité (0=tamisé · 1=normal · 2=lumineux)
@@ -7493,12 +7530,22 @@ window.AsmaScreen = AsmaScreen;
       return () => clearTimeout(t);
     }, [showSplash]);
 
+    // ── Signaler que le premier écran est monté : l'intro attend ce signal pour se
+    //    retirer, sinon elle découvre la soie nue le temps que React monte.
+    //    Un effet, pas un requestAnimationFrame : rAF ne se déclenche pas quand la
+    //    WebView n'est pas encore visible, et l'intro resterait bloquée. ──
+    React.useEffect(() => {
+      if (typeof window === 'undefined' || window.__alaePeint) return;
+      window.__alaePeint = true;
+      try { window.dispatchEvent(new Event('alae-peint')); } catch (e) {}
+    }, []);
+
     // ── Attendre la fin de l'intro Bismillah (boot-intro) avant de chronométrer le Dou'a ──
     React.useEffect(() => {
       if (bootDone) return;
       const onDone = () => setBootDone(true);
       window.addEventListener('boot-intro-done', onDone);
-      const fallback = setTimeout(() => setBootDone(true), 7200); // filet de sécurité
+      const fallback = setTimeout(() => setBootDone(true), 11000); // filet de sécurité
       return () => { window.removeEventListener('boot-intro-done', onDone); clearTimeout(fallback); };
     }, [bootDone]);
 
@@ -7792,13 +7839,8 @@ window.AsmaScreen = AsmaScreen;
       tick();
     }, []);
     if (!ready) {
-      return (
-        <div style={{
-          position:'fixed', inset:0, background:'#0B0D10',
-          display:'flex', alignItems:'center', justifyContent:'center',
-          color:'#C7A55B', fontFamily:'serif', fontSize:14, letterSpacing:'0.3em',
-        }}>· · ·</div>
-      );
+      // Fond transparent : l'intro (soie) reste visible dessous — aucun ecran noir intermediaire.
+      return <div style={{ position:'fixed', inset:0, background:'transparent' }} />;
     }
     const W = 402, H = 874;
     // ── Mode capture App Store : rendu propre 402×874 (ajusté à la fenêtre), sans bezel ──
@@ -7870,9 +7912,19 @@ window.AsmaScreen = AsmaScreen;
 
   ReactDOM.createRoot(document.getElementById('root')).render(<Root />);
   // Retirer l'écran de démarrage statique une fois React peint (fondu transparent vers le vrai splash)
-  requestAnimationFrame(() => { requestAnimationFrame(() => { setTimeout(() => {
+  // Le splash statique ne se retire QUE quand le premier ecran est peint : c'est
+  // lui qui couvre le trou entre l'intro et le Dou'a du jour (il etait vide, d'ou
+  // la soie nue visible pendant le montage de React).
+  function retirerSplash(){
     const bs = document.getElementById('boot-splash');
     if (bs) { bs.style.opacity = '0'; setTimeout(() => bs.remove(), 650); }
-  }, 350); }); });
+  }
+  if (window.__alaePeint) setTimeout(retirerSplash, 350);
+  else {
+    let fait = false;
+    const go = () => { if (fait) return; fait = true; setTimeout(retirerSplash, 350); };
+    window.addEventListener('alae-peint', go);
+    setTimeout(go, 8000);
+  }
 })();
 </script></body></html>
