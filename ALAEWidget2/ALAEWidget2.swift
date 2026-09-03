@@ -575,6 +575,12 @@ struct ALAEWidget: Widget {
     }
 }
 
+// `contentMarginsDisabled()` n'existe pas dans le SDK iOS 16 : @available ne suffit
+// pas, le symbole est absent a la COMPILATION. D'ou le garde-fou `#if compiler(>=5.9)`
+// (Swift 5.9 = Xcode 15 = premier SDK iOS 17). Xcode ancien en local -> ce bloc est
+// ignore et l'extension compile ; Codemagic (`xcode: latest`) le compile et garde le
+// calage flush. Ne pas retirer ce garde-fou.
+#if compiler(>=5.9)
 @available(iOSApplicationExtension 17.0, *)
 struct ALAEWidgetFlush: Widget {
     let kind = "ALAEWidget"
@@ -595,6 +601,7 @@ struct ALAEWidgetBundleModern: WidgetBundle {
         ALAEWidgetFlush()
     }
 }
+#endif
 
 struct ALAEWidgetBundleLegacy: WidgetBundle {
     var body: some Widget {
@@ -608,10 +615,14 @@ struct ALAEWidgetBundleLegacy: WidgetBundle {
 @main
 struct ALAEWidgetEntryPoint {
     static func main() {
+        #if compiler(>=5.9)
         if #available(iOSApplicationExtension 17.0, *) {
             ALAEWidgetBundleModern.main()
         } else {
             ALAEWidgetBundleLegacy.main()
         }
+        #else
+        ALAEWidgetBundleLegacy.main()
+        #endif
     }
 }
