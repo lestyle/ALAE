@@ -23,7 +23,10 @@ if(Date.now()-t0<60000)return;clearInterval(id);var m=[];if(!window.React)m.push
 @font-face { font-family: 'Amiri'; src: url('fonts/Amiri-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
 @font-face { font-family: 'Amiri Quran'; src: url('fonts/AmiriQuran.ttf') format('truetype'); font-weight: 400; font-display: block; }
 @font-face { font-family: 'QPCV4Tajweed'; src: url('fonts/QPC-V4-Tajweed.ttf') format('truetype'); font-weight: 400; font-display: swap; }
-html,body{margin:0;padding:0;background:radial-gradient(ellipse 110% 90% at 50% 45%,rgba(11,13,16,0.06),rgba(11,13,16,0.46) 96%),url("assets/silk-bg-inline.jpg") center/cover no-repeat,radial-gradient(ellipse 120% 96% at 50% 42%,#3A2E1E 0%,#241C12 44%,#15100A 74%,#0B0D10 100%);height:100%;overflow:hidden}
+/* 04/09 : plus de photo ici. #boot-splash puis #silk-wallpaper couvrent deja tout
+   l'ecran des le 1er cadre ; cette 3e copie de la meme image ne servait qu'a
+   remplir la safe-area et coutait un tampon plein ecran de plus. */
+html,body{margin:0;padding:0;background:radial-gradient(ellipse 120% 96% at 50% 42%,#3A2E1E 0%,#241C12 44%,#15100A 74%,#0B0D10 100%);height:100%;overflow:hidden}
 /* Masquer toutes les barres de défilement (iOS / WebKit) */
 *::-webkit-scrollbar{width:0;height:0;display:none}
 *{scrollbar-width:none;-ms-overflow-style:none}
@@ -32,8 +35,13 @@ html,body{margin:0;padding:0;background:radial-gradient(ellipse 110% 90% at 50% 
    succedent avant l'app (premier frame html/body, l'intro, puis #silk-wallpaper)
    la lisent toutes : elles sont donc rigoureusement identiques et ne peuvent plus
    diverger. Les pages de l'app gardent --silk-veil (0.30), valide par Hicham. */
-:root{--silk-filter:brightness(0.95) saturate(1.32) contrast(1.13);--silk-veil:rgba(11,13,16,0.30);--boot-veil:radial-gradient(ellipse 110% 90% at 50% 45%,rgba(11,13,16,0.06),rgba(11,13,16,0.46) 96%)}
-.silk-bg-layer{filter:var(--silk-filter) !important;transition:filter 0.6s ease}
+/* 04/09 : les deux filtres passent a none. Un filter: sur un calque plein ecran
+   force iOS a garder une copie NON COMPRESSEE de l'ecran en memoire graphique
+   (~5 Mo par calque), meme sur une image fixe — c'est ce qui faisait tuer le
+   moteur web ~2 s apres l'intro, donc rechargement en mode leger et fond perdu.
+   La teinte est desormais cuite dans silk-bg-inline.jpg. */
+:root{--silk-filter:none;--silk-veil:rgba(11,13,16,0.30);--boot-veil:radial-gradient(ellipse 110% 90% at 50% 45%,rgba(11,13,16,0.06),rgba(11,13,16,0.46) 96%);--boot-filter:none}
+.silk-bg-layer{transition:opacity 0.6s ease}
 .silk-veil-layer{background:var(--silk-vignette-soft, radial-gradient(ellipse 110% 90% at 50% 45%,rgba(11,13,16,0.03),var(--silk-veil) 96%)) !important;transition:background 0.6s ease}
 #root{position:fixed;inset:0;z-index:1}
 /* Fond d'écran (soie) plein écran — derrière l'app, comble toute zone de letterbox / safe-area */
@@ -41,7 +49,7 @@ html,body{margin:0;padding:0;background:radial-gradient(ellipse 110% 90% at 50% 
 /* Ce calque n'est visible QUE entre l'intro et le Dou'a du jour (en app, les écrans
    posent leurs propres .silk-bg-layer / .silk-veil-layer par-dessus). Il porte donc
    le même calage que l'intro — sinon la soie apparaît nue et éblouissante une seconde. */
-#silk-wallpaper::before{content:"";position:absolute;inset:0;background:var(--silk-img, url("assets/silk-bg-inline.jpg")) center/cover no-repeat;filter:var(--silk-filter)}
+#silk-wallpaper::before{content:"";position:absolute;inset:0;background:var(--silk-img, url("assets/silk-bg-inline.jpg")) center/cover no-repeat}
 #silk-wallpaper::after{content:"";position:absolute;inset:0;background:var(--silk-vignette, var(--boot-veil));transition:background 0.6s ease}
 /* silkVeilIn retire le 31/08 : le voile montait de 8 % a 100 % sur 2,6 s, ce qui
    laissait la soie nue et eblouissante entre l'intro et le Dou'a du jour. Il est
@@ -83,7 +91,7 @@ html,body{margin:0;padding:0;background:radial-gradient(ellipse 110% 90% at 50% 
    (.silk-bg-layer / .silk-veil-layer, voir :root plus haut) : meme image, meme
    filtre, meme voile. L'intro et la page Dou'a sont donc identiques.
    L'eclat orange venait de .bi-warm, pas du filtre. */
-#boot-intro .bi-bg{position:absolute;inset:-14px;background:url("assets/silk-bg-inline.jpg") center/cover no-repeat;filter:brightness(0.95) saturate(1.32) contrast(1.13);}
+#boot-intro .bi-bg{position:absolute;inset:-14px;background:url("assets/silk-bg-inline.jpg") center/cover no-repeat;}
 #boot-intro .bi-veil{position:absolute;inset:0;background:var(--boot-veil);}
 #boot-intro .bi-scrim{display:none;}
 #boot-intro .bi-warm{display:none;}
@@ -120,23 +128,13 @@ html,body{margin:0;padding:0;background:radial-gradient(ellipse 110% 90% at 50% 
   </div>
 </div>
 <script id="boot-intro-js">
-/* Mode leger : active par ViewController.swift quand le moteur web a ete tue.
-   L'intro est retiree tout de suite et les fonds photo sont remplaces par des
-   aplats — c'est ce qui empeche l'app de replanter, donc de redemarrer en boucle. */
-window.__alaeLeger = /[?&]leger=1/.test(location.search);
-if(window.__alaeLeger){
-  try{
-    var _bi=document.getElementById('boot-intro'); if(_bi) _bi.remove();
-    var _bs=document.getElementById('boot-splash'); if(_bs) _bs.remove();
-    window.__bootIntroDone=true;
-    document.documentElement.style.setProperty('--silk-img','none');
-    var _st=document.createElement('style');
-    _st.textContent='#silk-wallpaper::before{background:radial-gradient(ellipse 130% 100% at 50% 38%,#3A2A16 0%,#241A0E 46%,#120D08 74%,#0B0D10 100%) !important}.silk-bg-layer{background-image:none !important;background:radial-gradient(ellipse 130% 100% at 50% 38%,#3A2A16 0%,#241A0E 46%,#120D08 74%,#0B0D10 100%) !important}*{animation:none !important}';
-    document.head.appendChild(_st);
-  }catch(e){}
-}
+/* 04/09 : le mode leger est SUPPRIME. Il n'existe plus qu'une seule version de
+   l'app : intro, soie et animations completes, toujours. Les 3 filtres plein
+   ecran qui faisaient tuer le moteur web sont partis, donc le mode de secours
+   n'a plus de raison d'etre — il degradait l'app pour compenser un probleme qui
+   n'existe plus. Si le moteur est quand meme tue, ViewController.swift relance
+   l'app COMPLETE (2 tentatives, puis il s'arrete pour ne pas boucler). */
 (function(){
-  if(window.__alaeLeger) return;
   var root=document.getElementById('boot-intro'); if(!root) return;
   var bg=root.querySelector('.bi-bg');
   var alae=root.querySelector('.bi-alae');
@@ -288,7 +286,6 @@ if(window.__alaeLeger){
   // On attend la fin de l'intro avant de lancer le code de l'app : sinon le travail
   // de traduction bloque le fil d'exécution et l'intro est sautée.
   function apresIntro(fn){
-    if(window.__alaeLeger) return fn();
     if(window.__bootIntroDone || !document.getElementById('boot-intro')) return fn();
     var lance=false;
     function go(){ if(lance) return; lance=true; fn(); }
@@ -302,7 +299,7 @@ if(window.__alaeLeger){
 </script>
 <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0d0a06"/><circle cx="50" cy="50" r="26" fill="none" stroke="#E8B97A" stroke-width="3"/><rect x="44" y="30" width="12" height="11" rx="1.5" fill="#0A0808" stroke="#F4D89B" stroke-width="2"/><path d="M50 44 L46 60 L54 60 Z" fill="#F4D89B"/></svg></template><div id="silk-wallpaper" aria-hidden="true"></div><div id="root"></div>
 <!-- Écran de démarrage STATIQUE (HTML pur) : s'affiche tout de suite, avant que React/Babel ne soient prêts -->
-<div id="boot-splash" aria-hidden="true" style="position:fixed;inset:0;z-index:2;pointer-events:none;opacity:1;transition:opacity .6s ease;background:#0B0D10 url('assets/silk-bg-inline.jpg') center/cover no-repeat;filter:brightness(0.95) saturate(1.32) contrast(1.13)">
+<div id="boot-splash" aria-hidden="true" style="position:fixed;inset:0;z-index:2;pointer-events:none;opacity:1;transition:opacity .6s ease;background:#0B0D10 url('assets/silk-bg-inline.jpg') center/cover no-repeat">
 <div style="position:absolute;inset:0;background:var(--boot-veil)"></div>
 </div>
 <script>/* calligraphies inline (data-URI) — affichage garanti hors-ligne */
@@ -315,7 +312,7 @@ window.ALAE_VOILES = {bahrayn:'none'};
    noyer les cartes des écrans (dou'a, horaires…). */
 window.ALAE_VOILES_DOUX = {bahrayn:'none'};
 try{var _t=(JSON.parse(localStorage.getItem('misbaha.v1')||'{}').theme)||'gold';window.ALAE_SILK=window.ALAE_FONDS[_t]||'assets/silk-bg-inline.jpg';if(_t==='bahrayn'){document.documentElement.style.setProperty('--silk-glow','radial-gradient(ellipse 26% 14% at 40% 45%, rgba(255,240,206,0.30) 0%, rgba(255,222,164,0.12) 50%, rgba(255,214,150,0) 80%), radial-gradient(ellipse 72% 26% at 48% 80%, rgba(255,208,146,0.34) 0%, rgba(255,186,112,0.16) 44%, rgba(250,170,96,0) 82%)');document.documentElement.style.setProperty('--silk-eclat','brightness(1.06) saturate(1.14) contrast(1.07)');}if(window.ALAE_VOILES[_t]){document.documentElement.style.setProperty('--silk-vignette',window.ALAE_VOILES[_t]);document.documentElement.style.setProperty('--silk-vignette-soft',window.ALAE_VOILES_DOUX[_t]);}}catch(e){window.ALAE_SILK='assets/silk-bg-inline.jpg';}
-try{if(!window.__alaeLeger)document.documentElement.style.setProperty('--silk-img','url(\"'+window.ALAE_SILK+'\")');}catch(e){}
+try{document.documentElement.style.setProperty('--silk-img','url(\"'+window.ALAE_SILK+'\")');}catch(e){}
 window.MOON_PHASES = ["assets/moon-1.png","assets/moon-2.png","assets/moon-3.png","assets/moon-4.png","assets/moon-5.png","assets/moon-6.png","assets/moon-7.png","assets/moon-8.png"];
 /* Calendrier des horaires : 14 jours d'avance, mis en cache pour marcher hors-ligne.
    C'est ce qui permet à chaque adhan de sonner à SON heure, jour par jour. */
@@ -3067,7 +3064,7 @@ function SettingsScreen({ lang = 'fr', setLang }) {
           <div style={{ width:4, height:4, transform:'rotate(45deg)', background:'#E8C88C', boxShadow:'0 0 4px rgba(255,225,150,0.8), 0 1px 2px rgba(0,0,0,0.6)', animation:'starSparkle 1.3s ease-in-out infinite', animationDelay:'0.88s' }}/>
         </div>
         <div style={{ fontFamily:'"Amiri Quran","Amiri",serif', fontSize:17, color:T.text, direction:'rtl', textAlign:'center', lineHeight:1.7, opacity:0.98, width:260, whiteSpace:'normal', wordBreak:'keep-all', boxSizing:'border-box', textShadow:'0 1px 4px rgba(0,0,0,0.6)', marginTop:13 }}>{I.tagline}</div>
-        <div style={{ fontFamily:'Inter', fontSize:9, letterSpacing:'0.3em', color:T.textDim, marginTop:12 }}>v 1.0.15</div>
+        <div style={{ fontFamily:'Inter', fontSize:9, letterSpacing:'0.3em', color:T.textDim, marginTop:12 }}>v 1.0.16</div>
       </div>
 
       <div className="settings-scroll" style={{ position:'absolute', top:330, left:20, right:20, bottom:24, overflowY:'auto', WebkitOverflowScrolling:'touch', zIndex:2, display:'flex', flexDirection:'column', gap:0 }}>
@@ -5819,7 +5816,6 @@ window.MORNING_DOUAS = [
   /* Recompose la photo du matin dans le meme cadre or que l'app, pour que ce qui
      part sur WhatsApp ressemble a ce qu'on voit a l'ecran. Renvoie un Blob. */
   window.alaeComposeMorning=function(src){
-    if(window.__alaeLeger) return Promise.resolve(null);
     return new Promise(function(resolve){
       var img=new Image(); var url=null;
       var done=function(v){ if(url) try{ URL.revokeObjectURL(url); }catch(e){} resolve(v); };
@@ -7125,7 +7121,7 @@ window.AsmaScreen = AsmaScreen;
               paddingTop:12, borderTop:`0.5px solid ${T.hairline}`,
               fontFamily:'Inter', fontSize:9, letterSpacing:'0.3em',
               color:T.textDim, textAlign: isAr ? 'right' : 'left',
-            }}>v 1.0.15 <a href="https://www.lestyle.be" target="_blank" rel="noopener noreferrer" style={{ color:T.goldLight, textDecoration:'none', pointerEvents:'auto' }}>Lestyle</a></div>
+            }}>v 1.0.16 <a href="https://www.lestyle.be" target="_blank" rel="noopener noreferrer" style={{ color:T.goldLight, textDecoration:'none', pointerEvents:'auto' }}>Lestyle</a></div>
           </div>
         </div>
       </>
@@ -7351,10 +7347,10 @@ window.AsmaScreen = AsmaScreen;
     const [route, setRoute] = useState('compteur');
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [showSplash, setShowSplash] = useState(false);
-    const [showDuaa, setShowDuaa] = useState(() => typeof window === 'undefined' || !window.__alaeLeger);
+    const [showDuaa, setShowDuaa] = useState(true);
     const [bootDone, setBootDone] = useState(() => (typeof window !== 'undefined' && !!window.__bootIntroDone));
     const [forceOnboarding, setForceOnboarding] = useState(false);
-    const [showNiyya, setShowNiyya] = useState(() => typeof window === 'undefined' || !window.__alaeLeger);
+    const [showNiyya, setShowNiyya] = useState(true);
     const [brightness, setBrightness] = useState(() => loadState().brightness ?? 1);
     const [darkMode, setDarkMode] = useState(() => loadState().darkMode || 'off');
     const [theme, setTheme] = useState(() => { const t = loadState().theme; return (!t || t === 'royal' || t === 'rose') ? 'gold' : t; });

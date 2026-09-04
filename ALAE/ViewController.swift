@@ -262,15 +262,11 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
             return
         }
 
-        // On repart en mode leger : l'intro est sautee et les fonds photo sont
-        // remplaces par des aplats, ce qui divise la memoire necessaire.
-        guard let url = Bundle.main.url(forResource: "Misbaha-Standalone", withExtension: "html") else {
-            webView.reload(); return
-        }
-        var comp = URLComponents(url: url, resolvingAgainstBaseURL: false)
-        comp?.query = "leger=1"
-        let cible = comp?.url ?? url
-        webView.loadFileURL(cible, allowingReadAccessTo: url.deletingLastPathComponent())
+        // 04/09 : on relance TOUJOURS l'app complete — intro, soie, animations.
+        // Le mode leger a ete supprime : il degradait l'app pour compenser les 3
+        // filtres plein ecran, qui sont partis. Deux tentatives au maximum, puis
+        // on s'arrete pour ne pas rejouer l'intro en boucle.
+        webView.reload()
     }
 
     // MARK: - Open external links in Safari
