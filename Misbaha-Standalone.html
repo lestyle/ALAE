@@ -2,7 +2,7 @@
 <meta charset="utf-8"><meta name="google" content="notranslate"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><title>آلَاء</title>
 <!-- Fond de l'intro decode en priorite : sans ce prechargement le premier
      dixieme de seconde reste noir avant que la soie n'apparaisse. -->
-<link rel="preload" as="image" href="assets/silk-boot.jpg">
+<link rel="preload" as="image" href="assets/silk-bg-inline.jpg">
 <script>/* Afficheur d'erreurs sur appareil : sans inspecteur Safari, une erreur JS
    laisse un écran blanc muet. Ici elle s'écrit en clair par-dessus la page. */
 (function(){function show(m){try{var d=document.getElementById('__err')||document.createElement('div');d.id='__err';d.style.cssText='position:fixed;inset:0;z-index:2147483647;background:#140708;color:#ffb4a2;font:13px/1.5 ui-monospace,monospace;padding:24px;overflow:auto;white-space:pre-wrap;direction:ltr;text-align:left';d.textContent=(d.textContent?d.textContent+'\n\n':'')+m;(document.body||document.documentElement).appendChild(d);}catch(e){}}
@@ -23,12 +23,16 @@ if(Date.now()-t0<60000)return;clearInterval(id);var m=[];if(!window.React)m.push
 @font-face { font-family: 'Amiri'; src: url('fonts/Amiri-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
 @font-face { font-family: 'Amiri Quran'; src: url('fonts/AmiriQuran.ttf') format('truetype'); font-weight: 400; font-display: block; }
 @font-face { font-family: 'QPCV4Tajweed'; src: url('fonts/QPC-V4-Tajweed.ttf') format('truetype'); font-weight: 400; font-display: swap; }
-html,body{margin:0;padding:0;background:url("assets/silk-boot.jpg") center/cover no-repeat,radial-gradient(ellipse 120% 96% at 50% 42%,#3A2E1E 0%,#241C12 44%,#15100A 74%,#0B0D10 100%);height:100%;overflow:hidden}
+html,body{margin:0;padding:0;background:radial-gradient(ellipse 110% 90% at 50% 45%,rgba(11,13,16,0.06),rgba(11,13,16,0.46) 96%),url("assets/silk-bg-inline.jpg") center/cover no-repeat,radial-gradient(ellipse 120% 96% at 50% 42%,#3A2E1E 0%,#241C12 44%,#15100A 74%,#0B0D10 100%);height:100%;overflow:hidden}
 /* Masquer toutes les barres de défilement (iOS / WebKit) */
 *::-webkit-scrollbar{width:0;height:0;display:none}
 *{scrollbar-width:none;-ms-overflow-style:none}
 *{-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
-:root{--silk-filter:brightness(0.95) saturate(1.32) contrast(1.13);--silk-veil:rgba(11,13,16,0.30)}
+/* --boot-veil : LA valeur unique du voile de demarrage. Les trois couches qui se
+   succedent avant l'app (premier frame html/body, l'intro, puis #silk-wallpaper)
+   la lisent toutes : elles sont donc rigoureusement identiques et ne peuvent plus
+   diverger. Les pages de l'app gardent --silk-veil (0.30), valide par Hicham. */
+:root{--silk-filter:brightness(0.95) saturate(1.32) contrast(1.13);--silk-veil:rgba(11,13,16,0.30);--boot-veil:radial-gradient(ellipse 110% 90% at 50% 45%,rgba(11,13,16,0.06),rgba(11,13,16,0.46) 96%)}
 .silk-bg-layer{filter:var(--silk-filter) !important;transition:filter 0.6s ease}
 .silk-veil-layer{background:var(--silk-vignette-soft, radial-gradient(ellipse 110% 90% at 50% 45%,rgba(11,13,16,0.03),var(--silk-veil) 96%)) !important;transition:background 0.6s ease}
 #root{position:fixed;inset:0;z-index:1}
@@ -38,7 +42,7 @@ html,body{margin:0;padding:0;background:url("assets/silk-boot.jpg") center/cover
    posent leurs propres .silk-bg-layer / .silk-veil-layer par-dessus). Il porte donc
    le même calage que l'intro — sinon la soie apparaît nue et éblouissante une seconde. */
 #silk-wallpaper::before{content:"";position:absolute;inset:0;background:var(--silk-img, url("assets/silk-bg-inline.jpg")) center/cover no-repeat;filter:var(--silk-filter)}
-#silk-wallpaper::after{content:"";position:absolute;inset:0;background:var(--silk-vignette, radial-gradient(ellipse 120% 100% at 50% 45%,rgba(11,13,16,0.05),var(--silk-veil) 98%));transition:background 0.6s ease}
+#silk-wallpaper::after{content:"";position:absolute;inset:0;background:var(--silk-vignette, var(--boot-veil));transition:background 0.6s ease}
 /* silkVeilIn retire le 31/08 : le voile montait de 8 % a 100 % sur 2,6 s, ce qui
    laissait la soie nue et eblouissante entre l'intro et le Dou'a du jour. Il est
    maintenant a pleine densite des la premiere image. */
@@ -73,13 +77,21 @@ html,body{margin:0;padding:0;background:url("assets/silk-boot.jpg") center/cover
 #boot-intro.bi-out{animation:biOut 1s ease forwards;pointer-events:none;}
 @keyframes biIn{from{opacity:0}to{opacity:1}}
 @keyframes biOut{from{opacity:1}to{opacity:0;visibility:hidden}}
-#boot-intro .bi-bg{position:absolute;inset:-14px;background:url("assets/silk-boot.jpg") center/cover no-repeat;filter:brightness(.95) saturate(1.32) contrast(1.13);}
-#boot-intro .bi-veil{position:absolute;inset:0;background:radial-gradient(ellipse 92% 74% at 50% 45%,rgba(11,13,16,.12) 0%,rgba(9,10,13,.5) 62%,rgba(6,7,9,.74) 100%);}
+/* Exactement le fond de la page Dou'a du jour : meme image, aucun filtre.
+   L'intro et l'app sont donc rigoureusement identiques, plus de rupture. */
+/* Valeurs reprises TELLES QUELLES du composant de fond des pages de l'app
+   (.silk-bg-layer / .silk-veil-layer, voir :root plus haut) : meme image, meme
+   filtre, meme voile. L'intro et la page Dou'a sont donc identiques.
+   L'eclat orange venait de .bi-warm, pas du filtre. */
+#boot-intro .bi-bg{position:absolute;inset:-14px;background:url("assets/silk-bg-inline.jpg") center/cover no-repeat;filter:brightness(0.95) saturate(1.32) contrast(1.13);}
+#boot-intro .bi-veil{position:absolute;inset:0;background:var(--boot-veil);}
 #boot-intro .bi-scrim{display:none;}
-#boot-intro .bi-warm{position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;background:radial-gradient(ellipse 118% 96% at 50% 52%,rgba(255,206,138,.72) 0%,rgba(246,178,96,.44) 56%,rgba(228,150,70,.10) 90%);}
+#boot-intro .bi-warm{display:none;}
 #boot-intro .bi-bloom{position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);width:240px;height:200px;mix-blend-mode:screen;background:radial-gradient(ellipse 54% 44% at 50% 50%,rgba(255,216,150,.05) 0%,rgba(244,176,96,.02) 46%,rgba(228,150,70,0) 76%);filter:blur(26px);animation:biBloom 5.5s ease-in-out infinite;}
 @keyframes biBloom{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1)}50%{opacity:.78;transform:translate(-50%,-50%) scale(1.05)}}
-#boot-intro .bi-col{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px;transform:translateY(-30px);text-align:center;opacity:0;transition:opacity .6s ease;}
+/* opacity 1 des le depart : avant, le contenu attendait les polices et on ne
+   voyait que la soie nue pendant une seconde — c'est l'« ecran » signale. */
+#boot-intro .bi-col{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:16px;transform:translateY(-30px);text-align:center;opacity:1;}
 #boot-intro .bi-col.bi-ready{opacity:1;}
 #boot-intro .bi-bism{font-family:"Amiri Quran","Amiri",serif;direction:rtl;font-size:35px;line-height:2.3;padding:8px 12px;color:transparent;background:linear-gradient(180deg,#FFEFC8 0%,#F4D89B 30%,#E8B97A 56%,#C7935B 80%,#8B5A2A 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 1px 3px rgba(0,0,0,.55));animation:biBism 7s ease-in-out infinite;}
 @keyframes biBism{0%,100%{opacity:1}50%{opacity:.9}}
@@ -290,8 +302,8 @@ if(window.__alaeLeger){
 </script>
 <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0d0a06"/><circle cx="50" cy="50" r="26" fill="none" stroke="#E8B97A" stroke-width="3"/><rect x="44" y="30" width="12" height="11" rx="1.5" fill="#0A0808" stroke="#F4D89B" stroke-width="2"/><path d="M50 44 L46 60 L54 60 Z" fill="#F4D89B"/></svg></template><div id="silk-wallpaper" aria-hidden="true"></div><div id="root"></div>
 <!-- Écran de démarrage STATIQUE (HTML pur) : s'affiche tout de suite, avant que React/Babel ne soient prêts -->
-<div id="boot-splash" aria-hidden="true" style="position:fixed;inset:0;z-index:2;pointer-events:none;opacity:1;transition:opacity .6s ease;background:#0B0D10 url('assets/silk-boot.jpg') center/cover no-repeat">
-<div style="position:absolute;inset:0;background:radial-gradient(ellipse 120% 100% at 50% 45%,rgba(11,13,16,.05),rgba(11,13,16,.82) 98%)"></div>
+<div id="boot-splash" aria-hidden="true" style="position:fixed;inset:0;z-index:2;pointer-events:none;opacity:1;transition:opacity .6s ease;background:#0B0D10 url('assets/silk-bg-inline.jpg') center/cover no-repeat;filter:brightness(0.95) saturate(1.32) contrast(1.13)">
+<div style="position:absolute;inset:0;background:var(--boot-veil)"></div>
 </div>
 <script>/* calligraphies inline (data-URI) — affichage garanti hors-ligne */
 window.ASSETS = {"assets/mihrab-floral.png": "assets/floral-frame.png", "assets/logo.png": "assets/logo.png", "assets/silk-bg.png": "assets/silk-bg-inline.jpg"};
