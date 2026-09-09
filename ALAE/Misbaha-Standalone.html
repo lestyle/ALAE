@@ -13,13 +13,16 @@ window.addEventListener('unhandledrejection',function(e){show('PROMESSE REJETEE\
    compte, React n'est toujours pas là — jamais pendant que l'app démarre encore. */
 window.addEventListener('load',function(){var t0=Date.now();var id=setInterval(function(){var r=document.getElementById('root');if(window.React&&window.ReactDOM&&r&&r.children.length){clearInterval(id);var d=document.getElementById('__err');if(d&&/DIAGNOSTIC/.test(d.textContent))d.remove();return;}
 if(Date.now()-t0<60000)return;clearInterval(id);var m=[];if(!window.React)m.push('React ABSENT');if(!window.ReactDOM)m.push('ReactDOM ABSENT');if(r&&!r.children.length)m.push('#root VIDE');if(m.length)show('DIAGNOSTIC\n'+m.join('\n'));},500);});})();
-</script><meta name="theme-color" content="#0B0D10"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&family=Amiri:wght@400;700&family=Amiri+Quran&family=Cairo:wght@300;400;500;600&family=Noto+Nastaliq+Urdu:wght@700&display=swap" rel="stylesheet"><style>
+</script><meta name="theme-color" content="#0B0D10"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Nastaliq+Urdu:wght@700&display=swap" rel="stylesheet"><style>
 @font-face { font-family: 'Amiri'; src: url('fonts/Amiri-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
 @font-face { font-family: 'ArefRuqaa'; src: url('fonts/ArefRuqaa-Regular.ttf') format('truetype'); font-weight: 400; font-display: block; }
 @font-face { font-family: 'ArefRuqaa'; src: url('fonts/ArefRuqaa-Bold.ttf') format('truetype'); font-weight: 700; font-display: block; }
 @font-face { font-family: 'ScheherazadeNew'; src: url('fonts/ScheherazadeNew-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
 @font-face { font-family: 'ScheherazadeNew'; src: url('fonts/ScheherazadeNew-Medium.ttf') format('truetype'); font-weight: 500; font-display: swap; }
 @font-face { font-family: 'ReemKufi'; src: url('fonts/ReemKufi-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'ReemKufi'; src: url('fonts/ReemKufi-Medium.ttf') format('truetype'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'ReemKufi'; src: url('fonts/ReemKufi-SemiBold.ttf') format('truetype'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'ReemKufi'; src: url('fonts/ReemKufi-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
 @font-face { font-family: 'Amiri'; src: url('fonts/Amiri-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
 @font-face { font-family: 'Amiri Quran'; src: url('fonts/AmiriQuran.ttf') format('truetype'); font-weight: 400; font-display: block; }
 @font-face { font-family: 'QPCV4Tajweed'; src: url('fonts/QPC-V4-Tajweed.ttf') format('truetype'); font-weight: 400; font-display: swap; }
@@ -40,9 +43,18 @@ html,body{margin:0;padding:0;background:radial-gradient(ellipse 120% 96% at 50% 
    (~5 Mo par calque), meme sur une image fixe — c'est ce qui faisait tuer le
    moteur web ~2 s apres l'intro, donc rechargement en mode leger et fond perdu.
    La teinte est desormais cuite dans silk-bg-inline.jpg. */
-:root{--silk-filter:none;--silk-veil:rgba(11,13,16,0.30);--boot-veil:radial-gradient(ellipse 110% 90% at 50% 45%,rgba(11,13,16,0.06),rgba(11,13,16,0.46) 96%);--boot-filter:none}
+/* --silk-gloss : uniquement la profondeur du bas. Les bandes speculaires blanches ont
+   toutes ete retirees : posees par .silk-veil-layer sur TOUTE l'app, elles delavaient
+   l'image et grisaient les noirs au lieu de les faire briller. */
+:root{--silk-gloss:radial-gradient(ellipse 118% 72% at 50% 112%,rgba(0,0,0,0.42),rgba(0,0,0,0) 58%);--silk-filter:none;--silk-tone:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0));--silk-veil:rgba(11,13,16,0.22);--boot-veil:radial-gradient(ellipse 110% 90% at 50% 45%,rgba(11,13,16,0.06),rgba(11,13,16,0.46) 96%);--boot-filter:none}
 .silk-bg-layer{transition:opacity 0.6s ease}
-.silk-veil-layer{background:var(--silk-vignette-soft, radial-gradient(ellipse 110% 90% at 50% 45%,rgba(11,13,16,0.03),var(--silk-veil) 96%)) !important;transition:background 0.6s ease}
+/* Le reglage de luminosite vit ICI : un calque colle a l'image elle-meme, sous le
+   voile et sous toutes les pages. Il ne peut donc plus delaver les cartes ni les textes. */
+.silk-bg-layer::after{content:"";position:absolute;inset:0;background:var(--silk-tone);transition:background 0.6s ease;pointer-events:none}
+/* --silk-tone : reglage de luminosite. Pose UNIQUEMENT sur l'image de fond
+   (#silk-wallpaper::after), jamais sur .silk-veil-layer qui couvre toute l'app —
+   sinon le reglage delave aussi les pages et les textes. */
+.silk-veil-layer{background:var(--silk-gloss),var(--silk-vignette-soft, radial-gradient(ellipse 110% 90% at 50% 45%,rgba(11,13,16,0.03),var(--silk-veil) 96%)) !important;transition:background 0.6s ease}
 #root{position:fixed;inset:0;z-index:1}
 /* Fond d'écran (soie) plein écran — derrière l'app, comble toute zone de letterbox / safe-area */
 #silk-wallpaper{position:fixed;inset:0;z-index:0;background:#0B0D10;pointer-events:none}
@@ -50,7 +62,7 @@ html,body{margin:0;padding:0;background:radial-gradient(ellipse 120% 96% at 50% 
    posent leurs propres .silk-bg-layer / .silk-veil-layer par-dessus). Il porte donc
    le même calage que l'intro — sinon la soie apparaît nue et éblouissante une seconde. */
 #silk-wallpaper::before{content:"";position:absolute;inset:0;background:var(--silk-img, url("assets/silk-bg-inline.jpg")) center/cover no-repeat}
-#silk-wallpaper::after{content:"";position:absolute;inset:0;background:var(--silk-vignette, var(--boot-veil));transition:background 0.6s ease}
+#silk-wallpaper::after{content:"";position:absolute;inset:0;background:var(--silk-gloss),var(--silk-tone),var(--silk-vignette, var(--boot-veil));transition:background 0.6s ease}
 /* silkVeilIn retire le 31/08 : le voile montait de 8 % a 100 % sur 2,6 s, ce qui
    laissait la soie nue et eblouissante entre l'intro et le Dou'a du jour. Il est
    maintenant a pleine densite des la premiere image. */
@@ -92,7 +104,7 @@ html,body{margin:0;padding:0;background:radial-gradient(ellipse 120% 96% at 50% 
    filtre, meme voile. L'intro et la page Dou'a sont donc identiques.
    L'eclat orange venait de .bi-warm, pas du filtre. */
 #boot-intro .bi-bg{position:absolute;inset:-14px;background:url("assets/silk-bg-inline.jpg") center/cover no-repeat;}
-#boot-intro .bi-veil{position:absolute;inset:0;background:var(--boot-veil);}
+#boot-intro .bi-veil{position:absolute;inset:0;background:var(--silk-gloss),var(--boot-veil);}
 #boot-intro .bi-scrim{display:none;}
 #boot-intro .bi-warm{display:none;}
 #boot-intro .bi-bloom{position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);width:240px;height:200px;mix-blend-mode:screen;background:radial-gradient(ellipse 54% 44% at 50% 50%,rgba(255,216,150,.05) 0%,rgba(244,176,96,.02) 46%,rgba(228,150,70,0) 76%);filter:blur(26px);animation:biBloom 5.5s ease-in-out infinite;}
@@ -134,8 +146,54 @@ html,body{margin:0;padding:0;background:radial-gradient(ellipse 120% 96% at 50% 
    n'a plus de raison d'etre — il degradait l'app pour compenser un probleme qui
    n'existe plus. Si le moteur est quand meme tue, ViewController.swift relance
    l'app COMPLETE (2 tentatives, puis il s'arrete pour ne pas boucler). */
+/* 07/09 — PERSISTANCE DES REGLAGES. La page est servie en file:// : WebKit lui
+   donne une origine opaque et son localStorage repart vide a chaque lancement.
+   Langue, theme, luminosite, total des dhikr etaient donc perdus a chaque
+   redemarrage. Ce miroir ne change AUCUN appel existant : il rejoue la copie
+   native au demarrage, puis renvoie le localStorage complet a l'app iOS des
+   qu'il change. Hors application (navigateur, simulateur), il ne fait rien. */
+(function(){
+  if(typeof window.__alaeStore !== 'string') return;
+  var pont=null; try{ if(window.webkit&&window.webkit.messageHandlers) pont=window.webkit.messageHandlers.alae; }catch(e){}
+  try{
+    var copie=JSON.parse(window.__alaeStore)||{};
+    for(var k in copie){ if(Object.prototype.hasOwnProperty.call(copie,k)) localStorage.setItem(k,copie[k]); }
+  }catch(e){}
+  if(!pont) return;
+  var minuteur=null;
+  function renvoyer(){
+    if(minuteur) return;                       /* groupe les rafales d'ecritures */
+    minuteur=setTimeout(function(){
+      minuteur=null;
+      try{
+        var tout={};
+        for(var i=0;i<localStorage.length;i++){ var c=localStorage.key(i); tout[c]=localStorage.getItem(c); }
+        pont.postMessage({type:'store', data:JSON.stringify(tout)});
+      }catch(e){}
+    },250);
+  }
+  var P=Storage.prototype, set=P.setItem, sup=P.removeItem, vide=P.clear;
+  P.setItem=function(){ var r=set.apply(this,arguments); if(this===localStorage) renvoyer(); return r; };
+  P.removeItem=function(){ var r=sup.apply(this,arguments); if(this===localStorage) renvoyer(); return r; };
+  P.clear=function(){ var r=vide.apply(this,arguments); if(this===localStorage) renvoyer(); return r; };
+})();
+/* 07/09 — FILET ANTI-BOUCLE. Si iOS tue le moteur web et que Swift recharge la
+   page, l'intro repartait de zero. On horodate la fin de l'intro : tout
+   rechargement dans les 2 minutes saute l'intro ET le Dou'a.
+   L'horodatage vient d'abord de l'app native (window.__alaeBootAt, injecte par
+   ViewController avant le premier script) : la page est servie en file://, ou
+   WebKit donne une origine opaque et ne relit pas localStorage apres un
+   rechargement. localStorage ne sert plus que de secours hors application. */
+window.__alaeRelance=(function(){ try{ var t=parseInt(window.__alaeBootAt||0,10); if(!(t>0)){ t=parseInt(localStorage.getItem('alae.bootAt')||'0',10); } return t>0 && (Date.now()-t)<120000; }catch(e){ return false; } })();
 (function(){
   var root=document.getElementById('boot-intro'); if(!root) return;
+  if(window.__alaeRelance){
+    if(root.parentNode) root.parentNode.removeChild(root);
+    var _c=document.getElementById('boot-intro-css'); if(_c&&_c.parentNode) _c.parentNode.removeChild(_c);
+    window.__bootIntroDone=true;
+    try{ window.dispatchEvent(new Event('boot-intro-done')); }catch(e){}
+    return;
+  }
   var bg=root.querySelector('.bi-bg');
   var alae=root.querySelector('.bi-alae');
   var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -181,7 +239,7 @@ html,body{margin:0;padding:0;background:radial-gradient(ellipse 120% 96% at 50% 
   var START=1000,GAP=1550,BEATS=3,i;
   var LAST=START+(BEATS-1)*GAP;
   var ended=false;
-  function fini(){ if(root&&root.parentNode) root.parentNode.removeChild(root); var s=document.getElementById('boot-intro-css'); if(s&&s.parentNode) s.parentNode.removeChild(s); window.__bootIntroDone=true; try{ window.dispatchEvent(new Event('boot-intro-done')); }catch(e){} }
+  function fini(){ if(root&&root.parentNode) root.parentNode.removeChild(root); var s=document.getElementById('boot-intro-css'); if(s&&s.parentNode) s.parentNode.removeChild(s); window.__bootIntroDone=true; try{ localStorage.setItem('alae.bootAt', String(Date.now())); }catch(e){} try{ if(window.webkit&&window.webkit.messageHandlers&&window.webkit.messageHandlers.alae){ window.webkit.messageHandlers.alae.postMessage({type:'bootAt'}); } }catch(e){} try{ window.dispatchEvent(new Event('boot-intro-done')); }catch(e){} }
   function retirer(rapide){
     if(rapide){
       /* Sortie au doigt : fondu en ligne (pas les keyframes biOut, qui repartent
@@ -204,7 +262,9 @@ html,body{margin:0;padding:0;background:radial-gradient(ellipse 120% 96% at 50% 
     var lance=false;
     function go(){ if(lance) return; lance=true; retirer(rapide); }
     window.addEventListener('alae-peint', go);
-    setTimeout(go, 6000); // filet de securite (large : en apercu web React vient du CDN)
+    setTimeout(go, 6000); // 07/09 : REMIS A 6000. Baisse a 2200 le 06/09, ce delai
+    // retirait l'intro AVANT que React ait peint : en wifi React met plus de 2,2 s
+    // a monter, d'ou l'enchainement intro > Dou'a > intro. 1.0.15 attendait 6 s.
   }
   /* Toucher n'importe ou entre dans l'app TOUT DE SUITE : on retire l'intro sans
      attendre alae-peint, car le splash statique (meme fond, meme voile) prend le
@@ -300,20 +360,91 @@ html,body{margin:0;padding:0;background:radial-gradient(ellipse 120% 96% at 50% 
 <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0d0a06"/><circle cx="50" cy="50" r="26" fill="none" stroke="#E8B97A" stroke-width="3"/><rect x="44" y="30" width="12" height="11" rx="1.5" fill="#0A0808" stroke="#F4D89B" stroke-width="2"/><path d="M50 44 L46 60 L54 60 Z" fill="#F4D89B"/></svg></template><div id="silk-wallpaper" aria-hidden="true"></div><div id="root"></div>
 <!-- Écran de démarrage STATIQUE (HTML pur) : s'affiche tout de suite, avant que React/Babel ne soient prêts -->
 <div id="boot-splash" aria-hidden="true" style="position:fixed;inset:0;z-index:2;pointer-events:none;opacity:1;transition:opacity .6s ease;background:#0B0D10 url('assets/silk-bg-inline.jpg') center/cover no-repeat">
-<div style="position:absolute;inset:0;background:var(--boot-veil)"></div>
+<div style="position:absolute;inset:0;background:var(--silk-gloss),var(--boot-veil)"></div>
 </div>
 <script>/* calligraphies inline (data-URI) — affichage garanti hors-ligne */
 window.ASSETS = {"assets/mihrab-floral.png": "assets/floral-frame.png", "assets/logo.png": "assets/logo.png", "assets/silk-bg.png": "assets/silk-bg-inline.jpg"};
 /* Fonds d'écran disponibles selon le thème choisi dans Réglages */
-window.ALAE_FONDS = {gold:"assets/silk-bg-inline.jpg", bordeaux:"assets/silk-bg-inline.jpg", copper:"assets/silk-bg-inline.jpg", nuit:"assets/silk-nuit.jpg", bahrayn:"assets/silk-bahrayn.jpg", amouage:"assets/silk-amouage-fond.jpg"};
+window.ALAE_FONDS = {gold:"assets/silk-bg-inline.jpg", bordeaux:"assets/silk-bg-inline.jpg", copper:"assets/silk-bg-inline.jpg", nuit:"assets/silk-nuit.jpg", koutoubia:"assets/silk-koutoubia.jpg", amouage:"assets/silk-amouage-fond.jpg"};
 /* Le voile de chaque fond, connu dès le 1er cadre : pas de flash d'image nue */
-window.ALAE_VOILES = {bahrayn:'none'};
+window.ALAE_VOILES = {bahrayn:'none', gold:'none', koutoubia:'none'};
 /* Variante adoucie : même esprit, mais l'ouverture centrale reste large pour ne pas
    noyer les cartes des écrans (dou'a, horaires…). */
-window.ALAE_VOILES_DOUX = {bahrayn:'none'};
-try{var _t=(JSON.parse(localStorage.getItem('misbaha.v1')||'{}').theme)||'gold';window.ALAE_SILK=window.ALAE_FONDS[_t]||'assets/silk-bg-inline.jpg';if(_t==='bahrayn'){document.documentElement.style.setProperty('--silk-glow','radial-gradient(ellipse 26% 14% at 40% 45%, rgba(255,240,206,0.30) 0%, rgba(255,222,164,0.12) 50%, rgba(255,214,150,0) 80%), radial-gradient(ellipse 72% 26% at 48% 80%, rgba(255,208,146,0.34) 0%, rgba(255,186,112,0.16) 44%, rgba(250,170,96,0) 82%)');document.documentElement.style.setProperty('--silk-eclat','brightness(1.06) saturate(1.14) contrast(1.07)');}if(window.ALAE_VOILES[_t]){document.documentElement.style.setProperty('--silk-vignette',window.ALAE_VOILES[_t]);document.documentElement.style.setProperty('--silk-vignette-soft',window.ALAE_VOILES_DOUX[_t]);}}catch(e){window.ALAE_SILK='assets/silk-bg-inline.jpg';}
+window.ALAE_VOILES_DOUX = {bahrayn:'none', gold:'none', koutoubia:'none'};
+/* Trois nuances pour Koutoubia. L'etalonnage est fait DANS l'image, pas par un
+   voile CSS : un voile pose a plat eteint la photo (on l'a vu, elle devenait noire)
+   alors qu'une version etalonnee garde ses noirs profonds ET son soleil vif.
+   Une seule image est decodee a la fois : le cout memoire reste celui d'un fond.
+     0 tamise   — luminance 14 %, la vague devient silhouette, l'or ressort net
+     1 normal   — 18 %, l'equilibre du couchant
+     2 lumineux — 28 %, l'orange chante, la photo domine */
+window.ALAE_CRANS_IMG = {koutoubia:['assets/silk-koutoubia-tamise.jpg','assets/silk-koutoubia.jpg','assets/silk-koutoubia-clair.jpg']};
+try{var _t=(JSON.parse(localStorage.getItem('misbaha.v1')||'{}').theme)||'gold';if(_t==='bahrayn')_t='gold';window.ALAE_SILK=window.ALAE_FONDS[_t]||'assets/silk-bg-inline.jpg';if(_t==='bahrayn'){document.documentElement.style.setProperty('--silk-glow','radial-gradient(ellipse 26% 14% at 40% 45%, rgba(255,240,206,0.30) 0%, rgba(255,222,164,0.12) 50%, rgba(255,214,150,0) 80%), radial-gradient(ellipse 72% 26% at 48% 80%, rgba(255,208,146,0.34) 0%, rgba(255,186,112,0.16) 44%, rgba(250,170,96,0) 82%)');document.documentElement.style.setProperty('--silk-eclat','brightness(1.06) saturate(1.14) contrast(1.07)');}var _ci=window.ALAE_CRANS_IMG[_t];if(_ci){var _br=JSON.parse(localStorage.getItem('misbaha.v1')||'{}').brightness;if(_br==null||!(_br>=0&&_br<=2))_br=1;window.ALAE_SILK=_ci[_br];}if(window.ALAE_VOILES[_t]){document.documentElement.style.setProperty('--silk-vignette',window.ALAE_VOILES[_t]);document.documentElement.style.setProperty('--silk-vignette-soft',window.ALAE_VOILES_DOUX[_t]);}}catch(e){window.ALAE_SILK='assets/silk-bg-inline.jpg';}
 try{document.documentElement.style.setProperty('--silk-img','url(\"'+window.ALAE_SILK+'\")');}catch(e){}
 window.MOON_PHASES = ["assets/moon-1.png","assets/moon-2.png","assets/moon-3.png","assets/moon-4.png","assets/moon-5.png","assets/moon-6.png","assets/moon-7.png","assets/moon-8.png"];
+/* ── Position : UNE SEULE demande d'autorisation ──
+   Dans une WKWebView file://, iOS reaffiche sa fenetre a CHAQUE appel de
+   getCurrentPosition — et y montre le chemin du fichier au lieu du nom de l'app.
+   Il y avait trois appels independants (horaires, bouton "ma position", qibla) :
+   trois fenetres a la suite. Ce portier sert la position en cache, regroupe les
+   appels simultanes sur une seule demande, et passe par Swift (CoreLocation)
+   quand le pont existe : iOS montre alors sa fenetre standard, une seule fois. */
+window.alaePos = function(opts){
+  opts = opts || {};
+  var maxAge = opts.maxAge != null ? opts.maxAge : 86400000;
+  var CLE = 'alae.prayer.pos';
+  var c = null; try{ c = JSON.parse(localStorage.getItem(CLE)||'null'); }catch(e){}
+  if (c && c.lat && c.lon && c.ts && (Date.now()-c.ts) < maxAge) return Promise.resolve(c);
+  if (window.__alaePosEnCours) return window.__alaePosEnCours;
+
+  function nommer(pos, res){
+    fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?latitude='+pos.lat+'&longitude='+pos.lon+'&localityLanguage=fr')
+      .then(function(r){ return r.json(); })
+      .then(function(v){ pos.city = v.city || v.locality || v.principalSubdivision || null; })
+      .catch(function(){})
+      .then(function(){
+        try{ localStorage.setItem(CLE, JSON.stringify(pos)); }catch(e){}
+        window.__alaePosEnCours = null;
+        res(pos);
+      });
+  }
+
+  var pont = null;
+  try{ pont = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.alae; }catch(e){}
+  if (pont) {
+    window.__alaePosEnCours = new Promise(function(res, rej){
+      var fini = false, repli = 0;
+      function viaWeb(){
+        if (fini) return; fini = true;
+        if (!navigator.geolocation) { window.__alaePosEnCours = null; return rej(new Error('geoloc indisponible')); }
+        navigator.geolocation.getCurrentPosition(function(g){
+          nommer({ lat:g.coords.latitude, lon:g.coords.longitude, ts:Date.now() }, res);
+        }, function(e){ window.__alaePosEnCours = null; rej(e); },
+           { timeout: opts.timeout || 8000, maximumAge: 600000 });
+      }
+      window.__alaeLocOK = function(lat, lon){
+        if (fini) return; fini = true; clearTimeout(repli);
+        nommer({ lat:lat, lon:lon, ts:Date.now() }, res);
+      };
+      window.__alaeLocErr = function(){ clearTimeout(repli); viaWeb(); };
+      try{ pont.postMessage({ type:'location' }); }catch(e){ return viaWeb(); }
+      /* Si le Swift embarque est plus ancien et n'ecoute pas 'location', rien ne
+         repond : au bout de 2,5 s on retombe sur navigator.geolocation. */
+      repli = setTimeout(viaWeb, 2500);
+    });
+    return window.__alaePosEnCours;
+  }
+
+  if (!navigator.geolocation) return Promise.reject(new Error('geoloc indisponible'));
+  window.__alaePosEnCours = new Promise(function(res, rej){
+    navigator.geolocation.getCurrentPosition(function(g){
+      nommer({ lat:g.coords.latitude, lon:g.coords.longitude, ts:Date.now() }, res);
+    }, function(e){ window.__alaePosEnCours = null; rej(e); },
+       { timeout: opts.timeout || 8000, maximumAge: 600000 });
+  });
+  return window.__alaePosEnCours;
+};
+
 /* Calendrier des horaires : 14 jours d'avance, mis en cache pour marcher hors-ligne.
    C'est ce qui permet à chaque adhan de sonner à SON heure, jour par jour. */
 window.alaeChargerCalendrier = function(lat, lon){
@@ -326,19 +457,28 @@ window.alaeChargerCalendrier = function(lat, lon){
   var d=new Date(), y=d.getFullYear(), m=d.getMonth()+1;
   var ny = m===12 ? y+1 : y, nm = m===12 ? 1 : m+1;
   var lien=function(yy,mm){ return 'https://api.aladhan.com/v1/calendar/'+yy+'/'+mm+'?latitude='+lat+'&longitude='+lon+'&method=3'; };
-  return Promise.all([
-    fetch(lien(y,m)).then(function(r){return r.json();}).catch(function(){return null;}),
-    fetch(lien(ny,nm)).then(function(r){return r.json();}).catch(function(){return null;})
-  ]).then(function(res){
-    var tous=[];
-    res.forEach(function(j){ if(j && j.code===200 && Array.isArray(j.data)) j.data.forEach(function(x){
-      try{ tous.push({date:x.date.gregorian.date, timings:x.timings}); }catch(e){}
-    }); });
-    var t=new Date(); t.setHours(0,0,0,0);
-    var jours=tous.filter(function(x){
-      var p=String(x.date).split('-'); if(p.length!==3) return false;
-      return new Date(+p[2], +p[1]-1, +p[0]) >= t;
-    }).slice(0,14);
+  /* 07/09 : on telechargeait les DEUX mois en parallele, soit deux gros JSON
+     decodes en meme temps pendant le demarrage. Desormais un mois, puis le
+     suivant SEULEMENT s'il manque des jours, et l'un apres l'autre. */
+  var t=new Date(); t.setHours(0,0,0,0);
+  function extraire(j, dedans){
+    if(!(j && j.code===200 && Array.isArray(j.data))) return;
+    j.data.forEach(function(x){
+      try{
+        var p=String(x.date.gregorian.date).split('-');
+        if(p.length===3 && new Date(+p[2], +p[1]-1, +p[0]) >= t) dedans.push({date:x.date.gregorian.date, timings:x.timings});
+      }catch(e){}
+    });
+  }
+  function unMois(yy,mm){ return fetch(lien(yy,mm)).then(function(r){return r.json();}).catch(function(){return null;}); }
+  var jours=[];
+  return unMois(y,m).then(function(j1){
+    extraire(j1, jours);
+    if(jours.length>=14) return null;
+    return unMois(ny,nm);
+  }).then(function(j2){
+    extraire(j2, jours);
+    jours=jours.slice(0,14);
     if(!jours.length) return (c && c.jours) || null;
     try{ localStorage.setItem(CLE, JSON.stringify({ts:Date.now(), lat:lat, lon:lon, jours:jours})); }catch(e){}
     return jours;
@@ -435,7 +575,7 @@ window.getThemeAccent = function () {
   let t = 'gold';
   try {
     const s = JSON.parse(localStorage.getItem('misbaha.v1') || '{}');
-    t = (s.theme === 'royal' || s.theme === 'rose') ? 'gold' : (s.theme || 'gold');
+    t = (s.theme === 'royal' || s.theme === 'rose' || s.theme === 'bahrayn') ? 'gold' : (s.theme || 'gold');
   } catch (e) {}
   const MAP = {
     gold:     { solid: '#B27A42', bright: '#DDA469', dim: 'rgba(178,122,66,0.32)', grad: 'linear-gradient(180deg,#DDA469,#B27A42)' },
@@ -443,6 +583,7 @@ window.getThemeAccent = function () {
     rose:     { solid: '#C88A6A', bright: '#E6B59A', dim: 'rgba(200,138,106,0.32)', grad: 'linear-gradient(180deg,#E6B59A,#B26E58)' },
     nuit:     { solid: '#B08A55', bright: '#DCBA80', dim: 'rgba(176,138,85,0.32)',   grad: 'linear-gradient(180deg,#DCBA80,#8E6C3C)' },
     bahrayn:  { solid: '#C79A5B', bright: '#E8C68A', dim: 'rgba(199,154,91,0.32)',  grad: 'linear-gradient(180deg,#E8C68A,#9A6E38)' },
+    koutoubia:{ solid: '#C98A4B', bright: '#EFC489', dim: 'rgba(201,138,75,0.32)', grad: 'linear-gradient(180deg,#EFC489,#9A6432)' },
     amouage:  { solid: '#5FA6B8', bright: '#92CFDD', dim: 'rgba(95,166,184,0.32)',   grad: 'linear-gradient(180deg,#92CFDD,#3F7C8C)' },
     copper:   { solid: '#BC7836', bright: '#E29F56', dim: 'rgba(188,120,54,0.32)',  grad: 'linear-gradient(180deg,#E8AE6A,#9C5C26)' },
   };
@@ -701,7 +842,11 @@ window.SilkBg = function SilkBg({ opacity = 1, blur = 0, watermark = false }) {
     }}>
       <div className="silk-bg-layer" style={{
         position:'absolute', inset:0,
-        backgroundImage:`url("${window.ALAE_SILK || window.ASSETS?.['assets/silk-bg.png'] || 'assets/silk-bg-inline.jpg'}")`,
+        // Passe par --silk-img, pas par window.ALAE_SILK : ce global n'est pas de l'etat
+        // React, donc il etait lu au rendu AVANT que l'effet ne le mette a jour — le
+        // fond restait sur le cran precedent a chaque appui. La variable CSS, elle,
+        // repeint tout de suite et sur tous les ecrans, sans re-rendu.
+        backgroundImage:'var(--silk-img, url("assets/silk-bg-inline.jpg"))',
         backgroundSize:'cover', backgroundPosition:'center',
         filter:'var(--silk-eclat, none)',
         opacity,
@@ -732,14 +877,10 @@ window.SilkBg = function SilkBg({ opacity = 1, blur = 0, watermark = false }) {
   );
 };
 
-window.OrnaFrame = function OrnaFrame({ children, inset = 22 }) {
-  const T = window.THEME;
-  return (
-    <>
-      <window.SilkBg opacity={0.5} />
-      {children}
-    </>
-  );
+// N'ajoute PAS de soie : chaque ecran appelant monte deja son <SilkBg>. En remonter
+// une seconde ici la superposait au voile et delavait toute l'image.
+window.OrnaFrame = function OrnaFrame({ children }) {
+  return <>{children}</>;
 };
 
 // Reusable: tiny gold corner ornaments
@@ -899,7 +1040,11 @@ function Splash({ phase = 0, lang = 'fr' }) {
       }}>
         <div className="silk-bg-layer" style={{
           position:'absolute', inset:0,
-          backgroundImage:`url("${window.ALAE_SILK || window.ASSETS?.['assets/silk-bg.png'] || 'assets/silk-bg-inline.jpg'}")`,
+          // Passe par --silk-img, pas par window.ALAE_SILK : ce global n'est pas de l'etat
+        // React, donc il etait lu au rendu AVANT que l'effet ne le mette a jour — le
+        // fond restait sur le cran precedent a chaque appui. La variable CSS, elle,
+        // repeint tout de suite et sur tous les ecrans, sans re-rendu.
+        backgroundImage:'var(--silk-img, url("assets/silk-bg-inline.jpg"))',
           backgroundSize:'cover', backgroundPosition:'center',
         }}/>
         <div className="silk-veil-layer" style={{ position:'absolute', inset:0 }}/>
@@ -1015,7 +1160,7 @@ function Splash({ phase = 0, lang = 'fr' }) {
                      filter:'drop-shadow(0 2px 10px rgba(199,165,91,0.4))' }} />
         </div>
         <div style={{
-          fontFamily:'Inter, system-ui, sans-serif',
+          fontFamily:'-apple-system, system-ui, sans-serif',
           fontSize: 8, fontWeight:500,
           letterSpacing:'0.5em', textTransform:'uppercase',
           color:'rgba(232,200,140,0.75)',
@@ -1039,7 +1184,7 @@ function Splash({ phase = 0, lang = 'fr' }) {
               fontWeight: isAr ? 400 : 500, direction: isAr ? 'rtl' : 'ltr',
             }}>{I.onboardingTitle[0]}</div>
             <div style={{
-              fontFamily:isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif',
+              fontFamily:isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif',
               fontSize:13, color:T.textMuted,
               textAlign:'center', lineHeight:1.5, fontWeight:300, maxWidth:240,
               direction: isAr ? 'rtl' : 'ltr',
@@ -1053,7 +1198,7 @@ function Splash({ phase = 0, lang = 'fr' }) {
               width:'100%', height:50, borderRadius:25,
               background:`linear-gradient(180deg, ${T.goldLight}, ${T.gold})`,
               border:'none', color:'#1A1410',
-              fontFamily: isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif',
+              fontFamily: isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif',
               fontSize:14, fontWeight:600, letterSpacing:'0.1em', textTransform:'uppercase',
               cursor:'pointer',
               boxShadow:'0 8px 24px rgba(199,165,91,0.25), inset 0 1px 0 rgba(255,255,255,0.3)',
@@ -1189,12 +1334,12 @@ function Onboarding({ step = 0, lang = 'fr', onContinue, onSkip, onSettings, onM
           `}</style>
           {/* nappe de chaleur dorée descendant du haut */}
           <div style={{ position:'absolute', inset:0,
-            background:'radial-gradient(140% 80% at 50% -12%, rgba(255,206,128,0.42) 0%, rgba(255,176,84,0.20) 26%, rgba(247,150,58,0.08) 48%, rgba(255,170,80,0) 70%)',
+            background:'radial-gradient(120% 52% at 50% -14%, rgba(255,206,128,0.15) 0%, rgba(255,176,84,0.07) 24%, rgba(247,150,58,0.025) 42%, rgba(255,170,80,0) 62%)',
             animation:'alaeHeatShimmer 3.5s ease-in-out infinite' }}/>
           {/* faisceaux volumétriques (god-rays) en éventail depuis le haut */}
           <div style={{ position:'absolute', top:'-30%', left:'-60%', right:'-60%', height:'150%', transformOrigin:'50% 0%',
             mixBlendMode:'screen', filter:'blur(2px)',
-            background:'repeating-conic-gradient(from 90deg at 50% -8%, rgba(255,214,140,0) 0deg, rgba(255,214,140,0) 2.4deg, rgba(255,210,135,0.24) 5.4deg, rgba(255,224,160,0.09) 7.4deg, rgba(255,214,140,0) 9.6deg)',
+            background:'repeating-conic-gradient(from 90deg at 50% -8%, rgba(255,214,140,0) 0deg, rgba(255,214,140,0) 2.4deg, rgba(255,210,135,0.12) 5.4deg, rgba(255,224,160,0.045) 7.4deg, rgba(255,214,140,0) 9.6deg)',
             WebkitMaskImage:'linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0) 78%), linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 22%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)',
             WebkitMaskComposite:'source-in', maskComposite:'intersect',
             maskImage:'linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0) 78%), linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 22%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)',
@@ -1202,24 +1347,24 @@ function Onboarding({ step = 0, lang = 'fr', onContinue, onSkip, onSettings, onM
           {/* quelques faisceaux larges plus lumineux */}
           <div style={{ position:'absolute', top:'-25%', left:'0', right:'0', height:'140%', transformOrigin:'50% 0%', transform:'rotate(-7deg)',
             mixBlendMode:'screen', filter:'blur(6px)',
-            background:'repeating-conic-gradient(from 90deg at 50% -6%, rgba(255,228,170,0) 0deg, rgba(255,228,170,0) 7deg, rgba(255,222,158,0.2) 13deg, rgba(255,228,170,0) 19deg)',
+            background:'repeating-conic-gradient(from 90deg at 50% -6%, rgba(255,228,170,0) 0deg, rgba(255,228,170,0) 7deg, rgba(255,222,158,0.10) 13deg, rgba(255,228,170,0) 19deg)',
             WebkitMaskImage:'linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 82%)',
             maskImage:'linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 82%)',
             animation:'alaeRayBreathe 6s ease-in-out infinite' }}/>
           {/* rayons individuels : angles, largeurs, flous et rythmes tous différents — chacun bouge pour lui */}
           {[
-            {deg:-52, w:19, op:0.24, blur:10, dur:11.5, del:-0.4},
-            {deg:-41, w:13, op:0.27, blur:8,  dur:9.2,  del:-2.6},
-            {deg:-33, w:7,  op:0.20, blur:5,  dur:13.0, del:-5.1},
-            {deg:-24, w:11, op:0.24, blur:7,  dur:8.4,  del:-1.3},
-            {deg:-14, w:5,  op:0.18, blur:4,  dur:12.2, del:-6.4},
-            {deg:-6,  w:9,  op:0.23, blur:6,  dur:10.1, del:-3.5},
-            {deg:3,   w:6,  op:0.19, blur:4,  dur:14.0, del:-0.9},
-            {deg:11,  w:12, op:0.25, blur:7,  dur:8.9,  del:-4.7},
-            {deg:21,  w:8,  op:0.21, blur:5,  dur:12.6, del:-2.1},
-            {deg:30,  w:14, op:0.26, blur:8,  dur:9.7,  del:-5.9},
-            {deg:39,  w:6,  op:0.18, blur:4,  dur:13.4, del:-1.8},
-            {deg:50,  w:20, op:0.23, blur:10, dur:10.8, del:-3.9},
+            {deg:-52, w:19, op:0.12, blur:10, dur:11.5, del:-0.4},
+            {deg:-41, w:13, op:0.14, blur:8,  dur:9.2,  del:-2.6},
+            {deg:-33, w:7,  op:0.1, blur:5,  dur:13.0, del:-5.1},
+            {deg:-24, w:11, op:0.12, blur:7,  dur:8.4,  del:-1.3},
+            {deg:-14, w:5,  op:0.09, blur:4,  dur:12.2, del:-6.4},
+            {deg:-6,  w:9,  op:0.12, blur:6,  dur:10.1, del:-3.5},
+            {deg:3,   w:6,  op:0.1, blur:4,  dur:14.0, del:-0.9},
+            {deg:11,  w:12, op:0.13, blur:7,  dur:8.9,  del:-4.7},
+            {deg:21,  w:8,  op:0.11, blur:5,  dur:12.6, del:-2.1},
+            {deg:30,  w:14, op:0.13, blur:8,  dur:9.7,  del:-5.9},
+            {deg:39,  w:6,  op:0.09, blur:4,  dur:13.4, del:-1.8},
+            {deg:50,  w:20, op:0.12, blur:10, dur:10.8, del:-3.9},
           ].map((r,i) => (
             <div key={'r'+i} style={{ '--a':`${r.deg}deg`, position:'absolute', top:'-25%', left:'0', right:'0', height:'140%', transformOrigin:'50% 0%', transform:`rotate(${r.deg}deg)`,
               mixBlendMode:'screen', filter:`blur(${r.blur}px)`,
@@ -1230,9 +1375,9 @@ function Onboarding({ step = 0, lang = 'fr', onContinue, onSkip, onSettings, onM
           ))}
           {/* 3 rayons longs : ils descendent bien plus bas que les autres */}
           {[
-            {deg:-37, w:10, op:0.20, blur:8, dur:15.5, del:-2.2},
-            {deg:-2,  w:8,  op:0.17, blur:6, dur:17.0, del:-7.8},
-            {deg:34,  w:11, op:0.19, blur:8, dur:14.5, del:-4.6},
+            {deg:-37, w:10, op:0.1, blur:8, dur:15.5, del:-2.2},
+            {deg:-2,  w:8,  op:0.09, blur:6, dur:17.0, del:-7.8},
+            {deg:34,  w:11, op:0.1, blur:8, dur:14.5, del:-4.6},
           ].map((r,i) => (
             <div key={'lg'+i} style={{ '--a':`${r.deg}deg`, position:'absolute', top:'-25%', left:'0', right:'0', height:'190%', transformOrigin:'50% 0%', transform:`rotate(${r.deg}deg)`,
               mixBlendMode:'screen', filter:`blur(${r.blur}px)`,
@@ -1508,20 +1653,52 @@ function Onboarding({ step = 0, lang = 'fr', onContinue, onSkip, onSettings, onM
 
         {/* Title */}
         <div style={{
-          position:'absolute', top:430, left:20, right:20,
-          padding:'18px 22px', borderRadius:16,
-          background:'linear-gradient(180deg, rgba(11,13,16,0.40), rgba(11,13,16,0.25))',
-          backdropFilter:'blur(6px)', WebkitBackdropFilter:'blur(6px)',
-          border:'0.5px solid rgba(199,165,91,0.12)',
+          position:'absolute', top: isAr && step === 0 ? 340 : 430, left:20, right:20,
+          padding:'18px 22px',
           display:'flex', flexDirection:'column', alignItems:'center', gap:14,
           zIndex:5,
         }}>
+          {/* Page soleil : meme cadre que la carte de dhikr — rayon 22, fond ambre sombre,
+              flou 10px sature, double filet dore. Le fond du cadre porte la separation sous
+              les lettres dorees : alaeShine anime `filter`, l'enfant ne peut pas la porter. */}
+          <div style={isAr && step === 0 ? {
+            position:'relative', padding:'24px 26px', borderRadius:22, maxWidth:340,
+            background:'linear-gradient(180deg, rgba(20,14,8,0.42), rgba(20,14,8,0.30))',
+            backdropFilter:'blur(10px) saturate(1.15)', WebkitBackdropFilter:'blur(10px) saturate(1.15)',
+            border:'0.5px solid rgba(232,200,140,0.28)',
+            boxShadow:'0 10px 30px rgba(0,0,0,0.42), 0 0 18px rgba(205,127,50,0.16), inset 0 1px 0 rgba(255,240,200,0.10)',
+            display:'flex', flexDirection:'column', alignItems:'center', gap:14,
+          } : { width:'100%', display:'flex', flexDirection:'column', alignItems:'center', gap:14 }}>
+          {isAr && step === 0 && (
+            <>
+              {/* filet or interieur */}
+              <div style={{ position:'absolute', inset:6, borderRadius:16, border:'0.5px solid rgba(232,185,122,0.30)', pointerEvents:'none' }}/>
+              <div style={{ display:'flex', justifyContent:'center', alignItems:'center', gap:14 }}>
+                <div style={{ width:5, height:5, transform:'rotate(45deg)', background:'#F4D89B', boxShadow:'0 0 5px rgba(255,225,150,0.85)' }}/>
+                <div style={{ width:7, height:7, transform:'rotate(45deg)', background:'#FFE9B8', boxShadow:'0 0 7px rgba(255,225,150,0.95)' }}/>
+                <div style={{ width:5, height:5, transform:'rotate(45deg)', background:'#F4D89B', boxShadow:'0 0 5px rgba(255,225,150,0.85)' }}/>
+              </div>
+            </>
+          )}
           <div style={{
-            fontFamily: isAr ? '"QPC","Amiri Quran","Amiri",serif' : '"Cormorant Garamond","DM Serif Display",serif',
-            fontSize: isAr ? 30 : 30, color: T.text,
-            textAlign:'center', lineHeight:1.15, fontWeight: isAr ? 400 : 500,
+            // Page soleil (step 0) : calligraphie ArefRuqaa. Les autres etapes gardent QPC.
+            fontFamily: isAr ? (step === 0 ? '"ArefRuqaa","Amiri",serif' : '"QPC","Amiri Quran","Amiri",serif') : '"Cormorant Garamond",serif',
+            fontSize: isAr ? (step === 0 ? 36 : 30) : 30, color: T.text,
+            // La ruqʿah porte ses harakât haut : il lui faut de l'interligne pour respirer.
+            textAlign:'center', lineHeight: isAr && step === 0 ? 1.75 : 1.15, fontWeight: isAr ? 400 : 500,
             letterSpacing: isAr ? 0 : '-0.01em',
             direction: isAr ? 'rtl' : 'ltr',
+            // Page soleil : l'or coule dans les lettres (meme dorure animee que le compteur).
+            // L'ombre sombre ne peut PAS vivre ici : alaeShine anime `filter`, et une propriete
+            // animee ecrase l'inline a chaque frame. Elle est portee par le wrapper ci-dessous.
+            ...(isAr && step === 0 ? {
+              backgroundImage:'linear-gradient(105deg, #C7935B 0%, #E8B97A 14%, #FCE9B0 26%, #FFF6DA 40%, #FCE9B0 48%, #F4D89B 58%, #E8B97A 72%, #FFF1C8 84%, #D9A25E 100%)',
+              backgroundSize:'260% 100%',
+              WebkitBackgroundClip:'text', backgroundClip:'text', WebkitTextFillColor:'transparent',
+              animation:'alaeShine 5.5s ease-in-out infinite',
+            } : {
+              textShadow:'0 1px 3px rgba(0,0,0,0.85), 0 2px 14px rgba(0,0,0,0.6)',
+            }),
           }}>{title}</div>
           {ref && (
             <div style={{
@@ -1537,6 +1714,7 @@ function Onboarding({ step = 0, lang = 'fr', onContinue, onSkip, onSettings, onM
               direction: isAr ? 'rtl' : 'ltr',
             }}>{ref}</div>
           )}
+          </div>
         </div>
 
         {/* Step dots */}
@@ -1637,21 +1815,21 @@ function Onboarding({ step = 0, lang = 'fr', onContinue, onSkip, onSettings, onM
               position:'absolute', inset:0, zIndex:4, display:'flex', flexDirection:'column',
               alignItems:'center', justifyContent:'center', lineHeight:1, pointerEvents:'none',
             }}>
-              <span key={count} style={{ fontFamily:'"Cormorant Garamond","DM Serif Display",serif', fontSize:42, fontWeight:400,
+              <span key={count} style={{ fontFamily:'"Cormorant Garamond",serif', fontSize:42, fontWeight:400,
                 color:'transparent',
                 background:'linear-gradient(180deg, #F5DCA6 0%, #D9A85E 48%, #B07F3C 100%)',
                 WebkitBackgroundClip:'text', backgroundClip:'text',
                 filter:'drop-shadow(0 1px 4px rgba(201,124,46,0.4))',
                 letterSpacing:'0.04em',
               }}>{String(count).padStart(2,'0')}</span>
-              <span style={{ fontFamily:'Inter, sans-serif', fontSize:9.5, fontWeight:600, letterSpacing:'0.14em', color:'rgba(216,168,94,0.7)', marginTop:5, direction:'ltr' }}>{target} /</span>
+              <span style={{ fontFamily:'-apple-system, sans-serif', fontSize:9.5, fontWeight:600, letterSpacing:'0.14em', color:'rgba(216,168,94,0.7)', marginTop:5, direction:'ltr' }}>{target} /</span>
             </span>
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); if (onSkip) onSkip(); }}
             style={{
             background:'transparent', border:'none', color:T.textDim,
-            fontFamily: isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif',
+            fontFamily: isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif',
             fontSize:13, letterSpacing: isAr ? '0.04em' : '0.15em', cursor:'pointer',
             padding:'10px 24px',
             textTransform: isAr ? 'none' : 'uppercase',
@@ -1987,7 +2165,7 @@ function CompteurV1({ lang = 'fr', initialDhikr = 0, controlledDhikrIdx, onDhikr
         pointerEvents:'none', zIndex:4,
       }}>
         <div key={t.pulse} style={{
-          fontFamily:'"Cormorant Garamond","DM Serif Display",serif',
+          fontFamily:'"Cormorant Garamond",serif',
           fontSize:104, lineHeight:0.9, fontWeight:400,
           background:`linear-gradient(180deg, #F7D9B0 0%, #D08A4F 45%, #6E3E1C 100%)`,
           WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text',
@@ -1998,7 +2176,7 @@ function CompteurV1({ lang = 'fr', initialDhikr = 0, controlledDhikrIdx, onDhikr
         }}>{String(t.count).padStart(2,'0')}</div>
         <div style={{ width:40, height:0.5, background:_acc.dim, marginTop:10, marginBottom:8 }} />
         <div style={{
-          fontFamily:'Inter', fontSize:10, fontWeight:500, letterSpacing:'0.3em',
+          fontFamily:'-apple-system', fontSize:10, fontWeight:500, letterSpacing:'0.3em',
           color:_acc.dim,
         }}>{window.I18N[lang].target.toUpperCase()} · {dhikr.target}</div>
       </div>
@@ -2061,7 +2239,7 @@ function CompteurV2({ lang = 'fr', initialDhikr = 0, controlledDhikrIdx, onDhikr
         pointerEvents:'none', zIndex:4,
       }}>
         <div key={t.pulse} style={{
-          fontFamily:'"Cormorant Garamond","DM Serif Display",serif',
+          fontFamily:'"Cormorant Garamond",serif',
           fontSize:104, lineHeight:0.9, fontWeight:400,
           background:`linear-gradient(180deg, #F7D9B0 0%, #D08A4F 45%, #6E3E1C 100%)`,
           WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text',
@@ -2130,7 +2308,7 @@ function CompteurV3({ lang = 'fr', initialDhikr = 0, controlledDhikrIdx, onDhikr
         backdropFilter:'blur(8px)', WebkitBackdropFilter:'blur(8px)',
       }}>
         <span style={{
-          fontFamily:'Inter', fontSize:9, fontWeight:500, letterSpacing:'0.3em',
+          fontFamily:'-apple-system', fontSize:9, fontWeight:500, letterSpacing:'0.3em',
           color:'rgba(199,165,91,0.7)', textTransform:'uppercase',
         }}>{window.I18N[lang].target}</span>
         <span style={{ width:1, height:10, background:'rgba(199,165,91,0.25)' }} />
@@ -2147,7 +2325,7 @@ function CompteurV3({ lang = 'fr', initialDhikr = 0, controlledDhikrIdx, onDhikr
         pointerEvents:'none', zIndex:4,
       }}>
         <div key={t.pulse} style={{
-          fontFamily:'"Cormorant Garamond","DM Serif Display",serif',
+          fontFamily:'"Cormorant Garamond",serif',
           fontSize:104, lineHeight:0.9, fontWeight:400,
           background:`linear-gradient(180deg, #F7D9B0 0%, #D08A4F 45%, #6E3E1C 100%)`,
           WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text',
@@ -2524,13 +2702,13 @@ function LibraryScreen({ lang = 'fr', onAddDhikr, onEdit }) {
           <button onClick={() => { setEditMode(m => !m); if (navigator.vibrate) try { navigator.vibrate(6); } catch (_) {} }}
             style={{ background:'transparent', border:'none', padding:0, cursor:'pointer',
               color: editMode ? T.gold : T.goldLight,
-              fontFamily:isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif',
+              fontFamily:isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif',
               fontSize:13, fontWeight:600, whiteSpace:'nowrap' }}>
             {editMode ? L.done : L.edit}
           </button>
           <div style={{ width:1, height:13, background:T.hairline, flexShrink:0 }} />
           <div style={{
-            fontFamily:isAr ? 'Cairo, sans-serif' : '"Cormorant Garamond",serif',
+            fontFamily:isAr ? 'ReemKufi, sans-serif' : '"Cormorant Garamond",serif',
             fontSize:13, fontStyle: isAr ? 'normal' : 'italic',
             color:T.textMuted, whiteSpace:'nowrap',
           }}>{isAr ? 'مختاراتك وذكرى يومك' : (lang === 'fr' ? 'Tes favoris, gardés au chaud' : lang === 'nl' ? 'Je favorieten, dichtbij bewaard' : 'Your favourites, kept close')}</div>
@@ -2559,10 +2737,10 @@ function LibraryScreen({ lang = 'fr', onAddDhikr, onEdit }) {
           border:'0.5px solid rgba(232,200,140,0.28)', boxShadow:'0 14px 40px rgba(0,0,0,0.5)',
           direction: isAr ? 'rtl' : 'ltr',
         }}>
-          <span style={{ fontFamily:isAr ? 'Cairo, sans-serif' : '"Cormorant Garamond",serif', fontStyle: isAr ? 'normal' : 'italic', fontSize:14, color:T.textMuted }}>{L.deleted}</span>
+          <span style={{ fontFamily:isAr ? 'ReemKufi, sans-serif' : '"Cormorant Garamond",serif', fontStyle: isAr ? 'normal' : 'italic', fontSize:14, color:T.textMuted }}>{L.deleted}</span>
           <button onClick={handleUndo} style={{
             background:'transparent', border:'none', color:T.gold, cursor:'pointer',
-            fontFamily:isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif', fontSize:11, fontWeight:700, letterSpacing:isAr ? 0 : '0.15em', textTransform: isAr ? 'none' : 'uppercase',
+            fontFamily:isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif', fontSize:11, fontWeight:700, letterSpacing:isAr ? 0 : '0.15em', textTransform: isAr ? 'none' : 'uppercase',
           }}>{L.undo}</button>
         </div>
       )}
@@ -2577,7 +2755,7 @@ function SectionLabel({ text, lang }) {
       display:'flex', alignItems:'center', gap:10, margin:'10px 0 12px', padding:'0 4px',
     }}>
       <div style={{
-        fontFamily: lang === 'ar' ? 'Cairo, sans-serif' : 'Inter', fontSize: lang === 'ar' ? 13 : 9, fontWeight:600, letterSpacing: lang === 'ar' ? 0 : '0.3em',
+        fontFamily: lang === 'ar' ? 'ReemKufi, sans-serif' : '-apple-system', fontSize: lang === 'ar' ? 13 : 9, fontWeight:600, letterSpacing: lang === 'ar' ? 0 : '0.3em',
         color:T.gold, opacity: lang === 'ar' ? 0.95 : 0.7,
       }}>{text}</div>
       <div style={{ flex:1, height:0.5, background:T.hairline }}/>
@@ -2698,25 +2876,25 @@ function HistoryScreen({ lang = 'fr' }) {
           <svg width="54" height="54" viewBox="0 0 24 24" fill="none" style={{ marginBottom:18, opacity:0.5 }}>
             <path d="M4 19V9M10 19V5M16 19v-7M20 19H3" stroke={T.gold} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          <div style={{ fontFamily: isAr ? 'Cairo, sans-serif' : '"Cormorant Garamond",serif', fontSize: isAr ? 22 : 20, fontWeight: isAr ? 700 : 400, fontStyle: isAr ? 'normal' : 'italic', color:T.text, marginBottom:8 }}>{L.empty}</div>
-          <div style={{ fontFamily: isAr ? 'Cairo, sans-serif' : 'Inter', fontSize: isAr ? 14 : 12.5, lineHeight:1.7, color:T.textMuted }}>{L.emptySub}</div>
+          <div style={{ fontFamily: isAr ? 'ReemKufi, sans-serif' : '"Cormorant Garamond",serif', fontSize: isAr ? 22 : 20, fontWeight: isAr ? 700 : 400, fontStyle: isAr ? 'normal' : 'italic', color:T.text, marginBottom:8 }}>{L.empty}</div>
+          <div style={{ fontFamily: isAr ? 'ReemKufi, sans-serif' : '-apple-system', fontSize: isAr ? 14 : 12.5, lineHeight:1.7, color:T.textMuted }}>{L.emptySub}</div>
         </div>
       ) : (
       <React.Fragment>
       {/* hero stat */}
       <div style={{ position:'absolute', top:168, left:0, right:0, padding:'0 24px', zIndex:2 }}>
         <div style={{
-          fontFamily: isAr ? 'Cairo, sans-serif' : 'Inter', fontSize: isAr ? 13 : 9, fontWeight: isAr ? 600 : 500, letterSpacing: isAr ? 0 : '0.42em',
+          fontFamily: isAr ? 'ReemKufi, sans-serif' : '-apple-system', fontSize: isAr ? 13 : 9, fontWeight: isAr ? 600 : 500, letterSpacing: isAr ? 0 : '0.42em',
           color:'rgba(199,165,91,0.85)', textTransform: isAr ? 'none' : 'uppercase', marginBottom:8,
         }}>{I.streak} · {S.streak} {I.days}</div>
         <div style={{
-          fontFamily:'"DM Serif Display",serif', fontSize:88, lineHeight:0.9,
+          fontFamily:'"Cormorant Garamond",serif', fontSize:88, lineHeight:0.9,
           background:`linear-gradient(180deg, ${T.goldLight}, ${T.gold} 45%, ${T.goldDark})`,
           WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
           letterSpacing:'-0.04em', fontWeight:400,
         }}>{S.total7.toLocaleString()}</div>
         <div style={{
-          fontFamily: isAr ? 'Cairo, sans-serif' : '"Cormorant Garamond",serif', fontSize: isAr ? 15 : 13, fontStyle: isAr ? 'normal' : 'italic',
+          fontFamily: isAr ? 'ReemKufi, sans-serif' : '"Cormorant Garamond",serif', fontSize: isAr ? 15 : 13, fontStyle: isAr ? 'normal' : 'italic',
           color:T.textMuted, marginTop: isAr ? 2 : -4,
         }}>{L.thisWeek} · {S.today} {L.today}</div>
       </div>
@@ -2737,7 +2915,7 @@ function HistoryScreen({ lang = 'fr' }) {
                 }}>{w.value}</div>}
               </div>
               <div style={{
-                fontFamily: isAr ? 'Cairo, sans-serif' : 'Inter', fontSize: isAr ? 11 : 9, fontWeight:500, letterSpacing: isAr ? 0 : '0.08em',
+                fontFamily: isAr ? 'ReemKufi, sans-serif' : '-apple-system', fontSize: isAr ? 11 : 9, fontWeight:500, letterSpacing: isAr ? 0 : '0.08em',
                 color: w.isToday ? T.gold : T.textDim, textTransform: isAr ? 'none' : 'uppercase', whiteSpace:'nowrap',
               }}>{w.label}</div>
             </div>
@@ -2758,7 +2936,7 @@ function HistoryScreen({ lang = 'fr' }) {
               <div style={{ fontFamily:'"Cormorant Garamond",serif', fontSize:14, fontStyle:'italic', color:T.gold, minWidth:46, textAlign:'right' }}>{b.count.toLocaleString()}</div>
             </div>
           ))}
-          <div style={{ fontFamily: isAr ? 'Cairo, sans-serif' : 'Inter', fontSize: isAr ? 13 : 10, letterSpacing: isAr ? 0 : '0.2em', color:T.textMuted, textTransform: isAr ? 'none' : 'uppercase', marginTop:14, textAlign: isAr?'right':'left' }}>{S.totalAll.toLocaleString()} · {L.total}</div>
+          <div style={{ fontFamily: isAr ? 'ReemKufi, sans-serif' : '-apple-system', fontSize: isAr ? 13 : 10, letterSpacing: isAr ? 0 : '0.2em', color:T.textMuted, textTransform: isAr ? 'none' : 'uppercase', marginTop:14, textAlign: isAr?'right':'left' }}>{S.totalAll.toLocaleString()} · {L.total}</div>
         </div>
       )}
       </React.Fragment>
@@ -2787,7 +2965,9 @@ function SettingsScreen({ lang = 'fr', setLang }) {
       sound: s.sound === true,
       autoDark: s.autoDark !== false,
       darkMode: s.darkMode || 'off',  // 'auto' | 'on' | 'off' — OFF par défaut (pas d'assombrissement auto)
-      theme: ((s.theme === 'royal' || s.theme === 'rose') ? 'gold' : (s.theme || 'gold')),  // 'gold' | 'bordeaux' | 'rose' | 'copper'
+      // 06/09 : 'bahrayn' (Mishkat) retire de l'app — rebascule sur 'gold' pour
+      // les utilisateurs qui l'avaient enregistre.
+      theme: ((s.theme === 'royal' || s.theme === 'rose' || s.theme === 'bahrayn') ? 'gold' : (s.theme || 'gold')),  // 'gold' | 'bordeaux' | 'copper' | 'nuit' | 'amouage'
       notifEnabled: s.notifEnabled === true,
       notifBefore: (s.notifBefore ?? 0),       // 0 = adhan pile à l'heure (défaut)
       notifReciter: s.notifReciter || 'kouchi',
@@ -2986,14 +3166,14 @@ function SettingsScreen({ lang = 'fr', setLang }) {
       label: isAr ? 'المظهر' : (lang === 'fr' ? 'Thème' : lang === 'nl' ? 'Thema' : 'Theme'),
       value: settings.theme === 'bordeaux' ? (isAr ? '🟫 عنبر' : (lang === 'fr' ? '🟫 Ambre' : lang === 'nl' ? '🟫 Amber' : '🟫 Amber'))
            : settings.theme === 'nuit' ? (isAr ? '🌙 الكِسوة' : (lang === 'fr' ? '🌙 Kiswa' : lang === 'nl' ? '🌙 Kiswa' : '🌙 Kiswa'))
-           : settings.theme === 'bahrayn' ? (isAr ? '✨ مِشكَاة' : (lang === 'fr' ? '✨ Mishkat' : lang === 'nl' ? '✨ Mishkat' : '✨ Mishkat'))
+           : settings.theme === 'koutoubia' ? (isAr ? '🕌 الكُتُبِيَّة' : (lang === 'fr' ? '🕌 Koutoubia' : lang === 'nl' ? '🕌 Koutoubia' : '🕌 Koutoubia'))
            : settings.theme === 'amouage' ? '🌀 Amouage'
            : settings.theme === 'rose' ? (isAr ? '🌸 وردي هندي' : (lang === 'fr' ? '🌸 Rose indien' : lang === 'nl' ? '🌸 Indiaas roze' : '🌸 Indian Rose'))
            : settings.theme === 'copper' ? (isAr ? '🟠 نُحاس فاس' : (lang === 'fr' ? '🟠 Cuivre de Fès' : lang === 'nl' ? '🟠 Fez-koper' : '🟠 Fez Copper'))
            : (isAr ? '🟨 ذهب السلطان' : (lang === 'fr' ? '🟨 Or Sultan' : lang === 'nl' ? '🟨 Sultansgoud' : '🟨 Sultan Gold')),
       icon: 'moon',
       onClick: () => {
-        const opts = ['gold','bordeaux','copper','nuit','bahrayn','amouage'];
+        const opts = ['gold','bordeaux','copper','nuit','koutoubia','amouage'];
         const cur = opts.indexOf(settings.theme);
         saveSetting('theme', opts[(cur + 1) % opts.length]);
         if (navigator.vibrate) try { navigator.vibrate(12); } catch {}
@@ -3064,7 +3244,7 @@ function SettingsScreen({ lang = 'fr', setLang }) {
           <div style={{ width:4, height:4, transform:'rotate(45deg)', background:'#E8C88C', boxShadow:'0 0 4px rgba(255,225,150,0.8), 0 1px 2px rgba(0,0,0,0.6)', animation:'starSparkle 1.3s ease-in-out infinite', animationDelay:'0.88s' }}/>
         </div>
         <div style={{ fontFamily:'"Amiri Quran","Amiri",serif', fontSize:17, color:T.text, direction:'rtl', textAlign:'center', lineHeight:1.7, opacity:0.98, width:260, whiteSpace:'normal', wordBreak:'keep-all', boxSizing:'border-box', textShadow:'0 1px 4px rgba(0,0,0,0.6)', marginTop:13 }}>{I.tagline}</div>
-        <div style={{ fontFamily:'Inter', fontSize:9, letterSpacing:'0.3em', color:T.textDim, marginTop:12 }}>v 1.0.16</div>
+        <div style={{ fontFamily:'-apple-system', fontSize:9, letterSpacing:'0.3em', color:T.textDim, marginTop:12 }}>v 1.0.17</div>
       </div>
 
       <div className="settings-scroll" style={{ position:'absolute', top:330, left:20, right:20, bottom:24, overflowY:'auto', WebkitOverflowScrolling:'touch', zIndex:2, display:'flex', flexDirection:'column', gap:0 }}>
@@ -3084,7 +3264,7 @@ function SettingsScreen({ lang = 'fr', setLang }) {
             }}>
               <Icon name={r.icon || 'gear'} />
             </div>
-            <div style={{ flex:1, fontFamily:isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif', fontSize:15, fontWeight:500, color:T.text }}>{r.label}</div>
+            <div style={{ flex:1, fontFamily:isAr ? '"Amiri", serif' : '-apple-system, sans-serif', fontSize: isAr ? 18 : 15, fontWeight: isAr ? 700 : 500, color:T.text, textShadow:'0 1px 2px rgba(0,0,0,0.75)' }}>{r.label}</div>
             {r.toggle ? (
               <div style={{
                 width:38, height:22, borderRadius:11, padding:2,
@@ -3096,7 +3276,7 @@ function SettingsScreen({ lang = 'fr', setLang }) {
               </div>
             ) : r.value ? (
               <div style={{
-                fontFamily:isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif', fontSize:13, fontWeight:500, color:T.goldLight, display:'flex', alignItems:'center', gap:6,
+                fontFamily:isAr ? '"Amiri", serif' : '-apple-system, sans-serif', fontSize: isAr ? 15 : 13, fontWeight: isAr ? 700 : 500, color:T.goldLight, display:'flex', alignItems:'center', gap:6, textShadow:'0 1px 2px rgba(0,0,0,0.7)',
               }}>{r.value} {!r.accent && <span style={{ color:T.textMuted }}>›</span>}</div>
             ) : null}
           </div>
@@ -3107,14 +3287,14 @@ function SettingsScreen({ lang = 'fr', setLang }) {
       {langOpen && (
         <div onClick={() => setLangOpen(false)} style={{ position:'absolute', inset:0, zIndex:30, background:'rgba(6,5,3,0.55)', backdropFilter:'blur(4px)', WebkitBackdropFilter:'blur(4px)', display:'flex', alignItems:'center', justifyContent:'center', padding:24 }}>
           <div onClick={(e)=>e.stopPropagation()} style={{ width:'100%', maxWidth:300, borderRadius:20, overflow:'hidden', background:'linear-gradient(180deg, rgba(28,22,16,0.97), rgba(18,13,9,0.99))', border:'0.5px solid rgba(232,185,122,0.35)', boxShadow:'0 24px 60px rgba(0,0,0,0.6)' }}>
-            <div style={{ padding:'16px 20px', borderBottom:'0.5px solid rgba(199,165,91,0.15)', textAlign:'center', fontFamily:isAr?'Cairo,sans-serif':'Inter,sans-serif', fontSize:13, fontWeight:600, letterSpacing:isAr?0:'0.1em', color:T.gold, textTransform:isAr?'none':'uppercase' }}>{I.language}</div>
+            <div style={{ padding:'16px 20px', borderBottom:'0.5px solid rgba(199,165,91,0.15)', textAlign:'center', fontFamily:isAr?'ReemKufi,sans-serif':'-apple-system,sans-serif', fontSize:13, fontWeight:600, letterSpacing:isAr?0:'0.1em', color:T.gold, textTransform:isAr?'none':'uppercase' }}>{I.language}</div>
             {LANGS.map(l => {
               const on = l.id === lang;
               return (
                 <button key={l.id} onClick={() => { if(setLang) setLang(l.id); setLangOpen(false); if(navigator.vibrate) try{navigator.vibrate(10);}catch(_){} }}
                   style={{ width:'100%', display:'flex', alignItems:'center', gap:12, padding:'15px 20px', background: on?'rgba(199,165,91,0.10)':'transparent', border:'none', borderBottom:'0.5px solid rgba(199,165,91,0.08)', cursor:'pointer', textAlign:isAr?'right':'left', direction:isAr?'rtl':'ltr' }}>
                   <span style={{ fontSize:20 }}>{l.flag}</span>
-                  <span style={{ flex:1, fontFamily:l.id==='ar'?'Cairo,sans-serif':'Inter,sans-serif', fontSize:15, color: on?T.goldLight:T.text }}>{l.label}</span>
+                  <span style={{ flex:1, fontFamily:l.id==='ar'?'ReemKufi,sans-serif':'-apple-system,sans-serif', fontSize:15, color: on?T.goldLight:T.text }}>{l.label}</span>
                   {on && <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.5 12L13 5" stroke={T.gold} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
                 </button>
               );
@@ -3130,7 +3310,7 @@ function SettingsScreen({ lang = 'fr', setLang }) {
             <div style={{ display:'flex', justifyContent:'center', paddingTop:12 }}>
               <div style={{ width:40, height:4, borderRadius:2, background:'rgba(232,185,122,0.35)' }}/>
             </div>
-            <div style={{ padding:'14px 24px 18px', textAlign:'center', fontFamily:'Cairo,sans-serif', fontSize:17, fontWeight:700, color:T.goldLight, letterSpacing:'0.02em' }}>{isAr?'اختر المؤذّن':(lang==='fr'?'Choisir le mu\u2019addhin':lang==='nl'?'Kies de reciteur':'Choose the reciter')}</div>
+            <div style={{ padding:'14px 24px 18px', textAlign:'center', fontFamily:'ReemKufi,sans-serif', fontSize:17, fontWeight:700, color:T.goldLight, letterSpacing:'0.02em' }}>{isAr?'اختر المؤذّن':(lang==='fr'?'Choisir le mu\u2019addhin':lang==='nl'?'Kies de reciteur':'Choose the reciter')}</div>
             <div style={{ padding:'0 14px 6px' }}>
               {RECITERS.map(r => {
                 const on = r.id === settings.notifReciter;
@@ -3160,8 +3340,8 @@ function SettingsScreen({ lang = 'fr', setLang }) {
                       </div>
                     )}
                     <div style={{ flex:1, minWidth:0 }}>
-                      <div style={{ fontFamily:'Cairo,sans-serif', fontSize:17, fontWeight:on?700:500, color: on?T.goldLight:T.text, textAlign:'right', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{r.ar}</div>
-                      {playing && <div style={{ fontFamily:'Cairo,sans-serif', fontSize:12, color:T.gold, textAlign:'right', marginTop:2, opacity:0.9 }}>{isAr?'يُشغّل الآن…':(lang==='fr'?'Lecture…':'Playing…')}</div>}
+                      <div style={{ fontFamily:'ReemKufi,sans-serif', fontSize:17, fontWeight:on?700:500, color: on?T.goldLight:T.text, textAlign:'right', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{r.ar}</div>
+                      {playing && <div style={{ fontFamily:'ReemKufi,sans-serif', fontSize:12, color:T.gold, textAlign:'right', marginTop:2, opacity:0.9 }}>{isAr?'يُشغّل الآن…':(lang==='fr'?'Lecture…':'Playing…')}</div>}
                     </div>
                     <span style={{ fontSize:22, flexShrink:0 }}>{r.flag}</span>
                     {on && <div style={{ width:24, height:24, borderRadius:'50%', flexShrink:0, background:'linear-gradient(145deg,#F4D89B,#C7935B)', display:'flex', alignItems:'center', justifyContent:'center' }}><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3.5 8.5L6.5 11.5L12.5 5" stroke="#2a1c0c" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></div>}
@@ -3179,7 +3359,7 @@ function SettingsScreen({ lang = 'fr', setLang }) {
           padding:'11px 20px', borderRadius:22, whiteSpace:'nowrap',
           background:'rgba(16,12,8,0.96)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)',
           border:'0.5px solid rgba(232,200,140,0.4)', boxShadow:'0 12px 30px rgba(0,0,0,0.5), 0 0 18px rgba(201,124,46,0.3)',
-          fontFamily: isAr ? 'Cairo,sans-serif' : 'Inter,sans-serif', fontSize:13, fontWeight:600, color:T.goldLight,
+          fontFamily: isAr ? 'ReemKufi,sans-serif' : '-apple-system,sans-serif', fontSize:13, fontWeight:600, color:T.goldLight,
           display:'inline-flex', alignItems:'center', gap:8,
         }}>
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5l3 3 6-7" stroke={T.goldLight} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -3275,7 +3455,7 @@ function DhikrDetailScreen({ lang = 'fr', dhikrIdx = 0, onStart }) {
           backdropFilter:'blur(6px)', WebkitBackdropFilter:'blur(6px)',
           border:'0.5px solid rgba(199,165,91,0.12)',
         }}>
-          <div style={{ fontFamily:'Inter, sans-serif', fontSize:9.5, letterSpacing:'0.3em', color:T.textDim, textTransform:'uppercase', marginBottom:6 }}>{labels.meaning}</div>
+          <div style={{ fontFamily:'-apple-system, sans-serif', fontSize:9.5, letterSpacing:'0.3em', color:T.textDim, textTransform:'uppercase', marginBottom:6 }}>{labels.meaning}</div>
           <div style={{
             fontFamily: isAr ? 'Amiri, serif' : '"Cormorant Garamond",serif',
             fontSize: isAr ? 16 : 15, fontStyle: isAr ? 'normal' : 'italic',
@@ -3289,7 +3469,7 @@ function DhikrDetailScreen({ lang = 'fr', dhikrIdx = 0, onStart }) {
           backdropFilter:'blur(6px)', WebkitBackdropFilter:'blur(6px)',
           border:'0.5px solid rgba(199,165,91,0.12)',
         }}>
-          <div style={{ fontFamily:'Inter, sans-serif', fontSize:9.5, letterSpacing:'0.3em', color:T.textDim, textTransform:'uppercase', marginBottom:6 }}>{labels.virtue}</div>
+          <div style={{ fontFamily:'-apple-system, sans-serif', fontSize:9.5, letterSpacing:'0.3em', color:T.textDim, textTransform:'uppercase', marginBottom:6 }}>{labels.virtue}</div>
           <div style={{
             fontFamily: isAr ? 'Amiri, serif' : '"Cormorant Garamond",serif',
             fontSize: 14, fontStyle: isAr ? 'normal' : 'italic',
@@ -3306,8 +3486,8 @@ function DhikrDetailScreen({ lang = 'fr', dhikrIdx = 0, onStart }) {
           padding:'7px 16px', border:`0.5px solid ${T.hairline}`, borderRadius:999,
           background:'rgba(199,165,91,0.04)',
         }}>
-          <span style={{ fontFamily:'Inter, sans-serif', fontSize:9.5, letterSpacing:'0.25em', color:T.textDim, textTransform:'uppercase' }}>{labels.target}</span>
-          <span style={{ fontFamily:'"DM Serif Display",serif', fontSize:18, color:T.gold }}>{d.target}</span>
+          <span style={{ fontFamily:'-apple-system, sans-serif', fontSize:9.5, letterSpacing:'0.25em', color:T.textDim, textTransform:'uppercase' }}>{labels.target}</span>
+          <span style={{ fontFamily:'"Cormorant Garamond",serif', fontSize:18, color:T.gold }}>{d.target}</span>
         </div>
       </div>
 
@@ -3319,7 +3499,7 @@ function DhikrDetailScreen({ lang = 'fr', dhikrIdx = 0, onStart }) {
           width:'100%', height:54, borderRadius:27,
           background:`linear-gradient(180deg, ${T.goldLight}, ${T.gold})`,
           border:'none', color:'#1A1410',
-          fontFamily:isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif',
+          fontFamily:isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif',
           fontSize:13, fontWeight:600, letterSpacing:'0.18em', textTransform:'uppercase',
           cursor:'pointer',
           boxShadow:'0 8px 24px rgba(199,165,91,0.25), inset 0 1px 0 rgba(255,255,255,0.3)',
@@ -3413,14 +3593,14 @@ function CustomDhikrModal({ lang = 'fr', onClose, onSaved, editDhikr = null }) {
             WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent', backgroundClip:'text',
             filter:'drop-shadow(0 0 7px rgba(232,185,122,0.32))', letterSpacing:'0.01em',
           }}>{titleTxt}</div>
-          <div style={{ fontFamily:isAr ? 'Cairo, sans-serif' : '"Cormorant Garamond",serif', fontSize:12.5, fontStyle: isAr ? 'normal' : 'italic', color:T.textMuted, marginTop:6 }}>{subTxt}</div>
+          <div style={{ fontFamily:isAr ? 'ReemKufi, sans-serif' : '"Cormorant Garamond",serif', fontSize:12.5, fontStyle: isAr ? 'normal' : 'italic', color:T.textMuted, marginTop:6 }}>{subTxt}</div>
         </div>
 
         {/* fields */}
         <div style={{ padding:'22px 24px', display:'flex', flexDirection:'column', gap:20 }}>
           {/* arabic */}
           <div>
-            <div style={{ fontFamily:'Inter, sans-serif', fontSize:12, letterSpacing:'0.16em', color:T.textMuted, textTransform:'uppercase', marginBottom:9 }}>{L.arabic}</div>
+            <div style={{ fontFamily:'-apple-system, sans-serif', fontSize:12, letterSpacing:'0.16em', color:T.textMuted, textTransform:'uppercase', marginBottom:9 }}>{L.arabic}</div>
             <input
               type="text"
               value={arabicText}
@@ -3436,7 +3616,7 @@ function CustomDhikrModal({ lang = 'fr', onClose, onSaved, editDhikr = null }) {
           </div>
           {/* translit */}
           <div>
-            <div style={{ fontFamily:'Inter, sans-serif', fontSize:12, letterSpacing:'0.16em', color:T.textMuted, textTransform:'uppercase', marginBottom:9 }}>{L.translit}</div>
+            <div style={{ fontFamily:'-apple-system, sans-serif', fontSize:12, letterSpacing:'0.16em', color:T.textMuted, textTransform:'uppercase', marginBottom:9 }}>{L.translit}</div>
             <input
               type="text"
               value={translitText}
@@ -3451,7 +3631,7 @@ function CustomDhikrModal({ lang = 'fr', onClose, onSaved, editDhikr = null }) {
           </div>
           {/* target chips */}
           <div>
-            <div style={{ fontFamily:'Inter, sans-serif', fontSize:12, letterSpacing:'0.16em', color:T.textMuted, textTransform:'uppercase', marginBottom:11 }}>{L.target}</div>
+            <div style={{ fontFamily:'-apple-system, sans-serif', fontSize:12, letterSpacing:'0.16em', color:T.textMuted, textTransform:'uppercase', marginBottom:11 }}>{L.target}</div>
             <div style={{ display:'flex', alignItems:'center', gap:9 }}>
               {targetChips.map((n) => {
                 const on = n === target;
@@ -3463,7 +3643,7 @@ function CustomDhikrModal({ lang = 'fr', onClose, onSaved, editDhikr = null }) {
                       border: on ? '0.5px solid rgba(255,238,198,0.6)' : `0.5px solid ${T.hairline}`,
                       background: on ? 'linear-gradient(165deg, #FBE6AE 0%, #E8B97A 45%, #C68A3C 100%)' : 'linear-gradient(180deg, rgba(199,165,91,0.07), rgba(199,165,91,0.02))',
                       display:'flex', alignItems:'center', justifyContent:'center',
-                      fontFamily:'"DM Serif Display",serif', fontSize:16,
+                      fontFamily:'"Cormorant Garamond",serif', fontSize:16,
                       color: on ? '#2A1A08' : T.textMuted,
                       boxShadow: on ? '0 4px 14px rgba(201,124,46,0.45), inset 0 1px 0 rgba(255,245,210,0.7)' : 'inset 0 1px 0 rgba(255,225,160,0.05)',
                       cursor:'pointer', transition:'all 0.2s ease',
@@ -3489,14 +3669,14 @@ function CustomDhikrModal({ lang = 'fr', onClose, onSaved, editDhikr = null }) {
           <button onClick={onClose} style={{
             flex:1, height:46, borderRadius:23, background:'transparent',
             border:`0.5px solid ${T.hairline}`, color:T.textMuted,
-            fontFamily:isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif',
+            fontFamily:isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif',
             fontSize:11, fontWeight:500, letterSpacing:'0.2em', textTransform:'uppercase', cursor:'pointer',
           }}>{L.cancel}</button>
           <button onClick={handleSave} style={{
             flex:1.4, height:46, borderRadius:23,
             background:`linear-gradient(180deg, ${T.goldLight}, ${T.gold})`,
             border:'none', color:'#1A1410',
-            fontFamily:isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif',
+            fontFamily:isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif',
             fontSize:11, fontWeight:600, letterSpacing:'0.2em', textTransform:'uppercase', cursor:'pointer',
             boxShadow:'0 6px 18px rgba(199,165,91,0.25)',
           }}>{L.save}</button>
@@ -3577,9 +3757,9 @@ function EndOfCycleScreen({ lang = 'fr', dhikrIdx = 0, completed = 33 }) {
           backdropFilter:'blur(6px)', WebkitBackdropFilter:'blur(6px)',
           border:'0.5px solid rgba(199,165,91,0.12)',
         }}>
-          <div style={{ fontFamily:'Inter, sans-serif', fontSize:9.5, letterSpacing:'0.35em', color:T.textDim, textTransform:'uppercase' }}>{L.eyebrow}</div>
+          <div style={{ fontFamily:'-apple-system, sans-serif', fontSize:9.5, letterSpacing:'0.35em', color:T.textDim, textTransform:'uppercase' }}>{L.eyebrow}</div>
           <div style={{ marginTop:12, fontFamily:isAr ? 'Amiri, serif' : '"Cormorant Garamond",serif', fontSize:28, fontStyle: isAr ? 'normal' : 'italic', color:T.text, fontWeight:isAr ? 400 : 500, letterSpacing:'0.005em' }}>{L.title}</div>
-          <div style={{ marginTop:8, fontFamily:isAr ? 'Cairo, sans-serif' : '"Cormorant Garamond",serif', fontSize:13, fontStyle: isAr ? 'normal' : 'italic', color:T.text, lineHeight:1.5, direction: isAr ? 'rtl' : 'ltr', opacity:0.9 }}>{L.sub}</div>
+          <div style={{ marginTop:8, fontFamily:isAr ? 'ReemKufi, sans-serif' : '"Cormorant Garamond",serif', fontSize:13, fontStyle: isAr ? 'normal' : 'italic', color:T.text, lineHeight:1.5, direction: isAr ? 'rtl' : 'ltr', opacity:0.9 }}>{L.sub}</div>
         </div>
       </div>
 
@@ -3589,7 +3769,7 @@ function EndOfCycleScreen({ lang = 'fr', dhikrIdx = 0, completed = 33 }) {
           width:'100%', height:54, borderRadius:27,
           background:`linear-gradient(180deg, ${T.goldLight}, ${T.gold})`,
           border:'none', color:'#1A1410',
-          fontFamily:isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif',
+          fontFamily:isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif',
           fontSize:12, fontWeight:600, letterSpacing:'0.22em', textTransform:'uppercase', cursor:'pointer',
           boxShadow:'0 8px 24px rgba(199,165,91,0.25), inset 0 1px 0 rgba(255,255,255,0.3)',
         }}>{L.again}</button>
@@ -3597,13 +3777,13 @@ function EndOfCycleScreen({ lang = 'fr', dhikrIdx = 0, completed = 33 }) {
           <button style={{
             flex:1, height:46, borderRadius:23, background:'transparent',
             border:`0.5px solid ${T.hairline}`, color:T.textMuted,
-            fontFamily:isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif',
+            fontFamily:isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif',
             fontSize:10.5, fontWeight:500, letterSpacing:'0.22em', textTransform:'uppercase', cursor:'pointer',
           }}>{L.stop}</button>
           <button style={{
             flex:1, height:46, borderRadius:23, background:'transparent',
             border:`0.5px solid ${T.hairline}`, color:T.gold,
-            fontFamily:isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif',
+            fontFamily:isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif',
             fontSize:10.5, fontWeight:500, letterSpacing:'0.22em', textTransform:'uppercase', cursor:'pointer',
             display:'inline-flex', alignItems:'center', justifyContent:'center', gap:8,
           }} onClick={shareCycle}>
@@ -3812,13 +3992,13 @@ function CommunityScreen({ lang = 'fr', onBack, onSettings }) {
           <svg width="38" height="38" viewBox="0 0 40 40" style={{ position:'absolute', inset:0 }}>
             <path d="M14 3h12l3.5 3.5L33 10v12l-3.5 3.5L26 29H14l-3.5-3.5L7 22V10l3.5-3.5z" fill="none" stroke="rgba(232,185,122,0.38)" strokeWidth="0.9"/>
           </svg>
-          <span style={{ fontFamily:'"DM Serif Display",serif', fontSize:13, color:T.goldLight, position:'relative' }}>{s.n}</span>
+          <span style={{ fontFamily:'"Cormorant Garamond",serif', fontSize:13, color:T.goldLight, position:'relative' }}>{s.n}</span>
         </div>
         <div style={{ flex:1, minWidth:0, textAlign:'right' }}>
           <div style={{ fontFamily:'Amiri, serif', fontSize:20, color:T.text, lineHeight:1.2 }}>{s.ar}</div>
           <div style={{ display:'flex', alignItems:'center', gap:7, marginTop:2 }}>
-            <span style={{ fontFamily:'Inter,sans-serif', fontSize:10, color:T.textDim, letterSpacing:'0.03em' }}>{s.pages} {s.pages>1?L.pages:L.page}</span>
-            {bm>0 && <span style={{ fontFamily:'"DM Serif Display",serif', fontSize:11, color:T.gold }}>· {pct}%</span>}
+            <span style={{ fontFamily:'-apple-system,sans-serif', fontSize:10, color:T.textDim, letterSpacing:'0.03em' }}>{s.pages} {s.pages>1?L.pages:L.page}</span>
+            {bm>0 && <span style={{ fontFamily:'"Cormorant Garamond",serif', fontSize:11, color:T.gold }}>· {pct}%</span>}
           </div>
         </div>
         {bm>0 && (
@@ -3893,7 +4073,7 @@ function CommunityScreen({ lang = 'fr', onBack, onSettings }) {
       <div style={{ position:'absolute', top:240, left:20, right:20, zIndex:3 }}>
         <div style={{ display:'flex', alignItems:'center', gap:10, padding:'0 14px', height:44, borderRadius:13, background:'rgba(20,15,10,0.85)', border:'0.5px solid rgba(232,200,140,0.24)', direction: isAr?'rtl':'ltr' }}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink:0 }}><circle cx="7" cy="7" r="5" stroke={T.goldLight} strokeWidth="1.2"/><path d="M11 11l3 3" stroke={T.goldLight} strokeWidth="1.2" strokeLinecap="round"/></svg>
-          <input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder={L.search} style={{ flex:1, minWidth:0, background:'transparent', border:'none', outline:'none', color:T.text, fontFamily: isAr?'Cairo,sans-serif':'Inter,sans-serif', fontSize:14, textAlign: isAr?'right':'left' }}/>
+          <input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder={L.search} style={{ flex:1, minWidth:0, background:'transparent', border:'none', outline:'none', color:T.text, fontFamily: isAr?'ReemKufi,sans-serif':'-apple-system,sans-serif', fontSize:14, textAlign: isAr?'right':'left' }}/>
           {query && <span onClick={()=>setQuery('')} style={{ cursor:'pointer', color:T.textDim, lineHeight:0, flexShrink:0 }}><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg></span>}
         </div>
       </div>
@@ -3906,9 +4086,9 @@ function CommunityScreen({ lang = 'fr', onBack, onSettings }) {
               <svg width="20" height="22" viewBox="0 0 20 22" fill="none"><path d="M5 3h10a1 1 0 011 1v15l-6-3.2L4 19V4a1 1 0 011-1z" stroke={T.goldLight} strokeWidth="1.2" strokeLinejoin="round" fill="rgba(232,185,122,0.18)"/></svg>
             </div>
             <div style={{ flex:1, minWidth:0, textAlign:'right' }}>
-              <div style={{ fontFamily:'Inter,sans-serif', fontSize:9.5, letterSpacing:'0.18em', color:T.gold, textTransform:'uppercase' }}>{L.resume}</div>
+              <div style={{ fontFamily:'-apple-system,sans-serif', fontSize:9.5, letterSpacing:'0.18em', color:T.gold, textTransform:'uppercase' }}>{L.resume}</div>
               <div style={{ fontFamily:'Amiri,serif', fontSize:22, color:T.text, marginTop:2 }}>سُورَة {lastSurah.ar}</div>
-              <div style={{ fontFamily: isAr?'Cairo,sans-serif':'Inter,sans-serif', fontSize:11, color:T.textMuted, marginTop:1, direction:'rtl' }}>{L.page} {data.last.page} / {lastSurah.pages}</div>
+              <div style={{ fontFamily: isAr?'ReemKufi,sans-serif':'-apple-system,sans-serif', fontSize:11, color:T.textMuted, marginTop:1, direction:'rtl' }}>{L.page} {data.last.page} / {lastSurah.pages}</div>
             </div>
             <svg width="22" height="22" viewBox="0 0 22 22" fill="none" style={{ flexShrink:0 }}><path d="M13 6l-5 5 5 5" stroke={T.goldLight} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
           </button>
@@ -3916,19 +4096,19 @@ function CommunityScreen({ lang = 'fr', onBack, onSettings }) {
 
         {!q && data.favs.length>0 && (
           <div style={{ marginBottom:14 }}>
-            <div style={{ fontFamily:'Inter,sans-serif', fontSize:9.5, letterSpacing:'0.2em', color:T.textDim, textTransform:'uppercase', padding:'0 4px 8px', textAlign: isAr?'right':'left' }}>{L.fav}</div>
+            <div style={{ fontFamily:'-apple-system,sans-serif', fontSize:9.5, letterSpacing:'0.2em', color:T.textDim, textTransform:'uppercase', padding:'0 4px 8px', textAlign: isAr?'right':'left' }}>{L.fav}</div>
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               {SURAHS.filter(s=>data.favs.includes(s.n)).map(s=><Row key={'f'+s.n} s={s}/>)}
             </div>
           </div>
         )}
 
-        {!q && <div style={{ fontFamily:'Inter,sans-serif', fontSize:9.5, letterSpacing:'0.2em', color:T.textDim, textTransform:'uppercase', padding:'2px 4px 8px', textAlign: isAr?'right':'left' }}>{L.all}</div>}
+        {!q && <div style={{ fontFamily:'-apple-system,sans-serif', fontSize:9.5, letterSpacing:'0.2em', color:T.textDim, textTransform:'uppercase', padding:'2px 4px 8px', textAlign: isAr?'right':'left' }}>{L.all}</div>}
 
         <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
           {filtered.map(s => <Row key={s.n} s={s} />)}
         </div>
-        {filtered.length===0 && <div style={{ textAlign:'center', padding:'46px 0', color:T.textMuted, fontFamily: isAr?'Cairo,sans-serif':'Inter,sans-serif', fontSize:14 }}>{L.none}</div>}
+        {filtered.length===0 && <div style={{ textAlign:'center', padding:'46px 0', color:T.textMuted, fontFamily: isAr?'ReemKufi,sans-serif':'-apple-system,sans-serif', fontSize:14 }}>{L.none}</div>}
       </div>
 
       {reader && <window.SurahReader lang={lang} surahObj={reader} startPage={reader.page} onBookmark={(p) => onBookmark(reader.n, p)} onClose={() => setReader(null)} />}
@@ -4020,7 +4200,10 @@ function SurahReader({ lang = 'ar', surahObj, surah, startPage = 1, onBookmark, 
     else { lastTap.current = now; const t = now; setTimeout(() => { if (lastTap.current === t) { setChrome((c)=>!c); lastTap.current = 0; } }, 280); }
   };
   const onTouchStart = (e) => { if (zoom) return; const t=e.touches[0]; touch.current={ x:t.clientX, y:t.clientY, on:true }; };
-  const onTouchEnd = (e) => { if (zoom || !touch.current.on) return; touch.current.on=false; const t=e.changedTouches[0]; const dx=t.clientX-touch.current.x, dy=t.clientY-touch.current.y; if (Math.abs(dx)>48 && Math.abs(dx)>Math.abs(dy)*1.3) { go(dx<0?1:-1); } };
+  const onTouchEnd = (e) => { if (zoom || !touch.current.on) return; touch.current.on=false; const t=e.changedTouches[0]; const dx=t.clientX-touch.current.x, dy=t.clientY-touch.current.y; /* 06/09 : sens inverse. Un mushaf se lit comme un livre arabe : la reliure est
+   a DROITE, le bord libre des pages a gauche — on rabat donc ce bord vers la
+   DROITE pour avancer. Le sens etait celui d'un livre latin. */
+if (Math.abs(dx)>48 && Math.abs(dx)>Math.abs(dy)*1.3) { go(dx>0?1:-1); } };
   const GREEN='#2E8B5F', GREEN_L='#5FCB92';
   const Arrow = ({ point, onPress, disabled }) => (
     <button onClick={onPress} disabled={disabled} style={{
@@ -4036,8 +4219,11 @@ function SurahReader({ lang = 'ar', surahObj, surah, startPage = 1, onBookmark, 
   return (
     <div style={{ position:'fixed', inset:0, zIndex:200, background:'radial-gradient(120% 80% at 50% 28%, #11151c 0%, #06070a 72%)', display:'flex', flexDirection:'column', direction:'ltr' }}>
       <style>{`
-        @keyframes mushNext { from { opacity:0; transform:translateX(34px) scale(0.985); } to { opacity:1; transform:none; } }
-        @keyframes mushPrev { from { opacity:0; transform:translateX(-34px) scale(0.985); } to { opacity:1; transform:none; } }
+        /* 06/09 : sens arabe. La feuille se rabat vers la droite, donc la page
+           suivante se decouvre par la GAUCHE ; la precedente revient par la
+           droite. C'etait l'inverse. */
+        @keyframes mushNext { from { opacity:0; transform:translateX(-34px) scale(0.985); } to { opacity:1; transform:none; } }
+        @keyframes mushPrev { from { opacity:0; transform:translateX(34px) scale(0.985); } to { opacity:1; transform:none; } }
         @keyframes mushShimmer { 0% { background-position:-180px 0; } 100% { background-position:240px 0; } }
         @keyframes mushCheckPop { 0% { transform:scale(1); } 40% { transform:scale(1.18); } 100% { transform:scale(1); } }
       `}</style>
@@ -4048,7 +4234,7 @@ function SurahReader({ lang = 'ar', surahObj, surah, startPage = 1, onBookmark, 
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
         </button>
         <div style={{ flex:1, textAlign:'center', fontFamily:'Amiri, serif', fontSize:22, color:T.goldLight, direction:'rtl', lineHeight:1, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>سُورَة {SUR.ar}</div>
-        <div style={{ minWidth:46, flexShrink:0, textAlign:'right', fontFamily:'"DM Serif Display", serif', fontSize:16, color:T.gold }}>{page}<span style={{ fontSize:11, color:T.textMuted }}> {L.sur} {total}</span></div>
+        <div style={{ minWidth:46, flexShrink:0, textAlign:'right', fontFamily:'"Cormorant Garamond", serif', fontSize:16, color:T.gold }}>{page}<span style={{ fontSize:11, color:T.textMuted }}> {L.sur} {total}</span></div>
       </div>
       {/* progress hairline */}
       <div style={{ height:2.5, margin:'0 16px', borderRadius:3, background:'rgba(232,200,140,0.12)', overflow:'hidden', opacity:chrome?1:0, transition:'opacity 0.3s ease', display:'block' }}>
@@ -4084,17 +4270,19 @@ function SurahReader({ lang = 'ar', surahObj, surah, startPage = 1, onBookmark, 
 
       {/* bottom controls */}
       <div style={{ display:'flex', gap:12, alignItems:'center', padding:'10px 16px calc(18px + env(safe-area-inset-bottom))', opacity:1, transform:'none', transition:'opacity 0.3s ease, transform 0.3s ease', pointerEvents:'auto' }}>
-        <Arrow point="left" onPress={()=>go(1)} disabled={page>=total} />
+        {/* 06/09 : positions inversees. La page suivante s'obtient en tirant vers
+           la DROITE, donc son bouton passe a droite — les deux gestes concordent. */}
+        <Arrow point="left" onPress={()=>go(-1)} disabled={page<=1} />
         <div style={{
           flex:1, height:54, borderRadius:27,
           display:'inline-flex', alignItems:'center', justifyContent:'center', gap:9,
           background:'rgba(232,185,122,0.10)', border:'0.5px solid rgba(232,200,140,0.3)', color:T.goldLight,
-          fontFamily: isAr?'Cairo, sans-serif':'Inter, sans-serif', fontSize:12.5, fontWeight:600, letterSpacing: isAr?'0.02em':'0.04em',
+          fontFamily: isAr?'ReemKufi, sans-serif':'-apple-system, sans-serif', fontSize:12.5, fontWeight:600, letterSpacing: isAr?'0.02em':'0.04em',
         }}>
           <svg width="15" height="17" viewBox="0 0 20 22" fill="none"><path d="M5 3h10a1 1 0 011 1v15l-6-3.2L4 19V4a1 1 0 011-1z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" fill="rgba(232,185,122,0.15)"/></svg>
           {L.saved} · {page} {L.sur} {total}
         </div>
-        <Arrow point="right" onPress={()=>go(-1)} disabled={page<=1} />
+        <Arrow point="right" onPress={()=>go(1)} disabled={page>=total} />
       </div>
     </div>
   );
@@ -4260,54 +4448,20 @@ function PrayerScreen({ lang = 'ar' }) {
     loadPrayers(50.8503, 4.3517, 'Bruxelles');
   }, [loadPrayers]);
 
+  // Passe par le portier unique : aucune fenetre si une position est deja connue.
   const tryAutoGeoloc = (silent) => {
-    if (!navigator.geolocation) return;
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        // Nom réel de la ville, toujours en français pour le widget
-        fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=fr`)
-          .then(r => r.json())
-          .then(g => {
-            const nm = g.city || g.locality || g.principalSubdivision || null;
-            loadPrayers(latitude, longitude, nm);
-            try { localStorage.setItem('alae.prayer.pos', JSON.stringify({ lat: latitude, lon: longitude, city: nm, ts: Date.now() })); } catch {}
-          })
-          .catch(() => {
-            loadPrayers(latitude, longitude, null);
-            try { localStorage.setItem('alae.prayer.pos', JSON.stringify({ lat: latitude, lon: longitude, ts: Date.now() })); } catch {}
-          });
-      },
-      () => {},
-      { timeout: 6000, maximumAge: 600000 }
-    );
+    window.alaePos({ timeout: 6000 })
+      .then((p) => loadPrayers(p.lat, p.lon, p.city || null))
+      .catch(() => {});
   };
 
+  // Geste volontaire : position vieille de 5 min au plus, sans redemander
+  // l'autorisation si elle vient d'etre accordee.
   const useMyLocation = () => {
-    if (!navigator.geolocation) {
-      setError(isAr ? 'الموقع غير مدعوم' : 'Géoloc non supportée');
-      return;
-    }
     setLoading(true);
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const { latitude, longitude } = pos.coords;
-        // Nom réel de la ville (reverse geocoding mondial, gratuit, sans clé) — toujours en français pour le widget
-        fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=fr`)
-          .then(r => r.json())
-          .then(g => {
-            const nm = g.city || g.locality || g.principalSubdivision || null;
-            loadPrayers(latitude, longitude, nm);
-            try { localStorage.setItem('alae.prayer.pos', JSON.stringify({ lat: latitude, lon: longitude, city: nm, ts: Date.now() })); } catch {}
-          })
-          .catch(() => {
-            loadPrayers(latitude, longitude, null);
-            try { localStorage.setItem('alae.prayer.pos', JSON.stringify({ lat: latitude, lon: longitude, ts: Date.now() })); } catch {}
-          });
-      },
-      () => { setError(isAr ? 'تعذّر الحصول على الموقع' : 'Impossible d\'obtenir la position'); setLoading(false); },
-      { timeout: 8000, maximumAge: 600000 }
-    );
+    window.alaePos({ maxAge: 300000, timeout: 8000 })
+      .then((p) => loadPrayers(p.lat, p.lon, p.city || null))
+      .catch(() => { setError(isAr ? 'تعذّر الحصول على الموقع' : 'Impossible d\'obtenir la position'); setLoading(false); });
   };
 
   // ─── Labels & i18n ──────────────────────────────────────────────────
@@ -4450,14 +4604,14 @@ function PrayerScreen({ lang = 'ar' }) {
             display:'inline-flex', alignItems:'center', gap:7,
             padding:'8px 13px', borderRadius:11, cursor:'pointer',
             background:'rgba(199,165,91,0.07)', border:`0.5px solid ${T.hairline}`,
-            color:T.text, fontFamily:'Inter, sans-serif',
+            color:T.text, fontFamily:'-apple-system, sans-serif',
           }}>
             <svg width="13" height="13" viewBox="0 0 14 14" fill="none" style={{ flexShrink:0 }}>
               <path d="M7 12.5s4.2-3.6 4.2-6.7A4.2 4.2 0 0 0 7 1.6a4.2 4.2 0 0 0-4.2 4.2C2.8 8.9 7 12.5 7 12.5Z" stroke={T.gold} strokeWidth="1"/>
               <circle cx="7" cy="5.8" r="1.5" stroke={T.gold} strokeWidth="1"/>
             </svg>
             <span style={{
-              fontFamily:isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif',
+              fontFamily:isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif',
               fontSize:isAr ? 17 : 13.5, fontWeight:600, color:T.text, letterSpacing:'0.01em', lineHeight:1,
             }}>{city}</span>
             <svg width="9" height="9" viewBox="0 0 10 10" fill="none" style={{ flexShrink:0, transform: showCities ? 'rotate(180deg)' : 'none', transition:'transform 0.2s' }}>
@@ -4481,7 +4635,7 @@ function PrayerScreen({ lang = 'ar' }) {
                   onChange={(e) => setCitySearch(e.target.value)}
                   placeholder={isAr ? 'ابحث عن مدينة…' : (lang === 'fr' ? 'Chercher une ville…' : lang === 'nl' ? 'Zoek een stad…' : 'Search a city…')}
                   autoFocus
-                  style={{ flex:1, minWidth:0, background:'transparent', border:'none', outline:'none', color:T.text, fontFamily:isAr?'Cairo,sans-serif':'Inter,sans-serif', fontSize:13, textAlign: isAr?'right':'left' }}
+                  style={{ flex:1, minWidth:0, background:'transparent', border:'none', outline:'none', color:T.text, fontFamily:isAr?'ReemKufi,sans-serif':'-apple-system,sans-serif', fontSize:13, textAlign: isAr?'right':'left' }}
                 />
                 {citySearch && <span onClick={() => setCitySearch('')} style={{ cursor:'pointer', color:T.textDim, lineHeight:0, flexShrink:0 }}><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round"/></svg></span>}
               </div>
@@ -4489,13 +4643,13 @@ function PrayerScreen({ lang = 'ar' }) {
               {/* résultats de recherche */}
               {citySearch.trim().length >= 2 ? (
                 <>
-                  {searching && <div style={{ padding:'12px', textAlign:'center', color:T.textMuted, fontFamily:isAr?'Cairo,sans-serif':'Inter,sans-serif', fontSize:12 }}>{isAr ? 'جار البحث…' : '…'}</div>}
-                  {!searching && cityResults.length === 0 && <div style={{ padding:'12px', textAlign:'center', color:T.textMuted, fontFamily:isAr?'Cairo,sans-serif':'Inter,sans-serif', fontSize:12 }}>{isAr ? 'لا توجد مدينة' : (lang === 'fr' ? 'Aucune ville' : 'No city')}</div>}
+                  {searching && <div style={{ padding:'12px', textAlign:'center', color:T.textMuted, fontFamily:isAr?'ReemKufi,sans-serif':'-apple-system,sans-serif', fontSize:12 }}>{isAr ? 'جار البحث…' : '…'}</div>}
+                  {!searching && cityResults.length === 0 && <div style={{ padding:'12px', textAlign:'center', color:T.textMuted, fontFamily:isAr?'ReemKufi,sans-serif':'-apple-system,sans-serif', fontSize:12 }}>{isAr ? 'لا توجد مدينة' : (lang === 'fr' ? 'Aucune ville' : 'No city')}</div>}
                   {cityResults.map(r => (
                     <button key={r.id} onClick={() => pickSearchResult(r)} style={{
                       width:'100%', display:'flex', alignItems:'center', gap:9, padding:'9px 11px', cursor:'pointer',
                       background:'transparent', border:'none', borderRadius:10,
-                      color:T.text, fontFamily:isAr?'Cairo,sans-serif':'Inter,sans-serif',
+                      color:T.text, fontFamily:isAr?'ReemKufi,sans-serif':'-apple-system,sans-serif',
                       flexDirection: isAr ? 'row-reverse' : 'row', textAlign: isAr ? 'right' : 'left',
                     }}>
                       <span style={{ fontSize:16, flexShrink:0 }}>{flagEmoji(r.cc)}</span>
@@ -4511,7 +4665,7 @@ function PrayerScreen({ lang = 'ar' }) {
                   <button onClick={() => { setShowCities(false); useMyLocation(); }} style={{
                     width:'100%', display:'flex', alignItems:'center', gap:9, padding:'11px 12px', cursor:'pointer',
                     background:'rgba(216,138,62,0.12)', border:'0.5px solid rgba(232,185,122,0.3)', borderRadius:11, marginBottom:5,
-                    color:T.goldLight, fontFamily:isAr?'Cairo,sans-serif':'Inter,sans-serif', fontSize:isAr?14.5:12.5, fontWeight:600,
+                    color:T.goldLight, fontFamily:isAr?'ReemKufi,sans-serif':'-apple-system,sans-serif', fontSize:isAr?14.5:12.5, fontWeight:600,
                     flexDirection: isAr ? 'row-reverse' : 'row', textAlign: isAr ? 'right' : 'left',
                   }}>
                     <svg width="15" height="15" viewBox="0 0 14 14" fill="none"><path d="M7 1v2M7 11v2M1 7h2M11 7h2" stroke={T.goldLight} strokeWidth="1.1" strokeLinecap="round"/><circle cx="7" cy="7" r="3" stroke={T.goldLight} strokeWidth="1.1"/><circle cx="7" cy="7" r="1" fill={T.goldLight}/></svg>
@@ -4524,7 +4678,7 @@ function PrayerScreen({ lang = 'ar' }) {
                       <button key={c.key} onClick={() => pickCity(c)} style={{
                         width:'100%', display:'flex', alignItems:'center', gap:9, padding:'10px 12px', cursor:'pointer',
                         background: active ? 'rgba(232,185,122,0.12)' : 'transparent', border:'none', borderRadius:10,
-                        color: active ? T.goldLight : T.text, fontFamily:isAr?'Cairo,sans-serif':'Inter,sans-serif',
+                        color: active ? T.goldLight : T.text, fontFamily:isAr?'ReemKufi,sans-serif':'-apple-system,sans-serif',
                         fontSize:isAr?15:13, fontWeight: active?600:400,
                         flexDirection: isAr ? 'row-reverse' : 'row', textAlign: isAr ? 'right' : 'left',
                       }}>
@@ -4542,12 +4696,12 @@ function PrayerScreen({ lang = 'ar' }) {
             {data && data.date && (
               <>
                 <div style={{
-                  fontFamily: isAr ? 'Cairo, sans-serif' : 'Amiri, serif', fontSize: isAr ? 16.5 : 15.5, fontWeight:700, color:T.goldLight, direction:'rtl',
+                  fontFamily: isAr ? 'ReemKufi, sans-serif' : 'Amiri, serif', fontSize: isAr ? 16.5 : 15.5, fontWeight:700, color:T.goldLight, direction:'rtl',
                   lineHeight:1.25, whiteSpace:'nowrap',
                 }}>
                   {data.date.hijri ? String(`${data.date.hijri.day} ${data.date.hijri.month.ar} ${data.date.hijri.year} هـ`).replace(/[٠-٩۰-۹]/g, c => '0123456789'['٠١٢٣٤٥٦٧٨٩'.indexOf(c) >= 0 ? '٠١٢٣٤٥٦٧٨٩'.indexOf(c) : '۰۱۲۳۴۵۶۷۸۹'.indexOf(c)]) : ''}
                 </div>
-                <div style={{ fontFamily:'Inter, sans-serif', fontSize:10.5, color:T.textMuted, letterSpacing:'0.03em', whiteSpace:'nowrap' }}>
+                <div style={{ fontFamily:'-apple-system, sans-serif', fontSize:10.5, color:T.textMuted, letterSpacing:'0.03em', whiteSpace:'nowrap' }}>
                   {data.date.readable || ''}
                 </div>
               </>
@@ -4556,14 +4710,14 @@ function PrayerScreen({ lang = 'ar' }) {
         </div>
 
         {loading && !data && (
-          <div style={{ textAlign:'center', padding:'80px 0', color:T.textMuted, fontFamily: isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif', fontSize: isAr ? 14 : 13 }}>
+          <div style={{ textAlign:'center', padding:'80px 0', color:T.textMuted, fontFamily: isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif', fontSize: isAr ? 14 : 13 }}>
             <div style={{ fontSize:22, marginBottom:10, color:T.gold, letterSpacing:'0.3em' }}>· · ·</div>
             {I18N.loading}
           </div>
         )}
 
         {error && !data && (
-          <div style={{ textAlign:'center', padding:'24px', color:'#E07B5F', fontFamily:'Inter, sans-serif', fontSize:13 }}>
+          <div style={{ textAlign:'center', padding:'24px', color:'#E07B5F', fontFamily:'-apple-system, sans-serif', fontSize:13 }}>
             {error}
           </div>
         )}
@@ -4571,14 +4725,13 @@ function PrayerScreen({ lang = 'ar' }) {
         {data && times && (
           <>
             {/* ─── Hero: progress ring + next prayer ─────────────────── */}
+            {/* 07/09 : cadre retire. Le cercle et sa pulsation portent l'ecran seuls ;
+                le fond d'ecran passe au travers. Plus de fond, de bordure ni d'ombre
+                portee, et overflow visible pour ne pas rogner le halo qui orbite. */}
             <div style={{
               position:'relative', display:'flex', flexDirection:'column', alignItems:'center',
-              padding:'26px 18px 24px', borderRadius:22, marginBottom:18, overflow:'hidden',
-              background:'linear-gradient(180deg, rgba(22,16,9,0.72), rgba(13,11,8,0.5))',
-              border:`0.5px solid rgba(232,200,140,0.28)`,
-              boxShadow:'0 16px 44px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,225,160,0.1)',
+              padding:'20px 18px 26px', marginBottom:16, overflow:'visible',
             }}>
-              <div style={{ position:'absolute', inset:0, background:'radial-gradient(ellipse at 50% -10%, rgba(232,185,122,0.2), transparent 62%)', pointerEvents:'none' }}/>
 
               {/* Ring */}
               <div style={{ position:'relative', width:RING, height:RING, zIndex:2,
@@ -4602,8 +4755,8 @@ function PrayerScreen({ lang = 'ar' }) {
                   alignItems:'center', justifyContent:'center', gap:6, paddingBottom:6, overflow:'visible',
                 }}>
                   <div style={{
-                    fontFamily:isAr ? '"Noto Nastaliq Urdu","Amiri",serif' : '"DM Serif Display","Cormorant Garamond",serif',
-                    fontSize:isAr ? 30 : 24, fontWeight:isAr ? 700 : 500,
+                    fontFamily:isAr ? '"ArefRuqaa","Aref Ruqaa","Amiri",serif' : '"Cormorant Garamond",serif',
+                    fontSize:isAr ? 38 : 24, fontWeight:isAr ? 700 : 500,
                     background:'none',
                     backgroundImage:'linear-gradient(105deg, #C7935B 0%, #E8B97A 14%, #FCE9B0 26%, #FFF6DA 40%, #FCE9B0 48%, #F4D89B 58%, #E8B97A 72%, #FFF1C8 84%, #D9A25E 100%)',
                     backgroundSize:'260% 100%',
@@ -4626,10 +4779,14 @@ function PrayerScreen({ lang = 'ar' }) {
               <div style={{ position:'relative', zIndex:2, textAlign:'center', marginTop:13 }}>
                 <style>{`@keyframes mawaqitTimeShine{0%{background-position:130% 0}50%{background-position:-30% 0}100%{background-position:130% 0}}`}</style>
                 <div style={{
-                  fontFamily:'"Cormorant Garamond","DM Serif Display",serif', fontSize:65, fontWeight:700, color:'transparent', backgroundImage:'linear-gradient(110deg, #8B5A2A 0%, #C7935B 16%, #E8B97A 30%, #FFF6DA 44%, #FCE9B0 50%, #E0A23F 60%, #C7935B 74%, #FFF1C8 86%, #B07F2E 100%)', backgroundSize:'200% 100%', WebkitBackgroundClip:'text', backgroundClip:'text', animation:'mawaqitTimeShine 5s ease-in-out infinite', lineHeight:1,
-                  textShadow:'0 0 22px rgba(232,185,122,0.4)', letterSpacing:'0.01em',
+                  fontFamily:'"Cormorant Garamond",serif', fontSize:65, fontWeight:700, color:'transparent', backgroundImage:'linear-gradient(110deg, #8B5A2A 0%, #C7935B 16%, #E8B97A 30%, #FFF6DA 44%, #FCE9B0 50%, #E0A23F 60%, #C7935B 74%, #FFF1C8 86%, #B07F2E 100%)', backgroundSize:'200% 100%', WebkitBackgroundClip:'text', backgroundClip:'text', animation:'mawaqitTimeShine 5s ease-in-out infinite', lineHeight:1,
+                  /* Sans cadre, l'heure repose sur le fond d'ecran : ces deux ombres la
+                     detachent quel que soit le theme. textShadow ne traverse pas un
+                     texte en background-clip, drop-shadow si. */
+                  filter:'drop-shadow(0 0 18px rgba(235,150,66,0.42)) drop-shadow(0 2px 6px rgba(0,0,0,0.55))',
+                  letterSpacing:'0.01em',
                 }}>{times[nextIdx]}</div>
-                <div style={{ marginTop:8, fontFamily: isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif', fontSize: isAr ? 14 : 12.5, color:'rgba(255,255,255,0.66)', letterSpacing:'0.02em' }}>
+                <div style={{ marginTop:8, fontFamily: isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif', fontSize: isAr ? 14 : 12.5, color:'rgba(255,255,255,0.78)', letterSpacing:'0.02em', textShadow:'0 1px 6px rgba(0,0,0,0.7)' }}>
                   {I18N.in} <span style={{ color:T.goldLight, fontWeight:700, fontVariantNumeric:'tabular-nums' }}>{countdown}</span>
                 </div>
               </div>
@@ -4685,7 +4842,7 @@ function PrayerScreen({ lang = 'ar' }) {
                     {/* name */}
                     <div style={{ flex:1, display:'flex', flexDirection:'column', gap:1, alignItems:'flex-start' }}>
                       <div style={{
-                        fontFamily:isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif',
+                        fontFamily:isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif',
                         fontSize:isAr ? 18 : 14.5, fontWeight:isAr ? 700 : 600,
                         color:isNext ? T.goldLight : T.text, lineHeight:1.25,
                         textShadow:'0 1px 3px rgba(0,0,0,0.6)',
@@ -4700,13 +4857,13 @@ function PrayerScreen({ lang = 'ar' }) {
                     {/* time + status */}
                     <div style={{ display:'flex', flexDirection:'column', alignItems:isAr ? 'flex-start' : 'flex-end', gap:2, minWidth:62 }}>
                       <div style={{
-                        fontFamily:'"DM Serif Display",serif', fontSize:21, fontWeight:400,
+                        fontFamily:'"Cormorant Garamond",serif', fontSize:21, fontWeight:400,
                         color:isNext ? '#fff' : (isPast ? T.text : T.goldLight), lineHeight:1,
                         fontVariantNumeric:'tabular-nums', letterSpacing:'0.01em',
                       }}>{t}</div>
                       {isNext && (
                         <div style={{
-                          fontFamily: isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif', fontSize: isAr ? 12 : 10, fontWeight:700, letterSpacing:'0.04em',
+                          fontFamily: isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif', fontSize: isAr ? 12 : 10, fontWeight:700, letterSpacing:'0.04em',
                           color:'rgba(232,185,122,0.85)', fontVariantNumeric:'tabular-nums',
                         }}>{I18N.in} {countdown}</div>
                       )}
@@ -4839,29 +4996,12 @@ function QiblaScreen({ lang = 'ar' }) {
     setPosition({ lat: 50.8503, lon: 4.3517 });
   }, []);
 
+  // Qibla : meme portier. La position servie aux horaires est reutilisee telle
+  // quelle, donc plus aucune fenetre ici.
   const tryRefreshGeoloc = () => {
-    if (!navigator.geolocation) return;
-    // Ne demande la position que si on n'en a pas une recente en cache :
-    // dans une WKWebView file:// iOS reaffiche la fenetre d'autorisation a chaque appel.
-    try {
-      const raw = localStorage.getItem('alae.prayer.pos');
-      if (raw) {
-        const s = JSON.parse(raw);
-        if (s && s.lat && s.lon && s.ts && (Date.now() - s.ts) < 86400000) {
-          setPosition({ lat: s.lat, lon: s.lon });
-          return;
-        }
-      }
-    } catch {}
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const p = { lat: pos.coords.latitude, lon: pos.coords.longitude };
-        setPosition(p);
-        try { localStorage.setItem('alae.prayer.pos', JSON.stringify({ ...p, ts: Date.now() })); } catch {}
-      },
-      () => {},
-      { timeout: 6000, maximumAge: 600000 }
-    );
+    window.alaePos({ timeout: 6000 })
+      .then((p) => setPosition({ lat: p.lat, lon: p.lon }))
+      .catch(() => {});
   };
 
   const startCompass = async () => {
@@ -4979,7 +5119,7 @@ function QiblaScreen({ lang = 'ar' }) {
             {permState !== 'granted' && permState !== 'nosensor' ? (
               <button onClick={startCompass} style={{
                 position:'relative', zIndex:5, marginTop:4,
-                fontFamily:isAr ? 'Amiri, serif' : 'Inter, sans-serif', fontSize:15, fontWeight:700,
+                fontFamily:isAr ? 'Amiri, serif' : '-apple-system, sans-serif', fontSize:15, fontWeight:700,
                 padding:'10px 24px', borderRadius:99, cursor:'pointer',
                 background:'transparent',
                 border:'none',
@@ -4991,10 +5131,10 @@ function QiblaScreen({ lang = 'ar' }) {
               </button>
             ) : permState === 'nosensor' ? (
               <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:6, marginTop:4, textAlign:'center' }}>
-                <div style={{ fontFamily:isAr ? 'Amiri, serif' : 'Inter, sans-serif', fontSize:isAr ? 16 : 13.5, fontWeight:600, color:'rgba(232,185,122,0.85)' }}>
+                <div style={{ fontFamily:isAr ? 'Amiri, serif' : '-apple-system, sans-serif', fontSize:isAr ? 16 : 13.5, fontWeight:600, color:'rgba(232,185,122,0.85)' }}>
                   {I18N.noSensor}
                 </div>
-                <div style={{ fontFamily:isAr ? 'Amiri, serif' : 'Inter, sans-serif', fontSize:isAr ? 14 : 12, color:T.textMuted }}>
+                <div style={{ fontFamily:isAr ? 'Amiri, serif' : '-apple-system, sans-serif', fontSize:isAr ? 14 : 12, color:T.textMuted }}>
                   {I18N.noSensorHint}
                 </div>
               </div>
@@ -5057,7 +5197,7 @@ function InfoChip({ label, value, T }) {
         {label}
       </div>
       <div style={{
-        fontFamily:'"DM Serif Display","Cormorant Garamond",serif', fontSize:21, lineHeight:1, fontWeight:400,
+        fontFamily:'"Cormorant Garamond",serif', fontSize:21, lineHeight:1, fontWeight:400,
         background:`linear-gradient(180deg, ${T.goldLight}, ${T.gold} 50%, ${T.goldDark})`,
         WebkitBackgroundClip:'text', WebkitTextFillColor:'transparent',
         letterSpacing:'-0.01em',
@@ -5220,7 +5360,7 @@ function PremiumCompass({ qibla, arrow, static: isStatic, isAligned, T }) {
           const y = cy + Math.sin(rad) * tr;
           return (
             <g key={l}>
-              <text x={x} y={y + 5} textAnchor="middle" fontFamily="Inter, sans-serif" fontSize={big ? 16 : 13}
+              <text x={x} y={y + 5} textAnchor="middle" fontFamily="-apple-system, sans-serif" fontSize={big ? 16 : 13}
                 fontWeight="700" fill="url(#qRingBig)" letterSpacing="0.1em"
                 style={{ filter: big ? 'drop-shadow(0 0 6px rgba(232,185,122,0.7))' : 'none' }}>{l}</text>
             </g>
@@ -5382,7 +5522,7 @@ function Compass3D({ qibla, isAligned }) {
         .q3d .dial .tick{ position:absolute; top:50%; left:50%; width:1px; height:50%; transform-origin:bottom center; }
         .q3d .dial .tick i{ display:block; width:1px; height:9px; margin:6px auto 0; background:rgba(232,185,122,.5); }
         .q3d .dial .tick.major i{ height:14px; width:2px; background:rgba(255,241,196,.85); }
-        .q3d .cardinal{ position:absolute; top:50%; left:50%; font-family:'Inter',sans-serif; font-size:13px; font-weight:600; color:rgba(255,241,196,.9); transform-origin:0 0; }
+        .q3d .cardinal{ position:absolute; top:50%; left:50%; font-family:-apple-system,sans-serif; font-size:13px; font-weight:600; color:rgba(255,241,196,.9); transform-origin:0 0; }
         .q3d .needle{ position:absolute; top:50%; left:50%; width:0; height:0; transform:translateZ(14px); }
         .q3d .needle.aligned .n{ background:linear-gradient(180deg,#e6fff0 0%,#a7ecbb 34%,#5cc47f 100%); box-shadow:0 0 20px rgba(120,230,150,.9); }
         .q3d .needle .n,.q3d .needle .s{ position:absolute; left:-9px; width:18px; }
@@ -5639,7 +5779,7 @@ function AdhkarScreen({ lang = 'ar' }) {
               {/* Header row: number + counter */}
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:12 }}>
                 <div style={{
-                  fontFamily:'Inter, sans-serif', fontSize:10, letterSpacing:'0.18em',
+                  fontFamily:'-apple-system, sans-serif', fontSize:10, letterSpacing:'0.18em',
                   color: T.gold, opacity: 0.6, fontWeight:600,
                 }}>{String(i+1).padStart(2,'0')} / {String(list.length).padStart(2,'0')}</div>
                 <div style={{ display:'flex', alignItems:'center', gap:10 }}>
@@ -5651,7 +5791,7 @@ function AdhkarScreen({ lang = 'ar' }) {
                   )}
                   <div style={{
                     display:'flex', alignItems:'baseline', gap:4,
-                    fontFamily:'"DM Serif Display","Cormorant Garamond",serif',
+                    fontFamily:'"Cormorant Garamond",serif',
                   }}>
                     <span style={{
                       fontSize:22, fontWeight:400,
@@ -5956,9 +6096,9 @@ function MorningCardScreen({ lang = "fr", onBack }) {
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="13.5" cy="3.8" r="2.2" stroke="currentColor" strokeWidth="1.2"/><circle cx="4.3" cy="9" r="2.2" stroke="currentColor" strokeWidth="1.2"/><circle cx="13.5" cy="14.2" r="2.2" stroke="currentColor" strokeWidth="1.2"/><path d="M6.3 7.9l5.2-3M6.3 10.1l5.2 3" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/></svg>
           <span>{isAr?"\u0634\u0627\u0631\u0643":(lang==="fr"?"Partager":"Share")}</span>
         </button>
-        <a href="https://www.lestyle.be/alaeApp" target="_blank" rel="noopener noreferrer" style={{ marginTop:6, fontFamily:"Inter,sans-serif", fontSize:11, letterSpacing:"0.16em", textTransform:"uppercase", color:T.gold, opacity:0.75, textDecoration:"none", direction:"ltr" }}>lestyle.be/alaeApp</a>
+        <a href="https://www.lestyle.be/alaeApp" target="_blank" rel="noopener noreferrer" style={{ marginTop:6, fontFamily:"-apple-system,sans-serif", fontSize:11, letterSpacing:"0.16em", textTransform:"uppercase", color:T.gold, opacity:0.75, textDecoration:"none", direction:"ltr" }}>lestyle.be/alaeApp</a>
       </div>
-      {toast && (<div style={{ position:"absolute", bottom:34, left:"50%", transform:"translateX(-50%)", zIndex:40, padding:"11px 20px", borderRadius:22, whiteSpace:"nowrap", background:"rgba(16,12,8,0.96)", border:"0.5px solid rgba(232,200,140,0.4)", boxShadow:"0 12px 30px rgba(0,0,0,0.5)", fontFamily: isAr?"Cairo,sans-serif":"Inter,sans-serif", fontSize:13, fontWeight:600, color:T.goldLight }}>{toast}</div>)}
+      {toast && (<div style={{ position:"absolute", bottom:34, left:"50%", transform:"translateX(-50%)", zIndex:40, padding:"11px 20px", borderRadius:22, whiteSpace:"nowrap", background:"rgba(16,12,8,0.96)", border:"0.5px solid rgba(232,200,140,0.4)", boxShadow:"0 12px 30px rgba(0,0,0,0.5)", fontFamily: isAr?"ReemKufi,sans-serif":"-apple-system,sans-serif", fontSize:13, fontWeight:600, color:T.goldLight }}>{toast}</div>)}
     </div>
   );
 }
@@ -6229,7 +6369,7 @@ function DuaaScreen({ lang = 'ar', randomDuaa = false, onTap }) {
               boxShadow: isEid
                 ? '0 4px 22px rgba(214,142,54,0.5), 0 0 14px rgba(255,214,120,0.4), inset 0 1px 0 rgba(255,245,210,0.6)'
                 : '0 3px 16px rgba(201,124,46,0.30), inset 0 1px 0 rgba(255,240,200,0.35)',
-              fontFamily:'"ArefRuqaa","Amiri",serif', fontSize: isEid ? 21 : 19, fontWeight:700,
+              fontFamily:'"Amiri","ArefRuqaa",serif', fontSize: isEid ? 21 : 19, fontWeight:700,
               color:'#FBEDC4', letterSpacing:'0.01em', direction: isAr ? 'rtl' : 'ltr',
               whiteSpace:'nowrap', maxWidth:'92%',
               filter: isEid ? 'drop-shadow(0 0 11px rgba(255,205,110,0.6))' : 'drop-shadow(0 0 7px rgba(232,185,122,0.35))',
@@ -6358,7 +6498,7 @@ function DuaaScreen({ lang = 'ar', randomDuaa = false, onTap }) {
           padding:'11px 20px', borderRadius:22, whiteSpace:'nowrap',
           background:'rgba(16,12,8,0.96)', backdropFilter:'blur(12px)', WebkitBackdropFilter:'blur(12px)',
           border:'0.5px solid rgba(232,200,140,0.4)', boxShadow:'0 12px 30px rgba(0,0,0,0.5), 0 0 18px rgba(201,124,46,0.3)',
-          fontFamily: isAr ? 'Cairo,sans-serif' : 'Inter,sans-serif', fontSize:13, fontWeight:600, color:T.goldLight,
+          fontFamily: isAr ? 'ReemKufi,sans-serif' : '-apple-system,sans-serif', fontSize:13, fontWeight:600, color:T.goldLight,
           display:'inline-flex', alignItems:'center', gap:8,
         }} onClick={(e) => e.stopPropagation()}>
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5l3 3 6-7" stroke={T.goldLight} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>
@@ -6553,23 +6693,23 @@ function AsmaScreen({ lang = 'ar', onBack }) {
         <div style={{ marginTop:32, display:'flex', alignItems:'center', gap:10, padding:'11px 16px', borderRadius:14, background:'rgba(11,13,16,0.5)', border:'0.5px solid '+T.hairline, backdropFilter:'blur(8px)', WebkitBackdropFilter:'blur(8px)' }}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ flexShrink:0, opacity:0.7 }}><circle cx="7" cy="7" r="5" stroke={T.gold} strokeWidth="1.4"/><path d="M11 11l3 3" stroke={T.gold} strokeWidth="1.4" strokeLinecap="round"/></svg>
           <input value={query} onChange={(e)=>setQuery(e.target.value)} placeholder={L.search}
-            style={{ flex:1, background:'transparent', border:'none', outline:'none', color:T.text, fontSize:15, fontFamily: isAr?'Cairo,sans-serif':'Inter,sans-serif', textAlign: isAr?'right':'left' }} />
+            style={{ flex:1, background:'transparent', border:'none', outline:'none', color:T.text, fontSize:15, fontFamily: isAr?'ReemKufi,sans-serif':'-apple-system,sans-serif', textAlign: isAr?'right':'left' }} />
           {query && <button onClick={()=>setQuery('')} style={{ background:'none', border:'none', color:T.textDim, cursor:'pointer', fontSize:18, padding:0, lineHeight:1 }}>×</button>}
         </div>
       </div>
       {/* Liste */}
       <div style={{ position:'relative', zIndex:2, flex:1, overflowY:'auto', padding:'6px 16px 28px' }}>
-        {list.length === 0 && <div style={{ textAlign:'center', color:T.textDim, marginTop:40, fontFamily:'Inter,sans-serif' }}>{L.empty}</div>}
+        {list.length === 0 && <div style={{ textAlign:'center', color:T.textDim, marginTop:40, fontFamily:'-apple-system,sans-serif' }}>{L.empty}</div>}
         {list.map(it => (
           <div key={it.n} onClick={()=>{ setSel(it); if(navigator.vibrate) try{navigator.vibrate(6);}catch{} }}
             style={{ display:'flex', alignItems:'center', gap:14, padding:'13px 14px', margin:'8px 0', borderRadius:16, cursor:'pointer',
               background:'linear-gradient(100deg, rgba(8,10,13,0.52), rgba(8,10,13,0.38))', border:'0.5px solid rgba(199,165,91,0.14)' }}>
             <div style={{ width:40, height:40, flexShrink:0, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center',
               background:'radial-gradient(circle at 35% 30%, rgba(232,185,122,0.22), rgba(199,147,91,0.06))', border:'0.5px solid rgba(232,185,122,0.35)',
-              fontFamily:'Inter,sans-serif', fontSize:13, fontWeight:600, color:T.goldLight }}>{it.n}</div>
+              fontFamily:'-apple-system,sans-serif', fontSize:13, fontWeight:600, color:T.goldLight }}>{it.n}</div>
             <div style={{ flex:1, minWidth:0 }}>
               <div style={{ fontFamily:'"Amiri",serif', fontSize:24, fontWeight:700, color:T.goldLight, textAlign:'right', direction:'rtl', lineHeight:1.9, padding:'0.12em 0 0.04em' }}>{it.ar}</div>
-              <div style={{ fontFamily:'Inter,sans-serif', fontSize:12.5, color:T.textMuted, marginTop:1, textAlign: isAr?'right':'left', direction: isAr?'rtl':'ltr', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
+              <div style={{ fontFamily:'-apple-system,sans-serif', fontSize:12.5, color:T.textMuted, marginTop:1, textAlign: isAr?'right':'left', direction: isAr?'rtl':'ltr', whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>
                 <span style={{ color:T.gold, fontStyle:'italic', fontFamily:'"Cormorant Garamond",serif', fontSize:14 }}>{it.tr}</span>
                 <span style={{ opacity:0.5 }}> · </span>{meaningOf(it)}
               </div>
@@ -6593,7 +6733,7 @@ function AsmaScreen({ lang = 'ar', onBack }) {
               <div style={{ position:'absolute', inset:10, borderRadius:16, border:'1px solid rgba(232,185,122,0.45)', boxShadow:'inset 0 0 18px rgba(199,147,91,0.12), 0 0 0 0.5px rgba(255,241,200,0.15)', pointerEvents:'none' }} />
               <div style={{ position:'absolute', inset:14, borderRadius:13, border:'0.5px solid rgba(232,185,122,0.22)', pointerEvents:'none' }} />
               <div key={sel.n} style={{ position:'relative', zIndex:2, '--asma-from': slideDir<0?'-26px':'26px', animation:'asmaCardIn 0.34s cubic-bezier(.2,.7,.2,1)' }}>
-              <div style={{ fontFamily:'Inter,sans-serif', fontSize:12, fontWeight:600, letterSpacing:'0.2em', color:T.gold, opacity:0.8 }}>{isAr?('رقم '+sel.n):(sel.n+' / 99')}</div>
+              <div style={{ fontFamily:'-apple-system,sans-serif', fontSize:12, fontWeight:600, letterSpacing:'0.2em', color:T.gold, opacity:0.8 }}>{isAr?('رقم '+sel.n):(sel.n+' / 99')}</div>
               <div style={{ display:'flex', justifyContent:'center', gap:8, margin:'14px 0 10px' }}>
                 <div style={{ width:6, height:6, transform:'rotate(45deg)', background:'#F4D89B' }}/>
                 <div style={{ width:8, height:8, transform:'rotate(45deg)', background:'#FFE9B8' }}/>
@@ -6611,7 +6751,7 @@ function AsmaScreen({ lang = 'ar', onBack }) {
               <div style={{ fontFamily: isAr?'"Amiri",serif':'"Cormorant Garamond",serif', fontSize: isAr?21:18, color:T.text, lineHeight:1.7, direction: isAr?'rtl':'ltr' }}>{meaningOf(sel)}</div>
               {(sel.duaaAr || sel.duaaFr) && (
                 <div style={{ marginTop:20, paddingTop:16, borderTop:'0.5px solid rgba(232,185,122,0.28)' }}>
-                  <div style={{ fontFamily:'Inter,sans-serif', fontSize:10.5, fontWeight:600, letterSpacing:'0.18em', textTransform:'uppercase', color:T.gold, opacity:0.85, marginBottom:8 }}>{isAr?'دُعَاء':'Doua'}</div>
+                  <div style={{ fontFamily:'-apple-system,sans-serif', fontSize:10.5, fontWeight:600, letterSpacing:'0.18em', textTransform:'uppercase', color:T.gold, opacity:0.85, marginBottom:8 }}>{isAr?'دُعَاء':'Doua'}</div>
                   {isAr ? (
                     <div style={{ fontFamily:'"Amiri",serif', fontSize:19, color:T.goldLight, lineHeight:1.9, direction:'rtl' }}>{sel.duaaAr}</div>
                   ) : (
@@ -6625,7 +6765,7 @@ function AsmaScreen({ lang = 'ar', onBack }) {
         </div>
       )}
       {toast && (
-        <div style={{ position:'absolute', bottom:34, left:'50%', transform:'translateX(-50%)', zIndex:50, padding:'10px 20px', borderRadius:99, background:'rgba(11,13,16,0.9)', border:'0.5px solid '+T.hairline, color:T.goldLight, fontFamily:'Inter,sans-serif', fontSize:13, display:'flex', alignItems:'center', gap:8 }}>
+        <div style={{ position:'absolute', bottom:34, left:'50%', transform:'translateX(-50%)', zIndex:50, padding:'10px 20px', borderRadius:99, background:'rgba(11,13,16,0.9)', border:'0.5px solid '+T.hairline, color:T.goldLight, fontFamily:'-apple-system,sans-serif', fontSize:13, display:'flex', alignItems:'center', gap:8 }}>
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5l3 3 6-7" stroke={T.goldLight} strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/></svg>{toast}
         </div>
       )}
@@ -6982,7 +7122,7 @@ window.AsmaScreen = AsmaScreen;
           direction: isAr ? 'rtl' : 'ltr',
           overflow:'hidden',
         }}>
-          <window.SilkBg opacity={0.55} />
+          <window.SilkBg opacity={0.32} />
           {/* étoiles douces — montées seulement quand le menu est ouvert */}
           {open && <svg aria-hidden="true" viewBox="0 0 402 874" preserveAspectRatio="none" style={{ position:'absolute', inset:0, width:'100%', height:'100%', pointerEvents:'none', zIndex:1, opacity:0.6 }}>
             {[[36,52,1.1,0.72],[104,24,0.8,0.48],[190,66,0.85,0.5],[262,30,1.2,0.78],[340,58,0.85,0.55],[70,150,0.8,0.46],[224,128,0.75,0.42],[318,176,0.9,0.52],[28,244,0.85,0.5],[142,214,0.75,0.4],[286,276,0.9,0.46],[52,340,0.8,0.44],[358,330,0.85,0.48],[196,394,0.8,0.42],[308,444,0.8,0.46],[42,476,0.85,0.44],[360,530,0.8,0.42],[118,560,0.8,0.44],[270,608,0.85,0.46],[34,648,0.8,0.4],[348,694,0.8,0.44],[158,736,0.8,0.42],[302,792,0.85,0.44]].map(([x,y,r,op],i) => (
@@ -6992,10 +7132,13 @@ window.AsmaScreen = AsmaScreen;
               </g>
             ))}
           </svg>}
-          {/* voile léger derrière la liste du menu — sans flou : le calque du dessous en a déjà un */}
-          <div aria-hidden="true" style={{ position:'absolute', top:238, left:10, right:10, bottom:16, borderRadius:22, zIndex:1,
-            background:'rgba(15, 11, 8, 0.30)',
-            border:'0.5px solid rgba(232,200,140,0.14)', pointerEvents:'none' }}/>
+          {/* Voile de lecture derriere la liste. Il etait a 0.30 : la soie passait au
+              travers et les libelles arabes se posaient sur les plis clairs. A 0.62 la
+              liste a un fond a elle. Sans flou : le calque du dessous en a deja un. */}
+          <div aria-hidden="true" style={{ position:'absolute', top:238, left:10, right:10, bottom:16, borderRadius:'0 0 22px 22px', zIndex:1,
+            background:'linear-gradient(180deg, rgba(15,11,8,0.58), rgba(12,9,6,0.66))',
+            borderLeft:'0.5px solid rgba(232,200,140,0.14)', borderRight:'0.5px solid rgba(232,200,140,0.14)',
+            borderBottom:'0.5px solid rgba(232,200,140,0.14)', pointerEvents:'none' }}/>
 
           {/* Close button top-right (or top-left in LTR) */}
           <button
@@ -7080,7 +7223,7 @@ window.AsmaScreen = AsmaScreen;
           </a>
 
           {/* nav items — scrollable (bornés au-dessus du footer) */}
-          <div style={{ padding:'12px 12px 18px', display:'flex', flexDirection:'column', gap:2, position:'absolute', top:230, left:0, right:0, bottom:58, overflowY:'auto', WebkitOverflowScrolling:'touch', touchAction:'pan-y', zIndex:2 }}>
+          <div style={{ padding:'12px 12px 18px', display:'flex', flexDirection:'column', gap:2, position:'absolute', top:248, left:0, right:0, bottom:58, overflowY:'auto', WebkitOverflowScrolling:'touch', touchAction:'pan-y', zIndex:2 }}>
             {items.map(item => (
               <button key={item.id}
                 onClick={() => onGo(item.id)}
@@ -7090,8 +7233,12 @@ window.AsmaScreen = AsmaScreen;
                   display:'flex', alignItems:'center', gap:14,
                   textAlign: isAr ? 'right' : 'left',
                   color: T.text,
-                  fontFamily: isAr ? 'Cairo, sans-serif' : 'Inter, sans-serif',
-                  fontSize:14, fontWeight:400,
+                  // ReemKufi 14px etait trop petit et trop maigre : les harakat des
+                  // libelles arabes se perdaient. Amiri 18/600 les detache nettement.
+                  fontFamily: isAr ? '"Amiri", serif' : '-apple-system, sans-serif',
+                  // 700 explicitement : Amiri ne declare que 400 et 700.
+                  fontSize: isAr ? 18 : 15, fontWeight: isAr ? 700 : 400,
+                  textShadow:'0 1px 2px rgba(0,0,0,0.75)',
                   transition:'background 0.15s ease',
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(199,165,91,0.06)'}
@@ -7119,9 +7266,9 @@ window.AsmaScreen = AsmaScreen;
             <div style={{
               position:'absolute', left:24, right:24, bottom:18,
               paddingTop:12, borderTop:`0.5px solid ${T.hairline}`,
-              fontFamily:'Inter', fontSize:9, letterSpacing:'0.3em',
+              fontFamily:'-apple-system', fontSize:9, letterSpacing:'0.3em',
               color:T.textDim, textAlign: isAr ? 'right' : 'left',
-            }}>v 1.0.16 <a href="https://www.lestyle.be" target="_blank" rel="noopener noreferrer" style={{ color:T.goldLight, textDecoration:'none', pointerEvents:'auto' }}>Lestyle</a></div>
+            }}>v 1.0.17 <a href="https://www.lestyle.be" target="_blank" rel="noopener noreferrer" style={{ color:T.goldLight, textDecoration:'none', pointerEvents:'auto' }}>Lestyle</a></div>
           </div>
         </div>
       </>
@@ -7347,13 +7494,13 @@ window.AsmaScreen = AsmaScreen;
     const [route, setRoute] = useState('compteur');
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [showSplash, setShowSplash] = useState(false);
-    const [showDuaa, setShowDuaa] = useState(true);
+    const [showDuaa, setShowDuaa] = useState(() => !(typeof window !== 'undefined' && window.__alaeRelance));
     const [bootDone, setBootDone] = useState(() => (typeof window !== 'undefined' && !!window.__bootIntroDone));
     const [forceOnboarding, setForceOnboarding] = useState(false);
     const [showNiyya, setShowNiyya] = useState(true);
     const [brightness, setBrightness] = useState(() => loadState().brightness ?? 1);
     const [darkMode, setDarkMode] = useState(() => loadState().darkMode || 'off');
-    const [theme, setTheme] = useState(() => { const t = loadState().theme; return (!t || t === 'royal' || t === 'rose') ? 'gold' : t; });
+    const [theme, setTheme] = useState(() => { const t = loadState().theme; return (!t || t === 'royal' || t === 'rose' || t === 'bahrayn') ? 'gold' : t; });
     const [showCustomModal, setShowCustomModal] = useState(false);
     const [editingDhikr, setEditingDhikr] = useState(null);
     const [showDhikrDetail, setShowDhikrDetail] = useState(null);
@@ -7364,7 +7511,7 @@ window.AsmaScreen = AsmaScreen;
       const sync = () => {
         const s = loadState();
         const m = s.darkMode || 'off';
-        const t = (!s.theme || s.theme === 'rose') ? 'gold' : s.theme;
+        const t = (!s.theme || s.theme === 'rose' || s.theme === 'bahrayn') ? 'gold' : s.theme;
         if (m !== darkMode) setDarkMode(m);
         if (t !== theme) setTheme(t);
       };
@@ -7398,10 +7545,14 @@ window.AsmaScreen = AsmaScreen;
       };
       envoyer();
       // Renouvelle la fenêtre de 14 jours, puis reprogramme dessus.
-      try { window.alaeRafraichirCalendrier().then(function(j){ if (j && j.length) envoyer(); }); } catch (e) {}
+      // 07/09 : ATTEND que les ecrans d'accueil soient passes. Lance pendant
+      // l'intro, ce telechargement s'ajoutait au pic memoire du demarrage.
+      const idCal = setTimeout(() => {
+        try { window.alaeRafraichirCalendrier().then(function(j){ if (j && j.length) envoyer(); }); } catch (e) {}
+      }, 12000);
       const onVisible = () => { if (!document.hidden) envoyer(); };
       document.addEventListener('visibilitychange', onVisible);
-      return () => document.removeEventListener('visibilitychange', onVisible);
+      return () => { clearTimeout(idCal); document.removeEventListener('visibilitychange', onVisible); };
     }, []);
 
     // Compute effective dark state (auto = night 18h-6h)
@@ -7425,23 +7576,43 @@ window.AsmaScreen = AsmaScreen;
     // Apply theme + night mode + brightness — combinés (la luminosité marche TOUJOURS)
     useEffect(() => {
       const root = document.documentElement;
-      // Teinte de base selon le thème
-      let hue = '', sat = 1.32, con = 1.13, veilRGB = '11,13,16', brBoost = 1, veilBoost = 0, veilOff = false;
-      if (theme === 'bordeaux') { hue = ' hue-rotate(-18deg)'; sat = 0.95; con = 1.03; veilRGB = '34,22,12'; }
-      else if (theme === 'nuit') { hue = ''; sat = 1.0; con = 1.06; veilRGB = '9,11,14'; }
-      else if (theme === 'bahrayn') { hue = ''; sat = 1.08; con = 1.04; veilRGB = '5,22,26'; brBoost = 0.92; veilBoost = 0; }
-      else if (theme === 'amouage') { hue = ''; sat = 1.06; con = 1.02; veilRGB = '4,18,24'; brBoost = 1.20; veilBoost = 0; veilOff = true; }
-      else if (theme === 'rose') { hue = ' hue-rotate(-58deg)'; sat = 1.1; con = 1.03; veilRGB = '42,16,24'; }
-      else if (theme === 'copper') { hue = ' hue-rotate(-9deg)'; sat = 1.34; con = 1.12; veilRGB = '30,16,9'; }
-      // Multiplicateur de luminosité (0=tamisé · 1=normal · 2=lumineux)
-      const brMult = [0.55, 0.74, 1.06][brightness] != null ? [0.55, 0.74, 1.06][brightness] : 0.74;
-      const veilA  = [0.46, 0.40, 0.20][brightness] != null ? [0.46, 0.40, 0.20][brightness] : 0.40;
-      let mult = brMult * brBoost, a = Math.min(0.9, veilA + veilBoost), s2 = sat;
-      if (isNightMode) { mult = brMult * brBoost * 0.6; a = Math.min(0.86, veilA + veilBoost + 0.34); if (!hue) s2 = 0.85; }
-      root.style.setProperty('--silk-filter', `brightness(${mult.toFixed(2)}) saturate(${s2}) contrast(${con})${hue}`);
-      root.style.setProperty('--silk-veil', veilOff ? 'rgba(0,0,0,0)' : `rgba(${veilRGB},${a.toFixed(2)})`);
+      // Calage du voile par thème
+      let veilRGB = '11,13,16', accentRGB = '255,214,140', brBoost = 1, veilBoost = 0, veilOff = false;
+      if (theme === 'gold') { brBoost = 1.62; veilOff = true; }
+      else if (theme === 'bordeaux') { veilRGB = '34,22,12'; accentRGB = '255,198,132'; }
+      else if (theme === 'nuit') { veilRGB = '9,11,14'; accentRGB = '214,226,255'; }
+      else if (theme === 'bahrayn') { veilRGB = '5,22,26'; accentRGB = '176,232,238'; brBoost = 0.92; }
+      else if (theme === 'koutoubia') { veilRGB = '6,10,14'; accentRGB = '255,206,150'; brBoost = 0.92; veilBoost = 0.06; }
+      else if (theme === 'amouage') { veilRGB = '4,18,24'; accentRGB = '168,226,236'; brBoost = 1.20; veilOff = true; }
+      else if (theme === 'rose') { veilRGB = '42,16,24'; accentRGB = '255,196,206'; }
+      else if (theme === 'copper') { veilRGB = '30,16,9'; accentRGB = '255,190,138'; }
+      // Crans de luminosité : 0 = tamisé · 1 = normal · 2 = lumineux
+      const BR = brightness != null ? brightness : 1;
+      // Themes etalonnes par cran (Koutoubia) : le bouton luminosite change l'image
+      // elle-meme, pas un voile pose dessus. Declare ici car --silk-tone le lit.
+      const parCran = window.ALAE_CRANS_IMG && window.ALAE_CRANS_IMG[theme];
+      const veilA = [0.30, 0.22, 0.10][BR] != null ? [0.30, 0.22, 0.10][BR] : 0.22;
+      const veilCut = veilOff ? 0.28 : 1;
+      let a = Math.min(0.9, (veilA + veilBoost) * veilCut);
+      if (isNightMode) a = Math.min(0.86, (veilA + veilBoost) * veilCut + 0.34);
+      // Au cran normal : aucun aplat sur l'image (elle reste nette et pleine).
+      // Les deux autres crans n'assombrissent/n'eclaircissent pas tout l'ecran :
+      // ils travaillent la soie elle-meme — un halo chaud au centre pour accentuer
+      // les reflets dores, un creux sur les bords pour la version tamisee.
+      const spread = isNightMode ? 0.6 : 1;
+      const glow = Math.min(0.30, 0.20 * spread / brBoost);
+      const sink = Math.min(0.62, 0.46 * spread / brBoost);
+      const tone = BR === 2
+        ? `radial-gradient(ellipse 82% 62% at 50% 44%,rgba(${accentRGB},${glow.toFixed(3)}),rgba(${accentRGB},${(glow * 0.34).toFixed(3)}) 52%,rgba(${accentRGB},0) 78%)`
+        : BR === 0
+        ? `radial-gradient(ellipse 96% 78% at 50% 44%,rgba(7,8,10,0) 34%,rgba(7,8,10,${(sink * 0.52).toFixed(3)}) 70%,rgba(7,8,10,${sink.toFixed(3)}) 100%)`
+        : 'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))';
+      // Sur un theme etalonne par cran, l'image porte deja le reglage : un halo
+      // de plus ne ferait que delaver ce que Photoshop a cale.
+      root.style.setProperty('--silk-tone', parCran ? 'linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0))' : tone);
+      root.style.setProperty('--silk-veil', `rgba(${veilRGB},${a.toFixed(2)})`);
       // Fond d'écran associé au thème
-      const img = (window.ALAE_FONDS && window.ALAE_FONDS[theme]) || 'assets/silk-bg-inline.jpg';
+      const img = (parCran && parCran[BR]) || (window.ALAE_FONDS && window.ALAE_FONDS[theme]) || 'assets/silk-bg-inline.jpg';
       window.ALAE_SILK = img;
       root.style.setProperty('--silk-img', `url("${img}")`);
       // Thèmes photographiques (Al-Bahrayn, Amouage) : voile serré sur les bords,
@@ -7478,13 +7649,13 @@ window.AsmaScreen = AsmaScreen;
     const lang = (window.I18N && window.I18N[state.lang]) ? state.lang : 'ar';
     const isAr = lang === 'ar';
 
-    // (luminosité gérée dans l'effet combiné ci-dessus)
-
     const cycleBrightness = () => {
       const next = (brightness + 1) % 3;
       setBrightness(next);
       const s = loadState(); s.brightness = next; saveState(s);
     };
+
+
 
     // Bismillah splash — stays until user taps anywhere
     useEffect(() => {
@@ -7588,7 +7759,7 @@ window.AsmaScreen = AsmaScreen;
           {/* Hint at bottom — "tap to continue" */}
           <div style={{
             position:'absolute', bottom: 16, left:0, right:0, textAlign:'center',
-            fontFamily:'Inter, sans-serif', fontSize:11, letterSpacing:'0.4em',
+            fontFamily:'-apple-system, sans-serif', fontSize:11, letterSpacing:'0.4em',
             color:'rgba(232,200,140,0.85)', textTransform:'uppercase', pointerEvents:'none',
             animation:'tapHint 2.2s ease-in-out infinite',
             zIndex: 10000, fontWeight:500,
@@ -7776,7 +7947,7 @@ window.AsmaScreen = AsmaScreen;
               <div style={{ fontFamily:'Amiri, serif', fontSize:16, fontWeight:700, color:'#E8F0FF', letterSpacing:'0.01em' }}>
                 تم تفعيل الوضع الليلي
               </div>
-              <div style={{ fontFamily:'Inter, sans-serif', fontSize:10.5, color:'rgba(190,205,235,0.7)', letterSpacing:'0.02em', direction:'ltr', textAlign:'right' }}>
+              <div style={{ fontFamily:'-apple-system, sans-serif', fontSize:10.5, color:'rgba(190,205,235,0.7)', letterSpacing:'0.02em', direction:'ltr', textAlign:'right' }}>
                 Mode nuit activé · 18h–6h
               </div>
             </div>

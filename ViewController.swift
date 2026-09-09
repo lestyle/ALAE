@@ -8,7 +8,6 @@
 
 import UIKit
 import WebKit
-import CoreLocation
 import UserNotifications
 import AVFoundation
 import WidgetKit
@@ -142,44 +141,16 @@ enum AlaeReplanif {
     }
 }
 
-class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler, CLLocationManagerDelegate {
+class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKScriptMessageHandler {
 
     // App Group partagé avec le widget (doit être identique côté widget)
     private let appGroupID = "group.com.alae.misbaha.ALAE.shared"
-
-    // Date de fin de la derniere intro (secondes depuis 1970). Voir loadView().
-    static let bootAtKey = "alae.bootAt"
-    // Copie durable du localStorage de la page (JSON). Voir loadView().
-    static let storeKey = "alae.store"
 
     var webView: WKWebView!
 
     override func loadView() {
         let contentController = WKUserContentController()
         contentController.add(self, name: "alae")
-
-        // 07/09 — ANTI-BOUCLE D'INTRO + PERSISTANCE DES REGLAGES, cote natif.
-        // La page est chargee par loadFileURL : sous file:// WebKit lui donne une
-        // origine opaque, et son localStorage n'est pas relu au chargement suivant.
-        // Deux choses en dependaient : le garde anti-boucle de l'intro, qui ne
-        // pouvait jamais s'armer, et TOUS les reglages (langue, theme, luminosite,
-        // total des dhikr), perdus a chaque redemarrage. Les deux vivent desormais
-        // dans UserDefaults, cote natif, et sont injectes AVANT le premier script.
-        let bootAt = UserDefaults.standard.double(forKey: Self.bootAtKey)
-        let store = UserDefaults.standard.string(forKey: Self.storeKey) ?? "{}"
-        // Passe par un tableau JSON : JSONSerialization echappe guillemets, retours
-        // a la ligne et accents pour nous. Concatener la chaine brute casserait le JS.
-        let litteral = (try? JSONSerialization.data(withJSONObject: [store]))
-            .flatMap { String(data: $0, encoding: .utf8) } ?? "[\"{}\"]"
-        let injection = WKUserScript(
-            source: """
-            window.__alaeBootAt = \(Int(bootAt * 1000));
-            window.__alaeStore = \(litteral)[0];
-            """,
-            injectionTime: .atDocumentStart,
-            forMainFrameOnly: true
-        )
-        contentController.addUserScript(injection)
 
         let config = WKWebViewConfiguration()
         config.userContentController = contentController
@@ -283,11 +254,10 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         nbPlantages += 1
         print("[ALAE] LE MOTEUR WEB A ETE TUE (plantage n°\(nbPlantages))")
 
-        // 06/09 : UNE seule tentative. Le HTML signale la fin de son intro a Swift
-        // (message 'bootAt'), qui la retient dans UserDefaults et la reinjecte au
-        // chargement suivant : ce rechargement saute l'intro et le Dou'a et repart
-        // directement sur l'app — plus de boucle visible.
-        guard nbPlantages <= 1 else {
+        // Au-dela de deux tentatives on arrete : recharger en boucle ne ferait
+        // que rejouer l'intro indefiniment, ce que l'utilisateur voit comme un
+        // demarrage sans fin.
+        guard nbPlantages <= 2 else {
             print("[ALAE] trop de plantages — rechargement automatique abandonne")
             return
         }
@@ -318,98 +288,11 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         return nil
     }
 
-    // MARK: - Position native (CoreLocation)
-    private lazy var gestionnaireLoc: CLLocationManager = {
-        let m = CLLocationManager()
-        m.delegate = self
-        m.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        return m
-    }()
-    private var locDemandee = false
-
-    // Cible minimale iOS 16.2 : la propriete d'instance existe partout, l'ancienne
-    // methode de classe (depreciee depuis iOS 14) n'a plus lieu d'etre.
-    private func statutLoc() -> CLAuthorizationStatus {
-        return gestionnaireLoc.authorizationStatus
-    }
-
-    private func demanderPosition() {
-        DispatchQueue.main.async {
-            switch self.statutLoc() {
-            case .notDetermined:
-                self.locDemandee = true
-                self.gestionnaireLoc.requestWhenInUseAuthorization()
-            case .authorizedWhenInUse, .authorizedAlways:
-                self.locDemandee = true
-                self.gestionnaireLoc.requestLocation()
-            default:
-                self.renvoyerErreurPosition("refuse")
-            }
-        }
-    }
-
-    private func renvoyerPosition(_ l: CLLocation) {
-        let js = "if(window.__alaeLocOK)window.__alaeLocOK(\(l.coordinate.latitude),\(l.coordinate.longitude));"
-        DispatchQueue.main.async { self.webView.evaluateJavaScript(js, completionHandler: nil) }
-    }
-
-    private func renvoyerErreurPosition(_ raison: String) {
-        let propre = raison.replacingOccurrences(of: "'", with: " ")
-        let js = "if(window.__alaeLocErr)window.__alaeLocErr('\(propre)');"
-        DispatchQueue.main.async { self.webView.evaluateJavaScript(js, completionHandler: nil) }
-    }
-
-    func locationManager(_ m: CLLocationManager, didUpdateLocations locs: [CLLocation]) {
-        guard let l = locs.last else { return }
-        print("[ALAE] position native obtenue")
-        renvoyerPosition(l)
-    }
-
-    func locationManager(_ m: CLLocationManager, didFailWithError error: Error) {
-        print("[ALAE] position native indisponible : \(error.localizedDescription)")
-        renvoyerErreurPosition(error.localizedDescription)
-    }
-
-    func locationManager(_ m: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        guard locDemandee else { return }
-        switch status {
-        case .authorizedWhenInUse, .authorizedAlways: m.requestLocation()
-        case .denied, .restricted: renvoyerErreurPosition("refuse")
-        default: break
-        }
-    }
-
     // MARK: - JS → Swift bridge
     func userContentController(_ userContentController: WKUserContentController,
                                didReceive message: WKScriptMessage) {
         guard let body = message.body as? [String: Any],
               let type = body["type"] as? String else { return }
-
-        // 07/09 — POSITION NATIVE. Avant, le HTML appelait navigator.geolocation :
-        // dans une WKWebView file:// WebKit affiche SA fenetre, qui montre
-        // "/private/var/containers/.../Misbaha-Standalone.html" au lieu du nom de
-        // l'app, et la reaffiche a chaque appel. On passe par CoreLocation : iOS
-        // montre sa fenetre standard, une seule fois, avec le nom de l'app.
-        if type == "location" {
-            demanderPosition()
-            return
-        }
-
-        // Le HTML signale que son intro vient de se terminer : on retient l'instant
-        // cote natif pour qu'un rechargement apres plantage saute l'intro et le Dou'a.
-        if type == "bootAt" {
-            UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: Self.bootAtKey)
-            return
-        }
-
-        // La page renvoie son localStorage complet a chaque modification. On le garde
-        // ici : c'est la seule copie qui survit a un redemarrage (voir loadView()).
-        if type == "store" {
-            if let data = body["data"] as? String {
-                UserDefaults.standard.set(data, forKey: Self.storeKey)
-            }
-            return
-        }
 
         if type == "share" {
             let text = body["text"] as? String ?? ""

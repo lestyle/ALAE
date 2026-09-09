@@ -12,6 +12,7 @@
 		DC2C9F1C3038EBCA006CFAFF /* Misbaha-Standalone.html in Resources */ = {isa = PBXBuildFile; fileRef = DC2C9F1B3038EBCA006CFAFF /* Misbaha-Standalone.html */; };
 		DC403D552FF9B59F00D408BE /* silence.caf in Resources */ = {isa = PBXBuildFile; fileRef = DC403D4D2FF9B59E00D408BE /* silence.caf */; };
 		DC40D227302D28C30067FAE9 /* ALAEWidget2.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC40D225302D28A50067FAE9 /* ALAEWidget2.swift */; };
+		DC4785CB304D6CC7006486DD /* react-dom.development.js in Resources */ = {isa = PBXBuildFile; fileRef = DCF6CEB7302907DB00A71E54 /* react-dom.development.js */; };
 		DC61BCE42FB90CE500179D2E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC61BCE32FB90CE500179D2E /* AppDelegate.swift */; };
 		DC61BCEB2FB90CE500179D2E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC61BCE92FB90CE500179D2E /* Main.storyboard */; };
 		DC61BCF02FB90CE700179D2E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC61BCEE2FB90CE700179D2E /* LaunchScreen.storyboard */; };
@@ -105,7 +106,6 @@
 		DCAD7F50302BE2ED00069F6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DCAD7F5A302CF89000069F6E /* AmiriQuran.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = AmiriQuran.ttf; path = fonts/AmiriQuran.ttf; sourceTree = "<group>"; };
 		DCAD7F5C302CF8BB00069F6E /* ScheherazadeNew-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "ScheherazadeNew-Regular.ttf"; path = "fonts/ScheherazadeNew-Regular.ttf"; sourceTree = "<group>"; };
-		DCAD7F5E302CF8EB00069F6E /* QPC-V4-Tajweed.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "QPC-V4-Tajweed.ttf"; path = "fonts/QPC-V4-Tajweed.ttf"; sourceTree = "<group>"; };
 		DCAD7F62302D0ADE00069F6E /* QPC-V4-Tajweed.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "QPC-V4-Tajweed.ttf"; path = "fonts/QPC-V4-Tajweed.ttf"; sourceTree = "<group>"; };
 		DCAD7F63302D0B3900069F6E /* ScheherazadeNew-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "ScheherazadeNew-Medium.ttf"; path = "fonts/ScheherazadeNew-Medium.ttf"; sourceTree = "<group>"; };
 		DCAD7F65302D0BF900069F6E /* ReemKufi-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "ReemKufi-Medium.ttf"; path = "fonts/ReemKufi-Medium.ttf"; sourceTree = "<group>"; };
@@ -172,7 +172,6 @@
 				DC10182A302E7C7200C4F0AE /* CormorantGaramond-Medium.woff */,
 				DCAD7F63302D0B3900069F6E /* ScheherazadeNew-Medium.ttf */,
 				DCAD7F62302D0ADE00069F6E /* QPC-V4-Tajweed.ttf */,
-				DCAD7F5E302CF8EB00069F6E /* QPC-V4-Tajweed.ttf */,
 				DCAD7F5C302CF8BB00069F6E /* ScheherazadeNew-Regular.ttf */,
 				DCAEDD3430320F22002284C8 /* QCF2047.ttf */,
 				DCAD7F5A302CF89000069F6E /* AmiriQuran.ttf */,
@@ -345,6 +344,7 @@
 				DCF94B173020FC0E0093910E /* adhan-hadioui.mp3 in Resources */,
 				DC760F712FD6141E00FC5D0A /* fonts in Resources */,
 				DCF94B163020FC0E0093910E /* adhan-mecca.mp3 in Resources */,
+				DC4785CB304D6CC7006486DD /* react-dom.development.js in Resources */,
 				DC61BCEB2FB90CE500179D2E /* Main.storyboard in Resources */,
 				DCF94B113020FC0E0093910E /* adhan-karaca.mp3 in Resources */,
 				DCF94B103020FC0E0093910E /* adhan-kouchi-notif.caf in Resources */,
@@ -627,7 +627,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = ALAEWidget2Extension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 84;
+				CURRENT_PROJECT_VERSION = 85;
 				DEVELOPMENT_TEAM = NUD4HZ572C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ALAEWidget2/Info.plist;
@@ -638,7 +638,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.7;
+				MARKETING_VERSION = 1.0.17;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE.ALAEWidget2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -655,7 +655,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = ALAEWidget2Extension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 84;
+				CURRENT_PROJECT_VERSION = 85;
 				DEVELOPMENT_TEAM = NUD4HZ572C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ALAEWidget2/Info.plist;
@@ -666,7 +666,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.7;
+				MARKETING_VERSION = 1.0.17;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE.ALAEWidget2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

@@ -23,7 +23,10 @@ if(Date.now()-t0<60000)return;clearInterval(id);var m=[];if(!window.React)m.push
 @font-face { font-family: 'Amiri'; src: url('fonts/Amiri-Bold.ttf') format('truetype'); font-weight: 700; font-display: swap; }
 @font-face { font-family: 'Amiri Quran'; src: url('fonts/AmiriQuran.ttf') format('truetype'); font-weight: 400; font-display: block; }
 @font-face { font-family: 'QPCV4Tajweed'; src: url('fonts/QPC-V4-Tajweed.ttf') format('truetype'); font-weight: 400; font-display: swap; }
-html,body{margin:0;padding:0;background:radial-gradient(ellipse 110% 90% at 50% 45%,rgba(11,13,16,0.06),rgba(11,13,16,0.46) 96%),url("assets/silk-bg-inline.jpg") center/cover no-repeat,radial-gradient(ellipse 120% 96% at 50% 42%,#3A2E1E 0%,#241C12 44%,#15100A 74%,#0B0D10 100%);height:100%;overflow:hidden}
+/* 04/09 : plus de photo ici. #boot-splash puis #silk-wallpaper couvrent deja tout
+   l'ecran des le 1er cadre ; cette 3e copie de la meme image ne servait qu'a
+   remplir la safe-area et coutait un tampon plein ecran de plus. */
+html,body{margin:0;padding:0;background:radial-gradient(ellipse 120% 96% at 50% 42%,#3A2E1E 0%,#241C12 44%,#15100A 74%,#0B0D10 100%);height:100%;overflow:hidden}
 /* Masquer toutes les barres de défilement (iOS / WebKit) */
 *::-webkit-scrollbar{width:0;height:0;display:none}
 *{scrollbar-width:none;-ms-overflow-style:none}
@@ -32,17 +35,32 @@ html,body{margin:0;padding:0;background:radial-gradient(ellipse 110% 90% at 50% 
    succedent avant l'app (premier frame html/body, l'intro, puis #silk-wallpaper)
    la lisent toutes : elles sont donc rigoureusement identiques et ne peuvent plus
    diverger. Les pages de l'app gardent --silk-veil (0.30), valide par Hicham. */
-:root{--silk-filter:brightness(0.95) saturate(1.32) contrast(1.13);--silk-veil:rgba(11,13,16,0.30);--boot-veil:radial-gradient(ellipse 110% 90% at 50% 45%,rgba(11,13,16,0.06),rgba(11,13,16,0.46) 96%)}
-.silk-bg-layer{filter:var(--silk-filter) !important;transition:filter 0.6s ease}
-.silk-veil-layer{background:var(--silk-vignette-soft, radial-gradient(ellipse 110% 90% at 50% 45%,rgba(11,13,16,0.03),var(--silk-veil) 96%)) !important;transition:background 0.6s ease}
+/* 04/09 : les deux filtres passent a none. Un filter: sur un calque plein ecran
+   force iOS a garder une copie NON COMPRESSEE de l'ecran en memoire graphique
+   (~5 Mo par calque), meme sur une image fixe — c'est ce qui faisait tuer le
+   moteur web ~2 s apres l'intro, donc rechargement en mode leger et fond perdu.
+   La teinte est desormais cuite dans silk-bg-inline.jpg. */
+/* --silk-gloss : le vernis. Le noir paraissait mat parce que rien ne s'y
+   reflechissait. Trois degrades empiles — une bande speculaire en diagonale, une
+   lueur chaude en haut a gauche, un fond plus profond en bas — donnent l'illusion
+   d'une laque qui accroche la lumiere. Ce sont des degrades, pas des filter: ils
+   ne coutent aucun tampon graphique et s'ajoutent aux calques existants sans en
+   creer un seul de plus. */
+:root{--silk-gloss:linear-gradient(112deg,rgba(255,236,198,0) 17%,rgba(255,236,198,0.045) 33%,rgba(255,246,220,0.085) 41%,rgba(255,236,198,0.028) 50%,rgba(255,236,198,0) 63%),radial-gradient(ellipse 92% 58% at 21% 6%,rgba(255,231,188,0.10),rgba(255,231,188,0) 64%),radial-gradient(ellipse 118% 72% at 50% 112%,rgba(0,0,0,0.42),rgba(0,0,0,0) 58%);--silk-filter:none;--silk-tone:linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0));--silk-veil:rgba(11,13,16,0.30);--boot-veil:radial-gradient(ellipse 110% 90% at 50% 45%,rgba(11,13,16,0.06),rgba(11,13,16,0.46) 96%);--boot-filter:none}
+.silk-bg-layer{transition:opacity 0.6s ease}
+/* 06/09 : --silk-tone porte le reglage de luminosite. Il etait pilote par
+   --silk-filter, mais ce filtre a ete retire en 1.0.16 (il coutait un tampon
+   graphique plein ecran) : la variable n'etait donc plus lue et le bouton ne
+   faisait plus rien. Un aplat degrade donne le meme resultat sans tampon. */
+.silk-veil-layer{background:var(--silk-gloss),var(--silk-tone),var(--silk-vignette-soft, radial-gradient(ellipse 110% 90% at 50% 45%,rgba(11,13,16,0.03),var(--silk-veil) 96%)) !important;transition:background 0.6s ease}
 #root{position:fixed;inset:0;z-index:1}
 /* Fond d'écran (soie) plein écran — derrière l'app, comble toute zone de letterbox / safe-area */
 #silk-wallpaper{position:fixed;inset:0;z-index:0;background:#0B0D10;pointer-events:none}
 /* Ce calque n'est visible QUE entre l'intro et le Dou'a du jour (en app, les écrans
    posent leurs propres .silk-bg-layer / .silk-veil-layer par-dessus). Il porte donc
    le même calage que l'intro — sinon la soie apparaît nue et éblouissante une seconde. */
-#silk-wallpaper::before{content:"";position:absolute;inset:0;background:var(--silk-img, url("assets/silk-bg-inline.jpg")) center/cover no-repeat;filter:var(--silk-filter)}
-#silk-wallpaper::after{content:"";position:absolute;inset:0;background:var(--silk-vignette, var(--boot-veil));transition:background 0.6s ease}
+#silk-wallpaper::before{content:"";position:absolute;inset:0;background:var(--silk-img, url("assets/silk-bg-inline.jpg")) center/cover no-repeat}
+#silk-wallpaper::after{content:"";position:absolute;inset:0;background:var(--silk-gloss),var(--silk-tone),var(--silk-vignette, var(--boot-veil));transition:background 0.6s ease}
 /* silkVeilIn retire le 31/08 : le voile montait de 8 % a 100 % sur 2,6 s, ce qui
    laissait la soie nue et eblouissante entre l'intro et le Dou'a du jour. Il est
    maintenant a pleine densite des la premiere image. */
@@ -83,8 +101,8 @@ html,body{margin:0;padding:0;background:radial-gradient(ellipse 110% 90% at 50% 
    (.silk-bg-layer / .silk-veil-layer, voir :root plus haut) : meme image, meme
    filtre, meme voile. L'intro et la page Dou'a sont donc identiques.
    L'eclat orange venait de .bi-warm, pas du filtre. */
-#boot-intro .bi-bg{position:absolute;inset:-14px;background:url("assets/silk-bg-inline.jpg") center/cover no-repeat;filter:brightness(0.95) saturate(1.32) contrast(1.13);}
-#boot-intro .bi-veil{position:absolute;inset:0;background:var(--boot-veil);}
+#boot-intro .bi-bg{position:absolute;inset:-14px;background:url("assets/silk-bg-inline.jpg") center/cover no-repeat;}
+#boot-intro .bi-veil{position:absolute;inset:0;background:var(--silk-gloss),var(--boot-veil);}
 #boot-intro .bi-scrim{display:none;}
 #boot-intro .bi-warm{display:none;}
 #boot-intro .bi-bloom{position:absolute;left:50%;top:43%;transform:translate(-50%,-50%);width:240px;height:200px;mix-blend-mode:screen;background:radial-gradient(ellipse 54% 44% at 50% 50%,rgba(255,216,150,.05) 0%,rgba(244,176,96,.02) 46%,rgba(228,150,70,0) 76%);filter:blur(26px);animation:biBloom 5.5s ease-in-out infinite;}
@@ -120,23 +138,13 @@ html,body{margin:0;padding:0;background:radial-gradient(ellipse 110% 90% at 50% 
   </div>
 </div>
 <script id="boot-intro-js">
-/* Mode leger : active par ViewController.swift quand le moteur web a ete tue.
-   L'intro est retiree tout de suite et les fonds photo sont remplaces par des
-   aplats — c'est ce qui empeche l'app de replanter, donc de redemarrer en boucle. */
-window.__alaeLeger = /[?&]leger=1/.test(location.search);
-if(window.__alaeLeger){
-  try{
-    var _bi=document.getElementById('boot-intro'); if(_bi) _bi.remove();
-    var _bs=document.getElementById('boot-splash'); if(_bs) _bs.remove();
-    window.__bootIntroDone=true;
-    document.documentElement.style.setProperty('--silk-img','none');
-    var _st=document.createElement('style');
-    _st.textContent='#silk-wallpaper::before{background:radial-gradient(ellipse 130% 100% at 50% 38%,#3A2A16 0%,#241A0E 46%,#120D08 74%,#0B0D10 100%) !important}.silk-bg-layer{background-image:none !important;background:radial-gradient(ellipse 130% 100% at 50% 38%,#3A2A16 0%,#241A0E 46%,#120D08 74%,#0B0D10 100%) !important}*{animation:none !important}';
-    document.head.appendChild(_st);
-  }catch(e){}
-}
+/* 04/09 : le mode leger est SUPPRIME. Il n'existe plus qu'une seule version de
+   l'app : intro, soie et animations completes, toujours. Les 3 filtres plein
+   ecran qui faisaient tuer le moteur web sont partis, donc le mode de secours
+   n'a plus de raison d'etre — il degradait l'app pour compenser un probleme qui
+   n'existe plus. Si le moteur est quand meme tue, ViewController.swift relance
+   l'app COMPLETE (2 tentatives, puis il s'arrete pour ne pas boucler). */
 (function(){
-  if(window.__alaeLeger) return;
   var root=document.getElementById('boot-intro'); if(!root) return;
   var bg=root.querySelector('.bi-bg');
   var alae=root.querySelector('.bi-alae');
@@ -206,7 +214,9 @@ if(window.__alaeLeger){
     var lance=false;
     function go(){ if(lance) return; lance=true; retirer(rapide); }
     window.addEventListener('alae-peint', go);
-    setTimeout(go, 6000); // filet de securite (large : en apercu web React vient du CDN)
+    setTimeout(go, 2200); // 06/09 : etait 6000. L'intro restait suspendue le temps
+    // que React monte ; le splash statique (meme fond, meme voile) prend le relais
+    // et ne s'efface qu'une fois le Dou'a peint, donc rien ne clignote.
   }
   /* Toucher n'importe ou entre dans l'app TOUT DE SUITE : on retire l'intro sans
      attendre alae-peint, car le splash statique (meme fond, meme voile) prend le
@@ -288,7 +298,6 @@ if(window.__alaeLeger){
   // On attend la fin de l'intro avant de lancer le code de l'app : sinon le travail
   // de traduction bloque le fil d'exécution et l'intro est sautée.
   function apresIntro(fn){
-    if(window.__alaeLeger) return fn();
     if(window.__bootIntroDone || !document.getElementById('boot-intro')) return fn();
     var lance=false;
     function go(){ if(lance) return; lance=true; fn(); }
@@ -302,20 +311,20 @@ if(window.__alaeLeger){
 </script>
 <template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#0d0a06"/><circle cx="50" cy="50" r="26" fill="none" stroke="#E8B97A" stroke-width="3"/><rect x="44" y="30" width="12" height="11" rx="1.5" fill="#0A0808" stroke="#F4D89B" stroke-width="2"/><path d="M50 44 L46 60 L54 60 Z" fill="#F4D89B"/></svg></template><div id="silk-wallpaper" aria-hidden="true"></div><div id="root"></div>
 <!-- Écran de démarrage STATIQUE (HTML pur) : s'affiche tout de suite, avant que React/Babel ne soient prêts -->
-<div id="boot-splash" aria-hidden="true" style="position:fixed;inset:0;z-index:2;pointer-events:none;opacity:1;transition:opacity .6s ease;background:#0B0D10 url('assets/silk-bg-inline.jpg') center/cover no-repeat;filter:brightness(0.95) saturate(1.32) contrast(1.13)">
-<div style="position:absolute;inset:0;background:var(--boot-veil)"></div>
+<div id="boot-splash" aria-hidden="true" style="position:fixed;inset:0;z-index:2;pointer-events:none;opacity:1;transition:opacity .6s ease;background:#0B0D10 url('assets/silk-bg-inline.jpg') center/cover no-repeat">
+<div style="position:absolute;inset:0;background:var(--silk-gloss),var(--boot-veil)"></div>
 </div>
 <script>/* calligraphies inline (data-URI) — affichage garanti hors-ligne */
 window.ASSETS = {"assets/mihrab-floral.png": "assets/floral-frame.png", "assets/logo.png": "assets/logo.png", "assets/silk-bg.png": "assets/silk-bg-inline.jpg"};
 /* Fonds d'écran disponibles selon le thème choisi dans Réglages */
-window.ALAE_FONDS = {gold:"assets/silk-bg-inline.jpg", bordeaux:"assets/silk-bg-inline.jpg", copper:"assets/silk-bg-inline.jpg", nuit:"assets/silk-nuit.jpg", bahrayn:"assets/silk-bahrayn.jpg", amouage:"assets/silk-amouage-fond.jpg"};
+window.ALAE_FONDS = {gold:"assets/silk-bg-inline.jpg", bordeaux:"assets/silk-bg-inline.jpg", copper:"assets/silk-bg-inline.jpg", nuit:"assets/silk-nuit.jpg", koutoubia:"assets/silk-koutoubia.jpg", amouage:"assets/silk-amouage-fond.jpg"};
 /* Le voile de chaque fond, connu dès le 1er cadre : pas de flash d'image nue */
-window.ALAE_VOILES = {bahrayn:'none'};
+window.ALAE_VOILES = {bahrayn:'none', gold:'none'};
 /* Variante adoucie : même esprit, mais l'ouverture centrale reste large pour ne pas
    noyer les cartes des écrans (dou'a, horaires…). */
-window.ALAE_VOILES_DOUX = {bahrayn:'none'};
-try{var _t=(JSON.parse(localStorage.getItem('misbaha.v1')||'{}').theme)||'gold';window.ALAE_SILK=window.ALAE_FONDS[_t]||'assets/silk-bg-inline.jpg';if(_t==='bahrayn'){document.documentElement.style.setProperty('--silk-glow','radial-gradient(ellipse 26% 14% at 40% 45%, rgba(255,240,206,0.30) 0%, rgba(255,222,164,0.12) 50%, rgba(255,214,150,0) 80%), radial-gradient(ellipse 72% 26% at 48% 80%, rgba(255,208,146,0.34) 0%, rgba(255,186,112,0.16) 44%, rgba(250,170,96,0) 82%)');document.documentElement.style.setProperty('--silk-eclat','brightness(1.06) saturate(1.14) contrast(1.07)');}if(window.ALAE_VOILES[_t]){document.documentElement.style.setProperty('--silk-vignette',window.ALAE_VOILES[_t]);document.documentElement.style.setProperty('--silk-vignette-soft',window.ALAE_VOILES_DOUX[_t]);}}catch(e){window.ALAE_SILK='assets/silk-bg-inline.jpg';}
-try{if(!window.__alaeLeger)document.documentElement.style.setProperty('--silk-img','url(\"'+window.ALAE_SILK+'\")');}catch(e){}
+window.ALAE_VOILES_DOUX = {bahrayn:'none', gold:'none'};
+try{var _t=(JSON.parse(localStorage.getItem('misbaha.v1')||'{}').theme)||'gold';if(_t==='bahrayn')_t='gold';window.ALAE_SILK=window.ALAE_FONDS[_t]||'assets/silk-bg-inline.jpg';if(_t==='bahrayn'){document.documentElement.style.setProperty('--silk-glow','radial-gradient(ellipse 26% 14% at 40% 45%, rgba(255,240,206,0.30) 0%, rgba(255,222,164,0.12) 50%, rgba(255,214,150,0) 80%), radial-gradient(ellipse 72% 26% at 48% 80%, rgba(255,208,146,0.34) 0%, rgba(255,186,112,0.16) 44%, rgba(250,170,96,0) 82%)');document.documentElement.style.setProperty('--silk-eclat','brightness(1.06) saturate(1.14) contrast(1.07)');}if(window.ALAE_VOILES[_t]){document.documentElement.style.setProperty('--silk-vignette',window.ALAE_VOILES[_t]);document.documentElement.style.setProperty('--silk-vignette-soft',window.ALAE_VOILES_DOUX[_t]);}}catch(e){window.ALAE_SILK='assets/silk-bg-inline.jpg';}
+try{document.documentElement.style.setProperty('--silk-img','url(\"'+window.ALAE_SILK+'\")');}catch(e){}
 window.MOON_PHASES = ["assets/moon-1.png","assets/moon-2.png","assets/moon-3.png","assets/moon-4.png","assets/moon-5.png","assets/moon-6.png","assets/moon-7.png","assets/moon-8.png"];
 /* Calendrier des horaires : 14 jours d'avance, mis en cache pour marcher hors-ligne.
    C'est ce qui permet à chaque adhan de sonner à SON heure, jour par jour. */
@@ -438,7 +447,7 @@ window.getThemeAccent = function () {
   let t = 'gold';
   try {
     const s = JSON.parse(localStorage.getItem('misbaha.v1') || '{}');
-    t = (s.theme === 'royal' || s.theme === 'rose') ? 'gold' : (s.theme || 'gold');
+    t = (s.theme === 'royal' || s.theme === 'rose' || s.theme === 'bahrayn') ? 'gold' : (s.theme || 'gold');
   } catch (e) {}
   const MAP = {
     gold:     { solid: '#B27A42', bright: '#DDA469', dim: 'rgba(178,122,66,0.32)', grad: 'linear-gradient(180deg,#DDA469,#B27A42)' },
@@ -446,6 +455,7 @@ window.getThemeAccent = function () {
     rose:     { solid: '#C88A6A', bright: '#E6B59A', dim: 'rgba(200,138,106,0.32)', grad: 'linear-gradient(180deg,#E6B59A,#B26E58)' },
     nuit:     { solid: '#B08A55', bright: '#DCBA80', dim: 'rgba(176,138,85,0.32)',   grad: 'linear-gradient(180deg,#DCBA80,#8E6C3C)' },
     bahrayn:  { solid: '#C79A5B', bright: '#E8C68A', dim: 'rgba(199,154,91,0.32)',  grad: 'linear-gradient(180deg,#E8C68A,#9A6E38)' },
+    koutoubia:{ solid: '#C98A4B', bright: '#EFC489', dim: 'rgba(201,138,75,0.32)', grad: 'linear-gradient(180deg,#EFC489,#9A6432)' },
     amouage:  { solid: '#5FA6B8', bright: '#92CFDD', dim: 'rgba(95,166,184,0.32)',   grad: 'linear-gradient(180deg,#92CFDD,#3F7C8C)' },
     copper:   { solid: '#BC7836', bright: '#E29F56', dim: 'rgba(188,120,54,0.32)',  grad: 'linear-gradient(180deg,#E8AE6A,#9C5C26)' },
   };
@@ -2790,7 +2800,9 @@ function SettingsScreen({ lang = 'fr', setLang }) {
       sound: s.sound === true,
       autoDark: s.autoDark !== false,
       darkMode: s.darkMode || 'off',  // 'auto' | 'on' | 'off' — OFF par défaut (pas d'assombrissement auto)
-      theme: ((s.theme === 'royal' || s.theme === 'rose') ? 'gold' : (s.theme || 'gold')),  // 'gold' | 'bordeaux' | 'rose' | 'copper'
+      // 06/09 : 'bahrayn' (Mishkat) retire de l'app — rebascule sur 'gold' pour
+      // les utilisateurs qui l'avaient enregistre.
+      theme: ((s.theme === 'royal' || s.theme === 'rose' || s.theme === 'bahrayn') ? 'gold' : (s.theme || 'gold')),  // 'gold' | 'bordeaux' | 'copper' | 'nuit' | 'amouage'
       notifEnabled: s.notifEnabled === true,
       notifBefore: (s.notifBefore ?? 0),       // 0 = adhan pile à l'heure (défaut)
       notifReciter: s.notifReciter || 'kouchi',
@@ -2989,14 +3001,14 @@ function SettingsScreen({ lang = 'fr', setLang }) {
       label: isAr ? 'المظهر' : (lang === 'fr' ? 'Thème' : lang === 'nl' ? 'Thema' : 'Theme'),
       value: settings.theme === 'bordeaux' ? (isAr ? '🟫 عنبر' : (lang === 'fr' ? '🟫 Ambre' : lang === 'nl' ? '🟫 Amber' : '🟫 Amber'))
            : settings.theme === 'nuit' ? (isAr ? '🌙 الكِسوة' : (lang === 'fr' ? '🌙 Kiswa' : lang === 'nl' ? '🌙 Kiswa' : '🌙 Kiswa'))
-           : settings.theme === 'bahrayn' ? (isAr ? '✨ مِشكَاة' : (lang === 'fr' ? '✨ Mishkat' : lang === 'nl' ? '✨ Mishkat' : '✨ Mishkat'))
+           : settings.theme === 'koutoubia' ? (isAr ? '🕌 الكُتُبِيَّة' : (lang === 'fr' ? '🕌 Koutoubia' : lang === 'nl' ? '🕌 Koutoubia' : '🕌 Koutoubia'))
            : settings.theme === 'amouage' ? '🌀 Amouage'
            : settings.theme === 'rose' ? (isAr ? '🌸 وردي هندي' : (lang === 'fr' ? '🌸 Rose indien' : lang === 'nl' ? '🌸 Indiaas roze' : '🌸 Indian Rose'))
            : settings.theme === 'copper' ? (isAr ? '🟠 نُحاس فاس' : (lang === 'fr' ? '🟠 Cuivre de Fès' : lang === 'nl' ? '🟠 Fez-koper' : '🟠 Fez Copper'))
            : (isAr ? '🟨 ذهب السلطان' : (lang === 'fr' ? '🟨 Or Sultan' : lang === 'nl' ? '🟨 Sultansgoud' : '🟨 Sultan Gold')),
       icon: 'moon',
       onClick: () => {
-        const opts = ['gold','bordeaux','copper','nuit','bahrayn','amouage'];
+        const opts = ['gold','bordeaux','copper','nuit','koutoubia','amouage'];
         const cur = opts.indexOf(settings.theme);
         saveSetting('theme', opts[(cur + 1) % opts.length]);
         if (navigator.vibrate) try { navigator.vibrate(12); } catch {}
@@ -3067,7 +3079,7 @@ function SettingsScreen({ lang = 'fr', setLang }) {
           <div style={{ width:4, height:4, transform:'rotate(45deg)', background:'#E8C88C', boxShadow:'0 0 4px rgba(255,225,150,0.8), 0 1px 2px rgba(0,0,0,0.6)', animation:'starSparkle 1.3s ease-in-out infinite', animationDelay:'0.88s' }}/>
         </div>
         <div style={{ fontFamily:'"Amiri Quran","Amiri",serif', fontSize:17, color:T.text, direction:'rtl', textAlign:'center', lineHeight:1.7, opacity:0.98, width:260, whiteSpace:'normal', wordBreak:'keep-all', boxSizing:'border-box', textShadow:'0 1px 4px rgba(0,0,0,0.6)', marginTop:13 }}>{I.tagline}</div>
-        <div style={{ fontFamily:'Inter', fontSize:9, letterSpacing:'0.3em', color:T.textDim, marginTop:12 }}>v 1.0.15</div>
+        <div style={{ fontFamily:'Inter', fontSize:9, letterSpacing:'0.3em', color:T.textDim, marginTop:12 }}>v 1.0.17</div>
       </div>
 
       <div className="settings-scroll" style={{ position:'absolute', top:330, left:20, right:20, bottom:24, overflowY:'auto', WebkitOverflowScrolling:'touch', zIndex:2, display:'flex', flexDirection:'column', gap:0 }}>
@@ -4023,7 +4035,10 @@ function SurahReader({ lang = 'ar', surahObj, surah, startPage = 1, onBookmark, 
     else { lastTap.current = now; const t = now; setTimeout(() => { if (lastTap.current === t) { setChrome((c)=>!c); lastTap.current = 0; } }, 280); }
   };
   const onTouchStart = (e) => { if (zoom) return; const t=e.touches[0]; touch.current={ x:t.clientX, y:t.clientY, on:true }; };
-  const onTouchEnd = (e) => { if (zoom || !touch.current.on) return; touch.current.on=false; const t=e.changedTouches[0]; const dx=t.clientX-touch.current.x, dy=t.clientY-touch.current.y; if (Math.abs(dx)>48 && Math.abs(dx)>Math.abs(dy)*1.3) { go(dx<0?1:-1); } };
+  const onTouchEnd = (e) => { if (zoom || !touch.current.on) return; touch.current.on=false; const t=e.changedTouches[0]; const dx=t.clientX-touch.current.x, dy=t.clientY-touch.current.y; /* 06/09 : sens inverse. Un mushaf se lit comme un livre arabe : la reliure est
+   a DROITE, le bord libre des pages a gauche — on rabat donc ce bord vers la
+   DROITE pour avancer. Le sens etait celui d'un livre latin. */
+if (Math.abs(dx)>48 && Math.abs(dx)>Math.abs(dy)*1.3) { go(dx>0?1:-1); } };
   const GREEN='#2E8B5F', GREEN_L='#5FCB92';
   const Arrow = ({ point, onPress, disabled }) => (
     <button onClick={onPress} disabled={disabled} style={{
@@ -4039,8 +4054,11 @@ function SurahReader({ lang = 'ar', surahObj, surah, startPage = 1, onBookmark, 
   return (
     <div style={{ position:'fixed', inset:0, zIndex:200, background:'radial-gradient(120% 80% at 50% 28%, #11151c 0%, #06070a 72%)', display:'flex', flexDirection:'column', direction:'ltr' }}>
       <style>{`
-        @keyframes mushNext { from { opacity:0; transform:translateX(34px) scale(0.985); } to { opacity:1; transform:none; } }
-        @keyframes mushPrev { from { opacity:0; transform:translateX(-34px) scale(0.985); } to { opacity:1; transform:none; } }
+        /* 06/09 : sens arabe. La feuille se rabat vers la droite, donc la page
+           suivante se decouvre par la GAUCHE ; la precedente revient par la
+           droite. C'etait l'inverse. */
+        @keyframes mushNext { from { opacity:0; transform:translateX(-34px) scale(0.985); } to { opacity:1; transform:none; } }
+        @keyframes mushPrev { from { opacity:0; transform:translateX(34px) scale(0.985); } to { opacity:1; transform:none; } }
         @keyframes mushShimmer { 0% { background-position:-180px 0; } 100% { background-position:240px 0; } }
         @keyframes mushCheckPop { 0% { transform:scale(1); } 40% { transform:scale(1.18); } 100% { transform:scale(1); } }
       `}</style>
@@ -4087,7 +4105,9 @@ function SurahReader({ lang = 'ar', surahObj, surah, startPage = 1, onBookmark, 
 
       {/* bottom controls */}
       <div style={{ display:'flex', gap:12, alignItems:'center', padding:'10px 16px calc(18px + env(safe-area-inset-bottom))', opacity:1, transform:'none', transition:'opacity 0.3s ease, transform 0.3s ease', pointerEvents:'auto' }}>
-        <Arrow point="left" onPress={()=>go(1)} disabled={page>=total} />
+        {/* 06/09 : positions inversees. La page suivante s'obtient en tirant vers
+           la DROITE, donc son bouton passe a droite — les deux gestes concordent. */}
+        <Arrow point="left" onPress={()=>go(-1)} disabled={page<=1} />
         <div style={{
           flex:1, height:54, borderRadius:27,
           display:'inline-flex', alignItems:'center', justifyContent:'center', gap:9,
@@ -4097,7 +4117,7 @@ function SurahReader({ lang = 'ar', surahObj, surah, startPage = 1, onBookmark, 
           <svg width="15" height="17" viewBox="0 0 20 22" fill="none"><path d="M5 3h10a1 1 0 011 1v15l-6-3.2L4 19V4a1 1 0 011-1z" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" fill="rgba(232,185,122,0.15)"/></svg>
           {L.saved} · {page} {L.sur} {total}
         </div>
-        <Arrow point="right" onPress={()=>go(-1)} disabled={page<=1} />
+        <Arrow point="right" onPress={()=>go(1)} disabled={page>=total} />
       </div>
     </div>
   );
@@ -4605,8 +4625,8 @@ function PrayerScreen({ lang = 'ar' }) {
                   alignItems:'center', justifyContent:'center', gap:6, paddingBottom:6, overflow:'visible',
                 }}>
                   <div style={{
-                    fontFamily:isAr ? '"Noto Nastaliq Urdu","Amiri",serif' : '"DM Serif Display","Cormorant Garamond",serif',
-                    fontSize:isAr ? 30 : 24, fontWeight:isAr ? 700 : 500,
+                    fontFamily:isAr ? '"ArefRuqaa","Aref Ruqaa","Amiri",serif' : '"DM Serif Display","Cormorant Garamond",serif',
+                    fontSize:isAr ? 38 : 24, fontWeight:isAr ? 700 : 500,
                     background:'none',
                     backgroundImage:'linear-gradient(105deg, #C7935B 0%, #E8B97A 14%, #FCE9B0 26%, #FFF6DA 40%, #FCE9B0 48%, #F4D89B 58%, #E8B97A 72%, #FFF1C8 84%, #D9A25E 100%)',
                     backgroundSize:'260% 100%',
@@ -5819,7 +5839,6 @@ window.MORNING_DOUAS = [
   /* Recompose la photo du matin dans le meme cadre or que l'app, pour que ce qui
      part sur WhatsApp ressemble a ce qu'on voit a l'ecran. Renvoie un Blob. */
   window.alaeComposeMorning=function(src){
-    if(window.__alaeLeger) return Promise.resolve(null);
     return new Promise(function(resolve){
       var img=new Image(); var url=null;
       var done=function(v){ if(url) try{ URL.revokeObjectURL(url); }catch(e){} resolve(v); };
@@ -7125,7 +7144,7 @@ window.AsmaScreen = AsmaScreen;
               paddingTop:12, borderTop:`0.5px solid ${T.hairline}`,
               fontFamily:'Inter', fontSize:9, letterSpacing:'0.3em',
               color:T.textDim, textAlign: isAr ? 'right' : 'left',
-            }}>v 1.0.15 <a href="https://www.lestyle.be" target="_blank" rel="noopener noreferrer" style={{ color:T.goldLight, textDecoration:'none', pointerEvents:'auto' }}>Lestyle</a></div>
+            }}>v 1.0.17 <a href="https://www.lestyle.be" target="_blank" rel="noopener noreferrer" style={{ color:T.goldLight, textDecoration:'none', pointerEvents:'auto' }}>Lestyle</a></div>
           </div>
         </div>
       </>
@@ -7351,13 +7370,13 @@ window.AsmaScreen = AsmaScreen;
     const [route, setRoute] = useState('compteur');
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [showSplash, setShowSplash] = useState(false);
-    const [showDuaa, setShowDuaa] = useState(() => typeof window === 'undefined' || !window.__alaeLeger);
+    const [showDuaa, setShowDuaa] = useState(true);
     const [bootDone, setBootDone] = useState(() => (typeof window !== 'undefined' && !!window.__bootIntroDone));
     const [forceOnboarding, setForceOnboarding] = useState(false);
-    const [showNiyya, setShowNiyya] = useState(() => typeof window === 'undefined' || !window.__alaeLeger);
+    const [showNiyya, setShowNiyya] = useState(true);
     const [brightness, setBrightness] = useState(() => loadState().brightness ?? 1);
     const [darkMode, setDarkMode] = useState(() => loadState().darkMode || 'off');
-    const [theme, setTheme] = useState(() => { const t = loadState().theme; return (!t || t === 'royal' || t === 'rose') ? 'gold' : t; });
+    const [theme, setTheme] = useState(() => { const t = loadState().theme; return (!t || t === 'royal' || t === 'rose' || t === 'bahrayn') ? 'gold' : t; });
     const [showCustomModal, setShowCustomModal] = useState(false);
     const [editingDhikr, setEditingDhikr] = useState(null);
     const [showDhikrDetail, setShowDhikrDetail] = useState(null);
@@ -7368,7 +7387,7 @@ window.AsmaScreen = AsmaScreen;
       const sync = () => {
         const s = loadState();
         const m = s.darkMode || 'off';
-        const t = (!s.theme || s.theme === 'rose') ? 'gold' : s.theme;
+        const t = (!s.theme || s.theme === 'rose' || s.theme === 'bahrayn') ? 'gold' : s.theme;
         if (m !== darkMode) setDarkMode(m);
         if (t !== theme) setTheme(t);
       };
@@ -7430,10 +7449,15 @@ window.AsmaScreen = AsmaScreen;
     useEffect(() => {
       const root = document.documentElement;
       // Teinte de base selon le thème
+      // 06/09 : Or Sultan sans assombrissement. Le voile (0.40) et la luminosite
+      // (x0.74) se cumulaient et mangeaient la moitie de l'image — cale sur
+      // l'ancienne soie, plus claire. La nouvelle est deja sombre et contrastee.
       let hue = '', sat = 1.32, con = 1.13, veilRGB = '11,13,16', brBoost = 1, veilBoost = 0, veilOff = false;
-      if (theme === 'bordeaux') { hue = ' hue-rotate(-18deg)'; sat = 0.95; con = 1.03; veilRGB = '34,22,12'; }
+      if (theme === 'gold') { sat = 1.0; con = 1.0; brBoost = 1.62; veilOff = true; }
+      else if (theme === 'bordeaux') { hue = ' hue-rotate(-18deg)'; sat = 0.95; con = 1.03; veilRGB = '34,22,12'; }
       else if (theme === 'nuit') { hue = ''; sat = 1.0; con = 1.06; veilRGB = '9,11,14'; }
       else if (theme === 'bahrayn') { hue = ''; sat = 1.08; con = 1.04; veilRGB = '5,22,26'; brBoost = 0.92; veilBoost = 0; }
+      else if (theme === 'koutoubia') { hue = ''; sat = 1.04; con = 1.02; veilRGB = '10,8,7'; brBoost = 1.06; veilBoost = -0.16; }
       else if (theme === 'amouage') { hue = ''; sat = 1.06; con = 1.02; veilRGB = '4,18,24'; brBoost = 1.20; veilBoost = 0; veilOff = true; }
       else if (theme === 'rose') { hue = ' hue-rotate(-58deg)'; sat = 1.1; con = 1.03; veilRGB = '42,16,24'; }
       else if (theme === 'copper') { hue = ' hue-rotate(-9deg)'; sat = 1.34; con = 1.12; veilRGB = '30,16,9'; }
@@ -7442,7 +7466,12 @@ window.AsmaScreen = AsmaScreen;
       const veilA  = [0.46, 0.40, 0.20][brightness] != null ? [0.46, 0.40, 0.20][brightness] : 0.40;
       let mult = brMult * brBoost, a = Math.min(0.9, veilA + veilBoost), s2 = sat;
       if (isNightMode) { mult = brMult * brBoost * 0.6; a = Math.min(0.86, veilA + veilBoost + 0.34); if (!hue) s2 = 0.85; }
-      root.style.setProperty('--silk-filter', `brightness(${mult.toFixed(2)}) saturate(${s2}) contrast(${con})${hue}`);
+      // Luminosite : un aplat sombre pour tamiser, un voile clair pour eclaircir.
+      // mult < 1 assombrit, > 1 eclaircit — converti en opacite d'aplat.
+      const tone = mult >= 1
+        ? `linear-gradient(rgba(255,246,226,${Math.min(0.16,(mult-1)*1.6).toFixed(3)}),rgba(255,246,226,${Math.min(0.16,(mult-1)*1.6).toFixed(3)}))`
+        : `linear-gradient(rgba(7,8,10,${Math.min(0.52,(1-mult)*0.82).toFixed(3)}),rgba(7,8,10,${Math.min(0.52,(1-mult)*0.82).toFixed(3)}))`;
+      root.style.setProperty('--silk-tone', tone);
       root.style.setProperty('--silk-veil', veilOff ? 'rgba(0,0,0,0)' : `rgba(${veilRGB},${a.toFixed(2)})`);
       // Fond d'écran associé au thème
       const img = (window.ALAE_FONDS && window.ALAE_FONDS[theme]) || 'assets/silk-bg-inline.jpg';
