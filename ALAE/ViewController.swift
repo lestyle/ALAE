@@ -448,38 +448,6 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         // La page est chargee par loadFileURL : WebKit lui donne une origine opaque,
         // donc fetch('assets/...') est refuse et un <img src="file://..."> contamine
         // le canvas (toBlob leve SecurityError). Resultat : la carte Sabah al-khayr
-        // partait sans son image, texte seul. On lit donc le fichier ici et on rend
-        // un data URL, propre pour le canvas.
-        if type == "readAsset" {
-            let rel = body["path"] as? String ?? ""
-            let cbId = body["cb"] as? String ?? ""
-            guard !cbId.isEmpty else { return }
-            let nom = (rel as NSString).lastPathComponent
-            let base = (nom as NSString).deletingPathExtension
-            let ext = (nom as NSString).pathExtension
-            var dataURL = ""
-            // Xcode aplatit parfois les dossiers de ressources : on tente avec et sans.
-            let sousDossier = (rel as NSString).deletingLastPathComponent
-            let candidats: [URL?] = [
-                Bundle.main.url(forResource: base, withExtension: ext, subdirectory: sousDossier),
-                Bundle.main.url(forResource: base, withExtension: ext)
-            ]
-            for cas in candidats {
-                if let u = cas, let d = try? Data(contentsOf: u) {
-                    let mime = ext.lowercased() == "png" ? "image/png" : "image/jpeg"
-                    dataURL = "data:\(mime);base64," + d.base64EncodedString()
-                    break
-                }
-            }
-            let js = "window.__alaeAsset && window.__alaeAsset(\(jsString(cbId)), \(jsString(dataURL)))"
-            DispatchQueue.main.async { self.webView.evaluateJavaScript(js, completionHandler: nil) }
-            return
-        }
-
-        // 13/09 — Lecture d'un fichier du bundle, renvoye en base64.
-        // La page est chargee par loadFileURL : WebKit lui donne une origine opaque,
-        // donc fetch('assets/...') est refuse et un <img src="file://..."> contamine
-        // le canvas (toBlob leve SecurityError). Resultat : la carte Sabah al-khayr
         // partait sans son image, texte seul. On lit donc le fichier ici.
         if type == "readAsset" {
             let rel = body["path"] as? String ?? ""
