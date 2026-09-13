@@ -1,0 +1,3 @@
+# Secrets — jamais dans Git
+*.p8
+AuthKey*

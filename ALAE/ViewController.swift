@@ -80,6 +80,11 @@ final class AlaeNotifDelegate: NSObject, UNUserNotificationCenterDelegate {
         if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
            (info["genre"] as? String) == "adhan",
            let reciter = info["reciter"] as? String {
+            // 09/09 — GARDE ANTI-TAP TARDIF. Sans elle, ouvrir une notification
+            // d'adhan deux heures apres la priere relancait l'adhan complet en
+            // pleine journee. Au-dela de 5 minutes, on ouvre l'app sans le son.
+            let ecart = Date().timeIntervalSince(response.notification.date)
+            guard ecart < 300 else { completionHandler(); return }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
                 AlaeAdhanPlayer.shared.jouerComplet(reciter: reciter)
             }
@@ -354,8 +359,13 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
     }
 
     private func renvoyerErreurPosition(_ raison: String) {
-        let propre = raison.replacingOccurrences(of: "'", with: " ")
-        let js = "if(window.__alaeLocErr)window.__alaeLocErr('\(propre)');"
+        // 09/09 — encodage JSON. Remplacer l'apostrophe par un espace ne protegeait
+        // ni des antislashs, ni des guillemets, ni des retours a la ligne que peut
+        // contenir localizedDescription : le JS injecte devenait invalide.
+        let data = (try? JSONSerialization.data(withJSONObject: [raison], options: []))
+            ?? Data("[\"\"]".utf8)
+        let tableau = String(data: data, encoding: .utf8) ?? "[\"\"]"
+        let js = "if(window.__alaeLocErr)window.__alaeLocErr(\(tableau)[0]);"
         DispatchQueue.main.async { self.webView.evaluateJavaScript(js, completionHandler: nil) }
     }
 
@@ -370,9 +380,11 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         renvoyerErreurPosition(error.localizedDescription)
     }
 
-    func locationManager(_ m: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+    // 09/09 — locationManager(_:didChangeAuthorization:) est depreciee depuis iOS 14.
+    // La cible est iOS 16.2 : on utilise la methode courante.
+    func locationManagerDidChangeAuthorization(_ m: CLLocationManager) {
         guard locDemandee else { return }
-        switch status {
+        switch m.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways: m.requestLocation()
         case .denied, .restricted: renvoyerErreurPosition("refuse")
         default: break
@@ -429,6 +441,75 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
                 }
                 self.present(activityVC, animated: true)
             }
+            return
+        }
+
+        // 13/09 — Lecture d'un fichier du bundle, renvoye en base64.
+        // La page est chargee par loadFileURL : WebKit lui donne une origine opaque,
+        // donc fetch('assets/...') est refuse et un <img src="file://..."> contamine
+        // le canvas (toBlob leve SecurityError). Resultat : la carte Sabah al-khayr
+        // partait sans son image, texte seul. On lit donc le fichier ici et on rend
+        // un data URL, propre pour le canvas.
+        if type == "readAsset" {
+            let rel = body["path"] as? String ?? ""
+            let cbId = body["cb"] as? String ?? ""
+            guard !cbId.isEmpty else { return }
+            let nom = (rel as NSString).lastPathComponent
+            let base = (nom as NSString).deletingPathExtension
+            let ext = (nom as NSString).pathExtension
+            var dataURL = ""
+            // Xcode aplatit parfois les dossiers de ressources : on tente avec et sans.
+            let sousDossier = (rel as NSString).deletingLastPathComponent
+            let candidats: [URL?] = [
+                Bundle.main.url(forResource: base, withExtension: ext, subdirectory: sousDossier),
+                Bundle.main.url(forResource: base, withExtension: ext)
+            ]
+            for cas in candidats {
+                if let u = cas, let d = try? Data(contentsOf: u) {
+                    let mime = ext.lowercased() == "png" ? "image/png" : "image/jpeg"
+                    dataURL = "data:\(mime);base64," + d.base64EncodedString()
+                    break
+                }
+            }
+            let js = "window.__alaeAsset && window.__alaeAsset(\(jsString(cbId)), \(jsString(dataURL)))"
+            DispatchQueue.main.async { self.webView.evaluateJavaScript(js, completionHandler: nil) }
+            return
+        }
+
+        // 13/09 — Lecture d'un fichier du bundle, renvoye en base64.
+        // La page est chargee par loadFileURL : WebKit lui donne une origine opaque,
+        // donc fetch('assets/...') est refuse et un <img src="file://..."> contamine
+        // le canvas (toBlob leve SecurityError). Resultat : la carte Sabah al-khayr
+        // partait sans son image, texte seul. On lit donc le fichier ici.
+        if type == "readAsset" {
+            let rel = body["path"] as? String ?? ""
+            let cbId = body["cb"] as? String ?? ""
+            guard !cbId.isEmpty else { return }
+            let nom = (rel as NSString).lastPathComponent
+            let base = (nom as NSString).deletingPathExtension
+            let ext = (nom as NSString).pathExtension
+            let sousDossier = (rel as NSString).deletingLastPathComponent
+            var dataURL = ""
+            // Xcode aplatit parfois les dossiers de ressources : on tente les deux.
+            let candidats: [URL?] = [
+                Bundle.main.url(forResource: base, withExtension: ext, subdirectory: sousDossier),
+                Bundle.main.url(forResource: base, withExtension: ext)
+            ]
+            for cas in candidats {
+                if let u = cas, let d = try? Data(contentsOf: u) {
+                    let mime = ext.lowercased() == "png" ? "image/png" : "image/jpeg"
+                    dataURL = "data:" + mime + ";base64," + d.base64EncodedString()
+                    break
+                }
+            }
+            let encode: (String) -> String = { txt in
+                let e = txt.replacingOccurrences(of: "\\", with: "\\\\")
+                          .replacingOccurrences(of: "\"", with: "\\\"")
+                          .replacingOccurrences(of: "\n", with: "")
+                return "\"" + e + "\""
+            }
+            let js = "window.__alaeAsset && window.__alaeAsset(" + encode(cbId) + "," + encode(dataURL) + ")"
+            DispatchQueue.main.async { self.webView.evaluateJavaScript(js, completionHandler: nil) }
             return
         }
 
@@ -569,7 +650,14 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
             DispatchQueue.main.async {
                 let sound = ViewController.adhanSound(for: reciter)
                 let center = UNUserNotificationCenter.current()
-                let cal = Calendar.current
+                // 09/09 — CALENDRIER GREGORIEN FORCE.
+                // Calendar.current suit la locale de l'appareil : sur un iPhone regle
+                // en arabe avec le calendrier Umm al-Qura, il est HIJRI. Les dates de
+                // l'API arrivent en gregorien JJ-MM-AAAA ; interpretees en hijri, les
+                // adhans partaient a des jours fantaisistes, ou jamais. Invisible sur
+                // un appareil en francais, fatal pour un utilisateur a Riyad.
+                var cal = Calendar(identifier: .gregorian)
+                cal.timeZone = .current
                 let now = Date()
 
                 // Adhan : à l'heure exacte de la prière.
