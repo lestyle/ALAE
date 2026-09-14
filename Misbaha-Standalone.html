@@ -2589,7 +2589,7 @@ function Onboarding({
   }))))), (() => {
     const M = alaeMoonToday(lang);
     const isDay = alaeIsDay();
-    return /*#__PURE__*/React.createElement(React.Fragment, null, false && /*#__PURE__*/React.createElement("svg", {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, isDay && /*#__PURE__*/React.createElement("svg", {
       width: 116,
       height: 116,
       viewBox: "0 0 100 100",
@@ -14051,21 +14051,20 @@ window.AsmaScreen = AsmaScreen;
       height: "18",
       viewBox: "0 0 16 16",
       fill: "none"
-    }, /*#__PURE__*/React.createElement("circle", {
+    }, /* 15/09 : l'icone etait un soleil a 8 rayons, confondu avec le vrai soleil du
+         haut d'ecran. Remplacee par le disque mi-clair mi-sombre, glyphe usuel de
+         la luminosite : contour complet, moitie droite pleine. */
+    /*#__PURE__*/React.createElement("circle", {
       cx: "8",
       cy: "8",
-      r: "3",
-      fill: "currentColor",
-      fillOpacity: "0.45",
+      r: "5.6",
       stroke: "currentColor",
       strokeWidth: "1.2"
-    }), /*#__PURE__*/React.createElement("g", {
-      stroke: "currentColor",
-      strokeWidth: "1.2",
-      strokeLinecap: "round"
-    }, /*#__PURE__*/React.createElement("path", {
-      d: "M8 1.4v2M8 12.6v2M1.4 8h2M12.6 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"
-    }))), icon === 'eyeClosed' && /*#__PURE__*/React.createElement("svg", {
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M8 2.4a5.6 5.6 0 0 1 0 11.2Z",
+      fill: "currentColor",
+      fillOpacity: "0.85"
+    })), icon === 'eyeClosed' && /*#__PURE__*/React.createElement("svg", {
       width: "17",
       height: "17",
       viewBox: "0 0 16 16",
