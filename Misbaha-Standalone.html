@@ -22,6 +22,47 @@ window.addEventListener('load',function(){var t0=Date.now();var id=setInterval(f
 if(window.__reactViaCDN){var b=document.createElement('div');b.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:2147483646;background:#3a1c07;color:#E4B96F;font:12px/1.35 -apple-system,sans-serif;padding:8px 12px;text-align:center';b.textContent='Charge depuis internet : '+window.__reactViaCDN.join(', ')+' manque(nt) dans le bundle — hors ligne = ecran noir';b.onclick=function(){b.remove();};document.body.appendChild(b);}
 return;}
 var depuis=Date.now()-(window.__alaeBootStart||t0);var absolu=Date.now()-t0;if(depuis<20000&&absolu<60000&&!window.__reactEchec&&!window.__babelEchec&&!window.__jsxEchec)return;if(window.__diagMontre)return;var m=[];if(!window.React)m.push('React ABSENT');if(!window.ReactDOM)m.push('ReactDOM ABSENT');if(window.__jsxEchec)m.push('CODE REFUSE :\n'+window.__jsxEchec);else if(r&&!r.children.length)m.push('#root VIDE');if(window.__reactEchec)m.push('MANQUE DANS LE BUNDLE :\n'+window.__reactEchec);if(!m.length&&window.__reactViaCDN)m.push('CHARGE DEPUIS INTERNET,\ndonc HORS LIGNE = ECRAN NOIR :\n'+window.__reactViaCDN.join('\n'));if(m.length){window.__diagMontre=true;show('DIAGNOSTIC\n'+m.join('\n'));}},500);});})();
+</script>
+<script>/* 15/09 — Boite noire. Console.app et Xcode ne tiennent pas sur le Mac de test :
+   l'app garde donc elle-meme la trace de sa derniere seconde de vie. Aucun asset,
+   aucun rendu, aucune boucle : deux ecouteurs et une ecriture de quelques octets.
+   Le panneau ne se construit QUE si on l'ouvre (appui long 2 s en haut au centre).
+   Le point cle : `propre` passe a true seulement quand l'app est mise en veille
+   normalement. Si au demarrage suivant il est false, la session precedente a ete
+   TUEE par iOS (memoire) — ce qu'aucune erreur JS ne raconterait. */
+(function(){var K='alae.diag';var J=JSON;
+function lire(){try{return J.parse(localStorage.getItem(K))||{}}catch(e){return {}}}
+function ecrire(d){try{localStorage.setItem(K,J.stringify(d))}catch(e){}}
+var p=lire();var d={n:(p.n||0)+1,ouvert:new Date().toISOString().slice(0,19).replace('T',' '),quitte:false,fond:false,gestes:[],erreurs:[],
+  avant:{ouvert:p.ouvert||'-',quitte:p.quitte===true,fond:p.fond===true,vecu:p.vecu||0,gestes:p.gestes||[],erreurs:p.erreurs||[]},
+  ecran:(screen.width+'x'+screen.height+' @'+(devicePixelRatio||1)),ios:navigator.userAgent.slice(-60)};
+var t0=Date.now();ecrire(d);
+function pousser(k,v,max){d[k].push(v);if(d[k].length>max)d[k].shift();d.vecu=Math.round((Date.now()-t0)/1000);ecrire(d);}
+addEventListener('pointerdown',function(e){var t=e.target,s='';try{s=(t.getAttribute&&(t.getAttribute('aria-label')||t.getAttribute('alt'))||t.textContent||t.tagName||'').trim().slice(0,44)}catch(_){}
+  pousser('gestes',Math.round((Date.now()-t0)/1000)+'s '+s,8);},true);
+addEventListener('error',function(e){pousser('erreurs',(e.message||'?')+' @'+(e.filename||'').split('/').pop()+':'+(e.lineno||''),5)},true);
+addEventListener('unhandledrejection',function(e){pousser('erreurs','promesse: '+((e.reason&&e.reason.message)||e.reason||'?'),5)});
+/* Deux drapeaux distincts, et non un seul : `fond` dit seulement que l'app etait en
+   arriere-plan, `quitte` dit que l'utilisateur l'a vraiment fermee (pagehide sans
+   retour). Avec un drapeau unique, une mise en veille suivie d'un jetsam se relisait
+   comme une fin normale — faux negatif sur la seule ligne qui compte. */
+addEventListener('visibilitychange',function(){d.fond=document.hidden;d.vecu=Math.round((Date.now()-t0)/1000);ecrire(d);});
+addEventListener('pagehide',function(e){if(!e.persisted){d.quitte=true;ecrire(d);}});
+/* Ouverture : appui long de 2 s sur une zone invisible de 40x40 en haut au centre,
+   posee SOUS la barre d'etat (meme decalage safe-area que tous les autres boutons
+   hauts du fichier) : a top:0 elle tombait derriere l'heure et l'ile dynamique. */
+var HAUT='calc(max(env(safe-area-inset-top, 0px), 44px) + 4px)';
+var z=document.createElement('div');z.style.cssText='position:fixed;top:'+HAUT+';left:50%;margin-left:-20px;width:40px;height:40px;z-index:2147483645';
+var min;z.addEventListener('pointerdown',function(){min=setTimeout(montrer,2000)});
+z.addEventListener('pointerup',function(){clearTimeout(min)});z.addEventListener('pointercancel',function(){clearTimeout(min)});
+addEventListener('DOMContentLoaded',function(){document.body.appendChild(z)});
+function montrer(){var a=lire();var fin=a.avant.quitte?'OUI — fermee par vous':(a.avant.fond?'NON — tuee en arriere-plan (memoire)':'NON — TUEE EN PLEIN ECRAN (plantage)');
+var txt='ALAE — boite noire\n\nSESSION PRECEDENTE\n  fin normale : '+fin+'\n  ouverte le  : '+a.avant.ouvert+'\n  a vecu      : '+a.avant.vecu+' s\n  derniers gestes :\n'+((a.avant.gestes||[]).map(function(g){return '    '+g}).join('\n')||'    -')+'\n  erreurs :\n'+((a.avant.erreurs||[]).map(function(g){return '    '+g}).join('\n')||'    aucune')+'\n\nSESSION EN COURS (n°'+a.n+')\n  gestes :\n'+((a.gestes||[]).map(function(g){return '    '+g}).join('\n')||'    -')+'\n  erreurs :\n'+((a.erreurs||[]).map(function(g){return '    '+g}).join('\n')||'    aucune')+'\n\nAPPAREIL\n  '+a.ecran+'\n  '+a.ios;
+var w=document.createElement('div');w.style.cssText='position:fixed;inset:0;z-index:2147483646;background:#160C04;color:#F0C98A;font:12px/1.55 ui-monospace,monospace;padding:calc('+HAUT+' + 48px) 16px calc(env(safe-area-inset-bottom, 0px) + 16px);overflow:auto;white-space:pre-wrap;direction:ltr;text-align:left';
+w.textContent=txt;var b=document.createElement('button');b.textContent='Fermer';
+b.style.cssText='position:fixed;top:'+HAUT+';right:14px;background:#C08A46;color:#160C04;border:0;border-radius:8px;padding:8px 14px;font:600 13px -apple-system,sans-serif';
+b.onclick=function(){w.remove()};w.appendChild(b);document.body.appendChild(w);}
+})();
 </script><meta name="theme-color" content="#0B0D10"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><style>
 /* 09/09 : Google Fonts coupe. Cormorant Garamond etait la seule police encore
    chargee depuis internet : une app annoncee hors connexion partait quand meme
@@ -430,6 +471,10 @@ window.ALAE_BR_BOOST = {gold:1.12, copper:1.06, nuit:1.00, koutoubia:1.02, amoua
    Cette liste est LA seule : elle est declaree ici, avant le calage precoce, parce que
    celui-ci tournait jusqu'a present sur une copie ecrite en dur qui l'ignorait. */
 window.THEMES_RETIRES = {royal:1, rose:1, bahrayn:1, bordeaux:1};
+/* 14/09 : la photo du theme Nuit est bleu-gris a la prise de vue. Un simple
+   brightness ne la rechauffe pas : il faut la teinter. sepia pousse vers l'ambre,
+   saturate lui rend du corps, hue-rotate la ramene vers le miel plutot que l'orange. */
+window.ALAE_CHALEUR = {nuit:' sepia(0.48) saturate(1.55) hue-rotate(-10deg)'};
 window.alaeEclat = function(theme, cran){
   /* Normalisation a l'entree : un theme retire arrive ici sous son nom brut. Sans
      cette ligne, un utilisateur reste sur Ambre gardait un fond 12 % plus sombre
@@ -437,7 +482,7 @@ window.alaeEclat = function(theme, cran){
   if (window.THEMES_RETIRES[theme]) theme = 'gold';
   var num = window.ALAE_THEMES_SOMBRES[theme] ? window.ALAE_CRANS_NUM_SOMBRE : window.ALAE_CRANS_NUM;
   var b = Math.min(1.85, (num[cran]||1) * (window.ALAE_BR_BOOST[theme]||1));
-  return 'brightness('+b.toFixed(2)+') saturate('+(window.ALAE_CRANS_SAT[cran]||1)+')';
+  return 'brightness('+b.toFixed(2)+') saturate('+(window.ALAE_CRANS_SAT[cran]||1)+')'+(window.ALAE_CHALEUR[theme]||'');
 };
 try{var _t=(JSON.parse(localStorage.getItem('misbaha.v1')||'{}').theme)||'gold';if(window.THEMES_RETIRES[_t])_t='gold';window.ALAE_SILK=window.ALAE_FONDS[_t]||'assets/silk-bg-inline.jpg';var _br=JSON.parse(localStorage.getItem('misbaha.v1')||'{}').brightness;if(_br==null||!(_br>=0&&_br<=2))_br=1;document.documentElement.style.setProperty('--silk-eclat',window.alaeEclat(_t,_br));if(window.ALAE_VOILES[_t]){document.documentElement.style.setProperty('--silk-vignette',window.ALAE_VOILES[_t]);document.documentElement.style.setProperty('--silk-vignette-soft',window.ALAE_VOILES_DOUX[_t]);}}catch(e){window.ALAE_SILK='assets/silk-bg-inline.jpg';}
 try{document.documentElement.style.setProperty('--silk-img','url(\"'+window.ALAE_SILK+'\")');}catch(e){}
@@ -477,8 +522,11 @@ window.ALAE_APLATIR=function(){
     s.src=window.ALAE_SILK;
   },2500);
 };
-try{window.ALAE_APLATIR();}catch(e){}
+/* 14/09 : MOON_PHASES etait defini APRES l'appel d'aplatissement ci-dessous : le
+   test `if(window.MOON_PHASES)` etait donc toujours faux et les 8 lunes gardaient
+   le prefixe assets/, introuvable dans un bundle Xcode aplati. Declare avant. */
 window.MOON_PHASES = ["assets/moon-1.png","assets/moon-2.png","assets/moon-3.png","assets/moon-4.png","assets/moon-5.png","assets/moon-6.png","assets/moon-7.png","assets/moon-8.png"];
+try{window.ALAE_APLATIR();}catch(e){}
 /* ── Position : UNE SEULE demande d'autorisation ──
    Dans une WKWebView file://, iOS reaffiche sa fenetre a CHAQUE appel de
    getCurrentPosition — et y montre le chemin du fichier au lieu du nom de l'app.
@@ -704,11 +752,13 @@ window.ALAE_ACCENTS = {
     grad: 'linear-gradient(180deg,#EDB6BF,#965662)'
   },
   nuit: {
-    solid: '#8195C9',
-    bright: '#C6D4F2',
-    dark: '#5A6C9E',
-    dim: 'rgba(129,149,201,0.32)',
-    grad: 'linear-gradient(180deg,#C6D4F2,#5A6C9E)'
+    /* 14/09 : l'accent Nuit etait bleu (#8195C9) — seul theme a ne pas etre dans
+       la gamme chaude. Passe au marron miel, comme l'anneau des autres themes. */
+    solid: '#C08A46',
+    bright: '#F0C98A',
+    dark: '#7E5025',
+    dim: 'rgba(192,138,70,0.32)',
+    grad: 'linear-gradient(180deg,#F0C98A,#7E5025)'
   },
   bahrayn: {
     solid: '#4FA79E',
@@ -2539,7 +2589,7 @@ function Onboarding({
   }))))), (() => {
     const M = alaeMoonToday(lang);
     const isDay = alaeIsDay();
-    return /*#__PURE__*/React.createElement(React.Fragment, null, isDay && /*#__PURE__*/React.createElement("svg", {
+    return /*#__PURE__*/React.createElement(React.Fragment, null, false && /*#__PURE__*/React.createElement("svg", {
       width: 116,
       height: 116,
       viewBox: "0 0 100 100",
@@ -15034,8 +15084,11 @@ window.AsmaScreen = AsmaScreen;
       if (theme === 'gold') {
         veilOff = true;
       } else if (theme === 'nuit') {
-        veilRGB = '9,11,20';
-        accentRGB = '198,212,242';
+        // 14/09 : voile et accent etaient bleus (9,11,20 et 198,212,242). Poses PAR-DESSUS
+        // l'image, ils reteignaient en bleu la photo pourtant rechauffee — c'est ce bleu
+        // qui restait visible. Passes au marron miel, dans l'esprit de Koutoubia.
+        veilRGB = '24,15,7';
+        accentRGB = '240,198,132';
       } else if (theme === 'bahrayn') {
         veilRGB = '5,22,26';
         accentRGB = '155,219,210';
@@ -15090,7 +15143,15 @@ window.AsmaScreen = AsmaScreen;
       root.style.setProperty('--silk-img', `url("${img}")`);
       // Thèmes photographiques (Al-Bahrayn, Amouage) : voile serré sur les bords,
       // l'eau reste nette au centre. Tout thème qui définit son voile le reçoit ici.
-      if (window.ALAE_VOILES && window.ALAE_VOILES[theme]) {
+      // 15/09 : au cran clair il restait une ombre visible en bas de l'ecran. Les
+      // themes sans voile declare retombaient sur le degrade elliptique du CSS
+      // (centre a 45 % de hauteur, donc plus sombre vers le bas), toujours pose
+      // meme a 6 % d'opacite. Le cran clair coupe desormais tout voile : rien ne
+      // doit assombrir l'image quand l'utilisateur demande justement du clair.
+      if (BR === 2) {
+        root.style.setProperty('--silk-vignette', 'none');
+        root.style.setProperty('--silk-vignette-soft', 'none');
+      } else if (window.ALAE_VOILES && window.ALAE_VOILES[theme]) {
         root.style.setProperty('--silk-vignette', window.ALAE_VOILES[theme]);
         root.style.setProperty('--silk-vignette-soft', window.ALAE_VOILES_DOUX[theme]);
       } else {
@@ -15703,7 +15764,7 @@ window.AsmaScreen = AsmaScreen;
         style: {
           position: 'fixed',
           inset: 0,
-          background: 'radial-gradient(120% 90% at 50% 0%, #101a31 0%, #070d1c 60%)',
+          background: 'radial-gradient(120% 90% at 50% 0%, #4A3318 0%, #1B1208 60%)',
           overflow: 'hidden',
           display: 'flex',
           alignItems: 'center',
