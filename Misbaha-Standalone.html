@@ -1995,8 +1995,10 @@ function Onboarding({
       WebkitMaskImage: 'linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0) 78%), linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 22%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)',
       WebkitMaskComposite: 'source-in',
       maskComposite: 'intersect',
-      maskImage: 'linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0) 78%), linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 22%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)',
-      animation: 'alaeRayDrift 7.5s ease-in-out infinite'
+      maskImage: 'linear-gradient(180deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.55) 42%, rgba(0,0,0,0) 78%), linear-gradient(90deg, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 22%, rgba(0,0,0,1) 78%, rgba(0,0,0,0) 100%)'
+      /* 15/09 : animation retiree. Un calque plein ecran qui cumule blur + mixBlendMode
+         + masque compose exige son propre tampon de composition ; anime, ce tampon est
+         rerasterise 60 fois par seconde. Fige, il est calcule une seule fois. */
     }
   }), /*#__PURE__*/React.createElement("div", {
     style: {
@@ -2011,8 +2013,8 @@ function Onboarding({
       filter: 'blur(6px)',
       background: 'repeating-conic-gradient(from 90deg at 50% -6%, rgba(255,228,170,0) 0deg, rgba(255,228,170,0) 7deg, rgba(255,222,158,0.10) 13deg, rgba(255,228,170,0) 19deg)',
       WebkitMaskImage: 'linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 82%)',
-      maskImage: 'linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 82%)',
-      animation: 'alaeRayBreathe 6s ease-in-out infinite'
+      maskImage: 'linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 82%)'
+      /* 15/09 : animation retiree, meme raison que le calque precedent. */
     }
   }), [{
     deg: -52,
@@ -2098,23 +2100,26 @@ function Onboarding({
     blur: 10,
     dur: 10.8,
     del: -3.9
-  }].map((r, i) => /*#__PURE__*/React.createElement("div", {
-    key: 'r' + i,
+  }].map((r, i, arr) => i ? null : /*#__PURE__*/React.createElement("div", {
+    /* 15/09 — CAUSE DU REBOOT. Ces 12 rayons etaient 12 <div> plein ecran, chacun
+       avec blur(), mixBlendMode screen, un masque et une animation propre : 12 tampons
+       de composition de la taille de l'ecran (~12 Mo chacun en 3x), tous rerasterises
+       a chaque image. iOS tuait le process WebContent — l'app semblait redemarrer.
+       Les 12 coniques sont desormais empilees dans le `background` d'UN SEUL calque :
+       au lieu de tourner le div, on decale l'angle `from` de la conique, ce qui donne
+       le meme eventail. Un tampon au lieu de douze, et plus rien a recalculer. */
+    key: 'rays',
     style: {
-      '--a': `${r.deg}deg`,
       position: 'absolute',
       top: '-25%',
       left: '0',
       right: '0',
       height: '140%',
-      transformOrigin: '50% 0%',
-      transform: `rotate(${r.deg}deg)`,
       mixBlendMode: 'screen',
-      filter: `blur(${r.blur}px)`,
-      background: `conic-gradient(from 90deg at 50% -6%, rgba(255,228,170,0) 0deg, rgba(255,222,158,${r.op}) ${(r.w / 2).toFixed(1)}deg, rgba(255,228,170,0) ${r.w}deg)`,
+      filter: 'blur(7px)',
+      background: arr.map(x => `conic-gradient(from ${(90 + x.deg).toFixed(1)}deg at 50% -6%, rgba(255,228,170,0) 0deg, rgba(255,222,158,${x.op}) ${(x.w / 2).toFixed(1)}deg, rgba(255,228,170,0) ${x.w}deg)`).join(','),
       WebkitMaskImage: 'linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.48) 50%, rgba(0,0,0,0) 88%)',
-      maskImage: 'linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.48) 50%, rgba(0,0,0,0) 88%)',
-      animation: `alaeRaySway ${r.dur}s ease-in-out ${r.del}s infinite`
+      maskImage: 'linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.48) 50%, rgba(0,0,0,0) 88%)'
     }
   })), [{
     deg: -37,
@@ -2137,23 +2142,19 @@ function Onboarding({
     blur: 8,
     dur: 14.5,
     del: -4.6
-  }].map((r, i) => /*#__PURE__*/React.createElement("div", {
-    key: 'lg' + i,
+  }].map((r, i, arr) => i ? null : /*#__PURE__*/React.createElement("div", {
+    key: 'lgrays',
     style: {
-      '--a': `${r.deg}deg`,
       position: 'absolute',
       top: '-25%',
       left: '0',
       right: '0',
       height: '190%',
-      transformOrigin: '50% 0%',
-      transform: `rotate(${r.deg}deg)`,
       mixBlendMode: 'screen',
-      filter: `blur(${r.blur}px)`,
-      background: `conic-gradient(from 90deg at 50% -6%, rgba(255,228,170,0) 0deg, rgba(255,222,158,${r.op}) ${(r.w / 2).toFixed(1)}deg, rgba(255,228,170,0) ${r.w}deg)`,
+      filter: 'blur(7px)',
+      background: arr.map(x => `conic-gradient(from ${(90 + x.deg).toFixed(1)}deg at 50% -6%, rgba(255,228,170,0) 0deg, rgba(255,222,158,${x.op}) ${(x.w / 2).toFixed(1)}deg, rgba(255,228,170,0) ${x.w}deg)`).join(','),
       WebkitMaskImage: 'linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 62%, rgba(0,0,0,0.28) 84%, rgba(0,0,0,0) 100%)',
-      maskImage: 'linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 62%, rgba(0,0,0,0.28) 84%, rgba(0,0,0,0) 100%)',
-      animation: `alaeRaySway ${r.dur}s ease-in-out ${r.del}s infinite`
+      maskImage: 'linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 62%, rgba(0,0,0,0.28) 84%, rgba(0,0,0,0) 100%)'
     }
   })), /*#__PURE__*/React.createElement("div", {
     style: {
@@ -2207,21 +2208,20 @@ function Onboarding({
     height: "18",
     viewBox: "0 0 16 16",
     fill: "none"
-  }, /*#__PURE__*/React.createElement("circle", {
+  }, /* 15/09 : SECONDE copie de l'icone luminosite, ecrite en dur dans cet ecran et
+       non dans CornerButton — c'est celle-ci qui s'affichait encore en soleil a huit
+       rayons, confondue avec le vrai soleil. Passee au disque mi-clair mi-sombre. */
+  /*#__PURE__*/React.createElement("circle", {
     cx: "8",
     cy: "8",
-    r: "3",
-    fill: "currentColor",
-    fillOpacity: "0.45",
+    r: "5.6",
     stroke: "currentColor",
     strokeWidth: "1.2"
-  }), /*#__PURE__*/React.createElement("g", {
-    stroke: "currentColor",
-    strokeWidth: "1.2",
-    strokeLinecap: "round"
-  }, /*#__PURE__*/React.createElement("path", {
-    d: "M8 1.4v2M8 12.6v2M1.4 8h2M12.6 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"
-  })))), onMenu && /*#__PURE__*/React.createElement("button", {
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M8 2.4a5.6 5.6 0 0 1 0 11.2Z",
+    fill: "currentColor",
+    fillOpacity: "0.85"
+  }))), onMenu && /*#__PURE__*/React.createElement("button", {
     onClick: e => {
       e.stopPropagation();
       onMenu();
@@ -2589,22 +2589,54 @@ function Onboarding({
   }))))), (() => {
     const M = alaeMoonToday(lang);
     const isDay = alaeIsDay();
-    return /*#__PURE__*/React.createElement(React.Fragment, null, isDay && /*#__PURE__*/React.createElement("svg", {
-      width: 116,
-      height: 116,
-      viewBox: "0 0 100 100",
+    /* 15/09 : ce disque SVG a rayons a ete ajoute en reactivant le soleil pour le
+       1.0.18. Il n'a jamais existe avant et n'etait pas voulu : le soleil de l'app a
+       toujours ete la LUEUR en haut d'ecran (halo radial + eventail de rayons), sans
+       astre dessine. Disque desactive ; la lueur et la lune restent intactes. */
+    return /*#__PURE__*/React.createElement(React.Fragment, null, false && /*#__PURE__*/React.createElement("svg", {
+      width: 186,
+      height: 186,
+      viewBox: "-30 -30 160 160",
       style: {
         position: 'absolute',
-        top: -6,
+        /* 15/09 — REBOOT DE L'APP SUR CET ECRAN. Le soleil portait trois drop-shadow
+           (dont un flou de 80px) sur un element anime en boucle : WebKit rerasterisait
+           un filtre de ~280x280 a chaque image, par-dessus la soie plein ecran et les
+           45 etoiles. Le process WebContent etait tue par iOS — vu comme un reboot.
+           La lueur est desormais de la GEOMETRIE (un disque en degrade radial dans le
+           SVG, viewBox elargie pour lui laisser la place) : rendu identique, cout nul
+           par image. Aucun filtre ne subsiste ici.
+           Au passage : les keyframes posent `transform: rotate(...)`, qui ECRASAIT le
+           translateX(-50%) de centrage — le soleil partait vers la droite des que
+           l'animation demarrait. Le centrage passe donc par marginLeft, que l'animation
+           ne touche pas. */
+        top: -96,
         left: '50%',
-        transform: 'translateX(-50%)',
+        marginLeft: -93,
         zIndex: 4,
         pointerEvents: 'none',
         overflow: 'visible',
-        filter: 'drop-shadow(0 0 40px rgba(255,214,130,1)) drop-shadow(0 0 80px rgba(255,180,80,0.7)) drop-shadow(0 2px 8px rgba(0,0,0,0.35))',
+        willChange: 'opacity, transform',
         animation: 'alaeRayBreathe 6s ease-in-out infinite'
       }
     }, /*#__PURE__*/React.createElement("defs", null, /*#__PURE__*/React.createElement("radialGradient", {
+      id: "alaeSunGlow",
+      cx: "50%",
+      cy: "50%",
+      r: "50%"
+    }, /*#__PURE__*/React.createElement("stop", {
+      offset: "32%",
+      stopColor: "rgba(255,222,150,0.85)"
+    }), /*#__PURE__*/React.createElement("stop", {
+      offset: "52%",
+      stopColor: "rgba(255,201,110,0.40)"
+    }), /*#__PURE__*/React.createElement("stop", {
+      offset: "74%",
+      stopColor: "rgba(255,180,80,0.14)"
+    }), /*#__PURE__*/React.createElement("stop", {
+      offset: "100%",
+      stopColor: "rgba(255,180,80,0)"
+    })), /*#__PURE__*/React.createElement("radialGradient", {
       id: "alaeSunBody",
       cx: "42%",
       cy: "38%",
@@ -2638,14 +2670,13 @@ function Onboarding({
     }))), /*#__PURE__*/React.createElement("circle", {
       cx: "50",
       cy: "50",
-      r: "48",
-      fill: "url(#alaeSunHalo)"
+      r: "76",
+      fill: "url(#alaeSunGlow)"
     }), /*#__PURE__*/React.createElement("circle", {
       cx: "50",
       cy: "50",
       r: "48",
-      fill: "url(#alaeSunHalo)",
-      opacity: "0.7"
+      fill: "url(#alaeSunHalo)"
     }), /*#__PURE__*/React.createElement("g", {
       stroke: "#F4B65A",
       strokeWidth: "3",
