@@ -435,7 +435,7 @@ window.__alaeRelance=(function(){ try{ var t=parseInt(window.__alaeBootAt||0,10)
 <script>/* calligraphies inline (data-URI) — affichage garanti hors-ligne */
 window.ASSETS = {"assets/mihrab-floral.png": "assets/floral-frame.png", "assets/logo.png": "assets/logo.png"};
 /* Fonds d'écran disponibles selon le thème choisi dans Réglages */
-window.ALAE_FONDS = {gold:"assets/silk-bg-inline.jpg", copper:"assets/silk-bg-inline.jpg", nuit:"assets/silk-nuit.jpg", koutoubia:"assets/silk-koutoubia.jpg", amouage:"assets/silk-amouage-fond.jpg"};
+window.ALAE_FONDS = {gold:"assets/silk-bg-inline.jpg", copper:"assets/silk-bg-inline.jpg", mudhamma:"assets/silk-mudhamma.jpg", nuit:"assets/silk-nuit.jpg", koutoubia:"assets/silk-koutoubia.jpg", amouage:"assets/silk-amouage-fond.jpg"};
 /* Le voile de chaque fond, connu dès le 1er cadre : pas de flash d'image nue */
 window.ALAE_VOILES = {bahrayn:'none', gold:'none', koutoubia:'none'};
 /* Variante adoucie : même esprit, mais l'ouverture centrale reste large pour ne pas
@@ -462,10 +462,10 @@ window.ALAE_CRANS_FILTRE = window.ALAE_CRANS_NUM.map(function(b,i){ return 'brig
    claire : appliquee telle quelle, le cran le plus terne les ecrasait en noir.
    Ils recoivent donc leur propre echelle, plus douce. */
 window.ALAE_CRANS_FILTRE_SOMBRE = window.ALAE_CRANS_NUM_SOMBRE.map(function(b,i){ return 'brightness('+b+') saturate('+window.ALAE_CRANS_SAT[i]+')'; });
-window.ALAE_THEMES_SOMBRES = {koutoubia:1, nuit:1, amouage:1};
+window.ALAE_THEMES_SOMBRES = {koutoubia:1, nuit:1, amouage:1, mudhamma:1};
 /* Calage fin par theme, applique au cran. Une seule table, lue avant React (1er cadre)
    et par l'app ensuite : le fond ne change plus de luminosite apres l'intro. */
-window.ALAE_BR_BOOST = {gold:1.12, copper:1.06, nuit:1.00, koutoubia:1.02, amouage:1.04};
+window.ALAE_BR_BOOST = {gold:1.12, copper:1.06, nuit:1.00, koutoubia:1.02, amouage:1.04, mudhamma:0.68};
 /* 10/09 : Ambre (nom interne 'bordeaux') retire a la demande. Il partageait la photo
    de Or et Cuivre et portait un accent rose-rouge herite de son ancien nom.
    Cette liste est LA seule : elle est declaree ici, avant le calage precoce, parce que
@@ -475,6 +475,31 @@ window.THEMES_RETIRES = {royal:1, rose:1, bahrayn:1, bordeaux:1};
    brightness ne la rechauffe pas : il faut la teinter. sepia pousse vers l'ambre,
    saturate lui rend du corps, hue-rotate la ramene vers le miel plutot que l'orange. */
 window.ALAE_CHALEUR = {nuit:' sepia(0.48) saturate(1.55) hue-rotate(-10deg)'};
+/* CADRAGE PAR ECRAN. Une seule photo par theme, mais chaque page en montre un
+   endroit different : l'app ne se repete plus, sans un octet de plus dans le bundle.
+   Le zoom passe par backgroundSize 'auto Z%' et NON par transform : un transform
+   sur un calque plein ecran qui porte deja un filter cree une couche de composition
+   supplementaire — c'est precisement ce qui faisait tuer le moteur web sur l'ecran
+   du soleil. Ici, rien de plus a composer.
+   Tous les fonds sont plus larges que l'ecran a hauteur egale (ratios 0.50 a 0.67
+   contre 0.46) : a partir de 106 % la photo couvre toujours, quel que soit le theme. */
+window.ALAE_CADRAGES = {
+  onboarding:   {p:'50% 50%', z:108},
+  sibha:        {p:'50% 64%', z:114},
+  bibliotheque: {p:'26% 38%', z:120},
+  historique:   {p:'74% 44%', z:118},
+  cycle:        {p:'40% 82%', z:112},
+  dhikr:        {p:'64% 22%', z:124},
+  fincycle:     {p:'50% 14%', z:110},
+  communaute:   {p:'20% 70%', z:122},
+  mawaqit:      {p:'50% 24%', z:108},
+  qibla:        {p:'80% 72%', z:126},
+  adhkar:       {p:'32% 32%', z:116},
+  matin:        {p:'58% 78%', z:112},
+  duaa:         {p:'46% 36%', z:120},
+  asma:         {p:'70% 58%', z:114},
+  menu:         {p:'50% 50%', z:106}
+};
 window.alaeEclat = function(theme, cran){
   /* Normalisation a l'entree : un theme retire arrive ici sous son nom brut. Sans
      cette ligne, un utilisateur reste sur Ambre gardait un fond 12 % plus sombre
@@ -737,6 +762,16 @@ window.THEME = {
    et les noms ne voulaient plus rien dire. Chacun recoit ici un metal ou une
    pierre distincte, assez claire pour rester lisible sur le noir. */
 window.ALAE_ACCENTS = {
+  /* Mud'hammatan (Ar-Rahman 55:64) : le fond est un noir mat de petales, sans dore.
+     L'accent s'allume donc un peu plus haut que celui de Or pour rester le seul
+     eclat de l'ecran. */
+  mudhamma: {
+    solid: '#C9A257',
+    bright: '#F2D9A0',
+    dark: '#8A6A2E',
+    dim: 'rgba(201,162,87,0.32)',
+    grad: 'linear-gradient(180deg,#F2D9A0,#8A6A2E)'
+  },
   gold: {
     solid: '#C0873F',
     bright: '#EEC684',
@@ -1235,8 +1270,10 @@ window.AlaeSpeak = function AlaeSpeak(text) {
 window.SilkBg = function SilkBg({
   opacity = 1,
   blur = 0,
-  watermark = false
+  watermark = false,
+  vue
 }) {
+  const cadre = (window.ALAE_CADRAGES || {})[vue] || {p:'center', z:100};
   return /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'absolute',
@@ -1257,8 +1294,8 @@ window.SilkBg = function SilkBg({
       // Deux couches : le fond du theme, et la soie par defaut dessous. Si le
       // theme reference une image absente, on retombe sur la soie au lieu du noir.
       backgroundImage: 'var(--silk-img, url("assets/silk-bg-inline.jpg")), url("assets/silk-bg-inline.jpg")',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
+      backgroundSize: cadre.z > 100 ? 'auto ' + cadre.z + '%' : 'cover',
+      backgroundPosition: cadre.p,
       filter: 'var(--silk-eclat, none)',
       opacity
     }
@@ -1957,7 +1994,8 @@ function Onboarding({
       overflow: 'hidden'
     }
   }, /*#__PURE__*/React.createElement(window.SilkBg, {
-    opacity: 0.9
+    opacity: 0.9,
+    vue: 'onboarding'
   }), alaeIsDay() && step === 0 && /*#__PURE__*/React.createElement("div", {
     "aria-hidden": "true",
     style: {
@@ -3185,7 +3223,8 @@ function CompteurChrome({
         @keyframes alaeRingSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes alaeRingSpinRev { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
       `), /*#__PURE__*/React.createElement(window.SilkBg, {
-    opacity: 0.9
+    opacity: 0.9,
+    vue: 'sibha'
   }), /*#__PURE__*/React.createElement(window.OrnaFrame, null, children));
 }
 function Header({
@@ -4612,7 +4651,8 @@ function LibraryScreen({
       direction: isAr ? 'rtl' : 'ltr'
     }
   }, /*#__PURE__*/React.createElement(window.SilkBg, {
-    opacity: 0.9
+    opacity: 0.9,
+    vue: 'bibliotheque'
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'absolute',
@@ -5063,7 +5103,8 @@ function HistoryScreen({
       direction: isAr ? 'rtl' : 'ltr'
     }
   }, /*#__PURE__*/React.createElement(window.SilkBg, {
-    opacity: 0.9
+    opacity: 0.9,
+    vue: 'historique'
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'absolute',
@@ -5678,10 +5719,10 @@ function SettingsScreen({
     onChange: () => saveSetting('sound', !settings.sound)
   }, {
     label: isAr ? 'المظهر' : lang === 'fr' ? 'Thème' : 'Theme',
-    value: settings.theme === 'nuit' ? isAr ? '🌙 الكِسوة' : lang === 'fr' ? '🌙 Kiswa' : '🌙 Kiswa' : settings.theme === 'koutoubia' ? isAr ? '🕌 الكُتُبِيَّة' : lang === 'fr' ? '🕌 Koutoubia' : '🕌 Koutoubia' : settings.theme === 'amouage' ? '🌀 Amouage' : settings.theme === 'copper' ? isAr ? '🟠 نُحاس فاس' : lang === 'fr' ? '🟠 Cuivre de Fès' : '🟠 Fez Copper' : isAr ? '🟨 ذهب السلطان' : lang === 'fr' ? '🟨 Or Sultan' : '🟨 Sultan Gold',
+    value: settings.theme === 'mudhamma' ? isAr ? '🌿 مُدْهَامَّتَان' : "🌿 Mud'hāmmatān" : settings.theme === 'nuit' ? isAr ? '🌙 الكِسوة' : lang === 'fr' ? '🌙 Kiswa' : '🌙 Kiswa' : settings.theme === 'koutoubia' ? isAr ? '🕌 الكُتُبِيَّة' : lang === 'fr' ? '🕌 Koutoubia' : '🕌 Koutoubia' : settings.theme === 'amouage' ? '🌀 Amouage' : settings.theme === 'copper' ? isAr ? '🟠 نُحاس فاس' : lang === 'fr' ? '🟠 Cuivre de Fès' : '🟠 Fez Copper' : isAr ? '🟨 ذهب السلطان' : lang === 'fr' ? '🟨 Or Sultan' : '🟨 Sultan Gold',
     icon: 'moon',
     onClick: () => {
-      const opts = ['gold', 'copper', 'nuit', 'koutoubia', 'amouage'];
+      const opts = ['gold', 'copper', 'nuit', 'koutoubia', 'amouage', 'mudhamma'];
       const cur = opts.indexOf(settings.theme);
       saveSetting('theme', opts[(cur + 1) % opts.length]);
       if (navigator.vibrate) try {
@@ -5721,7 +5762,8 @@ function SettingsScreen({
       direction: isAr ? 'rtl' : 'ltr'
     }
   }, /*#__PURE__*/React.createElement(window.SilkBg, {
-    opacity: 1
+    opacity: 1,
+    vue: 'cycle'
   }), /*#__PURE__*/React.createElement("svg", {
     "aria-hidden": "true",
     viewBox: "0 0 402 874",
@@ -5946,8 +5988,12 @@ function SettingsScreen({
     style: {
       flex: 1,
       fontFamily: isAr ? '"Amiri", serif' : '-apple-system, sans-serif',
-      fontSize: isAr ? 18 : 15,
+      /* 16/09 : aligne sur les entrees du menu, corrigees le 11/09. Les Reglages
+         etaient restes a 18/15 : meme police, mais un cran plus petit d'un ecran
+         a l'autre. Meme corps et meme hauteur de ligne que le menu. */
+      fontSize: isAr ? 21 : 15,
       fontWeight: isAr ? 700 : 500,
+      lineHeight: '30px',
       color: T.text,
       textShadow: '0 1px 2px rgba(0,0,0,0.75)'
     }
@@ -5975,7 +6021,7 @@ function SettingsScreen({
   })) : r.value ? /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: isAr ? '"Amiri", serif' : '-apple-system, sans-serif',
-      fontSize: isAr ? 15 : 13,
+      fontSize: isAr ? 17 : 13,
       fontWeight: isAr ? 700 : 500,
       color: T.goldLight,
       display: 'flex',
@@ -6539,7 +6585,8 @@ function DhikrDetailScreen({
       direction: isAr ? 'rtl' : 'ltr'
     }
   }, /*#__PURE__*/React.createElement(window.SilkBg, {
-    opacity: 1
+    opacity: 1,
+    vue: 'dhikr'
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'absolute',
@@ -7228,7 +7275,8 @@ function EndOfCycleScreen({
       background: T.bg
     }
   }), /*#__PURE__*/React.createElement(window.SilkBg, {
-    opacity: 1
+    opacity: 1,
+    vue: 'fincycle'
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'absolute',
@@ -7755,7 +7803,8 @@ function CommunityScreen({
       direction: isAr ? 'rtl' : 'ltr'
     }
   }, /*#__PURE__*/React.createElement(window.SilkBg, {
-    opacity: 1
+    opacity: 1,
+    vue: 'communaute'
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'absolute',
@@ -9025,7 +9074,8 @@ function PrayerScreen({
       direction: isAr ? 'rtl' : 'ltr'
     }
   }, /*#__PURE__*/React.createElement(window.SilkBg, {
-    opacity: 0.85
+    opacity: 0.85,
+    vue: 'mawaqit'
   }), /*#__PURE__*/React.createElement("style", null, `
         @keyframes ringShine {
           0%, 100% { filter: drop-shadow(0 0 7px rgba(201,124,46,0.62)) drop-shadow(0 0 2px rgba(255,205,130,0.5)); }
@@ -9389,8 +9439,8 @@ function PrayerScreen({
     style: {
       /* 11/09 : cette ligne est de l'arabe dans TOUTES les langues — elle prenait
          pourtant ReemKufi en arabe et Amiri en francais. Une seule police. */
-      fontFamily: '"ReemKufi", sans-serif',
-      fontSize: 16.5,
+      fontFamily: '"Amiri", serif',
+      fontSize: 18,
       fontWeight: 700,
       color: T.goldLight,
       direction: 'rtl',
@@ -9461,7 +9511,7 @@ function PrayerScreen({
       position: 'absolute',
       inset: -10,
       borderRadius: '50%',
-      background: 'radial-gradient(circle, rgba(8,6,4,0.34) 0%, rgba(8,6,4,0.20) 56%, transparent 78%)',
+      background: 'radial-gradient(circle, rgba(8,6,4,0.92) 0%, rgba(8,6,4,0.62) 56%, transparent 78%)',
       pointerEvents: 'none'
     }
   }), /*#__PURE__*/React.createElement("div", {
@@ -9469,7 +9519,7 @@ function PrayerScreen({
       position: 'absolute',
       inset: -10,
       borderRadius: '50%',
-      background: 'conic-gradient(from 0deg, rgba(205,127,50,0) 0deg, rgba(205,127,50,0) 70deg, rgba(205,127,50,0.18) 150deg, rgba(224,168,92,0.28) 180deg, rgba(205,127,50,0.30) 210deg, rgba(205,127,50,0) 290deg, rgba(205,127,50,0) 360deg)',
+      background: 'conic-gradient(from 0deg, rgba(205,127,50,0) 0deg, rgba(205,127,50,0) 70deg, rgba(205,127,50,0.55) 150deg, rgba(224,168,92,0.85) 180deg, rgba(205,127,50,0.55) 210deg, rgba(205,127,50,0) 290deg, rgba(205,127,50,0) 360deg)',
       filter: 'blur(9px)',
       animation: 'heroCopperOrbit 3.6s linear infinite',
       pointerEvents: 'none',
@@ -9481,10 +9531,8 @@ function PrayerScreen({
       inset: 0,
       borderRadius: '50%',
       padding: 3,
-      background: 'conic-gradient(from 0deg,#D89A4E,#C98A2E,#CD7F32,#B87333,#8B5A2B,#CD7F32,#E0A85C,#B87333,#A9651F,#D9A03E,#D89A4E)',
-      opacity: 0.62,
-      boxShadow: '0 0 12px rgba(205,127,50,0.20), 0 0 24px rgba(184,115,51,0.10), inset 0 0 14px rgba(224,168,92,0.15)',
-      opacity: 0.68,
+      background: 'conic-gradient(from 0deg,#E8B97A,#C98A2E,#CD7F32,#B87333,#8B5A2B,#CD7F32,#E0A85C,#B87333,#A9651F,#D9A03E,#E8B97A)',
+      boxShadow: '0 0 12px rgba(205,127,50,0.6), 0 0 24px rgba(184,115,51,0.35), inset 0 0 14px rgba(224,168,92,0.45)',
       animation: 'alaeRingSpin 9s linear infinite'
     }
   }), /*#__PURE__*/React.createElement("div", {
@@ -9492,7 +9540,7 @@ function PrayerScreen({
       position: 'absolute',
       inset: 3,
       borderRadius: '50%',
-      background: 'radial-gradient(circle at 50% 42%, rgba(24,18,11,0.40) 0%, rgba(11,9,7,0.48) 72%)',
+      background: 'radial-gradient(circle at 50% 42%, #18120b 0%, #0b0907 72%)',
       pointerEvents: 'none'
     }
   }), /*#__PURE__*/React.createElement("div", {
@@ -9509,11 +9557,11 @@ function PrayerScreen({
     }
   }, /*#__PURE__*/React.createElement("div", {
     style: {
-      fontFamily: isAr ? '"ArefRuqaa","Aref Ruqaa","Amiri",serif' : '"Cormorant Garamond",serif',
+      fontFamily: isAr ? '"ArefRuqaa","Aref Ruqaa","Amiri",serif' : '"DM Serif Display","Cormorant Garamond",serif',
       fontSize: isAr ? 38 : 24,
       fontWeight: isAr ? 700 : 500,
       background: 'none',
-      backgroundImage: 'linear-gradient(105deg, #B7742F 0%, #D89A4E 14%, #FCE9B0 26%, #FFF6DA 40%, #FCE9B0 48%, #E4B96F 58%, #D89A4E 72%, #FFF1C8 84%, #D9A25E 100%)',
+      backgroundImage: 'linear-gradient(105deg, #C7935B 0%, #E8B97A 14%, #FCE9B0 26%, #FFF6DA 40%, #FCE9B0 48%, #F4D89B 58%, #E8B97A 72%, #FFF1C8 84%, #D9A25E 100%)',
       backgroundSize: '260% 100%',
       WebkitBackgroundClip: isAr ? 'text' : 'unset',
       WebkitTextFillColor: isAr ? 'transparent' : 'unset',
@@ -9533,8 +9581,8 @@ function PrayerScreen({
     color: T.goldLight
   }), !isAr && /*#__PURE__*/React.createElement("div", {
     style: {
-      fontFamily: '"ReemKufi", sans-serif',
-      fontSize: 12.5,
+      fontFamily: '"Amiri", serif',
+      fontSize: 13.5,
       color: 'rgba(232,185,122,0.72)',
       direction: 'rtl',
       lineHeight: 1
@@ -9548,11 +9596,11 @@ function PrayerScreen({
     }
   }, /*#__PURE__*/React.createElement("style", null, `@keyframes mawaqitTimeShine{0%{background-position:130% 0}50%{background-position:-30% 0}100%{background-position:130% 0}}`), /*#__PURE__*/React.createElement("div", {
     style: {
-      fontFamily: isAr ? '"ArefRuqaa","Aref Ruqaa","Amiri",serif' : '"Cormorant Garamond",serif',
+      fontFamily: isAr ? '"ArefRuqaa","Aref Ruqaa","Amiri",serif' : '"DM Serif Display","Cormorant Garamond",serif',
       fontSize: 65,
       fontWeight: 700,
       color: 'transparent',
-      backgroundImage: 'linear-gradient(110deg, #8B5A2A 0%, #B7742F 16%, #D89A4E 30%, #FFF6DA 44%, #FCE9B0 50%, #E0A23F 60%, #B7742F 74%, #FFF1C8 86%, #B07F2E 100%)',
+      backgroundImage: 'linear-gradient(110deg, #8B5A2A 0%, #C7935B 16%, #E8B97A 30%, #FFF6DA 44%, #FCE9B0 50%, #E0A23F 60%, #C7935B 74%, #FFF1C8 86%, #B07F2E 100%)',
       backgroundSize: '200% 100%',
       WebkitBackgroundClip: 'text',
       backgroundClip: 'text',
@@ -9567,8 +9615,8 @@ function PrayerScreen({
   }, times[nextIdx]), /*#__PURE__*/React.createElement("div", {
     style: {
       marginTop: 8,
-      fontFamily: isAr ? '"ReemKufi", sans-serif' : '"Cormorant Garamond",serif',
-      fontSize: isAr ? 14 : 13.5,
+      fontFamily: isAr ? '"Amiri", serif' : '"Cormorant Garamond",serif',
+      fontSize: isAr ? 15.5 : 13.5,
       color: 'rgba(255,255,255,0.78)',
       letterSpacing: '0.02em',
       textShadow: '0 1px 6px rgba(0,0,0,0.7)'
@@ -9695,8 +9743,8 @@ function PrayerScreen({
       }
     }, /*#__PURE__*/React.createElement("div", {
       style: {
-        fontFamily: isAr ? '"ReemKufi", sans-serif' : '"Cormorant Garamond",serif',
-        fontSize: isAr ? 18 : 14.5,
+        fontFamily: isAr ? '"Amiri", serif' : '"Cormorant Garamond",serif',
+        fontSize: isAr ? 20 : 14.5,
         fontWeight: isAr ? 700 : 600,
         color: isNext ? T.goldLight : T.text,
         lineHeight: 1.25,
@@ -9704,8 +9752,8 @@ function PrayerScreen({
       }
     }, labels[i]), lang !== 'ar' && /*#__PURE__*/React.createElement("div", {
       style: {
-        fontFamily: '"ReemKufi", sans-serif',
-        fontSize: 12,
+        fontFamily: '"Amiri", serif',
+        fontSize: 13,
         color: 'rgba(232,185,122,0.55)',
         direction: 'rtl',
         lineHeight: 1
@@ -10036,7 +10084,8 @@ function QiblaScreen({
       direction: isAr ? 'rtl' : 'ltr'
     }
   }, /*#__PURE__*/React.createElement(window.SilkBg, {
-    opacity: 0.95
+    opacity: 0.95,
+    vue: 'qibla'
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'absolute',
@@ -11239,7 +11288,8 @@ function AdhkarScreen({
       direction: isAr ? 'rtl' : 'ltr'
     }
   }, /*#__PURE__*/React.createElement(window.SilkBg, {
-    opacity: 0.9
+    opacity: 0.9,
+    vue: 'adhkar'
   }), /*#__PURE__*/React.createElement("style", null, `
         @font-face { font-family: 'QPC'; src: url('fonts/QPC-V2.woff2') format('woff2'); font-weight: 400; font-display: swap; }
         .adhkar-scroll::-webkit-scrollbar { width: 0; height: 0; display: none; }
@@ -11552,16 +11602,18 @@ window.DUAA_PHOTOS = {
 };
 window.MORNING_PHOTOS = {
   daily: [
-"assets/duaa-friday-1.jpg",
+    "assets/duaa-friday-1.jpg",
     "assets/morning-daily-1.jpg",
     "assets/morning-daily-2.jpg",
-        "assets/morning-daily-3.jpg",
+    "assets/morning-daily-3.jpg",
     "assets/morning-daily-4.jpg",
     "assets/morning-daily-5.jpg",
     "assets/morning-daily-6.jpg",
     "assets/morning-daily-7.jpg",
     "assets/morning-daily-8.jpg",
     "assets/morning-daily-9.jpg",
+    "assets/morning-daily-10.jpg",
+    "assets/morning-daily-11.jpg",
     "assets/sabah-1.jpg",
     "assets/sabah-2.jpg",
     "assets/sabah-3.jpg",
@@ -11848,7 +11900,8 @@ function MorningCardScreen({
       direction: isAr ? "rtl" : "ltr"
     }
   }, /*#__PURE__*/React.createElement(window.SilkBg, {
-    opacity: 0.5
+    opacity: 0.5,
+    vue: 'matin'
   }), /*#__PURE__*/React.createElement("div", {
     style: {
       position: "relative",
@@ -11933,7 +11986,7 @@ function MorningCardScreen({
       fontFamily: "\"ArefRuqaa\",\"Amiri\",serif",
       fontSize: 30,
       fontWeight: 700,
-      background: "linear-gradient(180deg,#FFF1C8 0%,#E4B96F 25%,#D89A4E 55%,#B7742F 85%,#7E5025 100%)",
+      background: "linear-gradient(180deg,#FFFDF6 0%,#FFF4D6 28%,#F7E3B4 60%,#E9C88A 100%)",
       WebkitBackgroundClip: "text",
       WebkitTextFillColor: "transparent",
       backgroundClip: "text",
@@ -11946,9 +11999,9 @@ function MorningCardScreen({
     style: {
       fontFamily: "Amiri,serif",
       fontSize: 13,
-      color: T.textMuted,
+      color: "rgba(255,246,228,0.92)",
       marginTop: 6,
-      opacity: 0.85,
+      textShadow: "0 1px 5px rgba(0,0,0,0.75)",
       textAlign: "center"
     }
   }, isAr ? "\u062F\u064F\u0639\u064E\u0627\u0621 \u0644\u0643\u0644 \u0635\u0628\u0627\u062D \u2014 \u0634\u0627\u0631\u0643\u0647\u0627 \u0645\u0639 \u0623\u062D\u0628\u0627\u0626\u0643" : lang === "fr" ? "Une dou3a chaque matin \u2014 \u00E0 envoyer \u00E0 tes proches" : "A morning du\u2019a each day \u2014 share it with your loved ones"), /*#__PURE__*/React.createElement("div", {
@@ -12598,7 +12651,8 @@ function DuaaScreen({
     },
     onClick: onTap
   }, /*#__PURE__*/React.createElement(window.SilkBg, {
-    opacity: 0.9
+    opacity: 0.9,
+    vue: 'duaa'
   }), /*#__PURE__*/React.createElement("style", null, `
         @font-face { font-family: 'QPC'; src: url('fonts/QPC-V2.woff2') format('woff2'); font-weight: 400; font-display: swap; }
         @keyframes duaaShine {
@@ -13194,7 +13248,8 @@ function AsmaScreen({
       direction: isAr ? 'rtl' : 'ltr'
     }
   }, /*#__PURE__*/React.createElement(window.SilkBg, {
-    opacity: 0.5
+    opacity: 0.5,
+    vue: 'asma'
   }), /*#__PURE__*/React.createElement("style", null, `@keyframes asmaShine{0%{background-position:130% 0}50%{background-position:-30% 0}100%{background-position:130% 0}}`), /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'relative',
@@ -14226,7 +14281,8 @@ window.AsmaScreen = AsmaScreen;
         overflow: 'hidden'
       }
     }, /*#__PURE__*/React.createElement(window.SilkBg, {
-      opacity: 1
+      opacity: 1,
+      vue: 'menu'
     }), open && /*#__PURE__*/React.createElement("svg", {
       "aria-hidden": "true",
       viewBox: "0 0 402 874",
@@ -14496,7 +14552,7 @@ window.AsmaScreen = AsmaScreen;
         // la moyenne : ses 18px valaient ~15px ailleurs, donc des harakat de 2-3px,
         // illisibles le soir. Le latin a 15px passait aussi sous le corps de texte
         // iOS (17px). Public large, souvent 50+, souvent en basse lumiere : 21/17.
-        fontSize: isAr ? 21 : 17,
+        fontSize: isAr ? 21 : 15,
         fontWeight: isAr ? 700 : 400,
         // Hauteur de ligne fixe : sans elle, les libelles a shadda (السجلّ)
         // grandissent leur rangee et l'ecart parait inegal. 30px accompagne 21px
@@ -15122,6 +15178,9 @@ window.AsmaScreen = AsmaScreen;
       } else if (theme === 'bahrayn') {
         veilRGB = '5,22,26';
         accentRGB = '155,219,210';
+      } else if (theme === 'mudhamma') {
+        veilRGB = '9,11,10';
+        accentRGB = '242,217,160';
       } else if (theme === 'koutoubia') {
         veilRGB = '14,8,6';
         accentRGB = '240,171,115';
@@ -15860,7 +15919,7 @@ window.AsmaScreen = AsmaScreen;
   var CLE='misbaha.v1';
   function etat(){ try{ return JSON.parse(localStorage.getItem(CLE)||'{}'); }catch(e){ return {}; } }
   function ecrire(k,v){ var s=etat(); s[k]=v; try{ localStorage.setItem(CLE,JSON.stringify(s)); }catch(e){} location.reload(); }
-  var THEMES=[['gold','Or'],['nuit','Nuit'],['koutoubia','Koutoubia'],['amouage','Amouage'],['copper','Cuivre']];
+  var THEMES=[['gold','Or'],['nuit','Nuit'],['koutoubia','Koutoubia'],['amouage','Amouage'],['copper','Cuivre'],['mudhamma',"Mud'hammatan"]];
   var CRANS=[['0','Tamise'],['1','Normal'],['2','Lumineux']];
   var ouvert=false;
   var bouton=document.createElement('button');
