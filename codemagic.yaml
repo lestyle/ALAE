@@ -8,35 +8,35 @@ workflows:
     environment:
       xcode: latest
       cocoapods: default
+      vars:
+        # Numéro de version marketing : à incrémenter ici à chaque sortie
+        MARKETING_VERSION: "1.0.21"
     scripts:
       - name: Trousseau
         script: |
           keychain initialize
       - name: Certificat + profils (app + widget)
         script: |
-          for TYPE in DISTRIBUTION IOS_DISTRIBUTION; do
-            for CID in $(app-store-connect list-certificates --type $TYPE --json | jq -r '.[].id'); do
-              app-store-connect delete-certificate "$CID" || true
-            done
-          done
-          openssl genrsa -out /tmp/ios_dist_key.pem 2048
-          app-store-connect fetch-signing-files "com.alae.misbaha.ALAE" --type IOS_APP_STORE --certificate-key=@file:/tmp/ios_dist_key.pem --create
-          app-store-connect fetch-signing-files "com.alae.misbaha.ALAE.ALAEWidget" --type IOS_APP_STORE --certificate-key=@file:/tmp/ios_dist_key.pem --create
+          # PAS de suppression des certificats existants : --create réutilise le
+          # certificat déjà présent et n'en crée un que s'il en manque un.
+          # (La boucle de suppression d'avant cassait la signature des autres
+          # apps du compte et recréait un certificat à chaque build.)
+          app-store-connect fetch-signing-files "com.alae.misbaha.ALAE" --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files "com.alae.misbaha.ALAE.ALAEWidget" --type IOS_APP_STORE --create
       - name: Ajouter certificat
         script: |
           keychain add-certificates
       - name: Profils
         script: |
           xcode-project use-profiles
-      - name: Version 1.0.20 + iPhone seul
+      - name: Version + iPhone seul
         script: |
-          echo "Build : $BUILD_NUMBER"
+          echo "Build : $BUILD_NUMBER — Version : $MARKETING_VERSION"
           sed -i '' "s/CURRENT_PROJECT_VERSION = [0-9]*/CURRENT_PROJECT_VERSION = $BUILD_NUMBER/g" ALAE.xcodeproj/project.pbxproj
-          sed -i '' "s/MARKETING_VERSION = [^\";]*/MARKETING_VERSION = 1.0.20/g" ALAE.xcodeproj/project.pbxproj
+          sed -i '' "s/MARKETING_VERSION = [^";]*/MARKETING_VERSION = $MARKETING_VERSION/g" ALAE.xcodeproj/project.pbxproj
           sed -i '' 's/TARGETED_DEVICE_FAMILY = [^;]*/TARGETED_DEVICE_FAMILY = "1"/g' ALAE.xcodeproj/project.pbxproj
           for PLIST in $(find . -name "Info.plist" | grep -v Pods); do
-            echo "Info.plist : $PLIST"
-            /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString 1.0.20" "$PLIST" 2>/dev/null || /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string 1.0.20" "$PLIST" || true
+            /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $MARKETING_VERSION" "$PLIST" 2>/dev/null || /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string $MARKETING_VERSION" "$PLIST" || true
             /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $BUILD_NUMBER" "$PLIST" 2>/dev/null || /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string $BUILD_NUMBER" "$PLIST" || true
             /usr/libexec/PlistBuddy -c "Delete :UISupportedInterfaceOrientations~ipad" "$PLIST" 2>/dev/null || true
           done

@@ -4,7 +4,68 @@
      dixieme de seconde reste noir avant que la soie n'apparaisse. -->
 <!-- 25/09 : on precharge la photo du theme enregistre (Istabraq au 1er
      lancement), celle que l'intro affiche vraiment. -->
-<script>(function(){var F={gold:'silk-istabraq.jpg',copper:'silk-marjan.jpg',mudhamma:'silk-mudhamma.jpg',nuit:'silk-nuit.jpg',amouage:'silk-amouage-fond.jpg'};var t=null;try{t=(JSON.parse(localStorage.getItem('misbaha.v1')||'{}')).theme||null;}catch(e){}var l=document.createElement('link');l.rel='preload';l.as='image';l.href='assets/'+(F[t]||F.gold);document.head.appendChild(l);})();</script>
+<script>
+/* 14/10 : horaires de priere 100 % hors ligne (ALAE). Calcul local fidele a
+   api.aladhan.com methode 3 (Ligue islamique mondiale : Fajr 18°, Isha 17°, Asr
+   standard, correction hautes latitudes « angle »). Le reseau reste tente en
+   premier (4 s max) ; sans reponse, l'app recoit le meme JSON calcule ici. */
+(function(){
+  var rad=Math.PI/180, deg=180/Math.PI;
+  var TZ={'21.42,39.83':'Asia/Riyadh','33.57,-7.59':'Africa/Casablanca','34.02,-6.84':'Africa/Casablanca','31.63,-7.98':'Africa/Casablanca','35.76,-5.83':'Africa/Casablanca','34.02,-5.01':'Africa/Casablanca'};
+  function offset(date, tz){ /* heures d'ecart avec UTC pour ce jour */
+    if(!tz) return -new Date(date.getFullYear(),date.getMonth(),date.getDate(),12).getTimezoneOffset()/60;
+    try{ var u=new Date(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate(),12));
+      var p=new Intl.DateTimeFormat('en-US',{timeZone:tz,hourCycle:'h23',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}).formatToParts(u).reduce(function(a,x){a[x.type]=x.value;return a;},{});
+      return (Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute)-u.getTime())/3600000; }catch(e){ return offset(date); }
+  }
+  function soleil(jd){ var D=jd-2451545, g=(357.529+0.98560028*D)%360, q=(280.459+0.98564736*D)%360,
+    L=(q+1.915*Math.sin(g*rad)+0.020*Math.sin(2*g*rad))%360, e=23.439-0.00000036*D,
+    RA=Math.atan2(Math.cos(e*rad)*Math.sin(L*rad),Math.cos(L*rad))*deg/15;
+    RA=((RA%24)+24)%24; return {decl:Math.asin(Math.sin(e*rad)*Math.sin(L*rad))*deg, eqt:q/15-RA - 24*Math.round((q/15-RA)/24)}; }
+  function calc(date, lat, lon, tz){
+    var y=date.getFullYear(), m=date.getMonth()+1, d=date.getDate();
+    if(m<=2){y--;m+=12;} var A=Math.floor(y/100), jd=Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d+(2-A+Math.floor(A/4))-1524.5 - lon/360;
+    var tzh=offset(date,tz);
+    function midi(h){ return 12 - soleil(jd+h/24).eqt; }
+    function angle(a,h,ccw){ var s=soleil(jd+h/24), c=(-Math.sin(a*rad)-Math.sin(s.decl*rad)*Math.sin(lat*rad))/(Math.cos(s.decl*rad)*Math.cos(lat*rad));
+      if(c>1||c<-1) return NaN; var T=Math.acos(c)*deg/15, n=midi(h); return ccw? n-T : n+T; }
+    function asr(h){ var s=soleil(jd+h/24), a=-Math.atan(1/(1+Math.tan(Math.abs(lat-s.decl)*rad)))*deg; return angle(a,h); }
+    var fa=angle(18,5,true), lv=angle(0.833,6,true), dh=midi(12), as=asr(13), cs=angle(0.833,18), ma=cs, is=angle(17,18);
+    var nuit=24-(cs-lv); /* correction hautes latitudes, methode « angle » */
+    if(isNaN(fa)||(lv-fa)>18/60*nuit) fa=lv-18/60*nuit;
+    if(isNaN(is)||(is-cs)>17/60*nuit) is=cs+17/60*nuit;
+    function hm(h){ h=h+tzh-lon/15; h=((h%24)+24)%24; var mn=Math.round(h*60)%1440; return ('0'+Math.floor(mn/60)).slice(-2)+':'+('0'+mn%60).slice(-2); }
+    return {Fajr:hm(fa),Sunrise:hm(lv),Dhuhr:hm(dh),Asr:hm(as),Sunset:hm(cs),Maghrib:hm(ma),Isha:hm(is),Imsak:hm(fa-10/60),Midnight:hm(cs+nuit/2),Firstthird:hm(cs+nuit/3),Lastthird:hm(cs+2*nuit/3)};
+  }
+  function jour(date, lat, lon, tz){
+    var p=function(n){return n<10?'0'+n:''+n;}, ds=p(date.getDate())+'-'+p(date.getMonth()+1)+'-'+date.getFullYear(), hj={};
+    try{ var f=new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura-nu-latn',{day:'numeric',month:'long',year:'numeric'}).formatToParts(date);
+      f.forEach(function(x){ if(x.type==='day') hj.day=x.value.replace(/\D/g,''); if(x.type==='month') hj.month={ar:x.value}; if(x.type==='year') hj.year=x.value.replace(/\D/g,''); }); }catch(e){}
+    return {timings:calc(date,lat,lon,tz), date:{readable:date.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}), gregorian:{date:ds}, hijri:hj},
+      meta:{latitude:lat, longitude:lon, timezone:tz||((Intl.DateTimeFormat().resolvedOptions()||{}).timeZone)||'', method:{id:3}}};
+  }
+  window.alaeHorairesLocaux = function(date, lat, lon){ return jour(date||new Date(), +lat, +lon, TZ[(+lat).toFixed(2)+','+(+lon).toFixed(2)]); };
+  function local(url){
+    var q={}; (url.split('?')[1]||'').split('&').forEach(function(kv){ var a=kv.split('='); q[a[0]]=decodeURIComponent(a[1]||''); });
+    var lat=+q.latitude, lon=+q.longitude, tz=TZ[lat.toFixed(2)+','+lon.toFixed(2)], data, mc=url.match(/\/calendar\/(\d+)\/(\d+)/), md=url.match(/\/timings\/(\d+)-(\d+)-(\d+)/);
+    if(mc){ var Y=+mc[1], M=+mc[2], n=new Date(Y,M,0).getDate(); data=[]; for(var i=1;i<=n;i++) data.push(jour(new Date(Y,M-1,i),lat,lon,tz)); }
+    else { var dt=md? new Date(+md[3],+md[2]-1,+md[1]) : new Date(); data=jour(dt,lat,lon,tz); }
+    return new Response(JSON.stringify({code:200,status:'OK',data:data,alaeLocal:true}),{status:200,headers:{'Content-Type':'application/json'}});
+  }
+  var f0=window.fetch.bind(window);
+  window.fetch=function(input, init){
+    var url=typeof input==='string'?input:(input&&input.url)||'';
+    if(url.indexOf('api.aladhan.com/v1/')<0) return f0(input, init);
+    if(navigator.onLine===false) return Promise.resolve(local(url));
+    return new Promise(function(res){
+      var fini=false, tm=setTimeout(function(){ if(!fini){fini=true; res(local(url));} },4000);
+      f0(input, init).then(function(r){ if(fini) return; fini=true; clearTimeout(tm); res(r.ok? r : local(url)); })
+        .catch(function(){ if(fini) return; fini=true; clearTimeout(tm); res(local(url)); });
+    });
+  };
+})();
+</script>
+<script>(function(){var F={gold:'silk-istabraq.jpg',copper:'silk-marjan.jpg',mudhamma:'silk-mudhamma.jpg',nuit:'silk-nuit.jpg',amouage:'silk-amouage-fond.jpg',abqari:'silk-bg-inline.jpg'};var t=null;try{t=(JSON.parse(localStorage.getItem('misbaha.v1')||'{}')).theme||null;}catch(e){}var l=document.createElement('link');l.rel='preload';l.as='image';l.href='assets/'+(F[t]||F.gold);document.head.appendChild(l);})();</script>
 <script>/* Afficheur d'erreurs sur appareil : sans inspecteur Safari, une erreur JS
    laisse un écran blanc muet. Ici elle s'écrit en clair par-dessus la page. */
 (function(){function show(m){try{var d=document.getElementById('__err')||document.createElement('div');d.id='__err';d.style.cssText='position:fixed;inset:0;z-index:2147483647;background:#140708;color:#ffb4a2;font:13px/1.5 ui-monospace,monospace;padding:24px;overflow:auto;white-space:pre-wrap;direction:ltr;text-align:left';d.textContent=(d.textContent?d.textContent+'\n\n':'')+m;(document.body||document.documentElement).appendChild(d);}catch(e){}}
@@ -137,7 +198,7 @@ input,textarea{-webkit-user-select:text;user-select:text}
 /* Ce calque n'est visible QUE entre l'intro et le Dou'a du jour (en app, les écrans
    posent leurs propres .silk-bg-layer / .silk-veil-layer par-dessus). Il porte donc
    le même calage que l'intro — sinon la soie apparaît nue et éblouissante une seconde. */
-#silk-wallpaper::before{content:"";position:absolute;inset:0;background-image:var(--silk-img, url("assets/silk-bg-inline.jpg"));background-size:auto var(--silk-wall-zoom,106%);background-position:var(--silk-wall-pos,50% 50%);background-repeat:no-repeat;transition:background-position .5s ease, background-size .5s ease}
+#silk-wallpaper::before{content:"";position:absolute;inset:0;background-image:var(--silk-img, url("assets/silk-bg-inline.jpg"));background-size:var(--silk-wall-size, auto var(--silk-wall-zoom,106%));background-position:var(--silk-wall-pos,50% 50%);background-repeat:no-repeat;transition:background-position .5s ease, background-size .5s ease}
 #silk-wallpaper::after{content:"";position:absolute;inset:0;background:var(--silk-gloss),var(--silk-tone),var(--silk-vignette, var(--boot-veil));transition:background 0.6s ease}
 /* silkVeilIn retire le 31/08 : le voile montait de 8 % a 100 % sur 2,6 s, ce qui
    laissait la soie nue et eblouissante entre l'intro et le Dou'a du jour. Il est
@@ -162,7 +223,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
    d'eclat — amplitude moderee (0.58-1), courbe ASYMETRIQUE a quatre temps pour que
    la variation ne soit pas un battement regulier, et cycles longs cotes plus bas.
    Le halo suit l'eclat de pres, sans jamais s'eteindre completement. */
-@keyframes alaeStarFloat{0%{opacity:.34}13%{opacity:1}27%{opacity:.46}41%{opacity:.92}55%{opacity:.3}68%{opacity:1}82%{opacity:.5}100%{opacity:.34}}
+@keyframes alaeStarHop{0%{opacity:0}18%{opacity:1}34%{opacity:.65}50%{opacity:1}82%{opacity:.85}100%{opacity:0}}
+@keyframes alaeStarFloat{0%{opacity:.9}18%{opacity:1}30%{opacity:.6}44%{opacity:0}60%{opacity:0}74%{opacity:.8}86%{opacity:1}100%{opacity:.9}}
 @keyframes eidBannerGlow{0%,100%{box-shadow:0 4px 22px rgba(214,142,54,0.42),0 0 12px rgba(255,214,120,0.3),inset 0 1px 0 rgba(255,245,210,0.55)}50%{box-shadow:0 5px 28px rgba(214,142,54,0.6),0 0 22px rgba(255,214,120,0.55),inset 0 1px 0 rgba(255,245,210,0.7)}}
 @keyframes eidShimmer{0%{background-position:230% 0}55%,100%{background-position:-130% 0}}
 @keyframes softNeonGlow{0%,100%{opacity:.4;transform:translate(-50%,-50%) scale(0.94)}50%{opacity:.92;transform:translate(-50%,-50%) scale(1.08)}}
@@ -231,8 +293,8 @@ input,textarea{-webkit-user-select:text;user-select:text}
      d'ALAE, zone verrouillee rouverte). Sans theme enregistre (1er lancement) :
      silk-boot.jpg comme avant. Pose avant le 1er affichage : aucun flash. */
   window.__alaeBootFond=(function(){
-    var F={gold:'silk-istabraq.jpg',copper:'silk-marjan.jpg',mudhamma:'silk-mudhamma.jpg',nuit:'silk-nuit.jpg',amouage:'silk-amouage-fond.jpg'};
-    var FILTRE={nuit:'saturate(0.18) contrast(1.10) brightness(0.86)'};
+    var F={gold:'silk-istabraq.jpg',copper:'silk-marjan.jpg',mudhamma:'silk-mudhamma.jpg',nuit:'silk-nuit.jpg',amouage:'silk-amouage-fond.jpg',abqari:'silk-bg-inline.jpg'};
+    var FILTRE={nuit:'saturate(0.18) contrast(1.10) brightness(0.86)',abqari:'brightness(0.82)'};
     var t=null;try{t=(JSON.parse(localStorage.getItem('misbaha.v1')||'{}')).theme||null;}catch(e){}
     /* 24/09 : 1er lancement (aucun theme enregistre) : photo d'Istabraq, le theme
        par defaut — l'intro et l'app s'accordent des la toute premiere ouverture.
@@ -330,23 +392,21 @@ window.__alaeRelance=(function(){ try{ var t=parseInt(window.__alaeBootAt||0,10)
     } catch(e){}
     setTimeout(reveal, 260); // filet de sécurité
   })();
-  function haptic(){ try{ if(window.webkit&&window.webkit.messageHandlers&&window.webkit.messageHandlers.alae){ var h=window.webkit.messageHandlers.alae; h.postMessage({type:'haptic',style:'heavy'}); setTimeout(function(){ try{h.postMessage({type:'haptic',style:'heavy'});}catch(e){} },70); setTimeout(function(){ try{h.postMessage({type:'haptic',style:'rigid'});}catch(e){} },140); } }catch(e){} if(navigator.vibrate){ try{ navigator.vibrate([55,35,55,35,70]); }catch(e){} } }
+  function haptic(){ try{ if(window.webkit&&window.webkit.messageHandlers&&window.webkit.messageHandlers.alae){ var h=window.webkit.messageHandlers.alae; h.postMessage({type:'haptic',style:'heavy'}); /* 27/09 : 1 vibration par coup (avant 3) */ } }catch(e){} if(navigator.vibrate){ try{ navigator.vibrate(60); }catch(e){} } }
   function shake(){ if(reduce||!root.animate) return; root.animate([{transform:'translate(0,0)'},{transform:'translate(-1px,0.5px)',offset:.3},{transform:'translate(1px,-0.5px)',offset:.6},{transform:'translate(0,0)'}],{duration:460,easing:'ease-in-out'}); }
   var bloom=root.querySelector('.bi-bloom');
   function beat(){
     if(alae&&alae.animate){ alae.animate([
       {transform:'scale(1)',     filter:'drop-shadow(0 0 6px rgba(224,162,63,.25))'},
-      {transform:'scale(1.205)', filter:'drop-shadow(0 0 30px rgba(255,216,134,.92))', offset:.20},
-      {transform:'scale(1.07)',  filter:'drop-shadow(0 0 16px rgba(255,214,130,.55))', offset:.40},
-      {transform:'scale(1.13)',  filter:'drop-shadow(0 0 24px rgba(255,214,130,.78))', offset:.56},
+      /* 27/09 : UN seul battement par coup (ALAE) — le double pic (1.205 puis 1.13)
+         donnait 6 eclats pour 3 coups. BEATS=3 => 3 eclats. */
+      {transform:'scale(1.205)', filter:'drop-shadow(0 0 30px rgba(255,216,134,.92))', offset:.28},
       {transform:'scale(1)',     filter:'drop-shadow(0 0 6px rgba(224,162,63,.25))'}
     ],{duration:1180,easing:'cubic-bezier(.36,.07,.28,1)'}); }
     // Le halo doré respire AVEC le cœur — très subtil (pas de fumée)
     if(bloom&&bloom.animate){ bloom.animate([
       {transform:'translate(-50%,-50%) scale(1)',    opacity:.5},
       {transform:'translate(-50%,-50%) scale(1.12)', opacity:.7,  offset:.20},
-      {transform:'translate(-50%,-50%) scale(1.04)', opacity:.55, offset:.42},
-      {transform:'translate(-50%,-50%) scale(1.08)', opacity:.62, offset:.56},
       {transform:'translate(-50%,-50%) scale(1)',    opacity:.5}
     ],{duration:1180,easing:'cubic-bezier(.36,.07,.28,1)'}); }
     if(!reduce){ shake(); haptic(); }
@@ -413,7 +473,67 @@ window.__alaeRelance=(function(){ try{ var t=parseInt(window.__alaeBootAt||0,10)
      elles n'etaient jamais chargees. */
   var LIB=[[['react.production.min.js'],'https://unpkg.com/react@18.3.1/umd/react.production.min.js'],
            [['react-dom.production.min.js'],'https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js']];
-  function fini(){window.__reactPret=true;try{window.dispatchEvent(new Event('react-pret'));}catch(e){}}
+  /* 14/10 : accessibilite (ALAE) — taille du texte et contraste eleve, appliques a
+     tous les ecrans en retouchant les styles au moment ou React cree les elements.
+     Les tres grands chiffres (compteur, >= 40 px) ne sont pas agrandis. */
+  window.alaeA11yLire=function(sur){
+    /* cle a part : misbaha.v1 est reecrit par l'etat principal de l'app avec une
+       copie plus ancienne, ce qui effacait le choix. */
+    var s={}; try{ s=JSON.parse(localStorage.getItem('alae.a11y')||'{}')||{}; }catch(e){}
+    if(sur){ for(var k in sur) s[k]=sur[k]; try{ localStorage.setItem('alae.a11y', JSON.stringify(s)); }catch(e){} }
+    window.ALAE_TEXTE={s:0.9,m:1,l:1.12,xl:1.25}[s.textSize]||1;
+    window.ALAE_CONTRASTE=s.contrast===true;
+  };
+  /* 14/10 : rappels des adhkar du matin et du soir (ALAE). Cle a part ; le natif
+     pose 2 notifications repetees chaque jour (ViewController.planifierAdhkar). */
+  window.alaeRappelsLire=function(){
+    var d={matin:{on:false,h:'06:30'},soir:{on:false,h:'17:30'}};
+    try{ var s=JSON.parse(localStorage.getItem('alae.rappels')||'null'); if(s){ if(s.matin) d.matin=s.matin; if(s.soir) d.soir=s.soir; } }catch(e){}
+    return d;
+  };
+  window.alaeRappelsEnvoyer=function(lang){
+    var d=window.alaeRappelsLire(), hm=function(x){ var p=String(x.h).split(':'); return {enabled:!!x.on, hour:+p[0], minute:+p[1]}; };
+    var T={ar:{matinTitre:'أذكار الصباح',matinCorps:'حان وقت أذكار الصباح · أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ',soirTitre:'أذكار المساء',soirCorps:'حان وقت أذكار المساء · أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ'},
+           fr:{matinTitre:'Adhkar du matin',matinCorps:"C'est le moment des adhkar du matin.",soirTitre:'Adhkar du soir',soirCorps:"C'est le moment des adhkar du soir."},
+           en:{matinTitre:'Morning adhkar',matinCorps:"It's time for the morning adhkar.",soirTitre:'Evening adhkar',soirCorps:"It's time for the evening adhkar."}};
+    var l=lang; if(!l){ try{ l=JSON.parse(localStorage.getItem('misbaha.v1')||'{}').lang; }catch(e){} }
+    try{ if(window.webkit&&window.webkit.messageHandlers&&window.webkit.messageHandlers.alae) window.webkit.messageHandlers.alae.postMessage({type:'adhkarReminders',matin:hm(d.matin),soir:hm(d.soir),textes:T[l]||T.ar}); }catch(e){}
+  };
+  window.alaeRappelsEcrire=function(cle,val,lang){
+    var d=window.alaeRappelsLire(); d[cle]=Object.assign({},d[cle],val);
+    try{ localStorage.setItem('alae.rappels',JSON.stringify(d)); }catch(e){}
+    window.alaeRappelsEnvoyer(lang);
+  };
+  window.addEventListener('load',function(){ setTimeout(function(){ try{ window.alaeRappelsEnvoyer(); }catch(e){} },1500); });
+  window.alaeCycleTexte=function(){
+    var cur='m'; try{ cur=JSON.parse(localStorage.getItem('alae.a11y')||'{}').textSize||'m'; }catch(e){}
+    var o=['s','m','l','xl']; window.alaeA11yLire({textSize:o[(o.indexOf(cur)+1)%o.length]});
+    if(navigator.vibrate) try{ navigator.vibrate(10); }catch(e){}
+    try{ window.dispatchEvent(new Event('alae-texte')); }catch(e){}
+  };
+  function a11yPatch(){
+    if(!window.React||React.__alaeA11y) return; window.alaeA11yLire();
+    var ce=React.createElement;
+    function px(v){ return typeof v==='number'?v:(typeof v==='string'&&/^\d+(\.\d+)?px$/.test(v)?parseFloat(v):null); }
+    React.createElement=function(type,props){
+      var k=window.ALAE_TEXTE||1, hc=window.ALAE_CONTRASTE, st=props&&props.style;
+      if(st&&typeof st==='object'&&(k!==1||hc)){
+        var ns=null, fs=px(st.fontSize);
+        if(k!==1&&fs!==null&&fs<40){ ns=Object.assign({},st); ns.fontSize=Math.round(fs*k*10)/10; /* interligne en px seulement, rendu en px : un nombre seul serait lu comme un multiple de la taille (bug du 14/10 : lignes de 1300 px). */
+          if(typeof st.lineHeight==='string'&&/^\d+(\.\d+)?px$/.test(st.lineHeight)) ns.lineHeight=(Math.round(parseFloat(st.lineHeight)*k*10)/10)+'px'; }
+        if(hc&&typeof st.color==='string'){
+          var m=st.color.match(/^rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*([\d.]+)\s*\)$/);
+          ns=ns||Object.assign({},st);
+          if(m&&+m[4]<0.95) ns.color='rgba('+m[1]+','+m[2]+','+m[3]+','+Math.min(1,+m[4]*1.5+0.25).toFixed(2)+')';
+          if(fs!==null&&!st.textShadow) ns.textShadow='0 1px 3px rgba(0,0,0,0.6)';
+        }
+        if(ns){ var a=Array.prototype.slice.call(arguments); a[1]=Object.assign({},props,{style:ns}); return ce.apply(React,a); }
+      }
+      return ce.apply(React,arguments);
+    };
+    React.__alaeA11y=true;
+  }
+  function fini(){try{a11yPatch();}catch(e){}window.__reactPret=true;try{window.dispatchEvent(new Event('react-pret'));}catch(e){}}
   function charger(i){
     if(i>=LIB.length) return fini();
     var noms=LIB[i][0],n=0;
@@ -482,7 +602,7 @@ window.ASSETS = {"assets/mihrab-floral.png": "assets/floral-frame.png", "assets/
 /* ═══ VERROUILLE — 24/09/2026. Photo d'Istabraq validee par ALAE : silk-istabraq.jpg
    (tissu noir-bleu seme d'or, 941x1672, sans logo). NE PLUS MODIFIER. ═══
    24/09 : Istabraq recoit sa propre photo. silk-bg-inline.jpg reste le fond de secours. */
-window.ALAE_FONDS = {gold:"assets/silk-istabraq.jpg", copper:"assets/silk-marjan.jpg", mudhamma:"assets/silk-mudhamma.jpg", nuit:"assets/silk-nuit.jpg", nakhl:"assets/silk-nakhl.jpg", amouage:"assets/silk-amouage-fond.jpg", afnan:"assets/silk-afnan.jpg"};
+window.ALAE_FONDS = {abqari:"assets/silk-bg-inline.jpg", gold:"assets/silk-istabraq.jpg", copper:"assets/silk-marjan.jpg", mudhamma:"assets/silk-mudhamma.jpg", nuit:"assets/silk-nuit.jpg", nakhl:"assets/silk-nakhl.jpg", amouage:"assets/silk-amouage-fond.jpg", afnan:"assets/silk-afnan.jpg"};
 /* 17/09 : l'app n'a plus de theme CLAIR. Afnan et Lu'lu' etaient les deux seuls ;
    retires, cette table reste vide et l'interface revient a son unique regime :
    encre creme sur photo sombre. */
@@ -515,8 +635,9 @@ window.ALAE_VOILES_DOUX = {bahrayn:'none', gold:'none', afnan:'radial-gradient(1
    lumineux, seulement legerement assombri pour que les textes tiennent. Les crans
    sont desormais des NOMBRES, multiplies par le calage du theme (brBoost), au lieu
    de chaines figees — c'est ce qui permet d'eclaircir sans casser les nuances. */
-window.ALAE_CRANS_NUM = [0.72, 1.08, 1.40];
-window.ALAE_CRANS_NUM_SOMBRE = [0.84, 1.20, 1.55];
+/* 10/10 : cran Tamise eclairci (+15 %), cran Lumineux baisse (-10 %) (ALAE). */
+window.ALAE_CRANS_NUM = [0.83, 1.08, 1.26];
+window.ALAE_CRANS_NUM_SOMBRE = [0.97, 1.20, 1.38];
 window.ALAE_CRANS_SAT = [0.80, 1.00, 1.08];
 /* 09/09 : l'echelle claire etait trop basse. Le cran haut ne faisait que laisser la\n   photo telle quelle ('none') alors que cette soie est deja sombre a la prise de vue,\n   et le cran bas l'ecrasait a 20 %. Le haut eclaire desormais reellement au-dessus de\n   l'original, et le bas reste lisible. */
 /* Regenerees depuis les nombres, pour le panneau de reglages d'atelier. */
@@ -530,7 +651,7 @@ window.ALAE_CRANS_FILTRE_SOMBRE = window.ALAE_CRANS_NUM_SOMBRE.map(function(b,i)
    celle de Or, ce qui rendait les deux themes indiscernables — le defaut exact
    pour lequel Ambre avait ete retire le 10/09. La photo de corail est sombre a la
    prise de vue, donc Marjan rejoint l'echelle des themes sombres. */
-window.ALAE_THEMES_SOMBRES = {nuit:1, amouage:1, mudhamma:1, copper:1};
+window.ALAE_THEMES_SOMBRES = {abqari:1, nuit:1, amouage:1, mudhamma:1, copper:1};
 /* ═══ VERROUILLE — 23/09/2026, valide par ALAE sur la page de la lune.
    NE PLUS MODIFIER sans demande explicite. ═══
    23/09 : Barzakh a sa propre echelle. Sa photo (ecume, ciel) est CLAIRE a la
@@ -546,7 +667,7 @@ window.ALAE_CRANS_THEME = {amouage:[0.55, 0.80, 1.12]};
    soie doree claire de Or. Sa photo de corail porte son propre rougeoiement : a ce
    niveau, le dhikr posait son texte sur des tentacules lumineuses. Descendu, et
    double d'un voile propre (ALAE_VOILES) qui garde le centre plus sombre. */
-window.ALAE_BR_BOOST = {gold:0.926, copper:0.78, nuit:1.00, nakhl:0.769, amouage:1.04, mudhamma:0.68, afnan:0.926};
+window.ALAE_BR_BOOST = {abqari:0.80, gold:0.926, copper:0.78, nuit:1.00, nakhl:0.769, amouage:1.04, mudhamma:0.68, afnan:0.926};
 /* 10/09 : Ambre (nom interne 'bordeaux') retire a la demande. Il partageait la photo
    de Or et Cuivre et portait un accent rose-rouge herite de son ancien nom.
    Cette liste est LA seule : elle est declaree ici, avant le calage precoce, parce que
@@ -912,6 +1033,8 @@ window.ALAE_THEMES_LISTE = [
   {id:'copper',    emoji:'\uD83E\uDDAA', ar:'\u0627\u0644\u0644\u0651\u064F\u0624\u0652\u0644\u064F\u0624\u064F', fr:'\u0627\u0644\u0644\u0651\u064F\u0624\u0652\u0644\u064F\u0624\u064F', en:'\u0627\u0644\u0644\u0651\u064F\u0624\u0652\u0644\u064F\u0624\u064F', verset:'55:22'},
   {id:'gold',      emoji:'\uD83D\uDFE8', ar:'\u0625\u0650\u0633\u0652\u062A\u064E\u0628\u0652\u0631\u064E\u0642', fr:'\u0625\u0650\u0633\u0652\u062A\u064E\u0628\u0652\u0631\u064E\u0642', en:'\u0625\u0650\u0633\u0652\u062A\u064E\u0628\u0652\u0631\u064E\u0642', verset:'55:54'},
   {id:'mudhamma',  emoji:'\uD83C\uDF3F', ar:'\u0645\u064F\u062F\u0652\u0647\u064E\u0627\u0645\u064E\u0651\u062A\u064E\u0627\u0646', fr:'\u0645\u064F\u062F\u0652\u0647\u064E\u0627\u0645\u064E\u0651\u062A\u064E\u0627\u0646', en:'\u0645\u064F\u062F\u0652\u0647\u064E\u0627\u0645\u064E\u0651\u062A\u064E\u0627\u0646', verset:'55:64'},
+  /* 10/10 : Abqari (55:76) — soie noir et or, assombrie (ALAE). */
+  {id:'abqari',    emoji:'\u2728', ar:'\u0639\u064E\u0628\u0652\u0642\u064E\u0631\u0650\u064A\u0651', fr:'\u0639\u064E\u0628\u0652\u0642\u064E\u0631\u0650\u064A\u0651', en:'\u0639\u064E\u0628\u0652\u0642\u064E\u0631\u0650\u064A\u0651', verset:'55:76'},
 ];
 /* Libelle affichable d'un theme, dans la langue courante. */
 window.alaeThemeLabel = function (id, lang) {
@@ -934,6 +1057,7 @@ window.alaeTheme = function (id) {
    veilOff : le theme porte son propre voile, on coupe celui-ci
    boost   : ajout d'opacite au voile */
 window.ALAE_CALAGE = {
+  abqari:    {veil:'8,7,5',  accent:'238,198,132'},
   gold:      {veilOff:true},
   nuit:      {veil:'8,9,11',  accent:'240,198,132'},
   bahrayn:   {veil:'5,22,26',  accent:'155,219,210'},
@@ -952,6 +1076,7 @@ window.ALAE_CALAGE = {
    et gardent le voile noir par defaut. */
 window.ALAE_BOOT_VEIL = {};
 window.ALAE_ACCENTS = {
+  abqari: {solid:'#C0873F', bright:'#EEC684', dark:'#96632A', dim:'rgba(192,135,63,0.32)', grad:'linear-gradient(180deg,#EEC684,#96632A)'},
   /* Mud'hammatan (Ar-Rahman 55:64) : le fond est un noir mat de petales, sans dore.
      L'accent s'allume donc un peu plus haut que celui de Or pour rester le seul
      eclat de l'ecran. */
@@ -1525,6 +1650,7 @@ window.SilkBg = function SilkBg({
        (~210 px) tienne dans l'anneau, image montee et poussee a gauche. */
     ? {p:'73% 64%', z:108}
     : (window.ALAE_CADRAGES || {})[vue] || {p:'center', z:100};
+  const cadreLune = cadre;
   let lune = false;
   let imgLune = '';
   /* 20/09 : le calque permanent #silk-wallpaper couvrait celui-ci a pleine opacite
@@ -1534,6 +1660,7 @@ window.SilkBg = function SilkBg({
     const r = document.documentElement.style;
     r.setProperty('--silk-wall-pos', cadre.p);
     r.setProperty('--silk-wall-zoom', cadre.z + '%');
+    r.setProperty('--silk-wall-size', vue === 'onboarding' ? 'cover' : '');
     /* 23/09 : Barzakh a une photo PROPRE a la page de la lune (falaise doree,
        silk-amouage-lune.jpg, fournie par ALAE). Uniquement sur cette page et
        seulement la nuit, quand la lune est la ; partout ailleurs le fond du
@@ -1573,8 +1700,8 @@ window.SilkBg = function SilkBg({
          Degrade lineaire pleine largeur, pas une tache ronde (la fumee a ete
          refusee). */
       backgroundImage: (lune ? 'var(--silk-ciel-lune, linear-gradient(transparent, transparent)), ' : '') + (lune ? 'var(--silk-img-lune, var(--silk-img, url("assets/silk-bg-inline.jpg")))' : 'var(--silk-img, url("assets/silk-bg-inline.jpg"))') + ', url("assets/silk-bg-inline.jpg")',
-      backgroundSize: (lune ? '100% 100%, ' : '') + (cadre.z > 100 ? 'auto ' + cadre.z + '%' : 'cover'),
-      backgroundPosition: (lune ? '0 0, ' : '') + cadre.p,
+      backgroundSize: (lune ? '100% 100%, cover' : (cadre.z > 100 ? 'auto ' + cadre.z + '%' : 'cover')),
+      backgroundPosition: lune ? '0 0, ' + cadreLune.p : cadre.p,
       /* 23/09 : falaise de la lune (Barzakh) : la photo est toute marron dore et
          se lisait comme une scene de jour. Assombrie et desaturee vers un
          noir-brun de nuit ; l'ecume garde un peu de son bleu. */
@@ -2542,8 +2669,8 @@ function Onboarding({
       borderRadius: 22,
       padding: 0,
       cursor: 'pointer',
-      background: 'transparent',
-      border: '1px solid rgba(232,185,122,0.55)',
+      background: 'rgba(14,10,6,0.62)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', boxShadow: '0 6px 18px rgba(0,0,0,0.45)',
+      border: '1px solid rgba(208,138,79,0.7)',
       color: 'rgba(232,185,122,0.95)',
       display: 'flex',
       alignItems: 'center',
@@ -2583,8 +2710,8 @@ function Onboarding({
       borderRadius: 22,
       padding: 0,
       cursor: 'pointer',
-      background: 'transparent',
-      border: '1px solid rgba(232,185,122,0.55)',
+      background: 'rgba(14,10,6,0.62)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', boxShadow: '0 6px 18px rgba(0,0,0,0.45)',
+      border: '1px solid rgba(208,138,79,0.7)',
       color: 'rgba(232,185,122,0.95)',
       display: 'flex',
       alignItems: 'center',
@@ -2875,7 +3002,21 @@ function Onboarding({
       height: 240,
       transform: 'translateY(-46px)'
     }
-  }, /*#__PURE__*/React.createElement("svg", {
+  }, /* 10/10 : voile du ciel en CSS pleine largeur — le SVG etait coupe a son carre
+       de 240 px sur iPhone (marche verticale a gauche, ALAE). Meme degrade. */
+  /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      left: -310,
+      top: -410,
+      width: 860,
+      height: 660,
+      pointerEvents: 'none',
+      background: 'radial-gradient(closest-side, rgba(1,2,6,0.42) 0%, rgba(2,3,10,0.30) 45%, rgba(3,4,12,0.14) 75%, rgba(3,4,12,0) 100%)',
+      opacity: alaeIsDay() ? 0 : 1,
+      transition: 'opacity 1.2s ease'
+    }
+  }), /*#__PURE__*/React.createElement("svg", {
     width: "240",
     height: "240",
     viewBox: "0 0 240 240",
@@ -2910,7 +3051,7 @@ function Onboarding({
     ry: "330",
     fill: "url(#alaeVoileNuit)",
     style: {
-      opacity: alaeIsDay() ? 0 : 1,
+      opacity: 0,
       transition: 'opacity 1.2s ease'
     }
   }), /*#__PURE__*/React.createElement("g", {
@@ -2918,10 +3059,11 @@ function Onboarding({
       opacity: alaeIsDay() ? 0 : alaeMoonToday(lang).starOpacity,
       transition: 'opacity 1.2s ease'
     }
-  }, [[28, 40, 1.4, 0.95], [54, 22, 0.9, 0.6], [86, 54, 0.7, 0.45], [40, 82, 1, 0.7], [212, 36, 1.5, 1], [186, 20, 0.8, 0.55], [226, 72, 1, 0.7], [148, 30, 0.8, 0.5], [200, -28, 1.2, 0.8], [18, -58, 1.1, 0.7], [58, -90, 0.8, 0.55], [228, -116, 0.9, 0.6], [160, -70, 0.7, 0.5], [112, -150, 0.9, 0.7], [190, -180, 1, 0.6], [44, -40, 0.7, 0.45], [170, -134, 0.8, 0.52], [36, -34, 0.9, 0.5], [96, -70, 0.8, 0.42], [152, -48, 1, 0.55], [204, -92, 0.85, 0.44], [22, -104, 0.8, 0.4], [124, -120, 0.95, 0.5], [176, -146, 0.8, 0.42], [64, -166, 0.85, 0.46], [142, -196, 0.75, 0.4], [92, -224, 0.8, 0.44], [8, 10, 0.9, 0.55], [74, -6, 0.75, 0.42], [132, -14, 0.85, 0.5], [236, 4, 1.1, 0.62], [248, -52, 0.8, 0.45], [104, -40, 0.7, 0.4], [218, -152, 0.9, 0.5], [130, -92, 0.75, 0.44], [48, -130, 0.85, 0.48], [196, -58, 0.7, 0.4], [12, -142, 0.9, 0.46], [164, -108, 0.8, 0.42], [82, -190, 0.9, 0.5], [232, -198, 0.85, 0.44], [118, -256, 0.75, 0.4], [178, -232, 0.8, 0.42], [30, -200, 0.8, 0.44], [206, -250, 0.9, 0.46]].map(([x, y, r, op], i) => /*#__PURE__*/React.createElement("g", {
+  }, [[267, 24, 0.77, 0.45], [213, -65, 0.7, 0.46], [-39, -80, 0.66, 0.48], [70, -31, 0.76, 0.42], [239, -16, 0.67, 0.57], [251, -73, 0.96, 0.59], [285, -86, 0.94, 0.6], [298, 17, 1.36, 0.97], [171, -46, 0.99, 0.47], [217, 49, 1.29, 0.84], [73, 81, 0.75, 0.62], [272, 63, 0.96, 0.63], [-6, -52, 1.3, 0.86], [51, 57, 1, 0.61], [61, 76, 0.76, 0.5], [127, -63, 1.51, 0.88], [185, -4, 0.71, 0.49], [145, -4, 1.58, 0.89], [8, 72, 0.66, 0.58], [33, -74, 0.69, 0.63], [-7, 16, 0.87, 0.44], [-1, -10, 0.79, 0.42], [-13, -87, 0.67, 0.53], [43, -6, 0.95, 0.42], [234, -48, 0.79, 0.65], [230, -96, 0.88, 0.58], [204, -20, 0.86, 0.43], [-64, -95, 0.81, 0.49], [55, -52, 0.97, 0.62], [219, 19, 0.77, 0.5], [200, -88, 0.72, 0.57], [128, -31, 0.83, 0.51], [166, 19, 0.79, 0.52], [99, -41, 1, 0.63], [23, -44, 1.5, 0.84], [36, 36, 1.38, 0.89], [75, -6, 0.82, 0.44]] .flatMap(s => [s, [s[0] + 41, s[1] + 27, s[2] * 0.85, s[3]], [s[0] - 29, s[1] + 46, s[2] * 0.75, s[3] * 0.9]]).map(([x, y, r, op], i) => /*#__PURE__*/React.createElement("g", {
     key: i,
+    onAnimationIteration: e => { /* 14/10 : a chaque cycle l'etoile renait ailleurs (ALAE). */ const g = e.currentTarget; g.setAttribute('transform', 'translate(' + (Math.random() * 90 - 45).toFixed(1) + ' ' + (Math.random() * 70 - 35).toFixed(1) + ')'); },
     style: {
-      animation: `alaeStarFloat ${(5 + i % 11 * 0.75).toFixed(2)}s ease-in-out ${(i * 1.47 % 9).toFixed(2)}s infinite`
+      animation: `alaeStarHop ${(2.8 + i % 11 * 0.4).toFixed(2)}s ease-in-out ${(i * 0.87 % 5).toFixed(2)}s infinite both`
     }
   }, /*#__PURE__*/React.createElement("path", {
     d: (() => {
@@ -3111,34 +3253,34 @@ function Onboarding({
       }
     }), !isDay && /*#__PURE__*/React.createElement("span", {
       key: "cs0",
-      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: 15, left: 'calc(50% + -118px)', width: 4.4, height: 4.4, borderRadius: '50%', background: '#FFF4DA', boxShadow: '0 0 7px rgba(255,236,196,0.85)', animation: 'starSparkle 2.2s ease-in-out 0.00s infinite' }
+      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: 12.5, left: 'calc(50% + -120.5px)', width: 9.3, height: 9.3, clipPath: 'polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%)' /* VERROUILLE 27/09 — etoile 4 branches, reduite 38 %, scintillement x1.8 */, background: '#FFF4DA', boxShadow: '0 0 7px rgba(255,236,196,0.85)', animation: 'starSparkle 4.0s ease-in-out 0.00s infinite' }
     }), !isDay && /*#__PURE__*/React.createElement("span", {
       key: "cs1",
-      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: -7, left: 'calc(50% + -92px)', width: 2.8, height: 2.8, borderRadius: '50%', background: '#FFF4DA', boxShadow: '0 0 4px rgba(255,236,196,0.85)', animation: 'starSparkle 2.8s ease-in-out 0.37s infinite' }
+      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: -8.6, left: 'calc(50% + -93.6px)', width: 5.9, height: 5.9, clipPath: 'polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%)' /* VERROUILLE 27/09 — etoile 4 branches, reduite 38 %, scintillement x1.8 */, background: '#FFF4DA', boxShadow: '0 0 4px rgba(255,236,196,0.85)', animation: 'starSparkle 5.0s ease-in-out 0.67s infinite' }
     }), !isDay && /*#__PURE__*/React.createElement("span", {
       key: "cs2",
-      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: 73, left: 'calc(50% + -70px)', width: 3.6, height: 3.6, borderRadius: '50%', background: '#FFF4DA', boxShadow: '0 0 5px rgba(255,236,196,0.85)', animation: 'starSparkle 3.4s ease-in-out 0.74s infinite' }
+      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: 71.0, left: 'calc(50% + -72.0px)', width: 7.6, height: 7.6, clipPath: 'polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%)' /* VERROUILLE 27/09 — etoile 4 branches, reduite 38 %, scintillement x1.8 */, background: '#FFF4DA', boxShadow: '0 0 5px rgba(255,236,196,0.85)', animation: 'starSparkle 6.1s ease-in-out 1.33s infinite' }
     }), !isDay && /*#__PURE__*/React.createElement("span", {
       key: "cs3",
-      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: 63, left: 'calc(50% + -128px)', width: 2.4, height: 2.4, borderRadius: '50%', background: '#FFF4DA', boxShadow: '0 0 4px rgba(255,236,196,0.85)', animation: 'starSparkle 4.0s ease-in-out 1.11s infinite' }
+      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: 61.7, left: 'calc(50% + -129.3px)', width: 5.1, height: 5.1, clipPath: 'polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%)' /* VERROUILLE 27/09 — etoile 4 branches, reduite 38 %, scintillement x1.8 */, background: '#FFF4DA', boxShadow: '0 0 4px rgba(255,236,196,0.85)', animation: 'starSparkle 7.2s ease-in-out 2.00s infinite' }
     }), !isDay && /*#__PURE__*/React.createElement("span", {
       key: "cs4",
-      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: -3, left: 'calc(50% + 84px)', width: 3.2, height: 3.2, borderRadius: '50%', background: '#FFF4DA', boxShadow: '0 0 5px rgba(255,236,196,0.85)', animation: 'starSparkle 2.2s ease-in-out 1.48s infinite' }
+      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: -4.7, left: 'calc(50% + 82.3px)', width: 6.8, height: 6.8, clipPath: 'polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%)' /* VERROUILLE 27/09 — etoile 4 branches, reduite 38 %, scintillement x1.8 */, background: '#FFF4DA', boxShadow: '0 0 5px rgba(255,236,196,0.85)', animation: 'starSparkle 4.0s ease-in-out 2.66s infinite' }
     }), !isDay && /*#__PURE__*/React.createElement("span", {
       key: "cs5",
-      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: 33, left: 'calc(50% + 112px)', width: 4.4, height: 4.4, borderRadius: '50%', background: '#FFF4DA', boxShadow: '0 0 7px rgba(255,236,196,0.85)', animation: 'starSparkle 2.8s ease-in-out 1.85s infinite' }
+      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: 30.5, left: 'calc(50% + 109.5px)', width: 9.3, height: 9.3, clipPath: 'polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%)' /* VERROUILLE 27/09 — etoile 4 branches, reduite 38 %, scintillement x1.8 */, background: '#FFF4DA', boxShadow: '0 0 7px rgba(255,236,196,0.85)', animation: 'starSparkle 5.0s ease-in-out 3.33s infinite' }
     }), !isDay && /*#__PURE__*/React.createElement("span", {
       key: "cs6",
-      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: 79, left: 'calc(50% + 96px)', width: 2.6, height: 2.6, borderRadius: '50%', background: '#FFF4DA', boxShadow: '0 0 4px rgba(255,236,196,0.85)', animation: 'starSparkle 3.4s ease-in-out 2.22s infinite' }
+      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: 77.6, left: 'calc(50% + 94.6px)', width: 5.5, height: 5.5, clipPath: 'polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%)' /* VERROUILLE 27/09 — etoile 4 branches, reduite 38 %, scintillement x1.8 */, background: '#FFF4DA', boxShadow: '0 0 4px rgba(255,236,196,0.85)', animation: 'starSparkle 6.1s ease-in-out 4.00s infinite' }
     }), !isDay && /*#__PURE__*/React.createElement("span", {
       key: "cs7",
-      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: 53, left: 'calc(50% + 128px)', width: 3, height: 3, borderRadius: '50%', background: '#FFF4DA', boxShadow: '0 0 5px rgba(255,236,196,0.85)', animation: 'starSparkle 4.0s ease-in-out 2.59s infinite' }
+      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: 51.3, left: 'calc(50% + 126.3px)', width: 6.3, height: 6.3, clipPath: 'polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%)' /* VERROUILLE 27/09 — etoile 4 branches, reduite 38 %, scintillement x1.8 */, background: '#FFF4DA', boxShadow: '0 0 5px rgba(255,236,196,0.85)', animation: 'starSparkle 7.2s ease-in-out 4.66s infinite' }
     }), !isDay && /*#__PURE__*/React.createElement("span", {
       key: "cs8",
-      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: -15, left: 'calc(50% + -40px)', width: 2.4, height: 2.4, borderRadius: '50%', background: '#FFF4DA', boxShadow: '0 0 4px rgba(255,236,196,0.85)', animation: 'starSparkle 2.2s ease-in-out 2.96s infinite' }
+      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: -16.3, left: 'calc(50% + -41.3px)', width: 5.1, height: 5.1, clipPath: 'polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%)' /* VERROUILLE 27/09 — etoile 4 branches, reduite 38 %, scintillement x1.8 */, background: '#FFF4DA', boxShadow: '0 0 4px rgba(255,236,196,0.85)', animation: 'starSparkle 4.0s ease-in-out 5.33s infinite' }
     }), !isDay && /*#__PURE__*/React.createElement("span", {
       key: "cs9",
-      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: -17, left: 'calc(50% + 48px)', width: 2.8, height: 2.8, borderRadius: '50%', background: '#FFF4DA', boxShadow: '0 0 4px rgba(255,236,196,0.85)', animation: 'starSparkle 2.8s ease-in-out 3.33s infinite' }
+      style: { zIndex: 3, pointerEvents: 'none', position: 'absolute', top: -18.6, left: 'calc(50% + 46.4px)', width: 5.9, height: 5.9, clipPath: 'polygon(50% 0, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0 50%, 42% 42%)' /* VERROUILLE 27/09 — etoile 4 branches, reduite 38 %, scintillement x1.8 */, background: '#FFF4DA', boxShadow: '0 0 4px rgba(255,236,196,0.85)', animation: 'starSparkle 5.0s ease-in-out 6.00s infinite' /* 27/09 : scintillement ralenti x1.8 (ALAE) */ }
     }), /* 23/09 : fumee de nuit + halo derriere la lune, Barzakh seul (opacite
        pilotee par --alae-lune-halo). Sur ce fond clair, un voile sombre isole le
        disque et une couronne pale lui rend sa lueur. Degrades purs, aucun filter :
@@ -3159,7 +3301,7 @@ function Onboarding({
            de la photo agrandi 280 % devient flou et se lit comme de la fumee.
            Seul le halo pale reste. Pour un vrai rocher : detourage PNG fourni
            par ALAE. */
-        background: 'radial-gradient(circle at 50% 49%, rgba(232,238,252,0.16) 0%, rgba(214,224,244,0.11) 18%, rgba(170,186,216,0.05) 24%, rgba(0,0,0,0) 29%)'
+        background: 'var(--alae-lune-halo-bg, radial-gradient(circle at 50% 49%, rgba(232,238,252,0.16) 0%, rgba(214,224,244,0.11) 18%, rgba(170,186,216,0.05) 24%, rgba(0,0,0,0) 29%))'
       }
     }), !isDay && /*#__PURE__*/React.createElement("img", {
       src: window.MOON_PHASES[M.phaseIdx],
@@ -3176,7 +3318,7 @@ function Onboarding({
         transform: 'translateX(-50%) scale(var(--alae-lune-echelle, 1))',
         zIndex: 4,
         pointerEvents: 'none',
-        filter: 'drop-shadow(0 0 7px rgba(206,214,236,0.32)) drop-shadow(0 3px 8px rgba(0,0,0,0.5)) contrast(1.12) saturate(0.9)'
+        filter: 'drop-shadow(0 0 7px rgba(206,214,236,0.32)) drop-shadow(0 3px 8px rgba(0,0,0,0.5)) contrast(1.12) saturate(0.9) brightness(1.18)'
       }
     }), /*#__PURE__*/React.createElement("div", {
       style: {
@@ -3370,17 +3512,34 @@ function Onboarding({
       // backdrop-filter pose autour d'un texte en background-clip:text le floute.
       // C'est le fond dense du cadre qui detache les lettres.
       ...(isAr && step === 0 ? {
-        backgroundImage: T.dorureGrad,
-        backgroundSize: '260% 100%',
-        WebkitBackgroundClip: 'text',
-        backgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-        animation: 'alaeShine 5.5s ease-in-out infinite'
+        /* 14/10 : texte net au premier plan (ALAE). Couleur pleine au lieu d'un
+           degrade decoupe dans le texte : sur iOS ce degrade se floute sous le
+           verre du cadre et devenait illisible. */
+        color: '#D08A4F',
+        textShadow: '0 1px 2px rgba(0,0,0,0.85), 0 0 10px rgba(0,0,0,0.55)',
+        position: 'relative',
+        zIndex: 5
       } : {
         textShadow: T.ombreTexte
       })
     }
-  }, title), ref && /*#__PURE__*/React.createElement("div", {
+  }, title, isAr && step === 0 && /*#__PURE__*/React.createElement("span", {
+    /* 14/10 : or qui coule leger, en calque par-dessus le texte net (ALAE). */
+    "aria-hidden": "true",
+    style: {
+      position: 'absolute',
+      inset: 0,
+      pointerEvents: 'none',
+      color: 'transparent',
+      textShadow: 'none',
+      backgroundImage: 'linear-gradient(100deg, rgba(255,214,140,0) 0%, rgba(255,214,140,0) 30%, rgba(255,232,180,0.95) 50%, rgba(255,214,140,0) 70%, rgba(255,214,140,0) 100%)',
+      backgroundSize: '220% 100%',
+      WebkitBackgroundClip: 'text',
+      backgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      animation: 'alaeShine 6s ease-in-out infinite'
+    }
+  }, title)), ref && /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: isAr ? '"QPC","Amiri Quran","Amiri",serif' : '"Cormorant Garamond", "Fraunces", serif',
       fontSize: isAr ? 12 : 10,
@@ -3935,7 +4094,7 @@ function Footer({
       background: T.verreMoyen,
       backdropFilter: 'blur(8px)',
       WebkitBackdropFilter: 'blur(8px)',
-      border: '0.5px solid rgba(232,185,122,0.55)',
+      border: '1px solid rgba(208,138,79,0.7)',
       padding: 0,
       cursor: 'pointer',
       zIndex: 10,
@@ -3973,7 +4132,7 @@ function Footer({
       background: T.verreMoyen,
       backdropFilter: 'blur(8px)',
       WebkitBackdropFilter: 'blur(8px)',
-      border: '0.5px solid rgba(232,185,122,0.55)',
+      border: '1px solid rgba(208,138,79,0.7)',
       padding: 0,
       cursor: 'pointer',
       zIndex: 10,
@@ -4077,6 +4236,7 @@ function CompteurV1({
     dim: 'rgba(199,165,91,0.4)'
   };
   const progress = Math.min(t.count / N, 1);
+  const _istab = String(window.ALAE_SILK || '').indexOf('istabraq') >= 0;
   return /*#__PURE__*/React.createElement(CompteurChrome, null, /*#__PURE__*/React.createElement(Header, {
     dhikr: dhikr,
     lang: lang,
@@ -4136,7 +4296,17 @@ function CompteurV1({
     in: "b"
   }), /*#__PURE__*/React.createElement("feMergeNode", {
     in: "SourceGraphic"
-  })))), /*#__PURE__*/React.createElement("g", {
+  })))), _istab && /*#__PURE__*/React.createElement("ellipse", {
+    /* 16/10 : ombre portee douce sous les cercles (Istabraq) */
+    cx: "160", cy: String(160 + R + 30), rx: String(R + 6), ry: "14", fill: "rgba(0,0,0,0.5)",
+    style: { filter: 'blur(9px)', pointerEvents: 'none' }
+  }), _istab && /*#__PURE__*/React.createElement("g", {
+    style: { pointerEvents: 'none' }
+  }, /*#__PURE__*/React.createElement("circle", {
+    cx: "160", cy: "160", r: R + 22, fill: "none", stroke: "rgba(0,0,0,0.55)", strokeWidth: "4"
+  }), /*#__PURE__*/React.createElement("circle", {
+    cx: "160", cy: "160", r: R, fill: "none", stroke: "rgba(0,0,0,0.55)", strokeWidth: "4"
+  })), /*#__PURE__*/React.createElement("g", {
     filter: "url(#v1glow)",
     style: {
       animation: 'neonRingBreathe 4.5s ease-in-out infinite'
@@ -4148,7 +4318,8 @@ function CompteurV1({
     fill: "none",
     stroke: T.goldLight,
     strokeOpacity: "0.9",
-    strokeWidth: "0.6"
+    /* 16/10 : Istabraq — cercles accentues pour ressortir sur la soie */
+    strokeWidth: _istab ? "1.6" : "0.6"
   }), /*#__PURE__*/React.createElement("circle", {
     cx: "160",
     cy: "160",
@@ -4156,7 +4327,7 @@ function CompteurV1({
     fill: "none",
     stroke: T.goldLight,
     strokeOpacity: "0.9",
-    strokeWidth: "0.7"
+    strokeWidth: _istab ? "1.8" : "0.7"
   })), Array.from({
     length: N
   }, (_, i) => {
@@ -5413,7 +5584,7 @@ function DhikrRow({
       width: 38,
       height: 38,
       borderRadius: 19,
-      border: `0.5px solid ${T.hairline}`,
+      border: '1px solid rgba(208,138,79,0.7)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -5518,9 +5689,17 @@ function HistoryScreen({
     value: 0,
     isToday: i === 6
   }));
-  const max = Math.max(1, ...week.map(w => w.value));
+  const [per, setPer] = React.useState(7);
+  const serie = per === 30 && S.month ? S.month : week;
+  const max = Math.max(1, ...serie.map(w => w.value));
   const L = {
     fr: {
+      thisMonth: 'dhikrs sur 30 jours',
+      p7: '7 jours',
+      p30: '30 jours',
+      best: 'meilleur jour',
+      avg: 'moyenne / jour',
+      act: 'jours actifs',
       thisWeek: 'dhikrs cette semaine',
       today: 'aujourd\'hui',
       empty: 'Aucun dhikr enregistré',
@@ -5529,6 +5708,12 @@ function HistoryScreen({
       total: 'au total'
     },
     en: {
+      thisMonth: 'dhikrs over 30 days',
+      p7: '7 days',
+      p30: '30 days',
+      best: 'best day',
+      avg: 'daily average',
+      act: 'active days',
       thisWeek: 'dhikrs this week',
       today: 'today',
       empty: 'No dhikr recorded yet',
@@ -5537,6 +5722,12 @@ function HistoryScreen({
       total: 'all time'
     },
     ar: {
+      thisMonth: 'ذِكر في ٣٠ يومًا',
+      p7: '٧ أيام',
+      p30: '٣٠ يومًا',
+      best: 'أفضل يوم',
+      avg: 'المعدّل اليومي',
+      act: 'أيام نشطة',
       thisWeek: 'ذِكر هذا الأسبوع',
       today: 'اليوم',
       empty: 'لا يوجد ذِكر مُسجَّل بعد',
@@ -5704,7 +5895,7 @@ function HistoryScreen({
       letterSpacing: '-0.04em',
       fontWeight: 400
     }
-  }, S.total7.toLocaleString()), /*#__PURE__*/React.createElement("div", {
+  }, (per === 30 ? S.total30 || 0 : S.total7).toLocaleString()), /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: isAr ? 'ReemKufi, sans-serif' : '"Cormorant Garamond",serif',
       fontSize: isAr ? 15 : 13,
@@ -5712,7 +5903,42 @@ function HistoryScreen({
       color: T.textMuted,
       marginTop: isAr ? 2 : -4
     }
-  }, L.thisWeek, " \xB7 ", S.today, " ", L.today)), /*#__PURE__*/React.createElement("div", {
+  }, per === 30 ? L.thisMonth : L.thisWeek, " \xB7 ", S.today, " ", L.today)), /*#__PURE__*/React.createElement("div", {
+    /* 14/10 : bascule 7 / 30 jours (ALAE). */
+    style: {
+      position: 'absolute',
+      top: 296,
+      left: 0,
+      right: 0,
+      zIndex: 3,
+      display: 'flex',
+      justifyContent: 'center'
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      display: 'flex',
+      padding: 3,
+      gap: 2,
+      borderRadius: 16,
+      background: 'rgba(0,0,0,0.35)',
+      border: '0.5px solid rgba(255,255,255,0.08)'
+    }
+  }, [7, 30].map(n => /*#__PURE__*/React.createElement("button", {
+    key: n,
+    onClick: () => setPer(n),
+    style: {
+      padding: '5px 16px',
+      borderRadius: 13,
+      border: 'none',
+      cursor: 'pointer',
+      background: per === n ? 'linear-gradient(180deg,' + T.goldLight + ',' + T.gold + ')' : 'transparent',
+      color: per === n ? '#1A1410' : T.textMuted,
+      fontFamily: isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif',
+      fontSize: isAr ? 13 : 11,
+      fontWeight: 600,
+      transition: 'background 0.2s ease'
+    }
+  }, n === 7 ? L.p7 : L.p30)))), /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'absolute',
       top: 340,
@@ -5727,9 +5953,10 @@ function HistoryScreen({
       justifyContent: 'space-between',
       alignItems: 'flex-end',
       height: 120,
-      gap: 8
+      gap: per === 30 ? 3 : 8,
+      direction: 'ltr'
     }
-  }, week.map((w, i) => /*#__PURE__*/React.createElement("div", {
+  }, serie.map((w, i) => /*#__PURE__*/React.createElement("div", {
     key: i,
     style: {
       flex: 1,
@@ -5746,7 +5973,7 @@ function HistoryScreen({
       borderRadius: 2,
       position: 'relative'
     }
-  }, w.value > 0 && /*#__PURE__*/React.createElement("div", {
+  }, per === 7 && w.value > 0 && /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'absolute',
       top: -22,
@@ -5767,10 +5994,47 @@ function HistoryScreen({
       textTransform: isAr ? 'none' : 'uppercase',
       whiteSpace: 'nowrap'
     }
-  }, w.label))))), S.breakdown.length > 0 && /*#__PURE__*/React.createElement("div", {
+  }, per === 30 ? (i % 5 === 4 || w.isToday ? w.label : '\xA0') : w.label))))), /*#__PURE__*/React.createElement("div", {
+    /* 14/10 : trois reperes sous le graphique (ALAE). */
     style: {
       position: 'absolute',
-      top: 540,
+      top: 500,
+      left: 24,
+      right: 24,
+      zIndex: 2,
+      display: 'flex',
+      gap: 8
+    }
+  }, [[L.best, per === 30 ? S.best || 0 : Math.max(0, ...week.map(w => w.value))], [L.avg, Math.round((per === 30 ? S.total30 || 0 : S.total7) / per)], [L.act, (per === 30 ? S.actifs || 0 : week.filter(w => w.value > 0).length) + ' / ' + per]].map(([lib, v], k) => /*#__PURE__*/React.createElement("div", {
+    key: k,
+    style: {
+      flex: 1,
+      padding: '7px 6px',
+      borderRadius: 14,
+      background: 'rgba(0,0,0,0.30)',
+      border: '0.5px solid rgba(255,255,255,0.07)',
+      textAlign: 'center',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: 2
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: '"Cormorant Garamond",serif',
+      fontSize: 22,
+      color: T.goldLight,
+      direction: 'ltr'
+    }
+  }, typeof v === 'number' ? v.toLocaleString() : v), /*#__PURE__*/React.createElement("div", {
+    style: {
+      fontFamily: isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif',
+      fontSize: isAr ? 11 : 9.5,
+      color: T.textMuted
+    }
+  }, lib)))), S.breakdown.length > 0 && /*#__PURE__*/React.createElement("div", {
+    style: {
+      position: 'absolute',
+      top: 566,
       left: 24,
       right: 24,
       zIndex: 2
@@ -5784,7 +6048,7 @@ function HistoryScreen({
       display: 'flex',
       alignItems: 'center',
       gap: 12,
-      padding: '10px 0',
+      padding: '7px 0',
       borderBottom: `0.5px solid ${T.hairline}`
     }
   }, /*#__PURE__*/React.createElement("div", {
@@ -5869,10 +6133,27 @@ function SettingsScreen({
       notifEnabled: s.notifEnabled === true,
       notifBefore: s.notifBefore ?? 0,
       // 0 = adhan pile à l'heure (défaut)
-      notifReciter: s.notifReciter || 'kouchi'
+      notifReciter: s.notifReciter || 'kouchi',
+      textSize: (() => { try { return JSON.parse(localStorage.getItem('alae.a11y') || '{}').textSize || 'm'; } catch { return 'm'; } })(),
+      contrast: (() => { try { return JSON.parse(localStorage.getItem('alae.a11y') || '{}').contrast === true; } catch { return false; } })()
     };
   });
   const [langOpen, setLangOpen] = React.useState(false);
+  const [rappels, setRappels] = React.useState(() => window.alaeRappelsLire());
+  const [roue, setRoue] = React.useState(null);
+  const majRappel = (cle, val) => {
+    window.alaeRappelsEcrire(cle, val, lang);
+    setRappels(window.alaeRappelsLire());
+    if (navigator.vibrate) try { navigator.vibrate(10); } catch (e) {}
+  };
+  const HEURES = {
+    matin: ['05:00', '05:30', '06:00', '06:30', '07:00', '07:30', '08:00', '08:30', '09:00'],
+    soir: ['15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30', '20:00']
+  };
+  const heureSuivante = cle => {
+    const l = HEURES[cle], i = l.indexOf(rappels[cle].h);
+    majRappel(cle, { h: l[(i + 1) % l.length] });
+  };
   const LANGS = [{
     id: 'ar',
     label: 'العربية',
@@ -6164,6 +6445,28 @@ function SettingsScreen({
     icon: 'clock',
     onClick: cycleBefore
   }] : []), {
+    label: isAr ? 'تذكير أذكار الصباح' : lang === 'fr' ? 'Rappel adhkar du matin' : 'Morning adhkar reminder',
+    toggle: true,
+    on: rappels.matin.on,
+    icon: 'bell',
+    onChange: () => majRappel('matin', { on: !rappels.matin.on })
+  }, ...(rappels.matin.on ? [{
+    label: isAr ? 'وقت الصباح' : lang === 'fr' ? 'Heure du matin' : 'Morning time',
+    value: rappels.matin.h,
+    icon: 'clock',
+    onClick: () => setRoue('matin')
+  }] : []), {
+    label: isAr ? 'تذكير أذكار المساء' : lang === 'fr' ? 'Rappel adhkar du soir' : 'Evening adhkar reminder',
+    toggle: true,
+    on: rappels.soir.on,
+    icon: 'moon',
+    onChange: () => majRappel('soir', { on: !rappels.soir.on })
+  }, ...(rappels.soir.on ? [{
+    label: isAr ? 'وقت المساء' : lang === 'fr' ? 'Heure du soir' : 'Evening time',
+    value: rappels.soir.h,
+    icon: 'clock',
+    onClick: () => setRoue('soir')
+  }] : []), {
     label: I.haptics,
     toggle: true,
     on: settings.haptics,
@@ -6190,6 +6493,29 @@ function SettingsScreen({
     toggle: true,
     on: settings.darkMode === 'auto',
     onChange: () => saveSetting('darkMode', settings.darkMode === 'auto' ? 'off' : 'auto')
+  }, {
+    /* 14/10 : accessibilite (ALAE). */
+    label: isAr ? 'حجم الخط' : lang === 'fr' ? 'Taille du texte' : 'Text size',
+    value: ({
+      s: isAr ? 'صغير' : lang === 'fr' ? 'Petit' : 'Small',
+      m: isAr ? 'عادي' : lang === 'fr' ? 'Normal' : 'Normal',
+      l: isAr ? 'كبير' : lang === 'fr' ? 'Grand' : 'Large',
+      xl: isAr ? 'كبير جدًا' : lang === 'fr' ? 'Très grand' : 'Extra large'
+    })[settings.textSize] || '',
+    onClick: () => {
+      const opts = ['s', 'm', 'l', 'xl'];
+      const v = opts[(opts.indexOf(settings.textSize) + 1) % opts.length];
+      window.alaeA11yLire({ textSize: v });
+      saveSetting('textSize', v);
+    }
+  }, {
+    label: isAr ? 'تباين عالٍ' : lang === 'fr' ? 'Contraste élevé' : 'High contrast',
+    toggle: true,
+    on: settings.contrast,
+    onChange: () => {
+      window.alaeA11yLire({ contrast: !settings.contrast });
+      saveSetting('contrast', !settings.contrast);
+    }
   }, {
     label: I.language,
     value: `${curLang.flag} ${curLang.label}`,
@@ -6233,10 +6559,11 @@ function SettingsScreen({
       zIndex: 1,
       opacity: 0.92
     }
-  }, [[34, 58, 1.2, 0.8], [96, 26, 0.8, 0.5], [168, 72, 0.9, 0.55], [248, 34, 1.3, 0.85], [318, 64, 0.9, 0.6], [372, 22, 0.8, 0.5], [62, 142, 0.85, 0.5], [210, 120, 0.75, 0.45], [300, 158, 1, 0.6], [366, 196, 0.8, 0.48], [24, 236, 0.9, 0.55], [130, 206, 0.75, 0.42], [276, 268, 0.95, 0.5], [44, 330, 0.8, 0.46], [352, 318, 0.9, 0.52], [186, 382, 0.8, 0.44], [300, 430, 0.85, 0.5], [38, 462, 0.9, 0.48], [364, 516, 0.8, 0.44], [110, 548, 0.85, 0.46], [262, 596, 0.9, 0.5], [30, 634, 0.8, 0.42], [344, 682, 0.85, 0.46], [150, 724, 0.8, 0.44], [298, 782, 0.9, 0.48], [56, 806, 0.8, 0.42]].map(([x, y, r, op], i) => /*#__PURE__*/React.createElement("g", {
+  }, [[34, 58, 1.2, 0.8], [96, 26, 0.8, 0.5], [168, 72, 0.9, 0.55], [248, 34, 1.3, 0.85], [318, 64, 0.9, 0.6], [372, 22, 0.8, 0.5], [62, 142, 0.85, 0.5], [210, 120, 0.75, 0.45], [300, 158, 1, 0.6], [366, 196, 0.8, 0.48], [24, 236, 0.9, 0.55], [130, 206, 0.75, 0.42], [276, 268, 0.95, 0.5], [44, 330, 0.8, 0.46], [352, 318, 0.9, 0.52], [186, 382, 0.8, 0.44], [300, 430, 0.85, 0.5], [38, 462, 0.9, 0.48], [364, 516, 0.8, 0.44], [110, 548, 0.85, 0.46], [262, 596, 0.9, 0.5], [30, 634, 0.8, 0.42], [344, 682, 0.85, 0.46], [150, 724, 0.8, 0.44], [298, 782, 0.9, 0.48], [56, 806, 0.8, 0.42]] .flatMap(s => [s, [s[0] + 41, s[1] + 27, s[2] * 0.85, s[3]], [s[0] - 29, s[1] + 46, s[2] * 0.75, s[3] * 0.9]]).map(([x, y, r, op], i) => /*#__PURE__*/React.createElement("g", {
     key: i,
+    onAnimationIteration: e => { /* 14/10 : a chaque cycle l'etoile renait ailleurs (ALAE). */ const g = e.currentTarget; g.setAttribute('transform', 'translate(' + (Math.random() * 90 - 45).toFixed(1) + ' ' + (Math.random() * 70 - 35).toFixed(1) + ')'); },
     style: {
-      animation: `alaeStarFloat ${(4.6 + i % 7 * 0.83).toFixed(1)}s ease-in-out ${(i * 1.41 % 7).toFixed(2)}s infinite`
+      animation: `alaeStarHop ${(2.6 + i % 7 * 0.45).toFixed(1)}s ease-in-out ${(i * 0.83 % 4).toFixed(2)}s infinite both`
     }
   }, /*#__PURE__*/React.createElement("circle", {
     cx: x,
@@ -6401,7 +6728,7 @@ function SettingsScreen({
       color: T.textDim,
       marginTop: 12
     }
-  }, "v 1.0.20")), /*#__PURE__*/React.createElement("div", {
+  }, "v 1.0.21")), /*#__PURE__*/React.createElement("div", {
     className: "settings-scroll",
     style: {
       position: 'absolute',
@@ -6420,6 +6747,7 @@ function SettingsScreen({
     key: i,
     onClick: r.onClick || r.onChange,
     style: {
+      position: 'relative',
       display: 'flex',
       alignItems: 'center',
       gap: 14,
@@ -6491,7 +6819,13 @@ function SettingsScreen({
     style: {
       color: T.textMuted
     }
-  }, "\u203A")) : null))), langOpen && /*#__PURE__*/React.createElement("div", {
+  }, "\u203A")) : null))), roue && /*#__PURE__*/React.createElement(window.AlaeRoueHeure, {
+    valeur: rappels[roue].h,
+    lang: lang,
+    titre: roue === 'matin' ? (isAr ? 'وقت أذكار الصباح' : lang === 'fr' ? 'Heure du matin' : 'Morning time') : (isAr ? 'وقت أذكار المساء' : lang === 'fr' ? 'Heure du soir' : 'Evening time'),
+    onOk: v => { majRappel(roue, { h: v }); setRoue(null); },
+    onClose: () => setRoue(null)
+  }), langOpen && /*#__PURE__*/React.createElement("div", {
     onClick: () => setLangOpen(false),
     style: {
       position: 'absolute',
@@ -7664,7 +7998,7 @@ function CustomDhikrModal({
       background: 'rgba(11,13,16,0.5)',
       backdropFilter: 'blur(8px)',
       WebkitBackdropFilter: 'blur(8px)',
-      border: '1px solid rgba(232,185,122,0.55)',
+      border: '1px solid rgba(208,138,79,0.7)',
       color: 'rgba(232,185,122,0.95)',
       display: 'flex',
       alignItems: 'center',
@@ -8598,6 +8932,37 @@ function CommunityScreen({
       direction: 'ltr'
     }
   }, /*#__PURE__*/React.createElement("button", {
+    /* 14/10 : bouton Tt dans la rangee de boutons (ALAE). */
+    onClick: () => window.alaeCycleTexte(),
+    "aria-label": "textSize",
+    style: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      cursor: 'pointer',
+      padding: 0,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'rgba(14,10,6,0.62)',
+      border: '1px solid rgba(208,138,79,0.7)',
+      color: 'rgba(232,185,122,0.95)',
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)',
+      boxShadow: '0 6px 18px rgba(0,0,0,0.45)',
+      WebkitTapHighlightColor: 'transparent'
+    }
+  }, /*#__PURE__*/React.createElement("svg", {
+    width: "18",
+    height: "18",
+    viewBox: "0 0 16 16",
+    fill: "none"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M1.8 3.6h6.6M5.1 3.6v9.2M9.6 8h4.6M11.9 8v4.8",
+    stroke: "currentColor",
+    strokeWidth: "1.6",
+    strokeLinecap: "round"
+  }))), /*#__PURE__*/React.createElement("button", {
     onClick: onSettings,
     "aria-label": "R\xE9glages",
     style: {
@@ -8610,7 +8975,7 @@ function CommunityScreen({
       alignItems: 'center',
       justifyContent: 'center',
       background: 'rgba(14,10,6,0.62)',
-      border: '1px solid rgba(232,185,122,0.55)',
+      border: '1px solid rgba(208,138,79,0.7)',
       color: 'rgba(232,185,122,0.95)',
       backdropFilter: 'blur(8px)',
       WebkitBackdropFilter: 'blur(8px)',
@@ -8641,7 +9006,7 @@ function CommunityScreen({
       alignItems: 'center',
       justifyContent: 'center',
       background: 'rgba(14,10,6,0.62)',
-      border: '1px solid rgba(232,185,122,0.55)',
+      border: '1px solid rgba(208,138,79,0.7)',
       color: 'rgba(232,185,122,0.95)',
       backdropFilter: 'blur(8px)',
       WebkitBackdropFilter: 'blur(8px)',
@@ -9132,7 +9497,7 @@ function SurahReader({
       flexShrink: 0,
       padding: 0,
       background: 'rgba(255,255,255,0.06)',
-      border: '0.5px solid rgba(232,200,140,0.22)',
+      border: '1px solid rgba(208,138,79,0.7)',
       color: T.text,
       cursor: 'pointer',
       display: 'flex',
@@ -10992,16 +11357,22 @@ function QiblaScreen({
       backgroundClip: 'text',
       lineHeight: 1.25,
       letterSpacing: '0.02em',
-      filter: 'drop-shadow(0 0 8px rgba(232,185,122,0.35))'
+      /* 15/10 : titre lisible sur les fonds photo (Istabraq) */
+      filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.9)) drop-shadow(0 0 10px rgba(0,0,0,0.6)) drop-shadow(0 0 8px rgba(232,185,122,0.35))'
     }
   }, I18N.title), /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: 'Amiri, serif',
-      fontSize: 15,
-      color: T.textMuted,
+      fontSize: 16,
+      fontWeight: 700,
+      color: '#F8EFDC',
       marginTop: 8,
-      opacity: 0.95,
-      lineHeight: 1.4
+      lineHeight: 1.4,
+      display: 'inline-block',
+      padding: '4px 22px',
+      borderRadius: 999,
+      background: 'radial-gradient(ellipse at center, rgba(8,10,18,0.62) 0%, rgba(8,10,18,0.45) 55%, rgba(8,10,18,0) 100%)',
+      textShadow: '0 1px 2px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.55)'
     }
   }, I18N.sub)), !position ? /*#__PURE__*/React.createElement("div", {
     style: {
@@ -11211,7 +11582,7 @@ function PremiumCompass({
       marginLeft: -size / 2,
       marginTop: -size / 2,
       borderRadius: '50%',
-      border: '1.5px solid rgba(255,214,140,0.55)',
+      border: '1px solid rgba(208,138,79,0.7)',
       boxShadow: '0 0 16px rgba(255,200,120,0.4)',
       animation: `qiblaRipple 3.4s cubic-bezier(.15,.6,.25,1) ${d}s infinite`,
       pointerEvents: 'none',
@@ -11767,6 +12138,13 @@ function Compass3D({
     }
   }, /*#__PURE__*/React.createElement("style", null, `
         .q3d{ position:relative; width:300px; height:300px; perspective:900px; perspective-origin:50% 42%; }
+        /* 15/10 : Istabraq — halo derriere la boussole pour la detacher de la soie. */
+        .q3d.halo::before{ content:''; position:absolute; left:50%; top:50%; width:520px; height:520px; margin:-260px 0 0 -260px; border-radius:50%; pointer-events:none; z-index:0;
+          background:radial-gradient(circle closest-side, rgba(2,3,8,0.97) 0px, rgba(3,5,11,0.92) 120px, rgba(6,9,18,0.7) 180px, rgba(9,12,22,0.35) 230px, rgba(9,12,22,0) 260px);
+          -webkit-mask-image:radial-gradient(circle closest-side, #000 85%, transparent 100%); mask-image:radial-gradient(circle closest-side, #000 85%, transparent 100%); }
+        .q3d.halo::after{ content:''; position:absolute; left:50%; top:50%; width:520px; height:520px; margin:-260px 0 0 -260px; border-radius:50%; pointer-events:none; z-index:0;
+          background:repeating-conic-gradient(from 0deg, rgba(232,185,122,0.044) 0deg 0.6deg, transparent 0.6deg 15deg), radial-gradient(circle closest-side, rgba(0,0,0,0) 0px, rgba(232,185,122,0.000) 0.0px, rgba(232,185,122,0.000) 43.4px, rgba(232,185,122,0.012) 43.4px, rgba(232,185,122,0.012) 48.2px, rgba(232,185,122,0.000) 48.2px, rgba(232,185,122,0.000) 53.5px, rgba(232,185,122,0.015) 53.5px, rgba(232,185,122,0.015) 59.5px, rgba(232,185,122,0.000) 59.5px, rgba(232,185,122,0.000) 66.1px, rgba(232,185,122,0.018) 66.1px, rgba(232,185,122,0.018) 73.4px, rgba(232,185,122,0.000) 73.4px, rgba(232,185,122,0.000) 81.6px, rgba(232,185,122,0.022) 81.6px, rgba(232,185,122,0.022) 90.7px, rgba(232,185,122,0.000) 90.7px, rgba(232,185,122,0.000) 100.7px, rgba(232,185,122,0.027) 100.7px, rgba(232,185,122,0.027) 111.9px, rgba(232,185,122,0.000) 111.9px, rgba(232,185,122,0.000) 124.4px, rgba(232,185,122,0.033) 124.4px, rgba(232,185,122,0.033) 138.2px, rgba(232,185,122,0.000) 138.2px, rgba(232,185,122,0.000) 153.5px, rgba(232,185,122,0.041) 153.5px, rgba(232,185,122,0.041) 170.6px, rgba(232,185,122,0.000) 170.6px, rgba(232,185,122,0.000) 189.5px, rgba(232,185,122,0.051) 189.5px, rgba(232,185,122,0.051) 210.6px, rgba(232,185,122,0.000) 210.6px, rgba(232,185,122,0.000) 234.0px, rgba(232,185,122,0.062) 234.0px, rgba(232,185,122,0.062) 260.0px, rgba(0,0,0,0) 260px);
+          -webkit-mask-image:radial-gradient(circle closest-side, #000 85%, transparent 100%), linear-gradient(to bottom, transparent 0%, transparent 30%, #000 42%); -webkit-mask-composite:source-in; mask-image:radial-gradient(circle closest-side, #000 85%, transparent 100%), linear-gradient(to bottom, transparent 0%, transparent 30%, #000 42%); mask-composite:intersect; }
         .q3d .topmark{ position:absolute; top:-2px; left:50%; margin-left:-9px; width:0; height:0; z-index:30; border-left:9px solid transparent; border-right:9px solid transparent; border-top:17px solid #E4B96F; filter:drop-shadow(0 0 6px rgba(232,185,122,.85)); }
         .q3d .topmark::after{ content:''; position:absolute; top:-24px; left:-1px; width:2px; height:9px; background:rgba(232,185,122,.7); }
         .q3d .topmark.aligned{ border-top-color:#5cc47f; filter:drop-shadow(0 0 11px rgba(120,230,150,.95)); }
@@ -11815,7 +12193,7 @@ function Compass3D({
         .q3d.on .pulse.p3{ animation-delay:1.2s; }
         @keyframes q3dPulse{ 0%{ transform:scale(.55); opacity:.85; border-color:rgba(150,240,175,.9); } 100%{ transform:scale(1.5); opacity:0; border-color:rgba(120,230,150,0); } }
       `), /*#__PURE__*/React.createElement("div", {
-    className: 'q3d' + (isAligned ? ' on' : '')
+    className: 'q3d' + (isAligned ? ' on' : '') + (String(window.ALAE_SILK || '').indexOf('istabraq') >= 0 ? ' halo' : '')
   }, /*#__PURE__*/React.createElement("div", {
     className: "pulse p1"
   }), /*#__PURE__*/React.createElement("div", {
@@ -12612,6 +12990,353 @@ window.MORNING_DOUAS = [
   };
 })();
 </script><script type="text/alae-js">
+/* 14/10 : Defis spirituels (ALAE). Un defi = un dhikr, une cible par jour, un nombre
+   de jours. Un jour est reussi quand le compteur du jour atteint la cible. Un jour
+   manque ne remet rien a zero : on compte les jours reussis. Cle a part (alae.defis). */
+window.ALAE_DEFIS = [
+  /* 14/10 : ordre demande par ALAE : salat, istighfar, hamd, tahlil, takbir. */
+  {id:'salat7', dhikr:'salat', cible:100, jours:7,
+   ar:'أسبوع الصلاة على النبي ﷺ', fr:'7 jours de salat sur le Prophète ﷺ', en:'7 days of salawat ﷺ', txt:'ٱللَّٰهُمَّ صَلِّ عَلَىٰ مُحَمَّد'},
+  {id:'istighfar30', dhikr:'istighfar', cible:100, jours:30,
+   ar:'ثلاثون يومًا من الاستغفار', fr:"30 jours d'Istighfar", en:'30 days of Istighfar', txt:'أَسْتَغْفِرُ ٱللَّٰهَ'},
+  {id:'hamd40', dhikr:'hamd', cible:33, jours:40,
+   ar:'أربعون يومًا من الحمد', fr:'40 jours de Al-hamdu lillah', en:'40 days of Alhamdulillah', txt:'ٱلْحَمْدُ لِلَّٰهِ'},
+  {id:'lailaha30', dhikr:'lailaha', cible:100, jours:30,
+   ar:'ثلاثون يومًا من التهليل', fr:'30 jours de La ilaha illa Allah', en:'30 days of La ilaha illa Allah', txt:'لَا إِلَٰهَ إِلَّا ٱللَّٰهُ'},
+  {id:'akbar30', dhikr:'akbar', cible:33, jours:30,
+   ar:'ثلاثون يومًا من التكبير', fr:'30 jours de Allahu akbar', en:'30 days of Allahu akbar', txt:'ٱللَّٰهُ أَكْبَرُ'}
+];
+/* 14/10 : liseré or qui scintille autour des cartes de defi (ALAE). */
+try { if (!document.getElementById('alae-defi-css')) { const s = document.createElement('style'); s.id = 'alae-defi-css'; s.textContent = '@keyframes alaeOrDefi{0%{background-position:0% 50%}100%{background-position:-100% 50%}}'; document.head.appendChild(s); } } catch (e) {}
+function DefisScreen({ lang = 'fr' }) {
+  const T = window.THEME;
+  const isAr = lang === 'ar';
+  const h = React.createElement;
+  const [, setTick] = React.useState(0);
+  const [confirmer, setConfirmer] = React.useState(null);
+  const [info, setInfo] = React.useState(false);
+  const [appui, setAppui] = React.useState(null);
+  const lire = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || 'null') || d; } catch (e) { return d; } };
+  const defis = lire('alae.defis', {});
+  const daily = (lire('misbaha.v1', {}).daily) || {};
+  const cle = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  const jour0 = () => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; };
+  const ecrire = o => { try { localStorage.setItem('alae.defis', JSON.stringify(o)); } catch (e) {} setTick(n => n + 1); };
+  const commencer = id => { const o = lire('alae.defis', {}); o[id] = { debut: cle(new Date()) }; ecrire(o); if (navigator.vibrate) try { navigator.vibrate(12); } catch (e) {} };
+  const arreter = id => {
+    if (confirmer !== id) { setConfirmer(id); setTimeout(() => setConfirmer(c => c === id ? null : c), 3000); return; }
+    const o = lire('alae.defis', {}); delete o[id]; ecrire(o); setConfirmer(null);
+  };
+  const L = {
+    ar: { titre: 'التحديات', parJour: 'يوميًا', jours: 'يومًا', jour: 'يوم', reussis: 'أيام منجزة', go: 'ابدأ التحدي', stop: 'إيقاف', sur: 'اضغط مجددًا للإيقاف', fini: 'اكتمل التحدي', refaire: 'أعد التحدي', aujourd: 'اليوم' },
+    fr: { titre: 'Défis', parJour: 'par jour', jours: 'jours', jour: 'Jour', reussis: 'jours réussis', go: 'Commencer', stop: 'Arrêter', sur: 'Touchez encore pour arrêter', fini: 'Défi terminé', refaire: 'Recommencer', aujourd: "Aujourd'hui" },
+    en: { titre: 'Challenges', parJour: 'per day', jours: 'days', jour: 'Day', reussis: 'days completed', go: 'Start', stop: 'Stop', sur: 'Tap again to stop', fini: 'Challenge complete', refaire: 'Start again', aujourd: 'Today' }
+  }[lang] || {};
+  const ui = isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif';
+  const AIDE = {
+    ar: { titre: 'كيف يجري التحدي؟', ok: 'حسنًا', etapes: [
+      'كل يوم، افتح العدّاد واختر ذِكر التحدي، ثم عُدّ حتى تبلغ هدف اليوم. يمتلئ التحدي وحده، لا حاجة للعودة إلى هذه الصفحة.',
+      'العدد بجانب الشريط يبيّن تقدّمك اليوم، والشريط يتقدّم معه.',
+      'كل مُعيَّن صغير يمثّل يومًا. المحاط بإطار هو اليوم، ويصير ذهبيًا حين تبلغ الهدف.',
+      'إن فاتك يوم يبقى مُعيَّنه فارغًا، لكن التحدي يستمر ولا يعود شيء إلى الصفر.',
+      'في آخر يوم تظهر «اكتمل التحدي» مع نتيجتك، ويمكنك إعادته.',
+      'للإيقاف، اضغط مرتين على «إيقاف».'] },
+    fr: { titre: 'Comment se déroule un défi ?', ok: "J'ai compris", etapes: [
+      "Chaque jour, ouvrez le compteur, choisissez le dhikr du défi et comptez jusqu'à l'objectif du jour. Le défi se remplit tout seul, pas besoin de revenir ici.",
+      "Le chiffre à côté de la barre montre où vous en êtes aujourd'hui, la barre avance avec.",
+      "Chaque petit losange est un jour. Celui entouré, c'est aujourd'hui : il devient doré quand l'objectif est atteint.",
+      'Un jour manqué reste vide, mais le défi continue et rien ne repart à zéro.',
+      'Le dernier jour, la carte affiche « Défi terminé » avec votre score, et vous pouvez recommencer.',
+      'Pour arrêter, appuyez deux fois sur « Arrêter ».'] },
+    en: { titre: 'How does a challenge work?', ok: 'Got it', etapes: [
+      "Each day, open the counter, pick the challenge's dhikr and count up to the daily goal. The challenge fills itself, no need to come back here.",
+      "The number next to the bar shows today's progress.",
+      "Each small diamond is a day. The outlined one is today: it turns gold when you reach the goal.",
+      'A missed day stays empty, but the challenge goes on and nothing resets.',
+      'On the last day the card shows "Challenge complete" with your score, and you can start again.',
+      'To stop, tap "Stop" twice.'] }
+  }[lang] || {};
+  const num = '"Cormorant Garamond",serif';
+  const bouton = (lib, onClick, plein) => h("button", { onClick, style: { alignSelf: 'center', padding: '9px 22px', borderRadius: 20, cursor: 'pointer', fontFamily: ui, fontSize: isAr ? 15 : 13, fontWeight: 600, letterSpacing: isAr ? 0 : '0.04em', background: plein ? 'linear-gradient(180deg,' + T.goldLight + ',' + T.gold + ')' : 'transparent', color: plein ? '#1A1410' : T.goldLight, border: plein ? 'none' : '0.5px solid ' + T.hairline } }, lib);
+  const carte = d => {
+    const etat = defis[d.id];
+    const debut = etat ? new Date(etat.debut + 'T00:00:00') : null;
+    const idx = debut ? Math.floor((jour0() - debut) / 86400000) : -1;
+    const fini = etat && idx >= d.jours;
+    const cases = [];
+    let reussis = 0;
+    if (etat) for (let i = 0; i < d.jours; i++) {
+      const dt = new Date(debut); dt.setDate(dt.getDate() + i);
+      const n = ((daily[cle(dt)] || {}).byDhikr || {})[d.dhikr] || 0;
+      const ok = n >= d.cible; if (ok) reussis++;
+      cases.push(h("div", { key: i, style: { width: 9, height: 9, transform: 'rotate(45deg)', borderRadius: 1.5, background: ok ? 'linear-gradient(135deg,' + T.goldLight + ',' + T.gold + ')' : i < idx ? 'rgba(199,165,91,0.10)' : 'transparent', border: i === idx && !fini ? '1px solid ' + T.goldLight : ok ? 'none' : '0.5px solid rgba(199,165,91,0.35)', boxShadow: ok ? '0 0 5px rgba(255,220,150,0.45)' : 'none' } }));
+    }
+    const nAuj = ((daily[cle(new Date())] || {}).byDhikr || {})[d.dhikr] || 0;
+    /* 14/10 : liseré anime retire ; carte bombee, coins plus arrondis (ALAE). */
+    /* 14/10 : noir legerement transparent ; au toucher la carte se bombe (ALAE). */
+    const bombe = appui === d.id;
+    return h("div", { key: d.id, onPointerDown: () => setAppui(d.id), onPointerUp: () => setAppui(null), onPointerLeave: () => setAppui(null), onPointerCancel: () => setAppui(null), style: { position: 'relative', display: 'flex', flexDirection: 'column', gap: 12, padding: '16px 16px 18px', borderRadius: 26, /* verre fume : noir transparent, flou de fond, filet clair (ALAE). */ background: 'linear-gradient(180deg, rgba(28,28,28,0.48) 0%, rgba(12,12,12,0.42) 55%, rgba(4,4,4,0.52) 100%)', backdropFilter: 'blur(14px) saturate(1.2)', WebkitBackdropFilter: 'blur(14px) saturate(1.2)', border: '0.5px solid rgba(255,255,255,0.09)', transition: 'box-shadow 0.28s ease', boxShadow: bombe ? 'inset 0 1.5px 0 rgba(255,255,255,0.10), inset 0 -3px 8px rgba(0,0,0,0.65), 0 16px 34px rgba(0,0,0,0.6)' : 'inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -2px 6px rgba(0,0,0,0.6), 0 10px 24px rgba(0,0,0,0.5)' } },
+      h("div", { style: { display: 'flex', flexDirection: 'column', gap: 4, textAlign: 'center' } },
+        h("div", { style: { fontFamily: 'Amiri, serif', fontSize: 22, color: T.text, direction: 'rtl', lineHeight: 1.5 } }, d.txt),
+        h("div", { style: { fontFamily: isAr ? 'Amiri, serif' : ui, fontSize: isAr ? 17 : 14, fontWeight: isAr ? 700 : 500, color: T.goldLight } }, d[lang] || d.fr),
+        h("div", { style: { display: 'flex', justifyContent: 'center', gap: 6, direction: isAr ? 'rtl' : 'ltr', fontFamily: ui, fontSize: isAr ? 13 : 11, color: T.textMuted } },
+          h("span", null, d.jours + '\u00A0' + (isAr && d.jours <= 10 ? 'أيام' : L.jours)), h("span", null, '·'), h("span", null, d.cible + '\u00A0' + L.parJour))),
+      etat && h("div", { style: { display: 'flex', flexWrap: 'wrap', gap: 9, justifyContent: 'center', padding: '4px 6px', direction: 'ltr' } }, cases),
+      etat && !fini && h("div", { style: { display: 'flex', flexDirection: 'column', gap: 6 } },
+        h("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontFamily: ui, fontSize: isAr ? 13 : 11, color: T.textMuted } },
+          h("span", { style: { display: 'flex', gap: 6, direction: isAr ? 'rtl' : 'ltr' } }, h("span", null, L.jour + '\u00A0' + '\u2066' + (idx + 1) + '/' + d.jours + '\u2069'), h("span", null, '·'), h("span", null, reussis + '\u00A0' + L.reussis)),
+          h("span", { style: { fontFamily: num, fontSize: 17, direction: 'ltr', color: nAuj >= d.cible ? T.goldLight : T.text } }, Math.min(nAuj, d.cible) + ' / ' + d.cible)),
+        h("div", { style: { height: 3, borderRadius: 2, background: 'rgba(199,165,91,0.15)', overflow: 'hidden' } },
+          h("div", { style: { height: '100%', width: Math.min(100, nAuj / d.cible * 100) + '%', background: 'linear-gradient(90deg,' + T.gold + ',' + T.goldLight + ')' } }))),
+      fini && h("div", { style: { textAlign: 'center', fontFamily: ui, fontSize: isAr ? 15 : 13, color: T.goldLight } }, L.fini + ' · ' + reussis + ' / ' + d.jours),
+      h("div", { style: { display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 10 } },
+        !etat ? bouton(L.go, () => commencer(d.id), true) : fini ? bouton(L.refaire, () => commencer(d.id), true) : bouton(confirmer === d.id ? L.sur : L.stop, () => arreter(d.id), false),
+        h("button", { onClick: () => setInfo(true), "aria-label": "info", style: { width: 34, height: 34, borderRadius: 17, padding: 0, cursor: 'pointer', background: 'rgba(14,10,6,0.62)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', boxShadow: '0 6px 18px rgba(0,0,0,0.45)', border: '1px solid rgba(208,138,79,0.7)', color: T.goldLight, fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' } }, 'i')));
+  };
+  const liste = window.ALAE_DEFIS;
+  return h("div", { style: { position: 'absolute', inset: 0, background: T.bg, overflow: 'hidden', direction: isAr ? 'rtl' : 'ltr' } },
+    h(window.SilkBg, { opacity: 0.9, vue: 'historique' }),
+    h("div", { style: { position: 'absolute', top: 84, left: 0, right: 0, textAlign: 'center', zIndex: 3, fontFamily: 'Amiri, serif', fontSize: 23, fontWeight: 700, color: T.text, textShadow: '0 0 10px rgba(216,138,62,0.35)' } }, L.titre),
+    h("div", { style: { position: 'absolute', top: 134, left: 14, right: 14, bottom: 24, overflowY: 'auto', WebkitOverflowScrolling: 'touch', zIndex: 2, display: 'flex', flexDirection: 'column', gap: 14, paddingBottom: 20 } }, liste.map(carte)),
+    info && h("div", { onClick: () => setInfo(false), style: { position: 'absolute', inset: 0, zIndex: 300, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 22 } },
+      h("div", { onClick: e => e.stopPropagation(), style: { width: '100%', maxHeight: '80%', overflowY: 'auto', borderRadius: 20, padding: '22px 20px 18px', background: 'linear-gradient(165deg, rgba(28,20,11,0.97), rgba(10,8,5,0.97))', border: '0.5px solid rgba(232,185,122,0.45)', boxShadow: '0 18px 44px rgba(0,0,0,0.6)', display: 'flex', flexDirection: 'column', gap: 12, direction: isAr ? 'rtl' : 'ltr' } },
+        h("div", { style: { textAlign: 'center', fontFamily: 'Amiri, serif', fontSize: 21, fontWeight: 700, color: T.goldLight } }, AIDE.titre),
+        AIDE.etapes.map((e, i) => h("div", { key: i, style: { display: 'flex', gap: 10, alignItems: 'flex-start' } },
+          h("div", { style: { flexShrink: 0, width: 20, height: 20, borderRadius: 10, border: '1px solid rgba(208,138,79,0.7)', color: T.goldLight, fontFamily: num, fontSize: 13, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 2 } }, i + 1),
+          h("div", { style: { fontFamily: isAr ? 'Amiri, serif' : ui, fontSize: isAr ? 16 : 13.5, lineHeight: 1.6, color: T.text } }, e))),
+        h("button", { onClick: () => setInfo(false), style: { alignSelf: 'center', marginTop: 6, padding: '9px 28px', borderRadius: 20, border: 'none', cursor: 'pointer', background: 'linear-gradient(180deg,' + T.goldLight + ',' + T.gold + ')', color: '#1A1410', fontFamily: ui, fontSize: isAr ? 15 : 13, fontWeight: 600 } }, AIDE.ok))));
+}
+window.DefisScreen = DefisScreen;
+/* 14/10 : roue d'heure maison (ALAE) — la fenetre native ne s'ouvre pas partout
+   (simulateur) ; celle-ci glisse au doigt, s'aimante sur chaque valeur. */
+function AlaeRoueHeure({ valeur = '06:30', titre = '', lang = 'ar', onOk, onClose }) {
+  const T = window.THEME;
+  const h = React.createElement;
+  const isAr = lang === 'ar';
+  const p0 = String(valeur).split(':');
+  const H = 44, VIS = 5;
+  const heures = Array.from({ length: 24 }, (_, i) => i);
+  const minutes = Array.from({ length: 12 }, (_, i) => i * 5);
+  const [hh, setHh] = React.useState(+p0[0] || 0);
+  const [mm, setMm] = React.useState(Math.round((+p0[1] || 0) / 5) * 5 % 60);
+  const rh = React.useRef(null), rm = React.useRef(null), tm = React.useRef({});
+  /* 14/10 : position de defilement en direct, pour que chaque chiffre grossisse
+     en passant au centre puis reprenne sa taille (effet bombe, ALAE). */
+  const [pos, setPos] = React.useState({ h: 0, m: 0 });
+  const raf = React.useRef(0);
+  /* loupe : une bande au centre qui montre les memes chiffres en plus gros,
+     deplacee en direct avec le defilement (comme une loupe posee sur la roue). */
+  const loupe = { h: React.useRef(null), m: React.useRef(null) };
+  /* loupe ronde bombee (fish-eye) : au centre le chiffre est tres gros, vers le bord
+     il rapetisse et se tasse, comme sous une lentille convexe. Mis a jour sans
+     re-rendu React pour rester fluide. */
+  const RL = 44;
+  /* or miel qui coule : seulement sur le theme Nuit. Les autres themes : rendu mat, sans brillance ni mouvement. */
+  const estNuit = (() => { try { return (JSON.parse(localStorage.getItem('misbaha.v1') || '{}').theme) === 'nuit'; } catch (e) { return false; } })();
+  const GRAD_MIEL = 'linear-gradient(180deg, #FFF3C4 0%, #F6C453 12%, #D98A1C 24%, #8F4E0A 34%, #F2B23E 44%, #FFE7A0 50%, #E39A26 58%, #9A560C 70%, #F0B040 82%, #FFF0BC 90%, #F6C453 100%)';
+  const COUL = estNuit ? '#E8A93A' : T.goldLight;
+  const MIEL = estNuit ? { backgroundImage: GRAD_MIEL, backgroundSize: '100% 300%', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', animation: 'alaeMiel 3.6s linear infinite', filter: 'drop-shadow(0 1px 2px rgba(60,28,0,0.7))' } : {};
+  const MIEL_CHIFFRE = estNuit ? { color: COUL, backgroundImage: GRAD_MIEL, backgroundSize: '100% 300%', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', animation: 'alaeMiel 3.6s linear infinite', filter: 'drop-shadow(0 1px 0 rgba(255,240,190,0.35)) drop-shadow(0 2px 3px rgba(60,28,0,0.7)) drop-shadow(0 0 6px rgba(240,170,60,0.35))' } : { color: COUL };
+  /* fil d'or qui tourne autour de chaque loupe */
+  React.useEffect(() => {
+    if (document.getElementById('alae-loupe-tour')) return;
+    const st = document.createElement('style'); st.id = 'alae-loupe-tour';
+    st.textContent = '@keyframes alaeLoupeTour{to{transform:rotate(360deg)}}@keyframes alaeMiel{0%{background-position:50% 0%}100%{background-position:50% 100%}}';
+    document.head.appendChild(st);
+  }, []);
+  const majLoupe = (cle, top) => {
+    const box = loupe[cle].current; if (!box) return;
+    const kids = box.children;
+    for (let j = 0; j < kids.length; j++) {
+      const u = (j * H - top) / (1.45 * H);
+      const k = kids[j];
+      if (Math.abs(u) >= 1) { k.style.opacity = '0'; continue; }
+      const c = Math.cos(u * Math.PI / 2);
+      const y = RL * 0.8 * Math.sin(u * Math.PI / 2);
+      const s = 0.22 + 1.28 * Math.pow(c, 1.5);
+      k.style.opacity = Math.pow(c, 0.6).toFixed(2);
+      k.style.transform = 'translate(-50%,-50%) translateY(' + y.toFixed(1) + 'px) scale(' + s.toFixed(3) + ',' + (s * (0.55 + 0.45 * c)).toFixed(3) + ')';
+    }
+  };
+  React.useEffect(() => {
+    if (rh.current) rh.current.scrollTop = heures.indexOf(hh) * H;
+    if (rm.current) rm.current.scrollTop = minutes.indexOf(mm) * H;
+    setPos({ h: heures.indexOf(hh) * H, m: minutes.indexOf(mm) * H });
+    majLoupe('h', heures.indexOf(hh) * H);
+    majLoupe('m', minutes.indexOf(mm) * H);
+  }, []);
+  const suivre = (ref, liste, set, cle) => () => {
+    const el = ref.current; if (!el) return;
+    majLoupe(cle, el.scrollTop);
+    cancelAnimationFrame(raf.current);
+    raf.current = requestAnimationFrame(() => setPos(p => Object.assign({}, p, { [cle]: el.scrollTop })));
+    const i = Math.max(0, Math.min(liste.length - 1, Math.round(el.scrollTop / H)));
+    set(prev => { if (prev !== liste[i] && navigator.vibrate) try { navigator.vibrate(4); } catch (e) {} return liste[i]; });
+    clearTimeout(tm.current[cle]);
+    tm.current[cle] = setTimeout(() => { if (Math.abs(el.scrollTop - i * H) > 1) el.scrollTo({ top: i * H, behavior: 'smooth' }); }, 120);
+  };
+  const deux = n => String(n).padStart(2, '0');
+  const colonne = (ref, liste, val, set, cle) => h("div", { style: { position: 'relative', width: 84, height: H * VIS } }, h("div", { ref, onScroll: suivre(ref, liste, set, cle), style: { width: 84, height: H * VIS, overflowY: 'scroll', scrollSnapType: 'y mandatory', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', position: 'relative', zIndex: 2, WebkitMaskImage: 'linear-gradient(180deg, transparent 0%, #000 30%, #000 70%, transparent 100%)', maskImage: 'linear-gradient(180deg, transparent 0%, #000 30%, #000 70%, transparent 100%)' } },
+    h("div", { style: { height: H * 2 } }),
+    liste.map((v, i) => {
+      /* effet bombe : plus le chiffre approche du centre, plus il grossit (courbe douce
+         sur 1,6 ligne), puis il reprend sa taille en s'eloignant. */
+      const dd = (i * H - pos[cle]) / H, f = Math.max(0, 1 - Math.abs(dd) / 1.6), lisse = f * f * (3 - 2 * f), d = 1 - lisse;
+      const sc = 0.9 + 0.1 * lisse;
+      return h("div", { key: v, onClick: () => ref.current && ref.current.scrollTo({ top: i * H, behavior: 'smooth' }), style: { height: H, scrollSnapAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', perspective: 300 } },
+        h("span", { style: { display: 'inline-block', fontFamily: '"Cormorant Garamond",serif', fontSize: 24, color: T.textDim, opacity: 0, transform: 'rotateX(' + Math.max(-60, Math.min(60, -dd * 30)).toFixed(1) + 'deg) scale(' + sc.toFixed(3) + ')', willChange: 'transform, opacity' } }, deux(v)));
+    }),
+    h("div", { style: { height: H * 2 } })),
+    /* anneau cuivre fin + point lumineux qui tourne sur le bord */
+    h("div", { "aria-hidden": "true", style: { position: 'absolute', left: '50%', top: '50%', width: RL * 2 + 8, height: RL * 2 + 8, marginLeft: -RL - 4, marginTop: -RL - 4, borderRadius: '50%', pointerEvents: 'none', zIndex: 4, border: '1px solid rgba(232,190,112,0.6)', boxShadow: '0 0 3px rgba(232,176,96,0.22), inset 0 0 14px rgba(224,162,63,0.06)' } },
+      null),
+    h("div", { "aria-hidden": "true", style: { position: 'absolute', left: '50%', top: '50%', width: RL * 2, height: RL * 2, marginLeft: -RL, marginTop: -RL, borderRadius: '50%', overflow: 'hidden', pointerEvents: 'none', zIndex: 3, background: estNuit ? 'radial-gradient(circle at 50% 45%, #222 0%, #121212 70%, #070707 100%)' : '#111', border: 'none', boxShadow: '0 0 0 0px rgba(0,0,0,0), 0 6px 16px rgba(0,0,0,0.6), inset 0 0 14px rgba(0,0,0,0.85)' } },
+      h("div", { ref: loupe[cle], style: { position: 'absolute', inset: 0 } },
+        liste.map(v => h("div", { key: v, style: { position: 'absolute', left: '50%', top: '50%', opacity: 0, transformOrigin: '50% 50%', willChange: 'transform, opacity', fontFamily: '"Cormorant Garamond",serif', fontSize: 43, fontWeight: 600, lineHeight: 1, fontVariantNumeric: 'lining-nums', fontFeatureSettings: '"lnum" 1', height: '0.72em', display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '0.04em', whiteSpace: 'nowrap', ...MIEL_CHIFFRE } }, deux(v)))),
+      h("div", { style: { position: 'absolute', inset: 0, borderRadius: '50%', background: estNuit ? 'radial-gradient(ellipse 60% 35% at 35% 22%, rgba(255,255,255,0.16), rgba(255,255,255,0) 70%)' : 'none', boxShadow: 'inset 0 -6px 12px rgba(232,185,122,0.08)' } })));
+  const L = { ar: { ok: 'تم', non: 'إلغاء' }, fr: { ok: 'Valider', non: 'Annuler' }, en: { ok: 'Done', non: 'Cancel' } }[lang] || { ok: 'OK', non: 'X' };
+  const ui = isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif';
+  return h("div", { onClick: onClose, style: { position: 'absolute', inset: 0, zIndex: 400, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(5px)', WebkitBackdropFilter: 'blur(5px)', display: 'flex', alignItems: 'flex-end' } },
+    h("div", { onClick: e => e.stopPropagation(), style: { width: '100%', boxSizing: 'border-box', padding: '18px 18px 34px', borderRadius: '26px 26px 0 0', background: 'linear-gradient(180deg, rgba(28,28,28,0.92), rgba(6,6,6,0.96))', border: '0.5px solid rgba(255,255,255,0.09)', borderBottom: 'none', boxShadow: '0 -12px 36px rgba(0,0,0,0.55)', display: 'flex', flexDirection: 'column', gap: 10 } },
+      h("div", { style: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', direction: isAr ? 'rtl' : 'ltr' } },
+        h("button", { onClick: onClose, style: { background: 'transparent', border: 'none', color: COUL, fontFamily: ui, fontSize: isAr ? 16 : 14, cursor: 'pointer', padding: 8, ...MIEL } }, L.non),
+        h("div", { style: { fontFamily: 'Amiri, serif', fontSize: 19, fontWeight: 700, color: COUL, ...MIEL } }, titre),
+        h("button", { onClick: () => onOk && onOk(deux(hh) + ':' + deux(mm)), style: { background: 'transparent', border: 'none', color: COUL, fontFamily: ui, fontSize: isAr ? 16 : 14, fontWeight: 700, cursor: 'pointer', padding: 8, ...MIEL } }, L.ok)),
+      h("div", { style: { position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 6, direction: 'ltr' } },
+
+        colonne(rh, heures, hh, setHh, 'h'),
+        h("div", { style: { fontFamily: '"Cormorant Garamond",serif', fontSize: 28, color: COUL, zIndex: 2, ...MIEL } }, ':'),
+        colonne(rm, minutes, mm, setMm, 'm'))));
+}
+window.AlaeRoueHeure = AlaeRoueHeure;
+/* 14/10 : Series de dhikr (ALAE). Une serie = plusieurs dhikrs a la suite, chacun
+   avec son objectif. Compteur propre a chaque serie, garde entre deux ouvertures.
+   Les taps comptent aussi dans l'historique et les defis (recordDhikrTap).
+   Cles a part : alae.series (series perso), alae.series.etat (avancement). */
+window.ALAE_SERIES = [
+  {id:'salat', ar:'أذكار بعد الصلاة', fr:'Après la prière', en:'After prayer', etapes:[{d:'subhan',n:33},{d:'hamd',n:33},{d:'akbar',n:33},{d:'lailaha',n:1}]},
+  {id:'matin', ar:'سلسلة الصباح', fr:'Série du matin', en:'Morning series', etapes:[{d:'subhan',n:100},{d:'istighfar',n:100},{d:'salat',n:10}]},
+  {id:'soir', ar:'سلسلة المساء', fr:'Série du soir', en:'Evening series', etapes:[{d:'hasbiya',n:7},{d:'istighfar',n:100},{d:'salat',n:10}]},
+  {id:'nuit', ar:'قبل النوم', fr:'Avant de dormir', en:'Before sleep', etapes:[{d:'subhan',n:33},{d:'hamd',n:33},{d:'akbar',n:34}]}
+];
+function SeriesScreen({ lang = 'fr' }) {
+  const T = window.THEME;
+  const h = React.createElement;
+  const isAr = lang === 'ar';
+  const lire = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || 'null') || d; } catch (e) { return d; } };
+  const ecrire = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  const [perso, setPerso] = React.useState(() => lire('alae.series', {perso: []}).perso || []);
+  const [etat, setEtat] = React.useState(() => lire('alae.series.etat', {}));
+  const [run, setRun] = React.useState(null);
+  const [edit, setEdit] = React.useState(null);
+  const [supp, setSupp] = React.useState(false);
+  const dhikrs = window.DHIKRS || window.DHIKR_BASE || [];
+  const dk = id => dhikrs.find(x => x.id === id) || { ar: id };
+  const L = {
+    ar: { titre: 'السلاسل', go: 'ابدأ', reprendre: 'تابِع', modif: 'تعديل', nouv: '+ سلسلة جديدة', fini: 'اكتملت السلسلة', encore: 'أعِد', retour: 'رجوع', reset: 'أعد الخطوة', quitter: 'إنهاء', nom: 'اسم السلسلة', ajout: '+ أضف ذكرًا', ok: 'حفظ', non: 'إلغاء', del: 'حذف السلسلة', sur: 'اضغط مجددًا للحذف', etape: 'الخطوة', toucher: 'اِلمس للعدّ' },
+    fr: { titre: 'Séries', go: 'Commencer', reprendre: 'Reprendre', modif: 'Modifier', nouv: '+ Nouvelle série', fini: 'Série terminée', encore: 'Recommencer', retour: 'Retour', reset: "Refaire l'étape", quitter: 'Quitter', nom: 'Nom de la série', ajout: '+ Ajouter un dhikr', ok: 'Enregistrer', non: 'Annuler', del: 'Supprimer la série', sur: 'Touchez encore pour supprimer', etape: 'Étape', toucher: 'Touchez pour compter' },
+    en: { titre: 'Series', go: 'Start', reprendre: 'Resume', modif: 'Edit', nouv: '+ New series', fini: 'Series complete', encore: 'Again', retour: 'Back', reset: 'Redo step', quitter: 'Quit', nom: 'Series name', ajout: '+ Add a dhikr', ok: 'Save', non: 'Cancel', del: 'Delete series', sur: 'Tap again to delete', etape: 'Step', toucher: 'Tap to count' }
+  }[lang] || {};
+  const ui = isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif';
+  const num = '"Cormorant Garamond",serif';
+  const verre = { borderRadius: 26, background: 'linear-gradient(180deg, rgba(28,28,28,0.48) 0%, rgba(12,12,12,0.42) 55%, rgba(4,4,4,0.52) 100%)', backdropFilter: 'blur(14px) saturate(1.2)', WebkitBackdropFilter: 'blur(14px) saturate(1.2)', border: '0.5px solid rgba(255,255,255,0.09)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06), inset 0 -2px 6px rgba(0,0,0,0.6), 0 10px 24px rgba(0,0,0,0.5)' };
+  const bouton = (lib, onClick, plein, extra) => h("button", { onClick, style: Object.assign({ padding: '9px 20px', borderRadius: 20, cursor: 'pointer', fontFamily: ui, fontSize: isAr ? 15 : 13, fontWeight: 600, background: plein ? 'linear-gradient(180deg,' + T.goldLight + ',' + T.gold + ')' : 'transparent', color: plein ? '#1A1410' : T.goldLight, border: plein ? 'none' : '0.5px solid ' + T.hairline }, extra || {}) }, lib);
+  const toutes = window.ALAE_SERIES.concat(perso.map(p => Object.assign({ perso: true }, p)));
+  const nomDe = s => s.perso ? s.nom : (s[lang] || s.fr);
+  const majEtat = (id, v) => { const e = Object.assign({}, lire('alae.series.etat', {})); if (v) e[id] = v; else delete e[id]; ecrire('alae.series.etat', e); setEtat(e); };
+  const fond = (...c) => h("div", { style: { position: 'absolute', inset: 0, background: T.bg, overflow: 'hidden', direction: isAr ? 'rtl' : 'ltr' } }, h(window.SilkBg, { opacity: 0.9, vue: 'historique' }), ...c);
+  const titre = txt => h("div", { style: { position: 'absolute', top: 84, left: 70, right: 70, textAlign: 'center', zIndex: 3, fontFamily: 'Amiri, serif', fontSize: 23, fontWeight: 700, color: T.text, textShadow: '0 0 10px rgba(216,138,62,0.35)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' } }, txt);
+
+  /* ── compteur d'une serie ── */
+  if (run) {
+    const s = toutes.find(x => x.id === run);
+    if (!s) { setRun(null); return null; }
+    const e = etat[s.id] || { step: 0, count: 0 };
+    const fini = e.step >= s.etapes.length;
+    const et = s.etapes[Math.min(e.step, s.etapes.length - 1)];
+    const taper = () => {
+      /* relu a chaque tap : deux taps rapides avant le re-rendu ne doivent pas se perdre */
+      const e = lire('alae.series.etat', {})[s.id] || { step: 0, count: 0 };
+      if (e.step >= s.etapes.length) return;
+      const et = s.etapes[e.step];
+      try { if (window.recordDhikrTap) window.recordDhikrTap(et.d); } catch (x) {}
+      try { if (window.AlaeHaptic) window.AlaeHaptic('heavy'); } catch (x) {}
+      try { if (window.alaeClick) window.alaeClick(); } catch (x) {}
+      let c = e.count + 1, st = e.step;
+      if (c >= et.n) {
+        st += 1; c = 0;
+        if (navigator.vibrate) try { navigator.vibrate(st >= s.etapes.length ? [60, 80, 60, 80, 120] : [40, 90, 40]); } catch (x) {}
+      } else if (navigator.vibrate) try { navigator.vibrate(10); } catch (x) {}
+      majEtat(s.id, { step: st, count: c });
+    };
+    const pct = fini ? 1 : e.count / et.n;
+    const R = 104, C = 2 * Math.PI * R;
+    return fond(titre(nomDe(s)),
+      h("div", { style: { position: 'absolute', top: 140, left: 20, right: 20, zIndex: 3, display: 'flex', justifyContent: 'center', gap: 8, direction: 'rtl', flexWrap: 'wrap' } },
+        s.etapes.map((x, i) => h("div", { key: i, style: { padding: '4px 10px', borderRadius: 12, fontFamily: 'Amiri, serif', fontSize: 13, color: i < e.step || fini ? '#1A1410' : i === e.step ? T.goldLight : T.textDim, background: i < e.step || fini ? 'linear-gradient(180deg,' + T.goldLight + ',' + T.gold + ')' : 'rgba(0,0,0,0.35)', border: i === e.step && !fini ? '0.5px solid ' + T.goldLight : '0.5px solid rgba(255,255,255,0.08)', whiteSpace: 'nowrap' } }, dk(x.d).ar + ' ×' + x.n))),
+      h("div", { style: { position: 'absolute', top: 220, left: 20, right: 20, zIndex: 3, textAlign: 'center', fontFamily: 'Amiri, serif', fontSize: 32, lineHeight: 1.5, color: T.text, direction: 'rtl', textShadow: '0 1px 4px rgba(0,0,0,0.7)' } }, fini ? L.fini : dk(et.d).ar),
+      !fini && h("div", { style: { position: 'absolute', top: 290, left: 0, right: 0, zIndex: 3, textAlign: 'center', fontFamily: ui, fontSize: isAr ? 13 : 11, color: T.textMuted } }, L.etape + ' ' + (e.step + 1) + ' / ' + s.etapes.length),
+      h("button", { onClick: taper, "aria-label": "compter", style: { position: 'absolute', top: 350, left: '50%', marginLeft: -130, width: 260, height: 260, borderRadius: 130, zIndex: 3, cursor: fini ? 'default' : 'pointer', padding: 0, border: 'none', background: 'radial-gradient(circle at 50% 35%, rgba(40,40,40,0.55), rgba(6,6,6,0.75))', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.07), 0 14px 34px rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', WebkitTapHighlightColor: 'transparent' } },
+        h("svg", { width: 240, height: 240, viewBox: "0 0 240 240", style: { position: 'absolute', inset: 10 } },
+          h("circle", { cx: 120, cy: 120, r: R, fill: 'none', stroke: 'rgba(199,165,91,0.15)', strokeWidth: 3 }),
+          h("circle", { cx: 120, cy: 120, r: R, fill: 'none', stroke: T.goldLight, strokeWidth: 3, strokeLinecap: 'round', strokeDasharray: C, strokeDashoffset: C * (1 - pct), transform: 'rotate(-90 120 120)', style: { transition: 'stroke-dashoffset 0.25s ease' } })),
+        h("div", { style: { position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 } },
+          h("div", { style: { fontFamily: num, fontSize: 72, lineHeight: 1, color: T.goldLight } }, fini ? '✓' : e.count),
+          !fini && h("div", { style: { fontFamily: num, fontSize: 18, color: T.textMuted } }, '/ ' + et.n),
+          !fini && e.count === 0 && e.step === 0 && h("div", { style: { fontFamily: ui, fontSize: isAr ? 12 : 10, color: T.textDim, marginTop: 6 } }, L.toucher))),
+      h("div", { style: { position: 'absolute', top: 650, left: 20, right: 20, zIndex: 3, display: 'flex', justifyContent: 'center', gap: 12 } },
+        fini ? [bouton(L.encore, () => majEtat(s.id, null), true, { key: 'a' }), bouton(L.retour, () => setRun(null), false, { key: 'b' })]
+             : [bouton(L.reset, () => majEtat(s.id, { step: e.step, count: 0 }), false, { key: 'a' }), bouton(L.quitter, () => setRun(null), false, { key: 'b' })]));
+  }
+
+  /* ── editeur ── */
+  if (edit) {
+    const maj = p => setEdit(Object.assign({}, edit, p));
+    const majEt = (i, p) => maj({ etapes: edit.etapes.map((x, j) => j === i ? Object.assign({}, x, p) : x) });
+    const enregistrer = () => {
+      const propre = Object.assign({}, edit, { nom: (edit.nom || '').trim() || L.titre, etapes: edit.etapes.filter(x => x.n > 0) });
+      if (!propre.etapes.length) return;
+      const l = perso.filter(x => x.id !== propre.id).concat([propre]);
+      ecrire('alae.series', { perso: l }); setPerso(l); majEtat(propre.id, null); setEdit(null);
+    };
+    const supprimer = () => {
+      if (!supp) { setSupp(true); setTimeout(() => setSupp(false), 3000); return; }
+      const l = perso.filter(x => x.id !== edit.id); ecrire('alae.series', { perso: l }); setPerso(l); majEtat(edit.id, null); setEdit(null); setSupp(false);
+    };
+    const champ = { background: 'rgba(0,0,0,0.4)', border: '0.5px solid rgba(255,255,255,0.12)', borderRadius: 12, color: T.text, padding: '9px 12px', fontFamily: isAr ? 'Amiri, serif' : ui, fontSize: 16, outline: 'none' };
+    return fond(titre(edit.nouveau ? L.nouv.replace('+ ', '') : L.modif),
+      h("div", { style: { position: 'absolute', top: 134, left: 14, right: 14, bottom: 24, overflowY: 'auto', zIndex: 2, display: 'flex', flexDirection: 'column', gap: 12, paddingBottom: 20 } },
+        h("div", { style: Object.assign({ padding: 16, display: 'flex', flexDirection: 'column', gap: 12 }, verre) },
+          h("input", { value: edit.nom, placeholder: L.nom, onChange: e => maj({ nom: e.target.value }), style: Object.assign({ textAlign: 'center', fontSize: 19 }, champ) }),
+          edit.etapes.map((x, i) => h("div", { key: i, style: { display: 'flex', alignItems: 'center', gap: 8, direction: 'rtl' } },
+            h("select", { value: x.d, onChange: e => majEt(i, { d: e.target.value }), style: Object.assign({ flex: 1, minWidth: 0, direction: 'rtl', WebkitAppearance: 'none', appearance: 'none' }, champ) }, dhikrs.map(d => h("option", { key: d.id, value: d.id }, d.ar))),
+            h("button", { onClick: () => majEt(i, { n: Math.max(1, x.n - (x.n > 10 ? 10 : 1)) }), style: { width: 32, height: 32, borderRadius: 16, border: '1px solid rgba(208,138,79,0.7)', background: 'rgba(14,10,6,0.62)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', color: T.goldLight, fontSize: 18, cursor: 'pointer', padding: 0 } }, '−'),
+            h("input", { type: 'number', inputMode: 'numeric', value: x.n, onChange: e => majEt(i, { n: Math.max(0, Math.min(9999, parseInt(e.target.value, 10) || 0)) }), style: Object.assign({ width: 58, textAlign: 'center', fontFamily: num, fontSize: 18, padding: '7px 4px', direction: 'ltr' }, champ) }),
+            h("button", { onClick: () => majEt(i, { n: Math.min(9999, x.n + (x.n >= 10 ? 10 : 1)) }), style: { width: 32, height: 32, borderRadius: 16, border: '1px solid rgba(208,138,79,0.7)', background: 'rgba(14,10,6,0.62)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', color: T.goldLight, fontSize: 18, cursor: 'pointer', padding: 0 } }, '+'),
+            h("button", { onClick: () => maj({ etapes: edit.etapes.filter((_, j) => j !== i) }), "aria-label": "retirer", style: { width: 28, height: 28, border: 'none', background: 'transparent', color: T.textDim, fontSize: 16, cursor: 'pointer', padding: 0 } }, '×'))),
+          bouton(L.ajout, () => maj({ etapes: edit.etapes.concat([{ d: (dhikrs[0] || {}).id || 'subhan', n: 33 }]) }), false, { alignSelf: 'center' })),
+        h("div", { style: { display: 'flex', justifyContent: 'center', gap: 12 } }, bouton(L.non, () => setEdit(null), false), bouton(L.ok, enregistrer, true)),
+        !edit.nouveau && h("div", { style: { display: 'flex', justifyContent: 'center' } }, bouton(supp ? L.sur : L.del, supprimer, false, { color: '#E08A7A', border: '0.5px solid rgba(224,138,122,0.35)' }))));
+  }
+
+  /* ── liste ── */
+  return fond(titre(L.titre),
+    h("div", { style: { position: 'absolute', top: 134, left: 14, right: 14, bottom: 24, overflowY: 'auto', WebkitOverflowScrolling: 'touch', zIndex: 2, display: 'flex', flexDirection: 'column', gap: 14, paddingBottom: 20 } },
+      toutes.map(s => {
+        const e = etat[s.id];
+        const enCours = e && (e.step > 0 || e.count > 0) && e.step < s.etapes.length;
+        return h("div", { key: s.id, style: Object.assign({ padding: '16px 16px 18px', display: 'flex', flexDirection: 'column', gap: 12 }, verre) },
+          h("div", { style: { textAlign: 'center', fontFamily: isAr ? 'Amiri, serif' : ui, fontSize: isAr ? 20 : 15, fontWeight: 700, color: T.goldLight } }, nomDe(s)),
+          h("div", { style: { display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 6, direction: 'rtl' } },
+            s.etapes.map((x, i) => h("div", { key: i, style: { padding: '4px 10px', borderRadius: 12, background: 'rgba(0,0,0,0.35)', border: '0.5px solid rgba(255,255,255,0.08)', fontFamily: 'Amiri, serif', fontSize: 14, color: T.text, whiteSpace: 'nowrap' } }, dk(x.d).ar + ' ×' + x.n))),
+          h("div", { style: { display: 'flex', justifyContent: 'center', gap: 10 } },
+            bouton(enCours ? L.reprendre : L.go, () => { if (e && e.step >= s.etapes.length) majEtat(s.id, null); setRun(s.id); }, true),
+            s.perso && bouton(L.modif, () => setEdit(JSON.parse(JSON.stringify(s))), false)));
+      }),
+      h("div", { style: { display: 'flex', justifyContent: 'center' } }, bouton(L.nouv, () => setEdit({ id: 'perso-' + Date.now(), nouveau: true, nom: '', etapes: [{ d: 'subhan', n: 33 }] }), false))));
+}
+window.SeriesScreen = SeriesScreen;
+</script><script type="text/alae-js">
 function MorningCardScreen({
   lang = "fr",
   onBack
@@ -13045,7 +13770,7 @@ function navBtn(T) {
     width: 42,
     height: 42,
     borderRadius: "50%",
-    border: "0.5px solid " + T.hairline,
+    border: '1px solid rgba(208,138,79,0.7)',
     background: T.verre,
     color: T.gold,
     fontSize: 21,
@@ -13637,7 +14362,7 @@ function DuaaScreen({
       fontFamily: '"ArefRuqaa","Amiri",serif',
       fontSize: 38,
       fontWeight: 700,
-      background: T.titreOr,
+      background: 'linear-gradient(180deg, #FBE3B4 0%, #F0C483 55%, #E2A866 100%)',
       WebkitBackgroundClip: 'text',
       WebkitTextFillColor: 'transparent',
       backgroundClip: 'text',
@@ -13688,14 +14413,8 @@ function DuaaScreen({
       fontSize: 38,
       fontWeight: 700,
       lineHeight: 2.1,
-      color: 'transparent',
-      backgroundImage: T.dorureC260,
-      backgroundSize: '260% 100%',
-      WebkitBackgroundClip: 'text',
-      backgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      filter: 'drop-shadow(0 0 10px rgba(235,150,66,0.45)) drop-shadow(0 2px 4px rgba(0,0,0,0.5))',
-      animation: 'sabahShine 5s ease-in-out infinite'
+      color: '#DFA36C',
+      textShadow: '0 1px 2px rgba(0,0,0,0.85), 0 0 10px rgba(0,0,0,0.55)'
     }
   }, greeting[lang] || greeting.ar), /*#__PURE__*/React.createElement("style", null, `
             @keyframes sabahShine {
@@ -13710,15 +14429,32 @@ function DuaaScreen({
       fontFamily: '"ArefRuqaa","Amiri",serif',
       fontSize: 29,
       lineHeight: 2.15,
-      color: T.text,
+      color: '#DFA36C',
       direction: 'rtl',
       textAlign: 'justify',
       textAlignLast: 'center',
       fontWeight: 400,
-      textShadow: '0 1px 3px rgba(0,0,0,0.6)',
-      letterSpacing: '0.005em'
+      textShadow: '0 1px 2px rgba(0,0,0,0.85), 0 0 10px rgba(0,0,0,0.55)',
+      letterSpacing: '0.005em',
+      position: 'relative'
     }
-  }, duaa.ar), /*#__PURE__*/React.createElement("div", {
+  }, duaa.ar, /*#__PURE__*/React.createElement("span", {
+    /* 14/10 : meme caramel + or qui coule que la page Niyya (ALAE). */
+    "aria-hidden": "true",
+    style: {
+      position: 'absolute',
+      inset: 0,
+      pointerEvents: 'none',
+      color: 'transparent',
+      textShadow: 'none',
+      backgroundImage: 'linear-gradient(100deg, rgba(255,214,140,0) 0%, rgba(255,214,140,0) 30%, rgba(255,232,180,0.95) 50%, rgba(255,214,140,0) 70%, rgba(255,214,140,0) 100%)',
+      backgroundSize: '220% 100%',
+      WebkitBackgroundClip: 'text',
+      backgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      animation: 'alaeShine 6s ease-in-out infinite'
+    }
+  }, duaa.ar)), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
       justifyContent: 'center',
@@ -13758,8 +14494,8 @@ function DuaaScreen({
     style: {
       fontFamily: 'Amiri, serif',
       fontSize: 13,
-      color: T.gold,
-      opacity: 0.75,
+      color: '#D08A4F',
+      textShadow: '0 1px 2px rgba(0,0,0,0.85), 0 0 10px rgba(0,0,0,0.55)',
       textAlign: 'center',
       letterSpacing: '0.03em'
     }
@@ -13780,7 +14516,7 @@ function DuaaScreen({
       fontFamily: 'Amiri, serif',
       fontSize: 16,
       fontWeight: 700,
-      color: T.goldLight,
+      color: '#D08A4F',
       letterSpacing: '0.04em'
     }
   }, /*#__PURE__*/React.createElement("svg", {
@@ -14233,7 +14969,7 @@ function AsmaScreen({
       alignItems: 'center',
       justifyContent: 'center',
       background: 'radial-gradient(circle at 35% 30%, rgba(232,185,122,0.22), rgba(199,147,91,0.06))',
-      border: '0.5px solid rgba(232,185,122,0.35)',
+      border: '1px solid rgba(208,138,79,0.7)',
       fontFamily: '-apple-system,sans-serif',
       fontSize: 13,
       fontWeight: 600,
@@ -14801,6 +15537,18 @@ window.AsmaScreen = AsmaScreen;
         isToday: i === 0
       });
     }
+    /* 14/10 : historique sur 30 jours (ALAE). */
+    const month = [];
+    let total30 = 0, best = 0, actifs = 0;
+    for (let i = 29; i >= 0; i--) {
+      const dt = new Date();
+      dt.setDate(dt.getDate() - i);
+      const v = daily[dayKey(dt)] && daily[dayKey(dt)].total || 0;
+      total30 += v;
+      if (v > best) best = v;
+      if (v > 0) actifs++;
+      month.push({ label: String(dt.getDate()), value: v, isToday: i === 0 });
+    }
     const today = daily[dayKey()] && daily[dayKey()].total || 0;
     const counts = s.counts || {};
     const entries = Object.keys(counts).map(id => ({
@@ -14828,6 +15576,10 @@ window.AsmaScreen = AsmaScreen;
       streak: s.streak || 0,
       totalAll: s.totalCount || 0,
       breakdown,
+      month,
+      total30,
+      best,
+      actifs,
       hasData: (s.totalCount || 0) > 0
     };
   };
@@ -14926,11 +15678,11 @@ window.AsmaScreen = AsmaScreen;
         width: 44 * sc,
         height: 44 * sc,
         borderRadius: 22 * sc,
-        background: isBare ? 'transparent' : icon === 'back' ? 'rgba(14,10,6,0.62)' : 'transparent',
-        backdropFilter: icon === 'back' && !isBare ? 'blur(8px)' : 'none',
-        WebkitBackdropFilter: icon === 'back' && !isBare ? 'blur(8px)' : 'none',
-        boxShadow: icon === 'back' && !isBare ? '0 6px 18px rgba(0,0,0,0.45)' : 'none',
-        border: isBare ? 'none' : `1px solid rgba(232,185,122,0.55)`,
+        background: isBare ? 'transparent' : 'rgba(14,10,6,0.62)',
+        backdropFilter: !isBare ? 'blur(8px)' : 'none',
+        WebkitBackdropFilter: !isBare ? 'blur(8px)' : 'none',
+        boxShadow: !isBare ? '0 6px 18px rgba(0,0,0,0.45)' : 'none',
+        border: isBare ? 'none' : '1px solid rgba(208,138,79,0.7)',
         color: 'rgba(232,185,122,0.95)',
         cursor: 'pointer',
         zIndex: 100,
@@ -15017,6 +15769,16 @@ window.AsmaScreen = AsmaScreen;
       r: "2",
       stroke: "currentColor",
       strokeWidth: "1.1"
+    })), icon === 'textSize' && /*#__PURE__*/React.createElement("svg", {
+      width: "18",
+      height: "18",
+      viewBox: "0 0 16 16",
+      fill: "none"
+    }, /*#__PURE__*/React.createElement("path", {
+      d: "M1.8 3.6h6.6M5.1 3.6v9.2M9.6 8h4.6M11.9 8v4.8",
+      stroke: "currentColor",
+      strokeWidth: "1.6",
+      strokeLinecap: "round"
     })), icon === 'eyeOpen' && /*#__PURE__*/React.createElement("svg", {
       width: "17",
       height: "17",
@@ -15088,6 +15850,14 @@ window.AsmaScreen = AsmaScreen;
       label: I.tabs.stats,
       icon: 'chart'
     }, {
+      id: 'defis',
+      label: isAr ? 'التحديات' : lang === 'fr' ? 'Défis' : 'Challenges',
+      icon: 'target'
+    }, {
+      id: 'series',
+      label: isAr ? 'السلاسل' : lang === 'fr' ? 'Séries de dhikr' : 'Dhikr series',
+      icon: 'list'
+    }, {
       id: 'community',
       label: isAr ? 'مُصحفي' : lang === 'fr' ? 'Mon Coran' : 'My Quran',
       icon: 'people'
@@ -15142,10 +15912,11 @@ window.AsmaScreen = AsmaScreen;
         zIndex: 1,
         opacity: 0.85
       }
-    }, [[36, 52, 1.1, 0.72], [104, 24, 0.8, 0.48], [190, 66, 0.85, 0.5], [262, 30, 1.2, 0.78], [340, 58, 0.85, 0.55], [70, 150, 0.8, 0.46], [224, 128, 0.75, 0.42], [318, 176, 0.9, 0.52], [28, 244, 0.85, 0.5], [142, 214, 0.75, 0.4], [286, 276, 0.9, 0.46], [52, 340, 0.8, 0.44], [358, 330, 0.85, 0.48], [196, 394, 0.8, 0.42], [308, 444, 0.8, 0.46], [42, 476, 0.85, 0.44], [360, 530, 0.8, 0.42], [118, 560, 0.8, 0.44], [270, 608, 0.85, 0.46], [34, 648, 0.8, 0.4], [348, 694, 0.8, 0.44], [158, 736, 0.8, 0.42], [302, 792, 0.85, 0.44]].map(([x, y, r, op], i) => /*#__PURE__*/React.createElement("g", {
+    }, [[36, 52, 1.1, 0.72], [104, 24, 0.8, 0.48], [190, 66, 0.85, 0.5], [262, 30, 1.2, 0.78], [340, 58, 0.85, 0.55], [70, 150, 0.8, 0.46], [224, 128, 0.75, 0.42], [318, 176, 0.9, 0.52], [28, 244, 0.85, 0.5], [142, 214, 0.75, 0.4], [286, 276, 0.9, 0.46], [52, 340, 0.8, 0.44], [358, 330, 0.85, 0.48], [196, 394, 0.8, 0.42], [308, 444, 0.8, 0.46], [42, 476, 0.85, 0.44], [360, 530, 0.8, 0.42], [118, 560, 0.8, 0.44], [270, 608, 0.85, 0.46], [34, 648, 0.8, 0.4], [348, 694, 0.8, 0.44], [158, 736, 0.8, 0.42], [302, 792, 0.85, 0.44]] .flatMap(s => [s, [s[0] + 41, s[1] + 27, s[2] * 0.85, s[3]], [s[0] - 29, s[1] + 46, s[2] * 0.75, s[3] * 0.9]]).map(([x, y, r, op], i) => /*#__PURE__*/React.createElement("g", {
       key: i,
+      onAnimationIteration: e => { /* 14/10 : a chaque cycle l'etoile renait ailleurs (ALAE). */ const g = e.currentTarget; g.setAttribute('transform', 'translate(' + (Math.random() * 90 - 45).toFixed(1) + ' ' + (Math.random() * 70 - 35).toFixed(1) + ')'); },
       style: {
-        animation: `alaeStarFloat ${(4.6 + i % 7 * 0.83).toFixed(1)}s ease-in-out ${(i * 1.41 % 7).toFixed(2)}s infinite`
+        animation: `alaeStarHop ${(2.6 + i % 7 * 0.45).toFixed(1)}s ease-in-out ${(i * 0.83 % 4).toFixed(2)}s infinite both`
       }
     }, /*#__PURE__*/React.createElement("circle", {
       cx: x,
@@ -15183,7 +15954,7 @@ window.AsmaScreen = AsmaScreen;
         borderRadius: 21,
         background: T.verre,
         backdropFilter: 'blur(10px)',
-        border: `0.5px solid ${T.hairline}`,
+        border: '1px solid rgba(208,138,79,0.7)',
         color: T.gold,
         cursor: 'pointer',
         zIndex: 210,
@@ -15360,6 +16131,8 @@ window.AsmaScreen = AsmaScreen;
                 100% { background-position: 130% 0; filter: drop-shadow(0 0 4px rgba(244,216,155,0.25)); }
               }
             `)), /*#__PURE__*/React.createElement("div", {
+      /* 14/10 : le menu s'ouvre toujours en haut de la liste (ALAE). */
+      ref: el => { if (el && open && !el.__alaeOuvert) { el.scrollTop = 0; } if (el) el.__alaeOuvert = open; },
       style: {
         padding: '12px 12px 18px',
         display: 'flex',
@@ -15459,7 +16232,7 @@ window.AsmaScreen = AsmaScreen;
         color: T.textDim,
         textAlign: isAr ? 'right' : 'left'
       }
-    }, "v 1.0.20 ", /*#__PURE__*/React.createElement("a", {
+    }, "v 1.0.21 ", /*#__PURE__*/React.createElement("a", {
       href: "https://www.lestyle.be",
       target: "_blank",
       rel: "noopener noreferrer",
@@ -15561,6 +16334,30 @@ window.AsmaScreen = AsmaScreen;
       fill: "currentColor",
       stroke: "currentColor"
     }));
+    if (name === 'list') return /*#__PURE__*/React.createElement("svg", p, /*#__PURE__*/React.createElement("path", {
+      d: "M5 3.5h7M5 7h7M5 10.5h7"
+    }), /*#__PURE__*/React.createElement("circle", {
+      cx: "2.4",
+      cy: "3.5",
+      r: "0.7"
+    }), /*#__PURE__*/React.createElement("circle", {
+      cx: "2.4",
+      cy: "7",
+      r: "0.7"
+    }), /*#__PURE__*/React.createElement("circle", {
+      cx: "2.4",
+      cy: "10.5",
+      r: "0.7"
+    }));
+    if (name === 'target') return /*#__PURE__*/React.createElement("svg", p, /*#__PURE__*/React.createElement("circle", {
+      cx: "7",
+      cy: "7",
+      r: "5.2"
+    }), /*#__PURE__*/React.createElement("circle", {
+      cx: "7",
+      cy: "7",
+      r: "2.2"
+    }));
     if (name === 'gear') return /*#__PURE__*/React.createElement("svg", p, /*#__PURE__*/React.createElement("circle", {
       cx: "7",
       cy: "7",
@@ -15582,7 +16379,8 @@ window.AsmaScreen = AsmaScreen;
     isAr,
     backTop,
     bare,
-    backScale
+    backScale,
+    ttTop
   }) {
     return /*#__PURE__*/React.createElement(React.Fragment, null, children, /*#__PURE__*/React.createElement(CornerButton, {
       side: isAr ? 'right' : 'left',
@@ -15592,6 +16390,13 @@ window.AsmaScreen = AsmaScreen;
       top: backTop,
       bare: bare,
       scale: backScale
+    }), /*#__PURE__*/React.createElement(CornerButton, {
+      /* 14/10 : bouton Tt sur toutes les pages, en face du retour (ALAE). */
+      side: isAr ? 'left' : 'right',
+      icon: 'textSize',
+      onClick: () => window.alaeCycleTexte(),
+      isAr: isAr,
+      top: ttTop != null ? ttTop : backTop
     }));
   }
 
@@ -15736,6 +16541,9 @@ window.AsmaScreen = AsmaScreen;
     const onTouchEnd = () => {
       sw.current.down = false;
     };
+    /* 14/10 : bouton Tt (taille du texte) sur l'accueil, sous l'oeil (ALAE). */
+    const [, setTtTick] = React.useState(0);
+    const cycleTexte = () => { window.alaeCycleTexte(); setTtTick(n => n + 1); };
     return /*#__PURE__*/React.createElement("div", {
       style: {
         position: 'absolute',
@@ -15762,6 +16570,39 @@ window.AsmaScreen = AsmaScreen;
     }), /*#__PURE__*/React.createElement("button", {
       onClick: e => {
         e.stopPropagation();
+        cycleTexte();
+      },
+      "aria-label": 'textSize',
+      style: {
+        position: 'absolute',
+        top: 'calc(max(env(safe-area-inset-top, 0px), 44px) + 122px)',
+        left: 18,
+        zIndex: 100,
+        width: 44,
+        height: 44,
+        borderRadius: 22,
+        padding: 0,
+        cursor: 'pointer',
+        background: 'rgba(14,10,6,0.62)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', boxShadow: '0 6px 18px rgba(0,0,0,0.45)',
+        border: '1px solid rgba(208,138,79,0.7)',
+        color: 'rgba(232,185,122,0.95)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }
+    }, /*#__PURE__*/React.createElement("svg", {
+      width: "18",
+      height: "18",
+      viewBox: "0 0 16 16",
+      fill: "none"
+    }, /*#__PURE__*/React.createElement("path", {
+      d: "M1.8 3.6h6.6M5.1 3.6v9.2M9.6 8h4.6M11.9 8v4.8",
+      stroke: "currentColor",
+      strokeWidth: "1.6",
+      strokeLinecap: "round"
+    }))), /*#__PURE__*/React.createElement("button", {
+      onClick: e => {
+        e.stopPropagation();
         toggleEyesClosed();
       },
       "aria-label": eyesClosed ? 'eyeClosed' : 'eyeOpen',
@@ -15775,8 +16616,8 @@ window.AsmaScreen = AsmaScreen;
         borderRadius: 22,
         padding: 0,
         cursor: 'pointer',
-        background: 'transparent',
-        border: '1px solid rgba(232,185,122,0.55)',
+        background: 'rgba(14,10,6,0.62)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', boxShadow: '0 6px 18px rgba(0,0,0,0.45)',
+        border: '1px solid rgba(208,138,79,0.7)',
         color: 'rgba(232,185,122,0.95)',
         display: 'flex',
         alignItems: 'center',
@@ -15929,12 +16770,24 @@ window.AsmaScreen = AsmaScreen;
       onClick: toggleEyesClosed,
       isAr: isAr,
       top: 85
+    }), /*#__PURE__*/React.createElement(CornerButton, {
+      side: isAr ? 'left' : 'right',
+      icon: 'textSize',
+      onClick: () => window.alaeCycleTexte(),
+      isAr: isAr,
+      top: 140
     }));
   }
 
   // ─── Top-level app ─────────────────────────────────────────────────
   function MisbahaApp() {
     const [state, setState] = useState(() => loadState());
+    const [, setTexteTick] = useState(0);
+    React.useEffect(() => {
+      const f = () => setTexteTick(n => n + 1);
+      window.addEventListener('alae-texte', f);
+      return () => window.removeEventListener('alae-texte', f);
+    }, []);
     const [route, setRoute] = useState('compteur');
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [showSplash, setShowSplash] = useState(false);
@@ -16111,6 +16964,11 @@ window.AsmaScreen = AsmaScreen;
         const pl = window.ALAE_PLAT ? 'silk-amouage-lune.jpg' : 'assets/silk-amouage-lune.jpg';
         root.style.setProperty('--silk-img-lune', `url("${pl}")`);
         root.style.setProperty('--silk-ciel-lune', 'linear-gradient(180deg, rgba(3,4,8,0.92) 0%, rgba(3,4,8,0.80) 18%, rgba(3,4,8,0.45) 32%, rgba(3,4,8,0) 46%)');
+      } else if (theme === 'abqari') {
+        /* 10/10 : Abqari, page de la lune seulement — le drape cuivre a gauche est
+           recouvert de noir (ALAE). Le fond des autres pages n'est pas touche. */
+        root.style.removeProperty('--silk-img-lune');
+        root.style.setProperty('--silk-ciel-lune', 'radial-gradient(ellipse 92% 25% at 0% 0%, #070708 0%, #070708 52%, rgba(7,7,8,0.85) 62%, rgba(7,7,8,0.6) 72%, rgba(7,7,8,0.34) 82%, rgba(7,7,8,0.14) 91%, rgba(7,7,8,0.04) 96%, rgba(7,7,8,0) 100%)');
       } else {
         root.style.removeProperty('--silk-img-lune');
         root.style.removeProperty('--silk-ciel-lune');
@@ -16120,11 +16978,19 @@ window.AsmaScreen = AsmaScreen;
          en verre a 40 % laissaient passer le blanc : texte illisible. Sur ce
          theme seul, elles passent a un fond sombre dense. */
       if (theme === 'amouage') root.style.setProperty('--alae-pastille', 'linear-gradient(180deg, rgba(5,10,14,0.80), rgba(5,10,14,0.68))');
+      else if (theme === 'abqari') root.style.setProperty('--alae-pastille', 'linear-gradient(180deg, rgba(238,198,132,0.16), rgba(238,198,132,0.07))');
       else root.style.removeProperty('--alae-pastille');
       if (theme === 'amouage') root.style.setProperty('--alae-lune-echelle', '1.125');
       else root.style.removeProperty('--alae-lune-echelle');
       /* 23/09 : halo retire a la demande d'ALAE — le calque reste a opacite 0. */
-      root.style.removeProperty('--alae-lune-halo');
+      /* 10/10 : Abqari seul — lumiere doree douce autour de la lune (ALAE). */
+      if (theme === 'abqari') {
+        root.style.setProperty('--alae-lune-halo', '1');
+        root.style.setProperty('--alae-lune-halo-bg', 'radial-gradient(circle at 50% 49%, rgba(246,226,186,0.13) 0%, rgba(238,198,132,0.08) 22%, rgba(238,198,132,0.035) 36%, rgba(0,0,0,0) 48%)');
+      } else {
+        root.style.removeProperty('--alae-lune-halo');
+        root.style.removeProperty('--alae-lune-halo-bg');
+      }
       // Thèmes photographiques (Al-Bahrayn, Amouage) : voile serré sur les bords,
       // l'eau reste nette au centre. Tout thème qui définit son voile le reçoit ici.
       // 15/09 : au cran clair il restait une ombre visible en bas de l'ecran. Les
@@ -16393,7 +17259,8 @@ window.AsmaScreen = AsmaScreen;
     }), route === 'library' && /*#__PURE__*/React.createElement(ScreenWithBack, {
       onBack: () => go('compteur'),
       isAr: isAr,
-      backTop: 64
+      backTop: 64,
+      ttTop: 122
     }, /*#__PURE__*/React.createElement(window.LibraryScreen, {
       lang: lang,
       onAddDhikr: () => {
@@ -16409,6 +17276,18 @@ window.AsmaScreen = AsmaScreen;
       isAr: isAr,
       backTop: 74
     }, /*#__PURE__*/React.createElement(window.HistoryScreen, {
+      lang: lang
+    })), route === 'series' && /*#__PURE__*/React.createElement(ScreenWithBack, {
+      onBack: () => go('compteur'),
+      isAr: isAr,
+      backTop: 74
+    }, /*#__PURE__*/React.createElement(window.SeriesScreen, {
+      lang: lang
+    })), route === 'defis' && /*#__PURE__*/React.createElement(ScreenWithBack, {
+      onBack: () => go('compteur'),
+      isAr: isAr,
+      backTop: 74
+    }, /*#__PURE__*/React.createElement(window.DefisScreen, {
       lang: lang
     })), route === 'community' && /*#__PURE__*/React.createElement(window.CommunityScreen, {
       lang: lang,
@@ -16441,6 +17320,12 @@ window.AsmaScreen = AsmaScreen;
     })), route === 'morningcard' && /*#__PURE__*/React.createElement(window.MorningCardScreen, {
       lang: lang,
       onBack: () => go('compteur')
+    }), route === 'morningcard' && /*#__PURE__*/React.createElement(CornerButton, {
+      side: isAr ? 'left' : 'right',
+      icon: 'textSize',
+      onClick: () => window.alaeCycleTexte(),
+      isAr: isAr,
+      top: 60
     }), route === 'asma' && /*#__PURE__*/React.createElement(ScreenWithBack, {
       onBack: () => {
         go('compteur');
@@ -16505,7 +17390,7 @@ window.AsmaScreen = AsmaScreen;
         borderRadius: 21,
         background: 'rgba(11,13,16,0.7)',
         backdropFilter: 'blur(10px)',
-        border: `0.5px solid ${T.hairline}`,
+        border: '1px solid rgba(208,138,79,0.7)',
         color: T.gold,
         cursor: 'pointer',
         zIndex: 360,
