@@ -60,6 +60,25 @@ final class AlaeAdhanPlayer: NSObject {
 final class AlaeNotifDelegate: NSObject, UNUserNotificationCenterDelegate {
     static let shared = AlaeNotifDelegate()
 
+    // 19/10 : bouton sous la notification du vendredi (ALAE).
+    static let categorieSalawat = "alae-jumua-salat-cat"
+    static let actionSalawat = "alae-action-salawat"
+    static let ouvrirSalawat = Notification.Name("alaeOuvrirSalawat")
+    static var salawatEnAttente = false
+
+    static func enregistrerCategories() {
+        let titre = "اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ ﷺ"
+        let action: UNNotificationAction
+        if #available(iOS 15.0, *) {
+            action = UNNotificationAction(identifier: actionSalawat, title: titre, options: [.foreground],
+                                          icon: UNNotificationActionIcon(systemImageName: "sparkles"))
+        } else {
+            action = UNNotificationAction(identifier: actionSalawat, title: titre, options: [.foreground])
+        }
+        let cat = UNNotificationCategory(identifier: categorieSalawat, actions: [action], intentIdentifiers: [], options: [])
+        UNUserNotificationCenter.current().setNotificationCategories([cat])
+    }
+
     func userNotificationCenter(_ center: UNUserNotificationCenter,
                                 willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
@@ -77,14 +96,17 @@ final class AlaeNotifDelegate: NSObject, UNUserNotificationCenterDelegate {
                                 didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
         let info = response.notification.request.content.userInfo
+        // 19/10 : notification du vendredi (salawat) — bouton ou toucher -> compteur salat ﷺ.
+        if (info["genre"] as? String) == "jumua",
+           response.actionIdentifier == AlaeNotifDelegate.actionSalawat ||
+           (response.actionIdentifier == UNNotificationDefaultActionIdentifier &&
+            response.notification.request.identifier == "alae-jumua-salat") {
+            AlaeNotifDelegate.salawatEnAttente = true
+            NotificationCenter.default.post(name: AlaeNotifDelegate.ouvrirSalawat, object: nil)
+        }
         if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
            (info["genre"] as? String) == "adhan",
            let reciter = info["reciter"] as? String {
-            // 09/09 — GARDE ANTI-TAP TARDIF. Sans elle, ouvrir une notification
-            // d'adhan deux heures apres la priere relancait l'adhan complet en
-            // pleine journee. Au-dela de 5 minutes, on ouvre l'app sans le son.
-            let ecart = Date().timeIntervalSince(response.notification.date)
-            guard ecart < 300 else { completionHandler(); return }
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
                 AlaeAdhanPlayer.shared.jouerComplet(reciter: reciter)
             }
@@ -170,21 +192,7 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         // pouvait jamais s'armer, et TOUS les reglages (langue, theme, luminosite,
         // total des dhikr), perdus a chaque redemarrage. Les deux vivent desormais
         // dans UserDefaults, cote natif, et sont injectes AVANT le premier script.
-        let bootAt = UserDefaults.standard.double(forKey: Self.bootAtKey)
-        let store = UserDefaults.standard.string(forKey: Self.storeKey) ?? "{}"
-        // Passe par un tableau JSON : JSONSerialization echappe guillemets, retours
-        // a la ligne et accents pour nous. Concatener la chaine brute casserait le JS.
-        let litteral = (try? JSONSerialization.data(withJSONObject: [store]))
-            .flatMap { String(data: $0, encoding: .utf8) } ?? "[\"{}\"]"
-        let injection = WKUserScript(
-            source: """
-            window.__alaeBootAt = \(Int(bootAt * 1000));
-            window.__alaeStore = \(litteral)[0];
-            """,
-            injectionTime: .atDocumentStart,
-            forMainFrameOnly: true
-        )
-        contentController.addUserScript(injection)
+        contentController.addUserScript(Self.scriptInjection())
 
         let config = WKWebViewConfiguration()
         config.userContentController = contentController
@@ -249,6 +257,10 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         // L'ancienne ligne castait AppDelegate en UNUserNotificationCenterDelegate,
         // ce qu'il n'est pas : le cast renvoyait nil et le delegue restait vide.
         UNUserNotificationCenter.current().delegate = AlaeNotifDelegate.shared
+        AlaeNotifDelegate.enregistrerCategories()
+        NotificationCenter.default.addObserver(forName: AlaeNotifDelegate.ouvrirSalawat, object: nil, queue: .main) { [weak self] _ in
+            self?.ouvrirSalawatSiBesoin(essai: 0)
+        }
 
         // Adhan : demander un reveil en arriere-plan, et reposer les notifications
         // a chaque retour au premier plan (filet si iOS n'a jamais accorde le reveil).
@@ -263,7 +275,17 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
     }
 
     // MARK: - WKNavigationDelegate
+    /// 19/10 : passe le compteur sur la salat ﷺ quand la page est prete (intro comprise).
+    func ouvrirSalawatSiBesoin(essai: Int) {
+        guard AlaeNotifDelegate.salawatEnAttente, essai < 20 else { return }
+        webView.evaluateJavaScript("window.__alaeOuvrirSalawat ? (window.__alaeOuvrirSalawat(), 'ok') : 'attente'") { [weak self] r, _ in
+            if (r as? String) == "ok" { AlaeNotifDelegate.salawatEnAttente = false; return }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { self?.ouvrirSalawatSiBesoin(essai: essai + 1) }
+        }
+    }
+
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in self?.ouvrirSalawatSiBesoin(essai: 0) }
         print("[ALAE] chargement terminé : \(webView.url?.lastPathComponent ?? "?")")
         webView.evaluateJavaScript("[document.title, document.body ? document.body.children.length : -1, !!window.React, !!window.Babel].join(' | ')") { r, e in
             print("[ALAE] état page : \(r ?? "nil") \(e.map { " erreur: \($0)" } ?? "")")
@@ -281,6 +303,27 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         hideSplash()
     }
 
+    // Valeurs natives injectees avant le premier script de la page.
+    // 20/10 : fabrique a chaque chargement — avant, le script etait fige au
+    // lancement, donc un rechargement apres plantage recevait l'ANCIEN bootAt
+    // (intro rejouee) et l'ancien store (reglages de la session perdus).
+    // Passe par un tableau JSON : JSONSerialization echappe guillemets, retours
+    // a la ligne et accents pour nous. Concatener la chaine brute casserait le JS.
+    static func scriptInjection() -> WKUserScript {
+        let bootAt = UserDefaults.standard.double(forKey: bootAtKey)
+        let store = UserDefaults.standard.string(forKey: storeKey) ?? "{}"
+        let litteral = (try? JSONSerialization.data(withJSONObject: [store]))
+            .flatMap { String(data: $0, encoding: .utf8) } ?? "[\"{}\"]"
+        return WKUserScript(
+            source: """
+            window.__alaeBootAt = \(Int(bootAt * 1000));
+            window.__alaeStore = \(litteral)[0];
+            """,
+            injectionTime: .atDocumentStart,
+            forMainFrameOnly: true
+        )
+    }
+
     // Nombre de fois que le moteur web a ete tue depuis le lancement.
     private var nbPlantages = 0
 
@@ -292,16 +335,31 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         // (message 'bootAt'), qui la retient dans UserDefaults et la reinjecte au
         // chargement suivant : ce rechargement saute l'intro et le Dou'a et repart
         // directement sur l'app — plus de boucle visible.
-        guard nbPlantages <= 1 else {
+        // 20/10 : 3 tentatives (au lieu d'1 puis ecran noir), toutes SANS intro.
+        guard nbPlantages <= 3 else {
             print("[ALAE] trop de plantages — rechargement automatique abandonne")
             return
         }
 
-        // 04/09 : on relance TOUJOURS l'app complete — intro, soie, animations.
-        // Le mode leger a ete supprime : il degradait l'app pour compenser les 3
-        // filtres plein ecran, qui sont partis. Deux tentatives au maximum, puis
-        // on s'arrete pour ne pas rejouer l'intro en boucle.
+        // On marque l'intro comme "vient d'avoir lieu" puis on reinjecte des
+        // valeurs fraiches : la page relancee saute l'intro et le Dou'a et repart
+        // directement sur la page principale, avec les reglages de la session.
+        UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: Self.bootAtKey)
+        let cc = webView.configuration.userContentController
+        cc.removeAllUserScripts()
+        cc.addUserScript(Self.scriptInjection())
         webView.reload()
+    }
+
+    // 20/10 : boussole de la Qibla. Sans cette methode, WebKit affichait SA fenetre
+    // "/private/var/containers/.../Misbaha-Standalone.html veut acceder au mouvement"
+    // en plus de celle de la position. On accorde directement : une seule fenetre (iOS).
+    @available(iOS 15.0, *)
+    func webView(_ webView: WKWebView,
+                 requestDeviceOrientationAndMotionPermissionFor origin: WKSecurityOrigin,
+                 initiatedByFrame frame: WKFrameInfo,
+                 decisionHandler: @escaping (WKPermissionDecision) -> Void) {
+        decisionHandler(.grant)
     }
 
     // MARK: - Open external links in Safari
@@ -359,13 +417,8 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
     }
 
     private func renvoyerErreurPosition(_ raison: String) {
-        // 09/09 — encodage JSON. Remplacer l'apostrophe par un espace ne protegeait
-        // ni des antislashs, ni des guillemets, ni des retours a la ligne que peut
-        // contenir localizedDescription : le JS injecte devenait invalide.
-        let data = (try? JSONSerialization.data(withJSONObject: [raison], options: []))
-            ?? Data("[\"\"]".utf8)
-        let tableau = String(data: data, encoding: .utf8) ?? "[\"\"]"
-        let js = "if(window.__alaeLocErr)window.__alaeLocErr(\(tableau)[0]);"
+        let propre = raison.replacingOccurrences(of: "'", with: " ")
+        let js = "if(window.__alaeLocErr)window.__alaeLocErr('\(propre)');"
         DispatchQueue.main.async { self.webView.evaluateJavaScript(js, completionHandler: nil) }
     }
 
@@ -380,11 +433,9 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         renvoyerErreurPosition(error.localizedDescription)
     }
 
-    // 09/09 — locationManager(_:didChangeAuthorization:) est depreciee depuis iOS 14.
-    // La cible est iOS 16.2 : on utilise la methode courante.
-    func locationManagerDidChangeAuthorization(_ m: CLLocationManager) {
+    func locationManager(_ m: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         guard locDemandee else { return }
-        switch m.authorizationStatus {
+        switch status {
         case .authorizedWhenInUse, .authorizedAlways: m.requestLocation()
         case .denied, .restricted: renvoyerErreurPosition("refuse")
         default: break
@@ -444,43 +495,6 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
             return
         }
 
-        // 13/09 — Lecture d'un fichier du bundle, renvoye en base64.
-        // La page est chargee par loadFileURL : WebKit lui donne une origine opaque,
-        // donc fetch('assets/...') est refuse et un <img src="file://..."> contamine
-        // le canvas (toBlob leve SecurityError). Resultat : la carte Sabah al-khayr
-        // partait sans son image, texte seul. On lit donc le fichier ici.
-        if type == "readAsset" {
-            let rel = body["path"] as? String ?? ""
-            let cbId = body["cb"] as? String ?? ""
-            guard !cbId.isEmpty else { return }
-            let nom = (rel as NSString).lastPathComponent
-            let base = (nom as NSString).deletingPathExtension
-            let ext = (nom as NSString).pathExtension
-            let sousDossier = (rel as NSString).deletingLastPathComponent
-            var dataURL = ""
-            // Xcode aplatit parfois les dossiers de ressources : on tente les deux.
-            let candidats: [URL?] = [
-                Bundle.main.url(forResource: base, withExtension: ext, subdirectory: sousDossier),
-                Bundle.main.url(forResource: base, withExtension: ext)
-            ]
-            for cas in candidats {
-                if let u = cas, let d = try? Data(contentsOf: u) {
-                    let mime = ext.lowercased() == "png" ? "image/png" : "image/jpeg"
-                    dataURL = "data:" + mime + ";base64," + d.base64EncodedString()
-                    break
-                }
-            }
-            let encode: (String) -> String = { txt in
-                let e = txt.replacingOccurrences(of: "\\", with: "\\\\")
-                          .replacingOccurrences(of: "\"", with: "\\\"")
-                          .replacingOccurrences(of: "\n", with: "")
-                return "\"" + e + "\""
-            }
-            let js = "window.__alaeAsset && window.__alaeAsset(" + encode(cbId) + "," + encode(dataURL) + ")"
-            DispatchQueue.main.async { self.webView.evaluateJavaScript(js, completionHandler: nil) }
-            return
-        }
-
         // Partage d'une image (carte Sabah al-khayr, cartes de partage).
         // Le JS envoie un data URL base64 ; la Web Share API fichiers n'existe pas
         // dans une WKWebView, donc l'image doit passer par ici.
@@ -537,6 +551,15 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
             return
         }
 
+        // 14/10 : rappels des adhkar du matin et du soir (ALAE).
+        if type == "adhkarReminders" {
+            ViewController.memoriserAdhkar(body)
+            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { _, _ in
+                DispatchQueue.main.async { ViewController.planifierAdhkar() }
+            }
+            return
+        }
+
         if type == "updateNotifications" {
             saveTimingsForWidget(body)          // ← alimente le widget (App Group)
             AlaeReplanif.memoriser(body)        // ← permet de reposer les notifications sans la WebView
@@ -577,6 +600,54 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         }
     }
 
+    // MARK: - Rappels adhkar matin / soir (14/10)
+    private static let cleAdhkar = "alae.adhkarRappels"
+
+    static func memoriserAdhkar(_ body: [String: Any]) {
+        var d: [String: Any] = [:]
+        for k in ["matin", "soir", "jumua"] { if let v = body[k] as? [String: Any] { d[k] = v } }
+        if let t = body["textes"] as? [String: String] { d["textes"] = t }
+        UserDefaults.standard.set(d, forKey: cleAdhkar)
+    }
+
+    static func planifierAdhkar() {
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: ["alae-adhkar-matin", "alae-adhkar-soir", "alae-jumua-kahf", "alae-jumua-salat"])
+        guard let d = UserDefaults.standard.dictionary(forKey: cleAdhkar) else { return }
+        let textes = d["textes"] as? [String: String] ?? [:]
+        for k in ["matin", "soir"] {
+            guard let r = d[k] as? [String: Any], (r["enabled"] as? Bool) == true,
+                  let h = r["hour"] as? Int, let m = r["minute"] as? Int else { continue }
+            let c = UNMutableNotificationContent()
+            c.title = textes[k + "Titre"] ?? (k == "matin" ? "أذكار الصباح" : "أذكار المساء")
+            c.body = textes[k + "Corps"] ?? ""
+            c.sound = .default
+            c.userInfo = ["genre": "adhkar", "route": "adhkar"]
+            var dc = DateComponents(); dc.hour = h; dc.minute = m
+            center.add(UNNotificationRequest(identifier: "alae-adhkar-\(k)", content: c,
+                                             trigger: UNCalendarNotificationTrigger(dateMatching: dc, repeats: true)))
+        }
+        // 19/10 : rappels du vendredi (ALAE) — jeudi apres le Maghrib : Al-Kahf ; vendredi matin : salawat.
+        // Repetes chaque semaine ; l'heure du jeudi est recalculee par l'app a chaque ouverture.
+        if let j = d["jumua"] as? [String: Any], (j["enabled"] as? Bool) == true {
+            let rappels: [(id: String, cle: String, jour: Int, h: Int, m: Int)] = [
+                ("alae-jumua-kahf",  "kahf",  5, j["kahfHour"] as? Int ?? 19,  j["kahfMinute"] as? Int ?? 0),
+                ("alae-jumua-salat", "salat", 6, j["salatHour"] as? Int ?? 10, j["salatMinute"] as? Int ?? 0)
+            ]
+            for r in rappels {
+                let c = UNMutableNotificationContent()
+                c.title = textes[r.cle + "Titre"] ?? (r.cle == "kahf" ? "سُورَةُ الكَهْف" : "جُمُعَة مُبَارَكَة")
+                c.body = textes[r.cle + "Corps"] ?? ""
+                c.sound = .default
+                c.userInfo = ["genre": "jumua", "route": "compteur"]
+                if r.cle == "salat" { c.categoryIdentifier = AlaeNotifDelegate.categorieSalawat }
+                var dc = DateComponents(); dc.weekday = r.jour; dc.hour = r.h; dc.minute = r.m
+                center.add(UNNotificationRequest(identifier: r.id, content: c,
+                                                 trigger: UNCalendarNotificationTrigger(dateMatching: dc, repeats: true)))
+            }
+        }
+    }
+
     // MARK: - Notifications
     private static let prayers: [(key: String, label: String)] = [
         ("Fajr",    "الفَجْر"),
@@ -609,6 +680,9 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         let days       = body["days"] as? [[String: Any]] ?? []
 
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        // 14/10 : la ligne du dessus efface TOUT, y compris les rappels d'adhkar :
+        // on les repose aussitot (2 notifications, repetees chaque jour).
+        ViewController.planifierAdhkar()
 
         if !enabled || (timings.isEmpty && days.isEmpty) { return }
 
@@ -618,14 +692,7 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
             DispatchQueue.main.async {
                 let sound = ViewController.adhanSound(for: reciter)
                 let center = UNUserNotificationCenter.current()
-                // 09/09 — CALENDRIER GREGORIEN FORCE.
-                // Calendar.current suit la locale de l'appareil : sur un iPhone regle
-                // en arabe avec le calendrier Umm al-Qura, il est HIJRI. Les dates de
-                // l'API arrivent en gregorien JJ-MM-AAAA ; interpretees en hijri, les
-                // adhans partaient a des jours fantaisistes, ou jamais. Invisible sur
-                // un appareil en francais, fatal pour un utilisateur a Riyad.
-                var cal = Calendar(identifier: .gregorian)
-                cal.timeZone = .current
+                let cal = Calendar.current
                 let now = Date()
 
                 // Adhan : à l'heure exacte de la prière.
