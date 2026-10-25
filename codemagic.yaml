@@ -21,7 +21,7 @@ workflows:
           done
           openssl genrsa -out /tmp/ios_dist_key.pem 2048
           app-store-connect fetch-signing-files "com.alae.misbaha.ALAE" --type IOS_APP_STORE --certificate-key=@file:/tmp/ios_dist_key.pem --create
-          app-store-connect fetch-signing-files "com.alae.misbaha.ALAE.ALAEWidget2" --type IOS_APP_STORE --certificate-key=@file:/tmp/ios_dist_key.pem --create
+          app-store-connect fetch-signing-files "com.alae.misbaha.ALAE.ALAEWidget" --type IOS_APP_STORE --certificate-key=@file:/tmp/ios_dist_key.pem --create
       - name: Ajouter certificat
         script: |
           keychain add-certificates
