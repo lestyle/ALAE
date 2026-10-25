@@ -178,6 +178,19 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
     static let bootAtKey = "alae.bootAt"
     // Copie durable du localStorage de la page (JSON). Voir loadView().
     static let storeKey = "alae.store"
+    // 24/10 : copie DEDIEE du compteur (misbaha.v1), petite et ecrite tout de suite
+    // dans un fichier. Le gros miroir ci-dessus (plusieurs Mo, cache du code compris)
+    // pouvait rater les derniers dhikr si l'app etait fermee avant son ecriture.
+    static let dhikrKey = "alae.dhikr"
+    static var dhikrFile: URL? {
+        guard let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else { return nil }
+        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        return dir.appendingPathComponent("alae-dhikr.json")
+    }
+    static func lireDhikr() -> String {
+        if let f = dhikrFile, let s = try? String(contentsOf: f, encoding: .utf8), !s.isEmpty { return s }
+        return UserDefaults.standard.string(forKey: dhikrKey) ?? ""
+    }
 
     var webView: WKWebView!
 
@@ -312,12 +325,13 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
     static func scriptInjection() -> WKUserScript {
         let bootAt = UserDefaults.standard.double(forKey: bootAtKey)
         let store = UserDefaults.standard.string(forKey: storeKey) ?? "{}"
-        let litteral = (try? JSONSerialization.data(withJSONObject: [store]))
-            .flatMap { String(data: $0, encoding: .utf8) } ?? "[\"{}\"]"
+        let litteral = (try? JSONSerialization.data(withJSONObject: [store, lireDhikr()]))
+            .flatMap { String(data: $0, encoding: .utf8) } ?? "[\"{}\",\"\"]"
         return WKUserScript(
             source: """
             window.__alaeBootAt = \(Int(bootAt * 1000));
             window.__alaeStore = \(litteral)[0];
+            window.__alaeDhikr = \(litteral)[1];
             """,
             injectionTime: .atDocumentStart,
             forMainFrameOnly: true
@@ -470,6 +484,15 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         if type == "store" {
             if let data = body["data"] as? String {
                 UserDefaults.standard.set(data, forKey: Self.storeKey)
+            }
+            return
+        }
+
+        // 24/10 : chaque dhikr compte. Ecriture atomique immediate du compteur.
+        if type == "dhikrStore" {
+            if let data = body["data"] as? String, !data.isEmpty {
+                if let f = Self.dhikrFile { try? data.write(to: f, atomically: true, encoding: .utf8) }
+                UserDefaults.standard.set(data, forKey: Self.dhikrKey)
             }
             return
         }
