@@ -4142,6 +4142,7 @@ function DhikrNavArrows({
   setDhikrIdx,
   dhikr
 }) {
+  /* 26/10 : fleches < > retirees partout, on change de dhikr en glissant le pouce (ALAE). */ if (true) return null;
   const T = window.THEME;
   const favs = window.DHIKRS.filter(d => d.fav);
   const curFavIdx = favs.findIndex(d => d.id === dhikr.id);
@@ -4156,25 +4157,22 @@ function DhikrNavArrows({
   };
   const containerStyle = {
     position: 'absolute',
-    bottom: 61, /* 21/10 : 100 -> 61, sur la ligne des boutons reset / vibration, loin des perles (ALAE). */
-    left: '50%',
-    transform: 'translateX(-50%)',
+    bottom: 61,
+    left: 78, right: 78, /* 26/10 : simples < > sans cercle, collees a cote d'actualiser et du vibreur ; le centre reste libre pour les ondes (ALAE). */
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 130, /* 21/10 : 60 -> 130, ecartees au maximum (ALAE). */
+    justifyContent: 'space-between',
     zIndex: 6,
     direction: 'ltr',
     WebkitTapHighlightColor: 'transparent'
   };
   const arrowStyle = {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    background: T.verreLeger,
-    backdropFilter: 'blur(8px)',
-    WebkitBackdropFilter: 'blur(8px)',
-    border: '0.5px solid rgba(199,165,91,0.25)',
+    width: 30,
+    height: 46,
+    borderRadius: 0,
+    background: 'transparent',
+    border: 'none',
     color: 'rgba(232,185,122,0.95)',
     cursor: 'pointer',
     display: 'flex',
@@ -4182,7 +4180,7 @@ function DhikrNavArrows({
     justifyContent: 'center',
     padding: 0,
     WebkitTapHighlightColor: 'transparent',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+    filter: 'drop-shadow(0 1px 3px rgba(0,0,0,0.7))',
     transition: 'all 0.25s ease'
   };
   return /*#__PURE__*/React.createElement("div", {
@@ -4192,26 +4190,20 @@ function DhikrNavArrows({
            la lueur : la fleche restait allumee indefiniment. Le survol est mis
            sous media (hover:hover) pour ne pas coller sur ecran tactile. */
         .dhikr-arrow-btn:active {
-          background: rgba(232,185,122,0.18) !important;
-          border-color: rgba(255,228,154,0.85) !important;
           color: #FFF1B8 !important;
-          box-shadow: 0 0 18px rgba(232,185,122,0.65), 0 0 32px rgba(232,185,122,0.35), inset 0 0 8px rgba(255,239,200,0.25), 0 4px 12px rgba(0,0,0,0.3) !important;
           transform: scale(1.08);
           outline: none;
         }
         .dhikr-arrow-btn:focus { outline: none; }
         @media (hover: hover) {
           .dhikr-arrow-btn:hover {
-            background: rgba(232,185,122,0.18) !important;
-            border-color: rgba(255,228,154,0.85) !important;
             color: #FFF1B8 !important;
-            box-shadow: 0 0 18px rgba(232,185,122,0.65), 0 0 32px rgba(232,185,122,0.35), inset 0 0 8px rgba(255,239,200,0.25), 0 4px 12px rgba(0,0,0,0.3) !important;
             transform: scale(1.08);
           }
         }
         @keyframes arrowFlash {
-          0% { background: rgba(232,185,122,0.35); box-shadow: 0 0 28px rgba(255,228,154,0.95), 0 0 48px rgba(232,185,122,0.55); transform: scale(1.15); }
-          100% { background: transparent; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transform: scale(1); }
+          0% { color: #FFF1B8; transform: scale(1.25); }
+          100% { transform: scale(1); }
         }
         .dhikr-arrow-btn.flash {
           animation: arrowFlash 0.6s ease-out;
@@ -11806,7 +11798,7 @@ function PrayerScreen({
         display: 'flex',
         alignItems: 'center',
         gap: 13,
-        padding: isAr ? '6px 15px' : '10px 15px',
+        padding: '10px 15px', /* 26/10 : lignes de nouveau allongees jusqu'en bas, comme avant (ALAE). */
         borderRadius: 14,
         background: isNext ? T.bandeauProchain : T.verreSombre,
         border: isNext ? T.bordProchain : `0.5px solid ${T.hairline}`,
@@ -11907,7 +11899,7 @@ function PrayerScreen({
       style: {
         fontFamily: isAr ? MUSHAF_FONT : '"Cormorant Garamond",serif',
         /* 24/10 : Amiri Quran (Mushaf de Médine) */
-        fontSize: isAr ? 21 : 14.5,
+        fontSize: isAr ? 19.5 : 14.5, /* 26/10 : 21 -> 19,5 pour qu'al-Ichaa ne touche plus le bas (ALAE). */
         fontWeight: isAr ? 400 : 600,
         color: isNext ? T.goldLight : isPast ? 'rgba(248,239,220,0.74)' : T.text,
         lineHeight: isAr ? 1.5 : 1.25,
@@ -17363,7 +17355,7 @@ window.AsmaScreen = AsmaScreen;
         opacity: open ? 1 : 0,
         visibility: open ? 'visible' : 'hidden',
         pointerEvents: open ? 'auto' : 'none',
-        transition: open ? 'transform 0.7s cubic-bezier(.16,1,.3,1), opacity 0.45s ease-out, visibility 0s' : 'opacity 2.2s ease-in-out, visibility 0s linear 2.2s',
+        transition: open ? 'transform 0.7s cubic-bezier(.16,1,.3,1), opacity 0.45s ease-out, visibility 0s' : 'opacity 0.12s linear, visibility 0s linear 0.12s' /* 26/10 : le menu disparait tout de suite, plus de fondu sur la nouvelle page : seul le fond se bombe (ALAE). */,
         zIndex: 201,
         direction: isAr ? 'rtl' : 'ltr',
         overflow: 'hidden'
@@ -17862,25 +17854,13 @@ window.AsmaScreen = AsmaScreen;
   /* 25/10 : fondu enchaine exactement comme intro -> Dou'a : une COPIE figee de la page qui part
      est posee par-dessus et s'efface en 1 s (ease) ; la nouvelle page est deja dessous (ALAE). */
   window.alaeFonduPage = function () {
-    /* 26/10 : un seul fondu a la fois, meme si plusieurs changements d'ecran arrivent ensemble (ALAE). */
+    /* ═══ VERROUILLE — 26/10/2026. Transition entre pages = effet du fond intro -> Dou'a, validee par ALAE. NE PLUS MODIFIER sans demande explicite. ═══
+       A l'intro, la soie est plus grande que l'ecran (inset -14px) puis se pose a sa taille sur la page Dou'a.
+       Ici : la soie VISIBLE de la nouvelle page (.silk-bg-layer, pas #silk-wallpaper qui est cache dessous) part un peu plus grande
+       et revient a sa taille en 1 s (ease). Le contenu de la page ne fond pas. Propriete « scale » : se combine au zoom d'al-Akmam. */
     const _n = Date.now(); if (window.__alaeFonduAt && _n - window.__alaeFonduAt < 120) return; window.__alaeFonduAt = _n;
-    const root = document.getElementById('root');
-    const src = root && root.firstElementChild;
-    if (!src) return;
-    const r = src.getBoundingClientRect();
-    const cp = src.cloneNode(true);
-    const cs = src.querySelectorAll('canvas'), cc = cp.querySelectorAll('canvas');
-    cs.forEach((c, i) => { try { const d = cc[i]; d.width = c.width; d.height = c.height; d.getContext('2d').drawImage(c, 0, 0); } catch (e) {} });
-    cp.querySelectorAll('video,audio').forEach(m => m.remove());
-    cp.querySelectorAll('*').forEach(el => { el.style.animationPlayState = 'paused'; });
-    const wrap = document.createElement('div');
-    wrap.setAttribute('aria-hidden', 'true');
-    wrap.style.cssText = 'position:fixed;left:' + r.left + 'px;top:' + r.top + 'px;width:' + r.width + 'px;height:' + r.height + 'px;z-index:99998;pointer-events:none;overflow:hidden;';
-    wrap.appendChild(cp);
-    document.body.appendChild(wrap);
-    const done = () => { if (wrap.parentNode) wrap.parentNode.removeChild(wrap); };
-    if (wrap.animate) { const a = wrap.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 2400, easing: 'ease-in-out', fill: 'forwards' }); a.onfinish = done; } /* ═══ VERROUILLE — 26/10/2026. Fondu entre pages 2,4 s, tous themes, valide par ALAE. NE PLUS MODIFIER sans demande explicite. ═══ */
-    setTimeout(done, 2600);
+    const go = () => { document.querySelectorAll('.silk-bg-layer, #silk-wallpaper').forEach(el => { if (!el.animate) return; try { if (el.__bombe) el.__bombe.cancel(); el.__bombe = el.animate([{ scale: '1.08' }, { scale: '1' }], { duration: 1000, easing: 'ease' }); } catch (e) {} }); };
+    requestAnimationFrame(() => requestAnimationFrame(go));
   };
   function AlaeRevealPerle() { return null; }
   function AlaeRevealNoir() {
@@ -18905,7 +18885,7 @@ window.AsmaScreen = AsmaScreen;
       return /*#__PURE__*/React.createElement("div", {
         style: frameStyle()
       }, /* 21/10 : fondu SANS remonter une 2e page Dou'a (c'etait la cause du sursaut/blocage) : la niyya apparait seule en opacite (ALAE). */ /*#__PURE__*/React.createElement("div", {
-        style: { position: 'absolute', inset: 0, animation: duaaFondu ? 'biOut 0.9s ease reverse both' : 'none' }
+        style: { position: 'absolute', inset: 0, animation: 'none' /* 26/10 : plus de fondu (ALAE). */ }
       }, /*#__PURE__*/React.createElement(FirstRun, {
         lang: lang,
         setLang: setLang,
