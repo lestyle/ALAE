@@ -251,6 +251,7 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        ReviewManager.noterPremierLancement()
         if #available(iOS 14.0, *) { WidgetCenter.shared.reloadAllTimelines() } // force le refresh à chaque lancement
         showSplash()
         if let url = Bundle.main.url(forResource: "Misbaha-Standalone", withExtension: "html") {
@@ -497,6 +498,51 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
             return
         }
 
+        // 28/10 : une serie de 33 terminee — ReviewManager decide s'il demande une note.
+        // 28/10 : l'utilisateur choisit l'icone de l'app (Reglages). nil = icone principale.
+        if type == "setIcon" {
+            let nom = body["name"] as? String
+            let cible: String? = (nom == nil || nom == "" || nom == "AppIcon") ? nil : nom
+            guard UIApplication.shared.supportsAlternateIcons,
+                  UIApplication.shared.alternateIconName != cible else { return }
+            UIApplication.shared.setAlternateIconName(cible) { e in
+                if let e = e { print("[Icône] erreur : \(e.localizedDescription)") }
+            }
+            return
+        }
+
+        // 29/10 : serie de jours + rappels intelligents (StreakManager.swift).
+        if type == "streakSync" {
+            StreakManager.recevoir(body)
+            return
+        }
+
+        // 29/10 : serie de 3 jours ou objectif du jour atteint -> fenetre de note Apple.
+        if type == "reviewMoment" {
+            ReviewManager.momentFort(in: view.window?.windowScene)
+            return
+        }
+
+        if type == "roundDone" {
+            ReviewManager.serieTerminee(in: view.window?.windowScene)
+            return
+        }
+
+        // 28/10 : dernier jour d'un defi reussi (ex. 30e jour d'Istighfar).
+        if type == "challengeDone" {
+            ReviewManager.defiTermine(in: view.window?.windowScene)
+            return
+        }
+
+        // 28/10 : « Noter ALAE » — ouvre la fiche App Store sur l'ecriture d'un avis.
+        if type == "openURL" {
+            if let s = body["url"] as? String, let u = URL(string: s),
+               u.scheme == "https" || u.scheme == "itms-apps" {
+                UIApplication.shared.open(u)
+            }
+            return
+        }
+
         if type == "share" {
             let text = body["text"] as? String ?? ""
             let urlString = body["url"] as? String
@@ -706,6 +752,8 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
         // 14/10 : la ligne du dessus efface TOUT, y compris les rappels d'adhkar :
         // on les repose aussitot (2 notifications, repetees chaque jour).
         ViewController.planifierAdhkar()
+        // 29/10 : idem pour les rappels de serie (sinon effaces a chaque recalcul des horaires).
+        StreakManager.planifier()
 
         if !enabled || (timings.isEmpty && days.isEmpty) { return }
 

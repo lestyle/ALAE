@@ -8,39 +8,61 @@
 
 /* Begin PBXBuildFile section */
 		DC09E0E93052BA50008802DA /* react-dom.production.min.js in Resources */ = {isa = PBXBuildFile; fileRef = DC09E0E83052BA50008802DA /* react-dom.production.min.js */; };
-		DC101826302E7C5500C4F0AE /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = DC760F6F2FD6141D00FC5D0A /* fonts */; };
-		DC156BBA3056C9CA00204D1D /* react.production.min.js in Resources */ = {isa = PBXBuildFile; fileRef = DC156BB93056C9CA00204D1D /* react.production.min.js */; };
-		DC2C9F1A3037B5FF006CFAFF /* ScheherazadeNew-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DCAD7F5C302CF8BB00069F6E /* ScheherazadeNew-Regular.ttf */; };
 		DC2C9F1C3038EBCA006CFAFF /* Misbaha-Standalone.html in Resources */ = {isa = PBXBuildFile; fileRef = DC2C9F1B3038EBCA006CFAFF /* Misbaha-Standalone.html */; };
 		DC403D552FF9B59F00D408BE /* silence.caf in Resources */ = {isa = PBXBuildFile; fileRef = DC403D4D2FF9B59E00D408BE /* silence.caf */; };
 		DC40D227302D28C30067FAE9 /* ALAEWidget2.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC40D225302D28A50067FAE9 /* ALAEWidget2.swift */; };
+		DC5807F03092955C00EE17C4 /* Amiri-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807DF3092955C00EE17C4 /* Amiri-Bold.ttf */; };
+		DC5807F13092955C00EE17C4 /* Amiri-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807DF3092955C00EE17C4 /* Amiri-Bold.ttf */; };
+		DC5807F23092955C00EE17C4 /* ReemKufi-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E03092955C00EE17C4 /* ReemKufi-SemiBold.ttf */; };
+		DC5807F33092955C00EE17C4 /* ReemKufi-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E03092955C00EE17C4 /* ReemKufi-SemiBold.ttf */; };
+		DC5807F43092955C00EE17C4 /* ScheherazadeNew-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E13092955C00EE17C4 /* ScheherazadeNew-Medium.ttf */; };
+		DC5807F53092955C00EE17C4 /* ScheherazadeNew-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E13092955C00EE17C4 /* ScheherazadeNew-Medium.ttf */; };
+		DC5807F63092955C00EE17C4 /* CormorantGaramond-Medium.woff in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E23092955C00EE17C4 /* CormorantGaramond-Medium.woff */; };
+		DC5807F73092955C00EE17C4 /* CormorantGaramond-Medium.woff in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E23092955C00EE17C4 /* CormorantGaramond-Medium.woff */; };
+		DC5807F83092955C00EE17C4 /* ReemKufi-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E33092955C00EE17C4 /* ReemKufi-Bold.ttf */; };
+		DC5807F93092955C00EE17C4 /* ReemKufi-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E33092955C00EE17C4 /* ReemKufi-Bold.ttf */; };
+		DC5807FA3092955C00EE17C4 /* QPC-V4-Tajweed.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E43092955C00EE17C4 /* QPC-V4-Tajweed.ttf */; };
+		DC5807FB3092955C00EE17C4 /* QPC-V4-Tajweed.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E43092955C00EE17C4 /* QPC-V4-Tajweed.ttf */; };
+		DC5807FC3092955C00EE17C4 /* QPC-V2.woff2 in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E53092955C00EE17C4 /* QPC-V2.woff2 */; };
+		DC5807FD3092955C00EE17C4 /* QPC-V2.woff2 in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E53092955C00EE17C4 /* QPC-V2.woff2 */; };
+		DC5807FE3092955C00EE17C4 /* ArefRuqaa-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E63092955C00EE17C4 /* ArefRuqaa-Regular.ttf */; };
+		DC5807FF3092955C00EE17C4 /* ArefRuqaa-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E63092955C00EE17C4 /* ArefRuqaa-Regular.ttf */; };
+		DC5808003092955C00EE17C4 /* ScheherazadeNew-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E73092955C00EE17C4 /* ScheherazadeNew-Regular.ttf */; };
+		DC5808013092955C00EE17C4 /* ScheherazadeNew-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E73092955C00EE17C4 /* ScheherazadeNew-Regular.ttf */; };
+		DC5808023092955C00EE17C4 /* ArefRuqaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E83092955C00EE17C4 /* ArefRuqaa-Bold.ttf */; };
+		DC5808033092955C00EE17C4 /* ArefRuqaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E83092955C00EE17C4 /* ArefRuqaa-Bold.ttf */; };
+		DC5808043092955C00EE17C4 /* CormorantGaramond-Italic-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E93092955C00EE17C4 /* CormorantGaramond-Italic-VariableFont_wght.ttf */; };
+		DC5808053092955C00EE17C4 /* CormorantGaramond-Italic-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807E93092955C00EE17C4 /* CormorantGaramond-Italic-VariableFont_wght.ttf */; };
+		DC5808063092955C00EE17C4 /* AmiriQuran.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807EA3092955C00EE17C4 /* AmiriQuran.ttf */; };
+		DC5808073092955C00EE17C4 /* AmiriQuran.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807EA3092955C00EE17C4 /* AmiriQuran.ttf */; };
+		DC5808083092955C00EE17C4 /* ReemKufi-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807EB3092955C00EE17C4 /* ReemKufi-Regular.ttf */; };
+		DC5808093092955C00EE17C4 /* ReemKufi-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807EB3092955C00EE17C4 /* ReemKufi-Regular.ttf */; };
+		DC58080A3092955C00EE17C4 /* Amiri-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807EC3092955C00EE17C4 /* Amiri-Regular.ttf */; };
+		DC58080B3092955C00EE17C4 /* Amiri-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807EC3092955C00EE17C4 /* Amiri-Regular.ttf */; };
+		DC58080C3092955C00EE17C4 /* CormorantGaramond-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807ED3092955C00EE17C4 /* CormorantGaramond-VariableFont_wght.ttf */; };
+		DC58080D3092955C00EE17C4 /* CormorantGaramond-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807ED3092955C00EE17C4 /* CormorantGaramond-VariableFont_wght.ttf */; };
+		DC58080E3092955C00EE17C4 /* CormorantGaramond-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807EE3092955C00EE17C4 /* CormorantGaramond-Medium.ttf */; };
+		DC58080F3092955C00EE17C4 /* CormorantGaramond-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807EE3092955C00EE17C4 /* CormorantGaramond-Medium.ttf */; };
+		DC5808103092955C00EE17C4 /* ReemKufi-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807EF3092955C00EE17C4 /* ReemKufi-Medium.ttf */; };
+		DC5808113092955C00EE17C4 /* ReemKufi-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC5807EF3092955C00EE17C4 /* ReemKufi-Medium.ttf */; };
+		DC58081A309295CA00EE17C4 /* react.production.min.js in Resources */ = {isa = PBXBuildFile; fileRef = DC580812309295CA00EE17C4 /* react.production.min.js */; };
+		DC58081B309295CA00EE17C4 /* ReviewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC580813309295CA00EE17C4 /* ReviewManager.swift */; };
+		DC58081C309295CA00EE17C4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DC580815309295CA00EE17C4 /* InfoPlist.strings */; };
+		DC58081D309295CA00EE17C4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DC580818309295CA00EE17C4 /* InfoPlist.strings */; };
+		DC5808243092A4DD00EE17C4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = DC5808223092A4DD00EE17C4 /* InfoPlist.strings */; };
+		DC5808263093D3DB00EE17C4 /* StreakManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC5808253093D3DB00EE17C4 /* StreakManager.swift */; };
 		DC61BCE42FB90CE500179D2E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC61BCE32FB90CE500179D2E /* AppDelegate.swift */; };
 		DC61BCEB2FB90CE500179D2E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC61BCE92FB90CE500179D2E /* Main.storyboard */; };
 		DC61BCF02FB90CE700179D2E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DC61BCEE2FB90CE700179D2E /* LaunchScreen.storyboard */; };
-		DC6622DD303388EC00C01655 /* Amiri-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC6622DC303388EB00C01655 /* Amiri-Regular.ttf */; };
-		DC6622DF30338E9E00C01655 /* ArefRuqaa-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC6622DE30338E9E00C01655 /* ArefRuqaa-Regular.ttf */; };
-		DC6622E23033A0B100C01655 /* CormorantGaramond-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC6622E03033A0B100C01655 /* CormorantGaramond-VariableFont_wght.ttf */; };
-		DC6622E33033A0B100C01655 /* CormorantGaramond-Italic-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC6622E13033A0B100C01655 /* CormorantGaramond-Italic-VariableFont_wght.ttf */; };
-		DC6622E53033A0CB00C01655 /* CormorantGaramond-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC6622E43033A0CB00C01655 /* CormorantGaramond-Regular.ttf */; };
-		DC6622E73033A0DE00C01655 /* DMSerifDisplay-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC6622E63033A0DE00C01655 /* DMSerifDisplay-Regular.ttf */; };
-		DC6622EB3033A16800C01655 /* ArefRuqaa-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC6622EA3033A16800C01655 /* ArefRuqaa-Bold.ttf */; };
-		DC760F712FD6141E00FC5D0A /* fonts in Resources */ = {isa = PBXBuildFile; fileRef = DC760F6F2FD6141D00FC5D0A /* fonts */; };
-		DC79ECC030519FAC00472C20 /* CormorantGaramond-Italic-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DC6622E13033A0B100C01655 /* CormorantGaramond-Italic-VariableFont_wght.ttf */; };
-		DC79ECC53051A00C00472C20 /* QPC-V4-Tajweed.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DCAD7F62302D0ADE00069F6E /* QPC-V4-Tajweed.ttf */; };
-		DC79ECC73051A01500472C20 /* QCF2047.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DCAEDD3430320F22002284C8 /* QCF2047.ttf */; };
 		DC7BFD31303A31C200411212 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC7BFD30303A31C200411212 /* ViewController.swift */; };
 		DC7BFD33303B7CB500411212 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCAD7F4E302BE2EC00069F6E /* Assets.xcassets */; };
 		DC7BFD35303B8D5900411212 /* assets in Resources */ = {isa = PBXBuildFile; fileRef = DC7BFD34303B8D5900411212 /* assets */; };
-		DCACFC3B3030708800D430B1 /* CormorantGaramond-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DCACFC3A3030708700D430B1 /* CormorantGaramond-Medium.ttf */; };
 		DCAD7F47302BE2E900069F6E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF94B2930212EC40093910E /* WidgetKit.framework */; };
 		DCAD7F48302BE2E900069F6E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCF94B2B30212EC40093910E /* SwiftUI.framework */; };
 		DCAD7F4B302BE2E900069F6E /* ALAEWidget2Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAD7F4A302BE2E900069F6E /* ALAEWidget2Bundle.swift */; };
 		DCAD7F4F302BE2EC00069F6E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DCAD7F4E302BE2EC00069F6E /* Assets.xcassets */; };
 		DCAD7F53302BE2ED00069F6E /* ALAEWidget2Extension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = DCAD7F46302BE2E900069F6E /* ALAEWidget2Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		DCAEDD37303239AA002284C8 /* Amiri-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DCAEDD36303239AA002284C8 /* Amiri-Bold.ttf */; };
 		DCB099CA2FF854F1009122CE /* quran-img in Resources */ = {isa = PBXBuildFile; fileRef = DCB099C92FF854ED009122CE /* quran-img */; };
-		DCC879EC3040F24A00BAC940 /* ScheherazadeNew-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DCAD7F63302D0B3900069F6E /* ScheherazadeNew-Medium.ttf */; };
-		DCED4B1130439F330034C4C0 /* AmiriQuran.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DCAD7F5A302CF89000069F6E /* AmiriQuran.ttf */; };
 		DCF6CEBD30290D6700A71E54 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */; };
 		DCF94B0D3020FC0E0093910E /* adhan-younes.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B013020FC0D0093910E /* adhan-younes.mp3 */; };
 		DCF94B0E3020FC0E0093910E /* adhan-kouchi.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = DCF94B023020FC0E0093910E /* adhan-kouchi.mp3 */; };
@@ -82,38 +104,44 @@
 
 /* Begin PBXFileReference section */
 		DC09E0E83052BA50008802DA /* react-dom.production.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "react-dom.production.min.js"; sourceTree = "<group>"; };
-		DC156BB93056C9CA00204D1D /* react.production.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = react.production.min.js; sourceTree = SOURCE_ROOT; };
 		DC2C9F1B3038EBCA006CFAFF /* Misbaha-Standalone.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "Misbaha-Standalone.html"; sourceTree = "<group>"; };
 		DC403D4D2FF9B59E00D408BE /* silence.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = silence.caf; sourceTree = "<group>"; };
 		DC40D225302D28A50067FAE9 /* ALAEWidget2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALAEWidget2.swift; sourceTree = "<group>"; };
+		DC5807DF3092955C00EE17C4 /* Amiri-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Amiri-Bold.ttf"; sourceTree = "<group>"; };
+		DC5807E03092955C00EE17C4 /* ReemKufi-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ReemKufi-SemiBold.ttf"; sourceTree = "<group>"; };
+		DC5807E13092955C00EE17C4 /* ScheherazadeNew-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ScheherazadeNew-Medium.ttf"; sourceTree = "<group>"; };
+		DC5807E23092955C00EE17C4 /* CormorantGaramond-Medium.woff */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CormorantGaramond-Medium.woff"; sourceTree = "<group>"; };
+		DC5807E33092955C00EE17C4 /* ReemKufi-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ReemKufi-Bold.ttf"; sourceTree = "<group>"; };
+		DC5807E43092955C00EE17C4 /* QPC-V4-Tajweed.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "QPC-V4-Tajweed.ttf"; sourceTree = "<group>"; };
+		DC5807E53092955C00EE17C4 /* QPC-V2.woff2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "QPC-V2.woff2"; sourceTree = "<group>"; };
+		DC5807E63092955C00EE17C4 /* ArefRuqaa-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ArefRuqaa-Regular.ttf"; sourceTree = "<group>"; };
+		DC5807E73092955C00EE17C4 /* ScheherazadeNew-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ScheherazadeNew-Regular.ttf"; sourceTree = "<group>"; };
+		DC5807E83092955C00EE17C4 /* ArefRuqaa-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ArefRuqaa-Bold.ttf"; sourceTree = "<group>"; };
+		DC5807E93092955C00EE17C4 /* CormorantGaramond-Italic-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CormorantGaramond-Italic-VariableFont_wght.ttf"; sourceTree = "<group>"; };
+		DC5807EA3092955C00EE17C4 /* AmiriQuran.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AmiriQuran.ttf; sourceTree = "<group>"; };
+		DC5807EB3092955C00EE17C4 /* ReemKufi-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ReemKufi-Regular.ttf"; sourceTree = "<group>"; };
+		DC5807EC3092955C00EE17C4 /* Amiri-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Amiri-Regular.ttf"; sourceTree = "<group>"; };
+		DC5807ED3092955C00EE17C4 /* CormorantGaramond-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CormorantGaramond-VariableFont_wght.ttf"; sourceTree = "<group>"; };
+		DC5807EE3092955C00EE17C4 /* CormorantGaramond-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CormorantGaramond-Medium.ttf"; sourceTree = "<group>"; };
+		DC5807EF3092955C00EE17C4 /* ReemKufi-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ReemKufi-Medium.ttf"; sourceTree = "<group>"; };
+		DC580812309295CA00EE17C4 /* react.production.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = react.production.min.js; sourceTree = "<group>"; };
+		DC580813309295CA00EE17C4 /* ReviewManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReviewManager.swift; sourceTree = "<group>"; };
+		DC580816309295CA00EE17C4 /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = InfoPlist.strings; sourceTree = "<group>"; };
+		DC580819309295CA00EE17C4 /* ar */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ar; path = InfoPlist.strings; sourceTree = "<group>"; };
+		DC5808233092A4DD00EE17C4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
+		DC5808253093D3DB00EE17C4 /* StreakManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreakManager.swift; sourceTree = "<group>"; };
 		DC61BCE02FB90CE500179D2E /* ALAE.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ALAE.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC61BCE32FB90CE500179D2E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		DC61BCEA2FB90CE500179D2E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		DC61BCEF2FB90CE700179D2E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		DC6622DC303388EB00C01655 /* Amiri-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Amiri-Regular.ttf"; sourceTree = "<group>"; };
-		DC6622DE30338E9E00C01655 /* ArefRuqaa-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ArefRuqaa-Regular.ttf"; sourceTree = "<group>"; };
-		DC6622E03033A0B100C01655 /* CormorantGaramond-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CormorantGaramond-VariableFont_wght.ttf"; sourceTree = "<group>"; };
-		DC6622E13033A0B100C01655 /* CormorantGaramond-Italic-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CormorantGaramond-Italic-VariableFont_wght.ttf"; sourceTree = "<group>"; };
-		DC6622E43033A0CB00C01655 /* CormorantGaramond-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CormorantGaramond-Regular.ttf"; sourceTree = "<group>"; };
-		DC6622E63033A0DE00C01655 /* DMSerifDisplay-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DMSerifDisplay-Regular.ttf"; sourceTree = "<group>"; };
-		DC6622EA3033A16800C01655 /* ArefRuqaa-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ArefRuqaa-Bold.ttf"; sourceTree = "<group>"; };
-		DC760F6F2FD6141D00FC5D0A /* fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; path = fonts; sourceTree = "<group>"; };
 		DC7BFD30303A31C200411212 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		DC7BFD34303B8D5900411212 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; name = assets; path = ALAE/assets; sourceTree = "<group>"; };
 		DC8DC28F2FE5372A002D9A13 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
-		DCACFC3A3030708700D430B1 /* CormorantGaramond-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CormorantGaramond-Medium.ttf"; sourceTree = "<group>"; };
 		DCAD7F46302BE2E900069F6E /* ALAEWidget2Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ALAEWidget2Extension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCAD7F4A302BE2E900069F6E /* ALAEWidget2Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALAEWidget2Bundle.swift; sourceTree = "<group>"; };
 		DCAD7F4E302BE2EC00069F6E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		DCAD7F50302BE2ED00069F6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DCAD7F5A302CF89000069F6E /* AmiriQuran.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = AmiriQuran.ttf; path = fonts/AmiriQuran.ttf; sourceTree = "<group>"; };
-		DCAD7F5C302CF8BB00069F6E /* ScheherazadeNew-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "ScheherazadeNew-Regular.ttf"; path = "fonts/ScheherazadeNew-Regular.ttf"; sourceTree = "<group>"; };
-		DCAD7F62302D0ADE00069F6E /* QPC-V4-Tajweed.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "QPC-V4-Tajweed.ttf"; path = "fonts/QPC-V4-Tajweed.ttf"; sourceTree = "<group>"; };
-		DCAD7F63302D0B3900069F6E /* ScheherazadeNew-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "ScheherazadeNew-Medium.ttf"; path = "fonts/ScheherazadeNew-Medium.ttf"; sourceTree = "<group>"; };
-		DCAD7F65302D0BF900069F6E /* ReemKufi-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "ReemKufi-Medium.ttf"; path = "fonts/ReemKufi-Medium.ttf"; sourceTree = "<group>"; };
-		DCAEDD3430320F22002284C8 /* QCF2047.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = QCF2047.ttf; sourceTree = "<group>"; };
-		DCAEDD36303239AA002284C8 /* Amiri-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Amiri-Bold.ttf"; sourceTree = "<group>"; };
 		DCB099C92FF854ED009122CE /* quran-img */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "quran-img"; sourceTree = "<group>"; };
 		DCE64361303104CF001B6AA6 /* ALAEWidget2Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ALAEWidget2Extension.entitlements; sourceTree = "<group>"; };
 		DCF94B013020FC0D0093910E /* adhan-younes.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "adhan-younes.mp3"; sourceTree = "<group>"; };
@@ -154,29 +182,61 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DC5807DE3092955C00EE17C4 /* fonts */ = {
+			isa = PBXGroup;
+			children = (
+				DC5807DF3092955C00EE17C4 /* Amiri-Bold.ttf */,
+				DC5807E03092955C00EE17C4 /* ReemKufi-SemiBold.ttf */,
+				DC5807E13092955C00EE17C4 /* ScheherazadeNew-Medium.ttf */,
+				DC5807E23092955C00EE17C4 /* CormorantGaramond-Medium.woff */,
+				DC5807E33092955C00EE17C4 /* ReemKufi-Bold.ttf */,
+				DC5807E43092955C00EE17C4 /* QPC-V4-Tajweed.ttf */,
+				DC5807E53092955C00EE17C4 /* QPC-V2.woff2 */,
+				DC5807E63092955C00EE17C4 /* ArefRuqaa-Regular.ttf */,
+				DC5807E73092955C00EE17C4 /* ScheherazadeNew-Regular.ttf */,
+				DC5807E83092955C00EE17C4 /* ArefRuqaa-Bold.ttf */,
+				DC5807E93092955C00EE17C4 /* CormorantGaramond-Italic-VariableFont_wght.ttf */,
+				DC5807EA3092955C00EE17C4 /* AmiriQuran.ttf */,
+				DC5807EB3092955C00EE17C4 /* ReemKufi-Regular.ttf */,
+				DC5807EC3092955C00EE17C4 /* Amiri-Regular.ttf */,
+				DC5807ED3092955C00EE17C4 /* CormorantGaramond-VariableFont_wght.ttf */,
+				DC5807EE3092955C00EE17C4 /* CormorantGaramond-Medium.ttf */,
+				DC5807EF3092955C00EE17C4 /* ReemKufi-Medium.ttf */,
+			);
+			path = fonts;
+			sourceTree = "<group>";
+		};
+		DC580814309295CA00EE17C4 /* fr.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				DC580815309295CA00EE17C4 /* InfoPlist.strings */,
+			);
+			path = fr.lproj;
+			sourceTree = "<group>";
+		};
+		DC580817309295CA00EE17C4 /* ar.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				DC580818309295CA00EE17C4 /* InfoPlist.strings */,
+			);
+			path = ar.lproj;
+			sourceTree = "<group>";
+		};
+		DC5808213092A4DD00EE17C4 /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				DC5808223092A4DD00EE17C4 /* InfoPlist.strings */,
+			);
+			path = en.lproj;
+			sourceTree = "<group>";
+		};
 		DC61BCD72FB90CE400179D2E = {
 			isa = PBXGroup;
 			children = (
 				DC7BFD34303B8D5900411212 /* assets */,
-				DC6622EA3033A16800C01655 /* ArefRuqaa-Bold.ttf */,
-				DC6622E63033A0DE00C01655 /* DMSerifDisplay-Regular.ttf */,
-				DC6622E43033A0CB00C01655 /* CormorantGaramond-Regular.ttf */,
-				DC6622E13033A0B100C01655 /* CormorantGaramond-Italic-VariableFont_wght.ttf */,
-				DC6622E03033A0B100C01655 /* CormorantGaramond-VariableFont_wght.ttf */,
-				DC6622DE30338E9E00C01655 /* ArefRuqaa-Regular.ttf */,
-				DC6622DC303388EB00C01655 /* Amiri-Regular.ttf */,
-				DCAEDD36303239AA002284C8 /* Amiri-Bold.ttf */,
 				DCE64361303104CF001B6AA6 /* ALAEWidget2Extension.entitlements */,
-				DCACFC3A3030708700D430B1 /* CormorantGaramond-Medium.ttf */,
-				DCAD7F65302D0BF900069F6E /* ReemKufi-Medium.ttf */,
-				DCAD7F63302D0B3900069F6E /* ScheherazadeNew-Medium.ttf */,
-				DCAD7F62302D0ADE00069F6E /* QPC-V4-Tajweed.ttf */,
-				DCAD7F5C302CF8BB00069F6E /* ScheherazadeNew-Regular.ttf */,
-				DCAEDD3430320F22002284C8 /* QCF2047.ttf */,
-				DCAD7F5A302CF89000069F6E /* AmiriQuran.ttf */,
 				DCF94B3D302136D50093910E /* ALAEWidgetExtension.entitlements */,
 				DC61BCE22FB90CE500179D2E /* ALAE */,
-				DC760F6F2FD6141D00FC5D0A /* fonts */,
 				DCAD7F49302BE2E900069F6E /* ALAEWidget2 */,
 				DCF94B2830212EC40093910E /* Frameworks */,
 				DC61BCE12FB90CE500179D2E /* Products */,
@@ -195,9 +255,14 @@
 		DC61BCE22FB90CE500179D2E /* ALAE */ = {
 			isa = PBXGroup;
 			children = (
+				DC5808213092A4DD00EE17C4 /* en.lproj */,
+				DC580817309295CA00EE17C4 /* ar.lproj */,
+				DC580814309295CA00EE17C4 /* fr.lproj */,
+				DC580812309295CA00EE17C4 /* react.production.min.js */,
+				DC580813309295CA00EE17C4 /* ReviewManager.swift */,
+				DC5807DE3092955C00EE17C4 /* fonts */,
 				DC2C9F1B3038EBCA006CFAFF /* Misbaha-Standalone.html */,
 				DC09E0E83052BA50008802DA /* react-dom.production.min.js */,
-				DC156BB93056C9CA00204D1D /* react.production.min.js */,
 				DCF94B3C302136340093910E /* ALAE.entitlements */,
 				DCF94B073020FC0E0093910E /* adhan-hadioui-notif.caf */,
 				DCF94B0B3020FC0E0093910E /* adhan-hadioui.mp3 */,
@@ -213,6 +278,7 @@
 				DCF94B013020FC0D0093910E /* adhan-younes.mp3 */,
 				DCB099C92FF854ED009122CE /* quran-img */,
 				DC403D4D2FF9B59E00D408BE /* silence.caf */,
+				DC5808253093D3DB00EE17C4 /* StreakManager.swift */,
 				DC61BCE32FB90CE500179D2E /* AppDelegate.swift */,
 				DC7BFD30303A31C200411212 /* ViewController.swift */,
 				DC61BCE52FB90CE500179D2E /* SceneDelegate.swift */,
@@ -307,6 +373,8 @@
 			knownRegions = (
 				en,
 				Base,
+				fr,
+				ar,
 			);
 			mainGroup = DC61BCD72FB90CE400179D2E;
 			productRefGroup = DC61BCE12FB90CE500179D2E /* Products */;
@@ -324,28 +392,46 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC58080C3092955C00EE17C4 /* CormorantGaramond-VariableFont_wght.ttf in Resources */,
+				DC5807FA3092955C00EE17C4 /* QPC-V4-Tajweed.ttf in Resources */,
+				DC5807F43092955C00EE17C4 /* ScheherazadeNew-Medium.ttf in Resources */,
 				DC7BFD35303B8D5900411212 /* assets in Resources */,
+				DC58080E3092955C00EE17C4 /* CormorantGaramond-Medium.ttf in Resources */,
+				DC5808063092955C00EE17C4 /* AmiriQuran.ttf in Resources */,
 				DC7BFD33303B7CB500411212 /* Assets.xcassets in Resources */,
 				DC2C9F1C3038EBCA006CFAFF /* Misbaha-Standalone.html in Resources */,
 				DCF94B143020FC0E0093910E /* adhan-kzabri-notif.caf in Resources */,
+				DC58081D309295CA00EE17C4 /* InfoPlist.strings in Resources */,
 				DC403D552FF9B59F00D408BE /* silence.caf in Resources */,
 				DCF94B0F3020FC0E0093910E /* adhan-mecca-notif.caf in Resources */,
 				DCF94B0E3020FC0E0093910E /* adhan-kouchi.mp3 in Resources */,
 				DCF94B183020FC0E0093910E /* adhan-younes-notif.caf in Resources */,
+				DC5807F63092955C00EE17C4 /* CormorantGaramond-Medium.woff in Resources */,
 				DCF94B0D3020FC0E0093910E /* adhan-younes.mp3 in Resources */,
+				DC5808023092955C00EE17C4 /* ArefRuqaa-Bold.ttf in Resources */,
+				DC58081C309295CA00EE17C4 /* InfoPlist.strings in Resources */,
+				DC5808103092955C00EE17C4 /* ReemKufi-Medium.ttf in Resources */,
+				DC58080A3092955C00EE17C4 /* Amiri-Regular.ttf in Resources */,
 				DC61BCF02FB90CE700179D2E /* LaunchScreen.storyboard in Resources */,
+				DC5808003092955C00EE17C4 /* ScheherazadeNew-Regular.ttf in Resources */,
 				DC09E0E93052BA50008802DA /* react-dom.production.min.js in Resources */,
+				DC5808083092955C00EE17C4 /* ReemKufi-Regular.ttf in Resources */,
 				DCF94B153020FC0E0093910E /* adhan-karaca-notif.caf in Resources */,
 				DCB099CA2FF854F1009122CE /* quran-img in Resources */,
+				DC5807F23092955C00EE17C4 /* ReemKufi-SemiBold.ttf in Resources */,
 				DCF94B133020FC0E0093910E /* adhan-hadioui-notif.caf in Resources */,
+				DC58081A309295CA00EE17C4 /* react.production.min.js in Resources */,
+				DC5808243092A4DD00EE17C4 /* InfoPlist.strings in Resources */,
 				DCF94B173020FC0E0093910E /* adhan-hadioui.mp3 in Resources */,
-				DC760F712FD6141E00FC5D0A /* fonts in Resources */,
 				DCF94B163020FC0E0093910E /* adhan-mecca.mp3 in Resources */,
+				DC5807FE3092955C00EE17C4 /* ArefRuqaa-Regular.ttf in Resources */,
+				DC5807FC3092955C00EE17C4 /* QPC-V2.woff2 in Resources */,
 				DC61BCEB2FB90CE500179D2E /* Main.storyboard in Resources */,
-				DC156BBA3056C9CA00204D1D /* react.production.min.js in Resources */,
-				DC79ECC030519FAC00472C20 /* CormorantGaramond-Italic-VariableFont_wght.ttf in Resources */,
+				DC5807F83092955C00EE17C4 /* ReemKufi-Bold.ttf in Resources */,
+				DC5808043092955C00EE17C4 /* CormorantGaramond-Italic-VariableFont_wght.ttf in Resources */,
 				DCF94B113020FC0E0093910E /* adhan-karaca.mp3 in Resources */,
 				DCF94B103020FC0E0093910E /* adhan-kouchi-notif.caf in Resources */,
+				DC5807F03092955C00EE17C4 /* Amiri-Bold.ttf in Resources */,
 				DCF94B123020FC0E0093910E /* adhan-kzabri.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -354,22 +440,24 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DCED4B1130439F330034C4C0 /* AmiriQuran.ttf in Resources */,
-				DCC879EC3040F24A00BAC940 /* ScheherazadeNew-Medium.ttf in Resources */,
-				DC6622E23033A0B100C01655 /* CormorantGaramond-VariableFont_wght.ttf in Resources */,
-				DC6622DF30338E9E00C01655 /* ArefRuqaa-Regular.ttf in Resources */,
-				DC6622DD303388EC00C01655 /* Amiri-Regular.ttf in Resources */,
-				DCAEDD37303239AA002284C8 /* Amiri-Bold.ttf in Resources */,
-				DC101826302E7C5500C4F0AE /* fonts in Resources */,
-				DC6622EB3033A16800C01655 /* ArefRuqaa-Bold.ttf in Resources */,
-				DC6622E73033A0DE00C01655 /* DMSerifDisplay-Regular.ttf in Resources */,
-				DC79ECC53051A00C00472C20 /* QPC-V4-Tajweed.ttf in Resources */,
-				DC2C9F1A3037B5FF006CFAFF /* ScheherazadeNew-Regular.ttf in Resources */,
-				DCACFC3B3030708800D430B1 /* CormorantGaramond-Medium.ttf in Resources */,
-				DC6622E33033A0B100C01655 /* CormorantGaramond-Italic-VariableFont_wght.ttf in Resources */,
-				DC6622E53033A0CB00C01655 /* CormorantGaramond-Regular.ttf in Resources */,
-				DC79ECC73051A01500472C20 /* QCF2047.ttf in Resources */,
+				DC5807F13092955C00EE17C4 /* Amiri-Bold.ttf in Resources */,
+				DC5807FB3092955C00EE17C4 /* QPC-V4-Tajweed.ttf in Resources */,
+				DC5808053092955C00EE17C4 /* CormorantGaramond-Italic-VariableFont_wght.ttf in Resources */,
+				DC5807F93092955C00EE17C4 /* ReemKufi-Bold.ttf in Resources */,
+				DC58080D3092955C00EE17C4 /* CormorantGaramond-VariableFont_wght.ttf in Resources */,
+				DC5807FF3092955C00EE17C4 /* ArefRuqaa-Regular.ttf in Resources */,
+				DC58080B3092955C00EE17C4 /* Amiri-Regular.ttf in Resources */,
+				DC5807F53092955C00EE17C4 /* ScheherazadeNew-Medium.ttf in Resources */,
+				DC5808033092955C00EE17C4 /* ArefRuqaa-Bold.ttf in Resources */,
+				DC5808013092955C00EE17C4 /* ScheherazadeNew-Regular.ttf in Resources */,
+				DC58080F3092955C00EE17C4 /* CormorantGaramond-Medium.ttf in Resources */,
+				DC5808113092955C00EE17C4 /* ReemKufi-Medium.ttf in Resources */,
 				DCAD7F4F302BE2EC00069F6E /* Assets.xcassets in Resources */,
+				DC5808093092955C00EE17C4 /* ReemKufi-Regular.ttf in Resources */,
+				DC5807F73092955C00EE17C4 /* CormorantGaramond-Medium.woff in Resources */,
+				DC5807F33092955C00EE17C4 /* ReemKufi-SemiBold.ttf in Resources */,
+				DC5807FD3092955C00EE17C4 /* QPC-V2.woff2 in Resources */,
+				DC5808073092955C00EE17C4 /* AmiriQuran.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -383,6 +471,8 @@
 				DC7BFD31303A31C200411212 /* ViewController.swift in Sources */,
 				DC61BCE42FB90CE500179D2E /* AppDelegate.swift in Sources */,
 				DCF6CEBD30290D6700A71E54 /* SceneDelegate.swift in Sources */,
+				DC5808263093D3DB00EE17C4 /* StreakManager.swift in Sources */,
+				DC58081B309295CA00EE17C4 /* ReviewManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -406,6 +496,30 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		DC580815309295CA00EE17C4 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DC580816309295CA00EE17C4 /* fr */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		DC580818309295CA00EE17C4 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DC580819309295CA00EE17C4 /* ar */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		DC5808223092A4DD00EE17C4 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				DC5808233092A4DD00EE17C4 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		DC61BCE92FB90CE500179D2E /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -543,6 +657,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon-Onyx";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -566,7 +681,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.25;
+				MARKETING_VERSION = 1.0.26;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -579,6 +694,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon-Onyx";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -602,7 +718,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.25;
+				MARKETING_VERSION = 1.0.26;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -629,7 +745,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.25;
+				MARKETING_VERSION = 1.0.26;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE.ALAEWidget2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -657,7 +773,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0.25;
+				MARKETING_VERSION = 1.0.26;
 				PRODUCT_BUNDLE_IDENTIFIER = com.alae.misbaha.ALAE.ALAEWidget2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

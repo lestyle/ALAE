@@ -1,0 +1,4 @@
+"CFBundleDisplayName" = "ALAE";
+"NSLocationWhenInUseUsageDescription" = "يستخدم ALAE موقعك لحساب مواقيت الصلاة واتجاه القبلة، ولا يغادر موقعك هاتفك أبدًا.";
+"NSMotionUsageDescription" = "يستخدم ALAE بوصلة هاتفك لتحديد اتجاه القبلة نحو الكعبة المشرّفة.";
+"NSUserNotificationsUsageDescription" = "يرسل لك ALAE تنبيهًا عند كل وقت صلاة، بالأذان الذي تختاره.";

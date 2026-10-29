@@ -1,0 +1,4 @@
+"CFBundleDisplayName" = "ALAE";
+"NSLocationWhenInUseUsageDescription" = "ALAE uses your location to calculate prayer times and the Qibla direction. It never leaves your iPhone.";
+"NSMotionUsageDescription" = "ALAE uses your iPhone's compass to show the Qibla direction towards the Kaaba.";
+"NSUserNotificationsUsageDescription" = "ALAE sends you a reminder at each prayer time, with the adhan of your choice.";

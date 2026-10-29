@@ -8,6 +8,12 @@
 	</array>
 	<key>CFBundleGetInfoString</key>
 	<string></string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>ar</string>
+		<string>fr</string>
+		<string>en</string>
+	</array>
 	<key>CFBundleSignature</key>
 	<string></string>
 	<key>ITSAppUsesNonExemptEncryption</key>
