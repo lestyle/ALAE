@@ -15,7 +15,7 @@ workflows:
       - name: Certificat + profils (app + widget)
         script: |
           for TYPE in DISTRIBUTION IOS_DISTRIBUTION; do
-            for CID in $(app-store-connect list-certificates --type $TYPE --json | jq -r '.[].id'); do
+                        for CID in $(app-store-connect list-certificates --type $TYPE --json 2>/dev/null | jq -r '.[].id' 2>/dev/null || true); do
               app-store-connect delete-certificate "$CID" || true
             done
           done
