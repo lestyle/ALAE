@@ -5366,8 +5366,8 @@ function Chapelet({
     // Slightly smaller beads on the dense perimeter/oval loops; bigger on small loops
     if (style === 'perimeter') return (active ? 6 : done ? 5 : 4) * 0.8; /* 24/10 : perles reduites de 20 % (ALAE) */
     /* 17/10 : perles du petit au grand le long du tour */
-    const g = LOOP_N > 1 ? 0.7 + 0.6 * (i / (LOOP_N - 1)) : 1;
-    return (active ? 8 : done ? 7 : 7) * g * 0.8; /* 24/10 : perles reduites de 20 % (ALAE) */
+    const g = 1; /* 29/10 : toutes les perles a la meme taille (ALAE). */
+    return (active ? 8 : done ? 7 : 7) * g * 1.44; /* 29/10 : perles +80 % (ALAE) */
   };
   const silkSrc = 'assets/silk-bg-inline.jpg';
   const patternId = `silkBead-${style}`;
@@ -5875,7 +5875,7 @@ function Chapelet({
         cy: b.y,
         r: r,
         fill: `url(#tiger-${style}-${(sh * 5) % 14})`,
-        style: Object.assign({ transition: 'r 0.2s' }, _istb ? { filter: 'brightness(1.45) saturate(1.15)' } : {}, anim)
+        style: Object.assign({ transition: 'r 0.2s' }, _istb ? { filter: 'brightness(1.45) saturate(1.15)' } : { filter: 'brightness(1.18) saturate(1.25) contrast(1.08)' } /* 29/10 : oeil de tigre plus brillant (ALAE). */, anim)
       });
     })(), /*#__PURE__*/React.createElement("circle", {
       /* 17/10 : perles non comptees legerement voilees ; se rallument au tap, se voilent une par une en fin de tour */
@@ -5883,7 +5883,7 @@ function Chapelet({
       cy: b.y,
       r: r,
       fill: _isti2 ? "#2E2A27" : "#000",
-      opacity: done || active ? 0 : (_isti2 ? 0.58 : _istb ? 0.06 : 0.28),
+      opacity: done || active ? 0 : (_isti2 ? 0.58 : _istb ? 0.06 : 0.14),
       style: {
         transition: _isti2 ? 'opacity 0.7s ease' : 'opacity 0.45s ease',
         transitionDelay: done || active ? '0s' : (i * 0.035) + 's',
@@ -6175,7 +6175,10 @@ function Chapelet({
       /*#__PURE__*/React.createElement("defs", null, /*#__PURE__*/React.createElement("radialGradient", { id: _ak ? 'alaePoolGa' : 'alaePoolG' }, /*#__PURE__*/React.createElement("stop", { offset: "0%", stopColor: WC.p0, stopOpacity: _md ? 0.22 : _ak ? 0.85 : 0.45 }), /*#__PURE__*/React.createElement("stop", { offset: "55%", stopColor: WC.p1, stopOpacity: _md ? 0.1 : _ak ? 0.6 : 0.22 }) /* 23/10 : Mudhammatan -> flaque presque transparente, les veines de la feuille ressortent (ALAE). */, /*#__PURE__*/React.createElement("stop", { offset: "100%", stopColor: WC.p2, stopOpacity: 0 }))),
       true ? null /* 25/10 : plus de lac en bas sur tous les themes, seules les ondes (ALAE). */ : /*#__PURE__*/React.createElement("ellipse", { cx, cy: py, rx: W * 0.42, ry: W * 0.07, fill: _ak ? 'url(#alaePoolGa)' : 'url(#alaePoolG)' }), false && /*#__PURE__*/React.createElement("ellipse", { key: "chr", cx, cy: py - 1, rx: W * 0.36, ry: W * 0.05, fill: "none", stroke: "#E9EEF5", strokeOpacity: 0.55, strokeWidth: 0.8, style: { filter: "drop-shadow(0 0 3px rgba(235,242,255,0.7))" } }), false && /*#__PURE__*/React.createElement("ellipse", { key: "spec", cx: cx - W * 0.1, cy: py - W * 0.022, rx: W * 0.12, ry: W * 0.008, fill: "#FFFFFF", opacity: 0.5, style: { filter: "blur(1.5px)" } }));
     if (count <= 0) return /*#__PURE__*/React.createElement("g", { style: { pointerEvents: 'none' } }, pool);
-    const _mk = (c) => {
+    const _py0 = py; /* 29/10 : les gouttes tombent sur les 2 boutons ronds du bas (vibreur, etc.) (ALAE). */
+  const _tgt = (c) => { try { const svg = [...document.querySelectorAll('svg')].find(s => s.getAttribute('viewBox') === `0 0 ${W} ${H}`); if (!svg || !svg.getScreenCTM()) return null; const vh = window.innerHeight; const bs = [...document.querySelectorAll('button,[role="button"],div,span,a')].map(e => ({ e, r: e.getBoundingClientRect() })).filter(o => o.r.width >= 28 && o.r.width <= 90 && Math.abs(o.r.width - o.r.height) < 6 && o.r.top > vh * 0.5 && o.r.bottom < vh && parseFloat(getComputedStyle(o.e).borderTopLeftRadius) >= o.r.width / 2 - 2 && getComputedStyle(o.e).visibility !== 'hidden').sort((u, v) => u.r.left - v.r.left); if (!bs.length) return null; const pk = bs[0]; const m = svg.getScreenCTM().inverse(); const pt = svg.createSVGPoint(); pt.x = pk.r.left + pk.r.width / 2; pt.y = pk.r.top + pk.r.height / 2; const q = pt.matrixTransform(m); return q.y > 0 && q.y < H + 400 ? { x: q.x, y: q.y } : null; } catch (e) { return null; } };
+  const _mk = (c) => {
+    const py = H - 24; /* 29/10 : gouttes descendues au plus bas, au niveau des 2 boutons ronds (ALAE). */
     const _sp = positions[(c - 1) % LOOP_N] || { x: cx, y: H * 0.4 }, _sr = beadR((c - 1) % LOOP_N, true, true);
     const xs = [0].map((o) => /* 26/10 : une seule goutte par tap (ALAE). */ Math.max(W * 0.1, Math.min(W * 0.9, _sp.x + o)));
     const drops = xs.map((x, k) => {
@@ -6314,7 +6317,7 @@ function Chapelet({
   })(), false && /*#__PURE__*/React.createElement("g", { key: 'filDevant' }, (() => { const P = _filPts(), out = []; for (let k = 1; k < 6; k += 2) { const a = P[k], b = P[k + 1], mx = (a.x + b.x) / 2, my = (a.y + b.y) / 2 + 3; out.push(..._filStroke('M ' + (a.x + (mx - a.x) * 0.15) + ' ' + (a.y + (my - a.y) * 0.15 + 1) + ' Q ' + mx + ' ' + (my + 1) + ' ' + (b.x + (mx - b.x) * 0.15) + ' ' + (b.y + (my - b.y) * 0.15 + 1), 'd' + k)); } return out; })()), style === 'fullRing' && _bk > 0 && /*#__PURE__*/React.createElement("g", { key: 'wave' + _bk, style: { pointerEvents: 'none', mixBlendMode: 'screen' } },
     /* 17/10 : a 33, une vague de lumiere doree fait le tour du chapelet perle par perle et finit dans le pompon */
     positions.map((b, i) => i === imamIdx ? null : /*#__PURE__*/React.createElement("circle", { key: 'w' + i, cx: b.x, cy: b.y, r: beadR(i, true, false) + 3.5, fill: "#FFE2A0", style: { opacity: 0, filter: 'blur(2.5px)', transformOrigin: `${b.x}px ${b.y}px`, transformBox: 'view-box', animation: `beadFlash 0.7s ease-out ${0.05 + i * 0.045}s both` } })),
-    /*#__PURE__*/React.createElement("ellipse", { cx: 201, cy: 468 + 158 + 70, rx: 22, ry: 40, fill: "#FFD98A", style: { opacity: 0, filter: 'blur(9px)', transformOrigin: '201px 696px', transformBox: 'view-box', animation: `beadFlash 1.1s ease-out ${0.05 + LOOP_N * 0.045}s both` } })), style === 'fullRing' && (() => {
+    /*#__PURE__*/React.createElement("ellipse", { cx: 201, cy: 468 + 158 + 70, rx: 22, ry: 40, fill: "transparent" /* 29/10 : plus de lueur sur le pompon a 33 (ALAE). */, style: { opacity: 0, filter: 'blur(9px)', transformOrigin: '201px 696px', transformBox: 'view-box', animation: `beadFlash 1.1s ease-out ${0.05 + LOOP_N * 0.045}s both` } })), style === 'fullRing' && (() => {
     /* 17/10 : pompon en fils de soie, couleurs oeil-de-tigre, accroche en bas du chapelet */
     const x = 201, y0 = 468 + 158;
     const fib = [];
@@ -6337,18 +6340,18 @@ function Chapelet({
     const _silk = String(window.ALAE_SILK || ''), _imgT = true; /* 26/10 : pompon sculpte pour TOUS les themes (ALAE). */
     /* ═══ VERROUILLE — 26/10/2026. Pompon themes noirs valide par ALAE. NE PLUS MODIFIER sans demande explicite. ═══ */ /* 26/10 : themes noirs (al-Akmam, Mudhammatan) -> pompon sculpte en spirale (cordon enroule creme/miel/brun) + franges miel oeil-de-tigre, plus petit (ALAE). */
     if (_imgT) { const Y = (k) => y0 + k, sp = `M ${x} ${Y(10)} C ${x + 20} ${Y(20)} ${x + 21} ${Y(36)} ${x} ${Y(44)} C ${x - 21} ${Y(52)} ${x - 21} ${Y(68)} ${x} ${Y(76)} C ${x + 21} ${Y(84)} ${x + 20} ${Y(99)} ${x + 2} ${Y(106)} C ${x - 8} ${Y(110)} ${x - 3} ${Y(118)} ${x} ${Y(124)}`, fr = []; for (let k = 0; k < 44; k++) { const u = k / 43 - 0.5, ex = x + u * 15 + Math.sin(k * 2.3) * 0.8, ey = Y(196) + Math.sin(k * 1.7) * 2.5 - Math.abs(u) * 4; fr.push(React.createElement("path", { key: 'fr' + k, d: `M ${x + u * 9} ${Y(128)} Q ${x + u * 12} ${Y(160)} ${ex} ${ey}`, stroke: 'url(#tsFrG)', strokeWidth: k % 3 ? 0.9 : 1.2, fill: 'none', strokeLinecap: 'round', opacity: 0.92 })); }
-      return React.createElement("g", { key: 'tasselWrap', transform: `translate(${x} ${y0}) scale(0.35) translate(${-x} ${-y0})` }, React.createElement("g", { key: 'tassel', style: ts }, React.createElement("g", { key: 'sw' + count, style: sw }, React.createElement("g", null, React.createElement("animateTransform", { attributeName: "transform", type: "rotate", values: `-3 ${x} ${y0};3 ${x} ${y0};-3 ${x} ${y0}`, dur: "6.5s", repeatCount: "indefinite" }),
+      return React.createElement("g", { key: 'tasselWrap', style: { filter: 'sepia(0.45) saturate(1.7) hue-rotate(-8deg) brightness(1.08) contrast(1.05)' } /* 29/10 : pompon couleur oeil de tigre (ALAE). */, transform: `translate(${x} ${y0}) scale(0.48) translate(${-x} ${-y0})` }, React.createElement("g", { key: 'tassel', style: ts }, React.createElement("g", { key: 'sw' + count, style: sw }, React.createElement("g", null, React.createElement("animateTransform", { attributeName: "transform", type: "rotate", values: `-3 ${x} ${y0};3 ${x} ${y0};-3 ${x} ${y0}`, dur: "6.5s", repeatCount: "indefinite" }),
         React.createElement("defs", null, React.createElement("linearGradient", { id: 'tsSpG', gradientUnits: 'userSpaceOnUse', x1: 0, y1: Y(8), x2: 0, y2: Y(126) }, [['0', '#EFE3CC'], ['0.14', '#E6CFA4'], ['0.3', '#C8955A'], ['0.46', '#6E4120'], ['0.6', '#B98448'], ['0.74', '#D7AE76'], ['0.88', '#5A3418'], ['1', '#3E2410']].map(([o, c], i) => React.createElement("stop", { key: i, offset: o, stopColor: c }))), React.createElement("linearGradient", { id: 'tsFrG', gradientUnits: 'userSpaceOnUse', x1: 0, y1: Y(128), x2: 0, y2: Y(198) }, [['0', '#EAD7B5'], ['0.45', '#DDB27A'], ['0.75', '#C27E35'], ['1', '#8A5320']].map(([o, c], i) => React.createElement("stop", { key: i, offset: o, stopColor: c })))),
         React.createElement("line", { x1: x, y1: y0, x2: x, y2: Y(30), stroke: '#B9792C', strokeWidth: 1.1 }), /* 26/10 : petite boule puis moyenne oeil-de-tigre en tete du pompon (ALAE). */
         React.createElement("circle", { cx: x + 0.5, cy: Y(9) + 1.2, r: 4.2, fill: 'rgba(0,0,0,0.4)', style: { filter: 'blur(1px)' } }), React.createElement("circle", { cx: x, cy: Y(9), r: 4, fill: `url(#tiger-${style}-2)` }), React.createElement("ellipse", { cx: x - 1.2, cy: Y(7.6), rx: 1.4, ry: 0.8, fill: 'rgba(255,240,210,0.55)' }),
         React.createElement("circle", { cx: x + 0.6, cy: Y(22) + 1.5, r: 6.6, fill: 'rgba(0,0,0,0.4)', style: { filter: 'blur(1.2px)' } }), React.createElement("circle", { cx: x, cy: Y(22), r: 6.4, fill: `url(#tiger-${style}-2)` }), React.createElement("ellipse", { cx: x - 2, cy: Y(19.8), rx: 2.2, ry: 1.2, fill: 'rgba(255,240,210,0.55)' }),
         React.createElement("g", { transform: 'translate(0 24)' },
-        React.createElement("path", { d: sp, stroke: 'rgba(0,0,0,0.45)', strokeWidth: 14, fill: 'none', strokeLinecap: 'round', transform: 'translate(1.5 2.5)', style: { filter: 'blur(1.5px)' } }),
-        React.createElement("path", { d: sp, stroke: 'url(#tsSpG)', strokeWidth: 12, fill: 'none', strokeLinecap: 'round' }),
-        React.createElement("path", { d: sp, stroke: 'rgba(40,20,6,0.35)', strokeWidth: 12, fill: 'none', strokeDasharray: '0.5 1.4' }),
-        React.createElement("path", { d: sp, stroke: 'rgba(255,245,225,0.35)', strokeWidth: 2.2, fill: 'none', strokeLinecap: 'round', transform: 'translate(-2.5 -1)' }),
+        React.createElement("path", { d: sp, stroke: 'rgba(0,0,0,0.45)', strokeWidth: 9, fill: 'none', strokeLinecap: 'round', transform: 'translate(1.5 2.5)', style: { filter: 'blur(1.5px)' } }),
+        React.createElement("path", { d: sp, stroke: 'url(#tsSpG)', strokeWidth: 8, fill: 'none', strokeLinecap: 'round' }),
+        React.createElement("path", { d: sp, stroke: 'rgba(40,20,6,0.35)', strokeWidth: 8, fill: 'none', strokeDasharray: '0.5 1.4' }),
+        React.createElement("path", { d: sp, stroke: 'rgba(255,245,225,0.35)', strokeWidth: 1.5, fill: 'none', strokeLinecap: 'round', transform: 'translate(-1.7 -0.7)' }),
         React.createElement("rect", { x: x - 6.5, y: Y(122), width: 13, height: 7, rx: 2.5, fill: '#3E2410' }), fr))))); }
-    return React.createElement("g", { key: 'tasselWrap', transform: `translate(${x} ${y0}) scale(0.42) translate(${-x} ${-y0})` }, /* 22/10 : pompon reduit (ALAE). */ /* 26/10 : 0.6 -> 0.42 (ALAE). */ /* 26/10 : pompon encore reduit 0.78 -> 0.6 (ALAE). */ /*#__PURE__*/React.createElement("g", { key: 'tassel', style: ts }, /*#__PURE__*/React.createElement("g", { key: 'sw' + count, style: _rising ? Object.assign({}, sw, { '--amp': 14, animation: 'tasselSwing 5s ease-in-out 3.4s both' }) : sw }, /*#__PURE__*/React.createElement("defs", null,
+    return React.createElement("g", { key: 'tasselWrap', style: { filter: 'sepia(0.45) saturate(1.7) hue-rotate(-8deg) brightness(1.08) contrast(1.05)' } /* 29/10 : pompon couleur oeil de tigre (ALAE). */, transform: `translate(${x} ${y0}) scale(0.58) translate(${-x} ${-y0})` }, /* 22/10 : pompon reduit (ALAE). */ /* 26/10 : 0.6 -> 0.42 (ALAE). */ /* 26/10 : pompon encore reduit 0.78 -> 0.6 (ALAE). */ /*#__PURE__*/React.createElement("g", { key: 'tassel', style: ts }, /*#__PURE__*/React.createElement("g", { key: 'sw' + count, style: _rising ? Object.assign({}, sw, { '--amp': 14, animation: 'tasselSwing 5s ease-in-out 3.4s both' }) : sw }, /*#__PURE__*/React.createElement("defs", null,
       /*#__PURE__*/React.createElement("linearGradient", { id: 'tsHead', x1: "0", y1: "0", x2: "1", y2: "0" },
         /*#__PURE__*/React.createElement("stop", { offset: "0", stopColor: "#5E3610" }),
         /*#__PURE__*/React.createElement("stop", { offset: "0.35", stopColor: "#C88A3C" }),
