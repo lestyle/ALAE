@@ -473,6 +473,15 @@ class ViewController: UIViewController, WKNavigationDelegate, WKUIDelegate, WKSc
             return
         }
 
+        // 01/11 — MODE FOCUS : l'ecran reste allume pendant le compteur seulement.
+        // Le HTML envoie { type: "keepAwake", on: true } a l'ouverture du compteur
+        // et { on: false } en le quittant (sinon l'ecran ne s'eteindrait plus jamais).
+        if type == "keepAwake" {
+            let on = (body["on"] as? Bool) ?? false
+            DispatchQueue.main.async { UIApplication.shared.isIdleTimerDisabled = on }
+            return
+        }
+
         // Le HTML signale que son intro vient de se terminer : on retient l'instant
         // cote natif pour qu'un rechargement apres plantage saute l'intro et le Dou'a.
         if type == "bootAt" {
