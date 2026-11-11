@@ -17003,6 +17003,7 @@ window.AsmaScreen = AsmaScreen;
     try {
       const s = loadState();
       const today = dayKey();
+      const premierDuJour = !(s.daily && s.daily[today] && s.daily[today].total > 0);
       s.totalCount = (s.totalCount || 0) + 1;
       s.counts = s.counts || {};
       s.counts[dhikrId] = (s.counts[dhikrId] || 0) + 1;
@@ -17026,6 +17027,9 @@ window.AsmaScreen = AsmaScreen;
       try {
         window.syncWidgetSibha(dhikrId);
       } catch (_) {}
+      try {
+        window.alaeStreakApresTap(premierDuJour, d.total);
+      } catch (_) {}
     } catch (e) {}
   };
   // ─── Widget : envoie le dhikr courant + compteurs au natif (App Group) ───
@@ -17043,7 +17047,7 @@ window.AsmaScreen = AsmaScreen;
         dhikrTr: dObj.tr || '',
         count: todayCount,
         total: s.totalCount || 0,
-        goal: s.dailyGoal || 1000
+        goal: s.dailyGoal || 100
       });
     } catch (e) {}
   };
@@ -17056,6 +17060,140 @@ window.AsmaScreen = AsmaScreen;
       }, 600);
     });
   } catch (_) {}
+  /* 29/10 : series de jours (streaks) + rappels intelligents (ALAE).
+     Le natif (StreakManager.swift) repose les notifications locales a chaque envoi. */
+  (function () {
+    const J = {
+      fr: n => n === 1 ? '1 jour' : n + ' jours',
+      en: n => n === 1 ? '1 day' : n + ' days',
+      ar: n => n === 1 ? 'يوم واحد' : n === 2 ? 'يومين' : n <= 10 ? n + ' أيام' : n + ' يومًا'
+    };
+    const TX = {
+      fr: {
+        dangerTitre: n => 'آلَاء · Série de ' + J.fr(n),
+        dangerCorps: n => 'Tu es sur une série de ' + J.fr(n) + ', ne casse pas tout !\nوَاذْكُر رَّبَّكَ إِذَا نَسِيتَ\n« Et invoque ton Seigneur quand tu oublies. » (18:24)',
+        objectifTitre: () => 'آلَاء · Objectif du jour',
+        objectifCorps: (g, r) => "N'oublie pas ton objectif de " + g + ' : encore ' + r + '.\nيَا أَيُّهَا الَّذِينَ آمَنُوا اذْكُرُوا اللَّهَ ذِكْرًا كَثِيرًا\n« Ô vous qui avez cru ! Évoquez Allah d\'une façon abondante. » (33:41)',
+        matinTitre: () => 'آلَاء · Dhikr du matin',
+        matinCorps: () => "C'est l'heure de ton dhikr du matin.\nوَسَبِّحُوهُ بُكْرَةً وَأَصِيلًا\n« Et glorifiez-Le à la pointe et au déclin du jour. » (33:42)",
+        retourTitre: () => 'آلَاء',
+        retourCorps: () => 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ\n« N\'est-ce point par l\'évocation d\'Allah que se tranquillisent les cœurs ? » (13:28)',
+        retour7Corps: () => 'أَلَمْ يَأْنِ لِلَّذِينَ آمَنُوا أَن تَخْشَعَ قُلُوبُهُمْ لِذِكْرِ اللَّهِ\n« Le moment n\'est-il pas venu pour ceux qui ont cru, que leurs cœurs s\'humilient à l\'évocation d\'Allah ? » (57:16)',
+        ouverture: n => 'Série de ' + J.fr(n) + " · fais ton dhikr aujourd'hui pour la garder",
+        garde: n => 'Jour ' + n + ' · série gardée',
+        palier: n => J.fr(n) + " d'affilée · ما شاء الله",
+        objectif: g => 'Objectif de ' + g + ' atteint'
+      },
+      en: {
+        dangerTitre: n => 'آلَاء · ' + J.en(n) + ' streak',
+        dangerCorps: n => "You're on a " + J.en(n) + " streak, don't break it!\nوَاذْكُر رَّبَّكَ إِذَا نَسِيتَ\n\"And remember your Lord when you forget.\" (18:24)",
+        objectifTitre: () => "آلَاء · Today's goal",
+        objectifCorps: (g, r) => "Don't forget your goal of " + g + ': ' + r + ' to go.\nيَا أَيُّهَا الَّذِينَ آمَنُوا اذْكُرُوا اللَّهَ ذِكْرًا كَثِيرًا\n"O you who have believed, remember Allah with much remembrance." (33:41)',
+        matinTitre: () => 'آلَاء · Morning dhikr',
+        matinCorps: () => "It's time for your morning dhikr.\nوَسَبِّحُوهُ بُكْرَةً وَأَصِيلًا\n\"And exalt Him morning and afternoon.\" (33:42)",
+        retourTitre: () => 'آلَاء',
+        retourCorps: () => 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ\n"Unquestionably, by the remembrance of Allah hearts are assured." (13:28)',
+        retour7Corps: () => 'أَلَمْ يَأْنِ لِلَّذِينَ آمَنُوا أَن تَخْشَعَ قُلُوبُهُمْ لِذِكْرِ اللَّهِ\n"Has the time not come for those who have believed that their hearts should humble themselves at the remembrance of Allah?" (57:16)',
+        ouverture: n => J.en(n) + ' streak · do your dhikr today to keep it',
+        garde: n => 'Day ' + n + ' · streak kept',
+        palier: n => J.en(n) + ' in a row · ما شاء الله',
+        objectif: g => 'Goal of ' + g + ' reached'
+      },
+      ar: {
+        dangerTitre: n => 'آلَاء · سلسلة ' + J.ar(n),
+        dangerCorps: n => 'أنت على سلسلة ' + J.ar(n) + '، لا تقطعها!\nوَاذْكُر رَّبَّكَ إِذَا نَسِيتَ ﴿الكهف: ٢٤﴾',
+        objectifTitre: () => 'آلَاء · هدف اليوم',
+        objectifCorps: (g, r) => 'لا تنسَ هدفك: ' + g + '، بقي ' + r + '.\nيَا أَيُّهَا الَّذِينَ آمَنُوا اذْكُرُوا اللَّهَ ذِكْرًا كَثِيرًا ﴿الأحزاب: ٤١﴾',
+        matinTitre: () => 'آلَاء · ذكر الصباح',
+        matinCorps: () => 'حان وقت ذكرك الصباحي.\nوَسَبِّحُوهُ بُكْرَةً وَأَصِيلًا ﴿الأحزاب: ٤٢﴾',
+        retourTitre: () => 'آلَاء',
+        retourCorps: () => 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ ﴿الرعد: ٢٨﴾',
+        retour7Corps: () => 'أَلَمْ يَأْنِ لِلَّذِينَ آمَنُوا أَن تَخْشَعَ قُلُوبُهُمْ لِذِكْرِ اللَّهِ ﴿الحديد: ١٦﴾',
+        ouverture: n => 'سلسلة ' + J.ar(n) + ' · اذكر الله اليوم لتحافظ عليها',
+        garde: n => 'اليوم ' + n + ' · السلسلة مستمرة',
+        palier: n => J.ar(n) + ' على التوالي · ما شاء الله',
+        objectif: g => 'بلغت هدفك: ' + g
+      }
+    };
+    const PALIERS = [3, 7, 14, 21, 30, 40, 100, 365];
+    const info = () => {
+      const s = loadState();
+      const daily = s.daily || {};
+      const today = daily[dayKey()] && daily[dayKey()].total || 0;
+      let streak = 0;
+      const dt = new Date();
+      if (!today) dt.setDate(dt.getDate() - 1);
+      while (daily[dayKey(dt)] && daily[dayKey(dt)].total > 0) { streak++; dt.setDate(dt.getDate() - 1); }
+      const lang = TX[s.lang] ? s.lang : 'ar';
+      return { today, streak, goal: s.dailyGoal || 100, lang, L: TX[lang] };
+    };
+    window.alaeStreakInfo = info;
+    let dernierEnvoi = 0;
+    window.alaeStreakSync = function (force) {
+      const t = Date.now();
+      if (!force && t - dernierEnvoi < 20000) return;
+      dernierEnvoi = t;
+      try {
+        const i = info(), L = i.L;
+        window.webkit.messageHandlers.alae.postMessage({
+          type: 'streakSync', streak: i.streak, today: i.today, goal: i.goal,
+          textes: {
+            dangerTitre: L.dangerTitre(i.streak), dangerCorps: L.dangerCorps(i.streak),
+            objectifTitre: L.objectifTitre(), objectifCorps: L.objectifCorps(i.goal, Math.max(0, i.goal - i.today)),
+            matinTitre: L.matinTitre(), matinCorps: L.matinCorps(),
+            retourTitre: L.retourTitre(), retourCorps: L.retourCorps(),
+            retour7Titre: L.retourTitre(), retour7Corps: L.retour7Corps()
+          }
+        });
+      } catch (e) {}
+    };
+    window.alaeStreakToast = function (txt, fort) {
+      try {
+        const ar = /[\u0600-\u06FF]/.test(txt.charAt(0));
+        const el = document.createElement('div');
+        el.textContent = txt;
+        el.setAttribute('role', 'status');
+        el.style.cssText = 'position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 58px);transform:translate(-50%,-12px);z-index:99999;max-width:82vw;padding:11px 20px;border-radius:22px;text-align:center;pointer-events:none;opacity:0;transition:opacity .45s ease,transform .45s ease;background:linear-gradient(180deg,rgba(28,24,18,0.92),rgba(10,9,7,0.94));border:0.5px solid rgba(232,200,140,' + (fort ? '0.7' : '0.4') + ');box-shadow:0 8px 28px rgba(0,0,0,0.5),0 0 ' + (fort ? '22px' : '0') + ' rgba(232,200,140,0.25);color:#F2D9A0;direction:' + (ar ? 'rtl' : 'ltr') + ';font-family:' + (ar ? 'ReemKufi,Amiri,serif' : '-apple-system,system-ui,sans-serif') + ';font-size:' + (ar ? '16px' : '14px') + ';font-weight:600;letter-spacing:' + (ar ? '0' : '0.01em') + ';text-wrap:pretty;';
+        document.body.appendChild(el);
+        requestAnimationFrame(() => { el.style.opacity = '1'; el.style.transform = 'translate(-50%,0)'; });
+        setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translate(-50%,-12px)'; }, fort ? 4200 : 3400);
+        setTimeout(() => el.remove(), fort ? 4800 : 4000);
+      } catch (e) {}
+    };
+    window.alaeStreakApresTap = function (premierDuJour, totalJour) {
+      const i = info();
+      if (premierDuJour) {
+        if (i.streak > 1) {
+          const palier = PALIERS.indexOf(i.streak) >= 0;
+          window.alaeStreakToast(palier ? i.L.palier(i.streak) : i.L.garde(i.streak), palier);
+          if (palier) try { window.webkit.messageHandlers.alae.postMessage({ type: 'haptic', style: 'medium' }); } catch (e) {}
+        }
+        /* 29/10 : 3 jours d'affilee = moment ideal pour la note App Store (fenetre Apple officielle). */
+        if (i.streak >= 3) setTimeout(() => { try { window.webkit.messageHandlers.alae.postMessage({ type: 'reviewMoment' }); } catch (e) {} }, 4500);
+        window.alaeStreakSync(true);
+      } else if (totalJour === i.goal) {
+        window.alaeStreakToast(i.L.objectif(i.goal), true);
+        window.alaeStreakSync(true);
+        setTimeout(() => { try { window.webkit.messageHandlers.alae.postMessage({ type: 'reviewMoment' }); } catch (e) {} }, 4500);
+      } else {
+        window.alaeStreakSync(false);
+      }
+    };
+    const aLouverture = () => {
+      const i = info();
+      window.alaeStreakSync(true);
+      if (i.streak > 0 && !i.today) {
+        const k = 'alae.streak.vu', j = dayKey();
+        try { if (localStorage.getItem(k) === j) return; localStorage.setItem(k, j); } catch (e) {}
+        window.alaeStreakToast(i.L.ouverture(i.streak), false);
+      }
+    };
+    try {
+      if (document.readyState === 'complete') setTimeout(aLouverture, 8000);
+      else window.addEventListener('load', () => setTimeout(aLouverture, 8000));
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') setTimeout(aLouverture, 1200); });
+    } catch (e) {}
+  })();
   window.getHistoryStats = function getHistoryStats(lang) {
     const s = loadState();
     const daily = s.daily || {};
