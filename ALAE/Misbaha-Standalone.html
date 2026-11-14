@@ -416,6 +416,10 @@ input,textarea{-webkit-user-select:text;user-select:text}
   P.removeItem=function(){ var r=sup.apply(this,arguments); if(this===localStorage) renvoyer(); return r; };
   P.clear=function(){ var r=vide.apply(this,arguments); if(this===localStorage) renvoyer(); return r; };
 })();
+/* 14/11 — PREMIER LANCEMENT : aucun reglage enregistre (ni copie native, ni
+   localStorage). Sert UNIQUEMENT a montrer l'ecran de choix de langue en or une
+   seule fois. Les utilisateurs existants ont deja 'misbaha.v1' : ils ne le voient pas. */
+window.__alaePremierLancement=(function(){ try{ return !localStorage.getItem('misbaha.v1'); }catch(e){ return false; } })();
 /* 20/10 — MIGRATION DES ANCIENS THEMES, une seule fois au demarrage, juste apres la
    restauration des reglages : tout le reste de l'app lit ensuite un id valide.
    ancien id 'copper' -> akmam ; tout id inconnu -> gold. */
@@ -19133,10 +19137,18 @@ window.AsmaScreen = AsmaScreen;
     }, [showDuaa]);
     // ── Daily Dou'a splash — apparaît APRÈS l'intro, reste ~5s puis laisse place à la niyya ──
     React.useEffect(() => {
-      if (!showDuaa || !bootDone) return;
+      if (!showDuaa || !bootDone || (window.__alaePremierLancement && !state.langSet)) return;
       const t = setTimeout(() => setShowDuaa(false), 7000);
       return () => clearTimeout(t);
-    }, [showDuaa, bootDone]);
+    }, [showDuaa, bootDone, state.langSet]);
+    /* 14/11 : choix de la langue en or, une seule fois au premier lancement (ALAE). */
+    if (window.__alaePremierLancement && !state.langSet) {
+      return /*#__PURE__*/React.createElement("div", {
+        style: frameStyle()
+      }, /*#__PURE__*/React.createElement(LangChoice, {
+        onPick: l => setLang(l)
+      }));
+    }
     if (showSplash) {
       const dismiss = () => {
         setShowSplash(false);
@@ -19524,6 +19536,105 @@ window.AsmaScreen = AsmaScreen;
       };
     }, []);
     return info;
+  }
+  /* 14/11 — ECRAN DE CHOIX DE LANGUE (premier lancement uniquement), or sur soie.
+     La langue du telephone est pre-selectionnee ; un toucher sur « Continuer » suffit. */
+  function LangChoice({ onPick }) {
+    const h = React.createElement;
+    const OPTS = [
+      { id: 'ar', label: 'العربية', sub: 'Arabic', titre: 'اختر لغتك', btn: 'متابعة', ar: true },
+      { id: 'fr', label: 'Français', sub: 'French', titre: 'Choisissez votre langue', btn: 'Continuer' },
+      { id: 'en', label: 'English', sub: 'Anglais', titre: 'Choose your language', btn: 'Continue' }
+    ].filter(o => window.I18N && window.I18N[o.id]);
+    const devine = () => {
+      try {
+        const l = String((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
+        if (l.indexOf('ar') === 0) return 'ar';
+        if (l.indexOf('fr') === 0) return 'fr';
+        if (l) return 'en';
+      } catch (e) {}
+      return 'ar';
+    };
+    const [sel, setSel] = React.useState(devine);
+    const [sortie, setSortie] = React.useState(false);
+    const o = OPTS.find(x => x.id === sel) || OPTS[0];
+    const vibre = () => { try { window.webkit.messageHandlers.alae.postMessage({ type: 'haptic', style: 'light' }); } catch (e) { try { navigator.vibrate && navigator.vibrate(8); } catch (_) {} } };
+    const fond = window.__alaeBootFond && window.__alaeBootFond.url || 'assets/silk-istabraq.jpg';
+    const OR = 'linear-gradient(180deg,#FFF3D6 0%,#F1D08C 28%,#D9A55A 55%,#B0742F 80%,#E8C27A 100%)';
+    const valider = () => {
+      if (sortie) return;
+      vibre(); setSortie(true);
+      setTimeout(() => onPick(sel), 650);
+    };
+    return h('div', { style: { position: 'absolute', inset: 0, overflow: 'hidden', background: '#0B0906', opacity: sortie ? 0 : 1, transition: 'opacity .6s ease' } },
+      h('style', null, `
+        @keyframes lcUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+        @keyframes lcFade{from{opacity:0}to{opacity:1}}
+        @keyframes lcShine{0%,100%{background-position:100% 0}50%{background-position:0% 0}}
+        @keyframes lcGlow{0%,100%{opacity:.55;transform:translate(-50%,-50%) scale(1)}50%{opacity:.85;transform:translate(-50%,-50%) scale(1.08)}}
+        @keyframes lcSheen{0%{left:-60%}60%,100%{left:130%}}
+        .lc-card{transition:transform .25s ease, box-shadow .35s ease, background .35s ease, border-color .35s ease}
+        .lc-card:active{transform:scale(.97)}
+      `),
+      /* soie du theme, assombrie */
+      h('div', { style: { position: 'absolute', inset: -20, backgroundImage: 'url("' + fond + '")', backgroundSize: 'cover', backgroundPosition: 'center', filter: 'brightness(.42) saturate(1.1) blur(1.5px)', animation: 'lcFade 1.2s ease both' } }),
+      h('div', { style: { position: 'absolute', inset: 0, background: 'radial-gradient(120% 80% at 50% 38%, rgba(0,0,0,0) 0%, rgba(6,4,2,.55) 60%, rgba(4,3,2,.92) 100%)' } }),
+      /* halo d'or qui respire */
+      h('div', { style: { position: 'absolute', left: '50%', top: 170, width: 360, height: 360, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,214,140,.30), rgba(224,162,63,.10) 55%, rgba(0,0,0,0) 100%)', animation: 'lcGlow 5s ease-in-out infinite', pointerEvents: 'none' } }),
+      /* calligraphie */
+      h('div', { style: { position: 'absolute', top: 92, left: 0, right: 0, textAlign: 'center', animation: 'lcUp .9s ease .15s both' } },
+        h('div', { 'aria-hidden': true, style: { position: 'absolute', top: 0, left: 0, right: 0, fontFamily: '"ArefRuqaa","Amiri",serif', fontSize: 92, lineHeight: 1.25, direction: 'rtl', color: 'rgba(255,200,110,.55)', filter: 'blur(14px)', pointerEvents: 'none' } }, 'آلَاء'),
+        h('div', { style: { position: 'relative', fontFamily: '"ArefRuqaa","Amiri",serif', fontSize: 92, lineHeight: 1.25, direction: 'rtl', color: 'transparent', backgroundImage: 'linear-gradient(100deg, #C98E45 0%, #F3D493 22%, #FFE9B8 34%, #FFFBEF 42%, #FFE3A0 50%, #E2AE62 64%, #F6D896 80%, #C98E45 100%)', backgroundSize: '260% 100%', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', animation: 'lcShine 4.5s ease-in-out 1s infinite' } }, 'آلَاء'),
+        h('div', { style: { marginTop: 2, fontFamily: '"Cormorant Garamond",serif', fontSize: 15, letterSpacing: '0.62em', paddingLeft: '0.62em', color: '#E8C98A', opacity: .9 } }, 'ALAE'),
+        h('div', { style: { margin: '18px auto 0', width: 170, display: 'flex', alignItems: 'center', gap: 10 } },
+          h('div', { style: { flex: 1, height: 1, background: 'linear-gradient(90deg, rgba(232,194,122,0), rgba(232,194,122,.8))' } }),
+          h('div', { style: { width: 7, height: 7, transform: 'rotate(45deg)', background: OR, boxShadow: '0 0 10px rgba(255,214,140,.8)' } }),
+          h('div', { style: { flex: 1, height: 1, background: 'linear-gradient(270deg, rgba(232,194,122,0), rgba(232,194,122,.8))' } })
+        )
+      ),
+      /* titre dans la langue choisie */
+      h('div', { key: 't' + o.id, style: { position: 'absolute', top: 336, left: 24, right: 24, textAlign: 'center', direction: o.ar ? 'rtl' : 'ltr', fontFamily: o.ar ? '"Amiri",serif' : '"Cormorant Garamond",serif', fontStyle: o.ar ? 'normal' : 'italic', fontSize: o.ar ? 27 : 26, color: '#F6E7C4', textShadow: '0 2px 14px rgba(0,0,0,.6)', animation: 'lcFade .5s ease both' } }, o.titre),
+      /* les langues */
+      h('div', { style: { position: 'absolute', top: 410, left: 44, right: 44, display: 'flex', flexDirection: 'column', gap: 16 } },
+        OPTS.map((x, i) => {
+          const on = x.id === sel;
+          return h('button', {
+            key: x.id, className: 'lc-card',
+            onClick: () => { if (!on) vibre(); setSel(x.id); },
+            style: {
+              position: 'relative', height: 74, borderRadius: 20, cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 1,
+              background: on ? 'linear-gradient(180deg, rgba(255,226,160,.20), rgba(176,116,47,.16))' : 'linear-gradient(180deg, rgba(20,15,9,.62), rgba(12,9,6,.72))',
+              border: on ? '1.5px solid rgba(246,214,150,.95)' : '0.5px solid rgba(232,194,122,.38)',
+              boxShadow: on ? '0 0 0 4px rgba(232,185,110,.10), 0 0 34px rgba(240,190,105,.38), inset 0 1px 0 rgba(255,240,205,.45)' : '0 10px 26px rgba(0,0,0,.45)',
+              WebkitBackdropFilter: 'blur(8px)', backdropFilter: 'blur(8px)',
+              animation: 'lcUp .7s ease ' + (0.45 + i * 0.12) + 's both'
+            }
+          },
+            h('span', { style: { fontFamily: x.ar ? '"Amiri",serif' : '"Cormorant Garamond",serif', fontSize: x.ar ? 27 : 26, fontWeight: x.ar ? 700 : 600, lineHeight: 1.15, color: on ? 'transparent' : '#EBD9B0', WebkitTextFillColor: on ? 'transparent' : '#EBD9B0', backgroundImage: on ? 'linear-gradient(180deg,#FFFBEF 0%,#FCE6B0 40%,#F0C77E 75%,#E2AE62 100%)' : 'none', WebkitBackgroundClip: on ? 'text' : 'border-box', backgroundClip: on ? 'text' : 'border-box' } }, x.label),
+            h('span', { style: { fontFamily: '-apple-system,sans-serif', fontSize: 9.5, letterSpacing: '0.3em', textTransform: 'uppercase', color: on ? 'rgba(246,224,175,.9)' : 'rgba(232,200,140,.5)' } }, x.sub),
+            /* pastille de selection */
+            h('span', { style: { position: 'absolute', right: 18, top: '50%', marginTop: -11, width: 22, height: 22, borderRadius: '50%', border: on ? 'none' : '1px solid rgba(232,194,122,.45)', background: on ? OR : 'transparent', boxShadow: on ? '0 0 12px rgba(255,214,140,.8)' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .3s ease' } },
+              on && h('svg', { width: 12, height: 12, viewBox: '0 0 12 12' }, h('path', { d: 'M2.2 6.3 L4.9 8.8 L9.8 3.4', fill: 'none', stroke: '#3A2408', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' })))
+          );
+        })
+      ),
+      /* bouton or */
+      h('button', {
+        onClick: valider,
+        style: {
+          position: 'absolute', left: 64, right: 64, bottom: 92, height: 58, borderRadius: 29, border: 'none', cursor: 'pointer', overflow: 'hidden', WebkitTapHighlightColor: 'transparent',
+          background: OR, boxShadow: '0 12px 30px rgba(176,116,47,.45), 0 0 26px rgba(255,214,140,.30), inset 0 1px 0 rgba(255,250,235,.9)',
+          fontFamily: o.ar ? '"Amiri",serif' : '"Cormorant Garamond",serif', fontSize: o.ar ? 22 : 21, fontWeight: 700, letterSpacing: o.ar ? 0 : '0.14em', color: '#3A2408',
+          animation: 'lcUp .8s ease 1s both'
+        }
+      },
+        h('span', { style: { position: 'absolute', top: 0, bottom: 0, width: '45%', left: '-60%', background: 'linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,.75), rgba(255,255,255,0))', transform: 'skewX(-18deg)', animation: 'lcSheen 3.2s ease-in-out 2s infinite', pointerEvents: 'none' } }),
+        h('span', { style: { position: 'relative' } }, o.btn)
+      ),
+      h('div', { style: { position: 'absolute', bottom: 50, left: 0, right: 0, textAlign: 'center', fontFamily: '-apple-system,sans-serif', fontSize: 10.5, letterSpacing: '0.12em', color: 'rgba(232,200,140,.55)', animation: 'lcFade 1s ease 1.4s both', direction: o.ar ? 'rtl' : 'ltr' } },
+        o.ar ? 'يمكنك تغييرها لاحقًا من الإعدادات' : o.id === 'fr' ? 'Modifiable à tout moment dans les réglages' : 'You can change it anytime in settings')
+    );
   }
   function frameStyle() {
     // returns the inner canvas style (relative positioning context for screens)
