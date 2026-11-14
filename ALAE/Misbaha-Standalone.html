@@ -19603,7 +19603,7 @@ window.AsmaScreen = AsmaScreen;
         @keyframes lcShine{0%,100%{background-position:100% 0}50%{background-position:0% 0}}
         @keyframes lcGlow{0%,100%{opacity:.55;transform:translate(-50%,-50%) scale(1)}50%{opacity:.85;transform:translate(-50%,-50%) scale(1.08)}}
         @keyframes lcSheen{0%{left:-60%}60%,100%{left:130%}}
-        @keyframes lcDiam{0%,100%{filter:brightness(1.05) drop-shadow(0 0 3px rgba(225,235,255,.5)) drop-shadow(0 1px 2px rgba(0,0,0,.7))}50%{filter:brightness(1.7) contrast(1.1) drop-shadow(0 0 10px rgba(235,245,255,.95)) drop-shadow(0 0 3px #fff)}}
+        @keyframes lcDiam{0%,100%{filter:brightness(1) drop-shadow(0 1px 2px rgba(0,0,0,.7))}50%{filter:brightness(1.22) contrast(1.08) drop-shadow(0 0 3px rgba(235,245,255,.55)) drop-shadow(0 1px 2px rgba(0,0,0,.7))}}
         @keyframes lcHalo{0%,100%{opacity:.45;transform:scale(.85)}50%{opacity:1;transform:scale(1.15)}}
         @keyframes lcRayons{to{transform:rotate(360deg)}}
         @keyframes lcEclat{0%,35%,65%,100%{opacity:0;transform:scale(.3) rotate(0deg)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
@@ -19623,6 +19623,12 @@ window.AsmaScreen = AsmaScreen;
         h('div', { style: { width: 6, height: 6, transform: 'rotate(45deg)', background: OR, boxShadow: '0 0 10px rgba(255,214,140,.8)' } }),
         h('div', { style: { flex: 1, height: 1, background: 'linear-gradient(270deg, rgba(232,194,122,0), rgba(232,194,122,.8))' } })
       ),
+      /* 14/11 : fin trait d'or en demi-rectangle autour du cadran : le haut et les cotes,
+         qui s'affinent jusqu'a une pointe a mi-hauteur, comme un rectangle coupe en deux (dessin d'ALAE). */
+      h('svg', { 'aria-hidden': true, width: 316, height: 250, viewBox: '0 0 316 250', style: { position: 'absolute', left: '50%', top: 198, marginLeft: -158, overflow: 'visible', pointerEvents: 'none', filter: 'drop-shadow(0 0 4px rgba(255,205,120,.45))', animation: 'lcFade 1.2s ease .6s both' } },
+        h('defs', null, h('linearGradient', { id: 'lcTrait', x1: 0, y1: 0, x2: 0, y2: 1 },
+          h('stop', { offset: '0%', stopColor: '#FFF4D2' }), h('stop', { offset: '35%', stopColor: '#E9C27A' }), h('stop', { offset: '100%', stopColor: '#B0742F', stopOpacity: 0.35 }))),
+        h('path', { d: 'M0 250 L0 80 A80 80 0 0 1 80 0 L236 0 A80 80 0 0 1 316 80 L316 250 L314.2 80 A78.2 78.2 0 0 0 236 1.8 L80 1.8 A78.2 78.2 0 0 0 1.8 80 Z', fill: 'url(#lcTrait)' })),
       /* 14/11 : CADRAN CREUSE DANS LA SOIE (dessin d'ALAE) : la forme est enfoncee dans le fond
          d'ecran, parois striees qui donnent la profondeur, ALAE + diamant graves au fond,
          guichet encore plus profond ou roulent les langues, la langue choisie dans un ovale d'or. */
@@ -19642,9 +19648,7 @@ window.AsmaScreen = AsmaScreen;
           h('div', { style: { position: 'absolute', left: 0, right: 0, top: 24, textAlign: 'center', fontFamily: '"Cormorant Garamond",serif', fontSize: 15, fontWeight: 700, letterSpacing: 7, paddingLeft: 7, color: 'transparent', backgroundImage: 'linear-gradient(180deg,#8A6430 0%,#E9C88A 60%,#FFF0C8 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 -1px 0 rgba(0,0,0,.9)) drop-shadow(0 1px 0 rgba(255,230,180,.25))' } }, 'ALAE'),
           /* diamant serti dans un petit creux */
           h('div', { style: { position: 'absolute', left: '50%', top: 48, width: 46, height: 46, marginLeft: -23, borderRadius: '50%', background: 'radial-gradient(circle at 50% 40%, rgba(0,0,0,.25), rgba(0,0,0,.7))', boxShadow: 'inset 0 6px 10px rgba(0,0,0,.9), 0 1px 0 rgba(255,225,170,.25)' } },
-            /* 14/11 : le bijou brille plus (ALAE) : halo qui pulse, rayons, 3 eclats decales */
-            h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: '50%', width: 70, height: 70, margin: '-35px 0 0 -35px', borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(235,245,255,.55), rgba(200,220,255,.18) 45%, rgba(255,255,255,0))', animation: 'lcHalo 2.6s ease-in-out infinite', pointerEvents: 'none' } }),
-            h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: '50%', width: 80, height: 80, margin: '-40px 0 0 -40px', background: 'conic-gradient(from 0deg, rgba(255,255,255,0) 0deg, rgba(255,255,255,.35) 6deg, rgba(255,255,255,0) 14deg, rgba(255,255,255,0) 90deg, rgba(255,255,255,.3) 96deg, rgba(255,255,255,0) 104deg, rgba(255,255,255,0) 180deg, rgba(255,255,255,.35) 186deg, rgba(255,255,255,0) 194deg, rgba(255,255,255,0) 270deg, rgba(255,255,255,.3) 276deg, rgba(255,255,255,0) 284deg)', WebkitMaskImage: 'radial-gradient(closest-side, #000 20%, transparent 75%)', maskImage: 'radial-gradient(closest-side, #000 20%, transparent 75%)', animation: 'lcRayons 9s linear infinite', pointerEvents: 'none' } }),
+            /* 14/11 : le bijou net et brillant (choix ALAE : sans halo), 3 eclats decales */
             h('img', { src: DIAM, alt: '', 'aria-hidden': true, style: { position: 'absolute', left: 6, top: 11, width: 34, display: 'block', animation: 'lcDiam 2.6s ease-in-out infinite' } }),
             ...[[2, 2, 0, 18], [32, 30, 1.1, 12], [-4, 26, 1.9, 10]].map(([x, y, d, z], k) => h('div', { key: 'ec' + k, 'aria-hidden': true, style: { position: 'absolute', left: x + 6, top: y, width: z, height: z, animation: 'lcEclat 2.6s ease-in-out ' + d + 's infinite', pointerEvents: 'none', background: 'radial-gradient(circle, #fff 0 1.5px, rgba(255,255,255,0) 2px), linear-gradient(0deg, rgba(255,255,255,0) 42%, #fff 50%, rgba(255,255,255,0) 58%), linear-gradient(90deg, rgba(255,255,255,0) 42%, #fff 50%, rgba(255,255,255,0) 58%)', filter: 'drop-shadow(0 0 4px rgba(220,235,255,1))' } }))),
           /* guichet encore plus profond */
