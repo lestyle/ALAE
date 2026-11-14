@@ -1,0 +1,4 @@
+"CFBundleDisplayName" = "ALAE";
+"NSLocationWhenInUseUsageDescription" = "ALAE, namaz vakitlerini ve Kıble yönünü hesaplamak için konumunuzu kullanır. Konumunuz iPhone'unuzdan asla çıkmaz.";
+"NSMotionUsageDescription" = "ALAE, Kâbe yönündeki Kıble'yi göstermek için iPhone'unuzun pusulasını kullanır.";
+"NSUserNotificationsUsageDescription" = "ALAE, seçtiğiniz ezanla her namaz vaktinde size bir hatırlatma gönderir.";

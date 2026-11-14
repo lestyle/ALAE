@@ -575,11 +575,11 @@ window.__alaeRelance=(function(){ try{ var t=parseInt(window.__alaeBootAt||0,10)
     var d=window.alaeRappelsLire(), hm=function(x){ var p=String(x.h).split(':'); return {enabled:!!x.on, hour:+p[0], minute:+p[1]}; };
     var T={ar:{matinTitre:'أذكار الصباح',matinCorps:'حان وقت أذكار الصباح · أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ',soirTitre:'أذكار المساء',soirCorps:'حان وقت أذكار المساء · أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ'},
            fr:{matinTitre:'Adhkar du matin',matinCorps:"C'est le moment des adhkar du matin.",soirTitre:'Adhkar du soir',soirCorps:"C'est le moment des adhkar du soir."},
-           en:{matinTitre:'Morning adhkar',matinCorps:"It's time for the morning adhkar.",soirTitre:'Evening adhkar',soirCorps:"It's time for the evening adhkar."}};
+           en:{matinTitre:'Morning adhkar',matinCorps:"It's time for the morning adhkar.",soirTitre:'Evening adhkar',soirCorps:"It's time for the evening adhkar."}, tur: {matinTitre:"Sabah zikri",matinCorps:"Sabah zikri vakti geldi.",soirTitre:"Akşam zikri",soirCorps:"Akşam zikri vakti geldi."}, ind: {matinTitre:"Zikir pagi",matinCorps:"Saatnya zikir pagi.",soirTitre:"Zikir petang",soirCorps:"Saatnya zikir petang."}};
     /* 19/10 : rappels du vendredi — jeudi Maghrib + 15 min (Al-Kahf), vendredi 10:00 (salawat). */
     var J={ar:{kahfTitre:'سُورَةُ الكَهْف',kahfCorps:'لَيْلَةُ الجُمُعَة · « مَنْ قَرَأَ سُورَةَ الكَهْفِ يَوْمَ الجُمُعَةِ أَضَاءَ لَهُ مِنَ النُّورِ مَا بَيْنَ الجُمُعَتَيْن »',salatTitre:'جُمُعَة مُبَارَكَة 🌙',salatCorps:'« أَكْثِرُوا عَلَيَّ مِنَ الصَّلَاةِ يَوْمَ الجُمُعَة » ﷺ\n— أبو داود'},
            fr:{kahfTitre:'Sourate Al-Kahf',kahfCorps:"La nuit du vendredi commence. « Celui qui lit sourate Al-Kahf le vendredi, une lumière l'éclaire d'un vendredi à l'autre. »",salatTitre:"Jumu'a Mubaraka 🌙",salatCorps:"« Multipliez les bénédictions sur moi le vendredi. » ﷺ\n— Abû Dâwûd"},
-           en:{kahfTitre:'Surah Al-Kahf',kahfCorps:"Friday night has begun. « Whoever reads Surah Al-Kahf on Friday, a light shines for him between the two Fridays. »",salatTitre:"Jumu'a Mubaraka 🌙",salatCorps:"« Send abundant blessings upon me on Friday. » ﷺ\n— Abû Dâwûd"}};
+           en:{kahfTitre:'Surah Al-Kahf',kahfCorps:"Friday night has begun. « Whoever reads Surah Al-Kahf on Friday, a light shines for him between the two Fridays. »",salatTitre:"Jumu'a Mubaraka 🌙",salatCorps:"« Send abundant blessings upon me on Friday. » ﷺ\n— Abû Dâwûd"}, tur: {kahfTitre:"Kehf Suresi",kahfCorps:"Cuma gecesi başladı. « Kim Cuma günü Kehf Suresi'ni okursa, iki Cuma arasında ona bir nur parlar. »",salatTitre:"Cuma Mübarek 🌙",salatCorps:"« Cuma günü bana çokça salavat getirin. » ﷺ\n— Ebû Dâvûd"}, ind: {kahfTitre:"Surah Al-Kahfi",kahfCorps:"Malam Jumat telah tiba. « Barang siapa membaca Surah Al-Kahfi pada hari Jumat, cahaya akan menyinarinya di antara dua Jumat. »",salatTitre:"Jumat Berkah 🌙",salatCorps:"« Perbanyaklah shalawat untukku pada hari Jumat. » ﷺ\n— Abu Dawud"}};
     var jeudi=new Date(); jeudi.setDate(jeudi.getDate()+((4-jeudi.getDay()+7)%7));
     var mg=window.alaeMaghrib?window.alaeMaghrib(jeudi):{h:18,m:0}, km=mg.h*60+mg.m+15;
     var jumua={enabled:!!(d.jumua&&d.jumua.on), kahfHour:Math.floor(km/60)%24, kahfMinute:km%60, salatHour:10, salatMinute:0};
@@ -1215,14 +1215,14 @@ window.ALAE_THEMES_LISTE = [
   /* 24/09 : TOUS les noms de themes en arabe seul, dans les trois langues (ALAE). */
   /* 24/09 : themes ranges dans l'ordre de la sourate (demande d'ALAE) :
      Qamar 55:5, al-Akmam 55:11, Barzakh 55:20, Istabraq 55:54, Mudhammatan 55:64. */
-  {id:'nuit',      emoji:'\u263E\uFE0E\u263E\uFE0E', /* 26/10 : icone noir et blanc (ALAE). */ ar:'\u0642\u064E\u0645\u064E\u0631', fr:'\u0642\u064E\u0645\u064E\u0631', en:'\u0642\u064E\u0645\u064E\u0631', verset:'55:5'},
+  {id:'nuit',      emoji:'\u263E\uFE0E\u263E\uFE0E', /* 26/10 : icone noir et blanc (ALAE). */ ar:'\u0642\u064E\u0645\u064E\u0631', fr:'\u0642\u064E\u0645\u064E\u0631', en:'\u0642\u064E\u0645\u064E\u0631', tur: '\u0642\u064E\u0645\u064E\u0631', ind: '\u0642\u064E\u0645\u064E\u0631', verset:'55:5'},
   /* 19/10 : al-Akmam 55:11 « wa-n-nakhlu dhatu-l-akmam » — la fleur dans son enveloppe (ALAE). */
-  {id:'akmam',     emoji:'\u2766\uFE0E\u2766\uFE0E', /* 26/10 : 2 feuilles (ALAE). */ /* ═══ VERROUILLE — 26/10/2026. Icone ❦ validee par ALAE. ═══ */ ar:'\u0671\u0644\u0652\u0623\u064E\u0643\u0652\u0645\u064E\u0627\u0645', fr:'\u0671\u0644\u0652\u0623\u064E\u0643\u0652\u0645\u064E\u0627\u0645', en:'\u0671\u0644\u0652\u0623\u064E\u0643\u0652\u0645\u064E\u0627\u0645', verset:'55:11'},
-  {id:'amouage',   emoji:'\u224B\u224B', /* 26/10 : icone noir et blanc (ALAE). */ ar:'\u0628\u064E\u0631\u0652\u0632\u064E\u062E', fr:'\u0628\u064E\u0631\u0652\u0632\u064E\u062E', en:'\u0628\u064E\u0631\u0652\u0632\u064E\u062E', verset:'55:20'},
-  {id:'gold',      emoji:'\u2756\uFE0E\u2756\uFE0E', /* 26/10 : icone noir et blanc (ALAE). */ ar:'\u0625\u0650\u0633\u0652\u062A\u064E\u0628\u0652\u0631\u064E\u0642', fr:'\u0625\u0650\u0633\u0652\u062A\u064E\u0628\u0652\u0631\u064E\u0642', en:'\u0625\u0650\u0633\u0652\u062A\u064E\u0628\u0652\u0631\u064E\u0642', verset:'55:54'},
-  {id:'mudhamma',  emoji:'\u2767\uFE0E\u2767\uFE0E', /* 26/10 : 2 feuilles (ALAE). */ /* 26/10 : icone noir et blanc (ALAE). */ ar:'\u0645\u064F\u062F\u0652\u0647\u064E\u0627\u0645\u064E\u0651\u062A\u064E\u0627\u0646', fr:'\u0645\u064F\u062F\u0652\u0647\u064E\u0627\u0645\u064E\u0651\u062A\u064E\u0627\u0646', en:'\u0645\u064F\u062F\u0652\u0647\u064E\u0627\u0645\u064E\u0651\u062A\u064E\u0627\u0646', verset:'55:64'},
+  {id:'akmam',     emoji:'\u2766\uFE0E\u2766\uFE0E', /* 26/10 : 2 feuilles (ALAE). */ /* ═══ VERROUILLE — 26/10/2026. Icone ❦ validee par ALAE. ═══ */ ar:'\u0671\u0644\u0652\u0623\u064E\u0643\u0652\u0645\u064E\u0627\u0645', fr:'\u0671\u0644\u0652\u0623\u064E\u0643\u0652\u0645\u064E\u0627\u0645', en:'\u0671\u0644\u0652\u0623\u064E\u0643\u0652\u0645\u064E\u0627\u0645', tur: '\u0671\u0644\u0652\u0623\u064E\u0643\u0652\u0645\u064E\u0627\u0645', ind: '\u0671\u0644\u0652\u0623\u064E\u0643\u0652\u0645\u064E\u0627\u0645', verset:'55:11'},
+  {id:'amouage',   emoji:'\u224B\u224B', /* 26/10 : icone noir et blanc (ALAE). */ ar:'\u0628\u064E\u0631\u0652\u0632\u064E\u062E', fr:'\u0628\u064E\u0631\u0652\u0632\u064E\u062E', en:'\u0628\u064E\u0631\u0652\u0632\u064E\u062E', tur: '\u0628\u064E\u0631\u0652\u0632\u064E\u062E', ind: '\u0628\u064E\u0631\u0652\u0632\u064E\u062E', verset:'55:20'},
+  {id:'gold',      emoji:'\u2756\uFE0E\u2756\uFE0E', /* 26/10 : icone noir et blanc (ALAE). */ ar:'\u0625\u0650\u0633\u0652\u062A\u064E\u0628\u0652\u0631\u064E\u0642', fr:'\u0625\u0650\u0633\u0652\u062A\u064E\u0628\u0652\u0631\u064E\u0642', en:'\u0625\u0650\u0633\u0652\u062A\u064E\u0628\u0652\u0631\u064E\u0642', tur: '\u0625\u0650\u0633\u0652\u062A\u064E\u0628\u0652\u0631\u064E\u0642', ind: '\u0625\u0650\u0633\u0652\u062A\u064E\u0628\u0652\u0631\u064E\u0642', verset:'55:54'},
+  {id:'mudhamma',  emoji:'\u2767\uFE0E\u2767\uFE0E', /* 26/10 : 2 feuilles (ALAE). */ /* 26/10 : icone noir et blanc (ALAE). */ ar:'\u0645\u064F\u062F\u0652\u0647\u064E\u0627\u0645\u064E\u0651\u062A\u064E\u0627\u0646', fr:'\u0645\u064F\u062F\u0652\u0647\u064E\u0627\u0645\u064E\u0651\u062A\u064E\u0627\u0646', en:'\u0645\u064F\u062F\u0652\u0647\u064E\u0627\u0645\u064E\u0651\u062A\u064E\u0627\u0646', tur: '\u0645\u064F\u062F\u0652\u0647\u064E\u0627\u0645\u064E\u0651\u062A\u064E\u0627\u0646', ind: '\u0645\u064F\u062F\u0652\u0647\u064E\u0627\u0645\u064E\u0651\u062A\u064E\u0627\u0646', verset:'55:64'},
   /* 10/10 : Abqari (55:76) — soie noir et or, assombrie (ALAE). */
-  {id:'abqari',    emoji:'\u2726\uFE0E\u2726\uFE0E', /* 26/10 : icone noir et blanc (ALAE). */ ar:'\u0639\u064E\u0628\u0652\u0642\u064E\u0631\u0650\u064A\u0651', fr:'\u0639\u064E\u0628\u0652\u0642\u064E\u0631\u0650\u064A\u0651', en:'\u0639\u064E\u0628\u0652\u0642\u064E\u0631\u0650\u064A\u0651', verset:'55:76'},
+  {id:'abqari',    emoji:'\u2726\uFE0E\u2726\uFE0E', /* 26/10 : icone noir et blanc (ALAE). */ ar:'\u0639\u064E\u0628\u0652\u0642\u064E\u0631\u0650\u064A\u0651', fr:'\u0639\u064E\u0628\u0652\u0642\u064E\u0631\u0650\u064A\u0651', en:'\u0639\u064E\u0628\u0652\u0642\u064E\u0631\u0650\u064A\u0651', tur: '\u0639\u064E\u0628\u0652\u0642\u064E\u0631\u0650\u064A\u0651', ind: '\u0639\u064E\u0628\u0652\u0642\u064E\u0631\u0650\u064A\u0651', verset:'55:76'},
 ];
 /* Libelle affichable d'un theme, dans la langue courante. */
 window.alaeThemeLabel = function (id, lang) {
@@ -1572,6 +1572,82 @@ window.I18N = {
     share: 'Share',
     longPressReset: 'Long-press to reset',
     monIslamicWeek: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+  }, tur: {
+    appName: 'آلَاء',
+    tagline: 'فَبِأَيِّ آلَاءِ رَبِّكُمَا تُكَذِّبَانِ',
+    onboardingTitle: ["SubḥānAllāhi wa biḥamdih, SubḥānAllāhil-ʿAẓīm", "Lā ilāha illā anta subḥānaka innī kuntu minaẓ-ẓālimīn", "Hamd, âlemlerin Rabbi Allah'a mahsustur.", "Astaghfirullāhal-ʿAẓīm"],
+    onboardingRef: ["Hadis", "El-Enbiyâ · 87", "Fâtiha · 2", "İstiğfar"],
+    onboardingSubtitle: ["Akşamın sükûnetinden oyulmuş bir tesbih.", "Üç bin yıl. Dokun, fısılda, say.", "Her nimet için Allah'a hamd olsun.", "Her nefesi koru — usulca."],
+    continue: "Devam",
+    skip: "Geç",
+    start: "Başla",
+    tabs: {
+      counter: "Sayaç",
+      library: "Zikirler",
+      stats: "Günlük",
+      settings: "Ayarlar"
+    },
+    target: "Hedef",
+    total: "Toplam",
+    streak: "Seri",
+    today: "Bugün",
+    week: "Hafta",
+    month: "Ay",
+    allTime: "Tümü",
+    days: "gün",
+    sessions: "oturum",
+    dhikrs: "zikir",
+    selectDhikr: "Bir zikir seç",
+    custom: "Özel",
+    favorites: "Favoriler",
+    addDhikr: "Zikir ekle",
+    resetCount: "Sıfırla",
+    notifications: "Hatırlatıcılar",
+    sound: "Yumuşak ses",
+    haptics: "Titreşim",
+    autoDark: "Otomatik gece modu",
+    language: "Dil",
+    share: "Paylaş",
+    longPressReset: "Sıfırlamak için basılı tut",
+    monIslamicWeek: ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"]
+  }, ind: {
+    appName: 'آلَاء',
+    tagline: 'فَبِأَيِّ آلَاءِ رَبِّكُمَا تُكَذِّبَانِ',
+    onboardingTitle: ["SubḥānAllāhi wa biḥamdih, SubḥānAllāhil-ʿAẓīm", "Lā ilāha illā anta subḥānaka innī kuntu minaẓ-ẓālimīn", "Segala puji bagi Allah, Tuhan semesta alam.", "Astaghfirullāhal-ʿAẓīm"],
+    onboardingRef: ["Hadis", "Al-Anbiya · 87", "Al-Fatihah · 2", "Istighfar"],
+    onboardingSubtitle: ["Tasbih yang terukir dari tenangnya senja.", "Tiga ribu tahun. Sentuh, bisikkan, hitung.", "Segala puji bagi Allah atas setiap nikmat.", "Jagalah setiap napas — dengan lembut."],
+    continue: "Lanjutkan",
+    skip: "Lewati",
+    start: "Mulai",
+    tabs: {
+      counter: "Penghitung",
+      library: "Zikir",
+      stats: "Catatan",
+      settings: "Pengaturan"
+    },
+    target: "Target",
+    total: "Total",
+    streak: "Rentetan",
+    today: "Hari ini",
+    week: "Minggu",
+    month: "Bulan",
+    allTime: "Semua",
+    days: "hari",
+    sessions: "sesi",
+    dhikrs: "zikir",
+    selectDhikr: "Pilih zikir",
+    custom: "Kustom",
+    favorites: "Favorit",
+    addDhikr: "Tambah zikir",
+    resetCount: "Atur ulang",
+    notifications: "Pengingat",
+    sound: "Suara lembut",
+    haptics: "Getaran",
+    autoDark: "Mode malam otomatis",
+    language: "Bahasa",
+    share: "Bagikan",
+    longPressReset: "Tekan lama untuk mengatur ulang",
+    monIslamicWeek: ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"]
   }
 };
 window.DHIKR_BASE = [{
@@ -1579,7 +1655,7 @@ window.DHIKR_BASE = [{
   ar: 'سُبْحَانَ ٱللَّٰهِ',
   tr: 'SubḥānAllāh',
   fr: 'Gloire à Allah',
-  en: 'Glory to Allah',
+  en: 'Glory to Allah', tur: "Sübhanallah", ind: "Subhanallah",
   target: 33,
   fav: true
 }, {
@@ -1587,7 +1663,7 @@ window.DHIKR_BASE = [{
   ar: 'ٱلْحَمْدُ لِلَّٰهِ',
   tr: 'Alḥamdulillāh',
   fr: 'Louange à Allah',
-  en: 'Praise be to Allah',
+  en: 'Praise be to Allah', tur: "Elhamdülillah", ind: "Alhamdulillah",
   target: 33,
   fav: true
 }, {
@@ -1595,7 +1671,7 @@ window.DHIKR_BASE = [{
   ar: 'لَا إِلَٰهَ إِلَّا ٱللَّٰهُ',
   tr: 'Lā ilāha illā Allāh',
   fr: 'Pas de divinité sauf Allah',
-  en: 'There is no god but Allah',
+  en: 'There is no god but Allah', tur: "Lâ ilâhe illallah", ind: "La ilaha illallah",
   target: 100,
   fav: true
 }, {
@@ -1603,7 +1679,7 @@ window.DHIKR_BASE = [{
   ar: 'ٱللَّٰهُ أَكْبَرُ',
   tr: 'Allāhu akbar',
   fr: 'Allah est le plus grand',
-  en: 'Allah is the greatest',
+  en: 'Allah is the greatest', tur: "Allahu ekber", ind: "Allahu akbar",
   target: 33,
   fav: true
 }, {
@@ -1611,7 +1687,7 @@ window.DHIKR_BASE = [{
   ar: 'أَسْتَغْفِرُ ٱللَّٰهَ',
   tr: 'Astaghfirullāh',
   fr: 'Je demande pardon à Allah',
-  en: 'I seek forgiveness from Allah',
+  en: 'I seek forgiveness from Allah', tur: "Estağfirullah", ind: "Astaghfirullah",
   target: 33,
   fav: true
 }, {
@@ -1619,7 +1695,7 @@ window.DHIKR_BASE = [{
   ar: 'حَسْبِيَ ٱللَّٰهُ',
   tr: 'Ḥasbiyallāh',
   fr: 'Allah me suffit',
-  en: 'Allah is sufficient for me',
+  en: 'Allah is sufficient for me', tur: "Hasbiyallah", ind: "Hasbiyallah",
   target: 33,
   fav: false
 }, {
@@ -1627,7 +1703,7 @@ window.DHIKR_BASE = [{
   ar: 'ٱللَّٰهُمَّ صَلِّ عَلَىٰ مُحَمَّد',
   tr: 'Allāhumma ṣalli ʿalā Muḥammad',
   fr: 'Prière sur le Prophète',
-  en: 'Blessings upon the Prophet',
+  en: 'Blessings upon the Prophet', tur: "Peygamber'e salavat", ind: "Shalawat untuk Nabi",
   target: 33,
   fav: false
 }];
@@ -5155,8 +5231,26 @@ window.ALAE_INFO_ISTI = { titre: "Les gouttes du pardon", paras: [
   "Goutte apr\u00e8s goutte, le c\u0153ur se purifie."
  ], sens: "Le Proph\u00e8te \uFDFA a dit que lorsque le croyant fait ses ablutions, ses p\u00e9ch\u00e9s s'en vont avec l'eau, jusqu'\u00e0 la derni\u00e8re goutte (Muslim, 244). Chaque Astaghfirullah est comme une de ces gouttes : elle fait tomber un p\u00e9ch\u00e9.\n\nEt \u00e0 celui qui demande pardon, Allah promet Sa mis\u00e9ricorde comme une pluie abondante.",
  aya: "\u0641\u064e\u0642\u064f\u0644\u0652\u062a\u064f \u0671\u0633\u0652\u062a\u064e\u063a\u0652\u0641\u0650\u0631\u064f\u0648\u0627\u06df \u0631\u064e\u0628\u0651\u064e\u0643\u064f\u0645\u0652 \u0625\u0650\u0646\u0651\u064e\u0647\u064f\u06e5 \u0643\u064e\u0627\u0646\u064e \u063a\u064e\u0641\u0651\u064e\u0627\u0631\u064b\u0627 \u06dd \u064a\u064f\u0631\u0652\u0633\u0650\u0644\u0650 \u0671\u0644\u0633\u0651\u064e\u0645\u064e\u0627\u0621\u064e \u0639\u064e\u0644\u064e\u064a\u0652\u0643\u064f\u0645 \u0645\u0651\u0650\u062f\u0652\u0631\u064e\u0627\u0631\u064b\u0627", ref: "N\u00fbh 71:10-11" };
+/* ALAE langues : traductions tur/ind des fenetres d'info des perles (ajout 14/11). */
+window.ALAE_INFO_TIGRE.tur = {"titre": "Kaplan gözü boncukları", "paras": ["Her zikir sayacın etrafına bir boncuk ekler. Hiçbir şey boşa gitmez: her söz sayılır.", "33'te tur tamamlanır: boncuklar, zikirden sonra bırakılan bir tesbih gibi düşer.", "Bir sonraki dokunuşta çembere geri yükselirler: tesbihe yeniden başlarsın."], "sens": "Unutulmuş bir tesbih, dağılmış boncuklar gibidir. Yeniden eline aldığında ihtişamına kavuşur, kalp de onunla toplanır.", "ref": "er-Ra'd 13:28"};
+window.ALAE_INFO_TIGRE.ind = {"titre": "Manik-manik mata harimau", "paras": ["Setiap zikir menambahkan satu manik di sekeliling penghitung. Tidak ada yang sia-sia: setiap kata dihitung.", "Pada hitungan ke-33, putaran selesai: manik-manik jatuh, seperti tasbih yang diletakkan setelah zikir.", "Pada ketukan berikutnya, manik-manik naik kembali ke lingkaran: kamu melanjutkan tasbih."], "sens": "Tasbih yang terlupakan bagaikan manik-manik yang berserakan. Begitu diambil kembali, ia kembali indah, dan hati pun berkumpul bersamanya.", "ref": "Ar-Ra'd 13:28"};
+window.ALAE_INFO_SALAT.tur = {"titre": "Peygamber'e salavat ﷺ", "paras": ["« Kim bana bir salavat getirirse, Allah ona on salavat getirir. » (Müslim)"], "sens": "Allah, Peygamberi'ni ﷺ aydınlatan bir kandil olarak tarif etmiştir. Allah ve melekleri ona salât eder; bize de ona salavat getirmemizi emreder (el-Ahzâb 33:56).\n\nPeygamber ﷺ şöyle buyurdu: « Kim bana bir salavat getirirse, Allah ona on salavat getirir. » (Müslim)", "ref": "el-Ahzâb 33:46"};
+window.ALAE_INFO_SALAT.ind = {"titre": "Shalawat untuk Nabi ﷺ", "paras": ["« Barang siapa bershalawat kepadaku satu kali, Allah akan bershalawat kepadanya sepuluh kali. » (Muslim)"], "sens": "Allah menggambarkan Nabi-Nya ﷺ sebagai pelita yang menerangi. Allah dan para malaikat-Nya bershalawat kepadanya, dan Dia memerintahkan kita untuk bershalawat kepadanya (Al-Ahzab 33:56).\n\nNabi ﷺ bersabda: « Barang siapa bershalawat kepadaku satu kali, Allah akan bershalawat kepadanya sepuluh kali. » (Muslim)", "ref": "Al-Ahzab 33:46"};
+window.ALAE_INFO_SUBHAN.tur = {"titre": "Yeniden doğrulan tesbih", "paras": ["Dinlenirken boncuklar çemberin altında yere serilidir.", "İlk « Sübhanallah »'ta doğrulur ve sayacın etrafındaki yerlerini alırlar.", "33'te bir ışık tesbihin etrafında boncuk boncuk dolaşır, sallanan püskülüne kadar."], "sens": "Sübhanallah, Allah'ı her türlü eksiklikten uzak tutmaktır. Bütün yaratılış O'nu tesbih eder; hareketsiz görünen şeyler bile: yere serilmiş boncuklar zikrinle doğrulur ve turun sonunda tüm tesbih parlar, seninle tesbih eden bütün yaratılış gibi.", "ref": "el-İsrâ 17:44"};
+window.ALAE_INFO_SUBHAN.ind = {"titre": "Tasbih yang bangkit kembali", "paras": ["Saat diam, manik-manik terletak di tanah, di bawah lingkaran.", "Pada « Subhanallah » pertama, manik-manik bangkit dan menempati tempatnya di sekeliling penghitung.", "Pada hitungan ke-33, seberkas cahaya mengelilingi tasbih, manik demi manik, hingga ke jumbai yang bergoyang."], "sens": "Subhanallah berarti menyatakan Allah Maha Suci dari segala kekurangan. Seluruh ciptaan bertasbih kepada-Nya, bahkan yang tampak diam: manik-manik yang terletak bangkit bersama zikirmu, dan di akhir putaran seluruh tasbih bersinar, seperti seluruh ciptaan yang bertasbih bersamamu.", "ref": "Al-Isra' 17:44"};
+window.ALAE_INFO_HAMD.tur = {"titre": "Hamd güvercinleri", "paras": ["Her 7 zikirde bir güvercin sayacına konar. Rakam parlar, sonra güvercin uçar.", "33'te yirmi iki güvercin, şükür ayetinin etrafında dönerek uçuşa geçer."], "sens": "Her Elhamdülillah, bir kuş gibi göğe yükselir. Kuşlar Allah'ı kendi tarzlarında över, senin hamdin de onlara karışır. Turun sonunda Allah'ın vaadi sana cevap verir: şükür daima daha fazla nimeti çağırır.", "ref": "en-Nûr 24:41"};
+window.ALAE_INFO_HAMD.ind = {"titre": "Merpati pujian", "paras": ["Setiap 7 zikir, seekor merpati hinggap di penghitungmu. Angkanya bersinar, lalu ia terbang.", "Pada hitungan ke-33, dua puluh dua merpati berputar mengelilingi ayat syukur sebelum terbang."], "sens": "Setiap Alhamdulillah naik bagaikan burung menuju langit. Burung-burung memuji Allah dengan cara mereka, dan pujianmu bergabung dengan pujian mereka. Di akhir putaran, janji Allah menjawabmu: syukur selalu mengundang lebih banyak nikmat.", "ref": "An-Nur 24:41"};
+window.ALAE_INFO_LAILAHA.tur = {"titre": "Güzel bir ağaç gibi güzel bir söz", "paras": ["Her Lâ ilâhe illallah'ta tesbihin etrafında bir bahçe büyür: saplar, yapraklar, güller ve yasemenler.", "21'den (7 × 3) sonra bahçe çiçek açar. Her zikir, çiçeklerinden parlak boncuklar döker.", "33'te tesbihin üzerine bir yaprak yağmuru iner."], "sens": "Lâ ilâhe illallah, güzel sözdür, cennetin anahtarıdır; kökü sağlam, dalları göğe uzanan bir ağaç gibi.\n\nPeygamber ﷺ cennetin geniş bir arazi olduğunu ve ekinlerinin Sübhanallah, Elhamdülillah, Lâ ilâhe illallah ve Allahu ekber olduğunu buyurmuştur (Tirmizî).\n\nHer söylediğinde, cennet bahçende bir ağaç dikersin.", "ref": "İbrâhîm 14:24"};
+window.ALAE_INFO_LAILAHA.ind = {"titre": "Kalimat yang baik bagaikan pohon yang baik", "paras": ["Pada setiap La ilaha illallah, sebuah taman tumbuh di sekeliling tasbih: batang, daun, mawar, dan melati.", "Setelah 21 (7 × 3), taman itu berbunga. Setiap zikir kemudian menjatuhkan manik-manik berkilau dari bunga-bunganya.", "Pada hitungan ke-33, hujan kelopak turun di atas tasbih."], "sens": "La ilaha illallah adalah kalimat yang baik, kunci surga, bagaikan pohon dengan akar yang kokoh dan cabang menjulang ke langit.\n\nNabi ﷺ bersabda bahwa surga adalah tanah yang luas, dan tanamannya adalah Subhanallah, Alhamdulillah, La ilaha illallah, dan Allahu akbar (At-Tirmidzi).\n\nSetiap kali kamu mengucapkannya, kamu menanam sebatang pohon di taman surgamu.", "ref": "Ibrahim 14:24"};
+window.ALAE_INFO_AKBAR.tur = {"titre": "Yukarıdan gelen nur", "paras": ["Her Allahu ekber'de gökten bir boncuğa bir ışık huzmesi iner.", "Boncuk boncuk tesbih aydınlanır.", "33'te tüm tesbih, rükûdaki mümin gibi eğilir."], "sens": "Allahu ekber, Allah'ın her şeyden büyük olduğunu kabul etmektir: dertlerimizden, işimizden, bu dünyanın tümünden. Nur yukarıdan gelir ve O'nun büyüklüğü karşısında her şey eğilir.", "ref": "el-Ankebût 29:45 · « Allah'ı anmak elbette en büyük ibadettir »"};
+window.ALAE_INFO_AKBAR.ind = {"titre": "Cahaya dari atas", "paras": ["Pada setiap Allahu akbar, seberkas cahaya turun dari langit ke sebuah manik.", "Manik demi manik, tasbih pun bercahaya.", "Pada hitungan ke-33, seluruh tasbih membungkuk, seperti orang beriman dalam rukuk."], "sens": "Allahu akbar berarti mengakui bahwa Allah lebih besar dari segalanya: kekhawatiran kita, pekerjaan kita, seluruh dunia ini. Cahaya datang dari atas, dan di hadapan keagungan-Nya, segalanya tunduk.", "ref": "Al-Ankabut 29:45 · « dan mengingat Allah (salat) itu lebih besar »"};
+window.ALAE_INFO_ISTI.tur = {"titre": "Bağışlanma damlaları", "paras": ["Her Estağfirullah'ta boncuktan bir damla düşer.", "Aşağıdaki suya karışır ve sessizce halkalar yayılır.", "Damla damla kalp arınır."], "sens": "Peygamber ﷺ, müminin abdest aldığında günahlarının su ile birlikte, son damlaya kadar döküldüğünü buyurmuştur (Müslim, 244). Her Estağfirullah bu damlalardan biri gibidir: bir günahı düşürür.\n\nİstiğfar edene Allah, bol yağmur gibi rahmetini vaat eder.", "ref": "Nûh 71:10-11"};
+window.ALAE_INFO_ISTI.ind = {"titre": "Tetesan ampunan", "paras": ["Pada setiap Astaghfirullah, setetes jatuh dari manik.", "Ia bergabung dengan air di bawah, dan riak-riak menyebar dalam keheningan.", "Tetes demi tetes, hati pun disucikan."], "sens": "Nabi ﷺ bersabda bahwa ketika seorang mukmin berwudu, dosa-dosanya keluar bersama air, hingga tetesan terakhir (Muslim, 244). Setiap Astaghfirullah bagaikan salah satu tetesan itu: ia menggugurkan satu dosa.\n\nDan bagi yang memohon ampun, Allah menjanjikan rahmat-Nya bagaikan hujan yang deras.", "ref": "Nuh 71:10-11"};
 window.alaeTigerInfo = function(btn, C){
   C = C || window.ALAE_INFO_TIGRE;
+  var _lg = ''; try { _lg = (JSON.parse(localStorage.getItem('misbaha.v1') || '{}').lang) || ''; } catch (_e) {}
+  var _UI = { tur: { sens: 'Anlamı', close: 'Kapat', big: 'Metni büyüt' }, ind: { sens: 'Maknanya', close: 'Tutup', big: 'Perbesar teks' } }[_lg] || { sens: 'La signification', close: 'Fermer', big: 'Agrandir le texte' };
+  if (C[_lg]) C = Object.assign({}, C, C[_lg]);
   const old = document.getElementById('alae-tiger-info'); if (old) { old.remove(); return; }
   let fr = btn; while (fr && fr.offsetWidth < 360) fr = fr.parentElement; fr = fr || document.body;
   const r = fr.getBoundingClientRect();
@@ -5164,11 +5258,11 @@ window.alaeTigerInfo = function(btn, C){
   ov.style.cssText = 'position:fixed;left:'+r.left+'px;top:'+r.top+'px;width:'+r.width+'px;height:'+r.height+'px;z-index:9999;background:rgba(5,4,3,0.82);display:flex;align-items:safe center;justify-content:center;padding:28px 22px;box-sizing:border-box;overflow-y:auto;';
   const P = 'font-size:17px;font-weight:400;line-height:1.55;margin:0 0 12px;color:#FFF8EE;text-align:left;text-shadow:0 1px 3px rgba(0,0,0,0.7);';
   ov.innerHTML = '<div id="alae-ti-card" dir="ltr" style="position:relative;max-width:340px;width:100%;text-align:left;direction:ltr;background:linear-gradient(180deg,rgba(12,11,10,0.80),rgba(12,11,10,0.86)),#0C0B0A url(assets/silk-akmam.jpg) center/cover no-repeat;border:1px solid rgba(201,140,70,0.6);border-radius:22px;padding:26px 22px 20px;color:#FFF8EE;font-family:Avenir Next,Avenir,-apple-system,system-ui,sans-serif;box-shadow:0 12px 40px rgba(0,0,0,0.6);">'
-   + '<button id="alae-ti-tt" aria-label="Agrandir le texte" style="position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid rgba(201,140,70,0.75);background:rgba(10,8,5,0.8);color:#E9B97A;font-family:Georgia,serif;font-size:14px;padding:0;cursor:pointer;display:flex;align-items:baseline;justify-content:center;line-height:32px;">T<span style="font-size:10px;">t</span></button>'
+   + '<button id="alae-ti-tt" aria-label="'+_UI.big+'" style="position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;border:1px solid rgba(201,140,70,0.75);background:rgba(10,8,5,0.8);color:#E9B97A;font-family:Georgia,serif;font-size:14px;padding:0;cursor:pointer;display:flex;align-items:baseline;justify-content:center;line-height:32px;">T<span style="font-size:10px;">t</span></button>'
    + '<div style="font-size:21px;font-weight:600;color:#E9B97A;margin:0 36px 14px;text-align:center;">'+C.titre+'</div>'
    + C.paras.map((t,k)=>'<p style="'+P+(k===C.paras.length-1?'margin-bottom:16px;':'')+'">'+t+'</p>').join('')
-   + '<div style="border-top:1px solid rgba(201,140,70,0.3);padding-top:14px;"><div style="font-size:15px;font-weight:600;color:#E9B97A;margin-bottom:8px;text-align:center;">La signification</div>'+C.sens.split('\n\n').map(t=>'<p style="'+P+'">'+t+'</p>').join('')+'<div dir="rtl" style="font-family:Amiri Quran,Amiri,serif;font-size:23px;color:#E9B97A;line-height:1.8;text-align:center;direction:rtl;">'+C.aya+'</div><div style="font-size:15px;font-weight:500;color:#F2D6AA;text-align:center;margin-top:10px;line-height:1.45;-webkit-font-smoothing:antialiased;">'+C.ref+'</div></div>'
-   + '<div style="text-align:center;margin-top:16px;"><span id="alae-ti-close" style="display:inline-block;padding:9px 26px;border:1px solid rgba(201,140,70,0.7);border-radius:20px;color:#E9B97A;font-size:16px;font-weight:600;cursor:pointer;">Fermer</span></div></div>';
+   + '<div style="border-top:1px solid rgba(201,140,70,0.3);padding-top:14px;"><div style="font-size:15px;font-weight:600;color:#E9B97A;margin-bottom:8px;text-align:center;">'+_UI.sens+'</div>'+C.sens.split('\n\n').map(t=>'<p style="'+P+'">'+t+'</p>').join('')+'<div dir="rtl" style="font-family:Amiri Quran,Amiri,serif;font-size:23px;color:#E9B97A;line-height:1.8;text-align:center;direction:rtl;">'+C.aya+'</div><div style="font-size:15px;font-weight:500;color:#F2D6AA;text-align:center;margin-top:10px;line-height:1.45;-webkit-font-smoothing:antialiased;">'+C.ref+'</div></div>'
+   + '<div style="text-align:center;margin-top:16px;"><span id="alae-ti-close" style="display:inline-block;padding:9px 26px;border:1px solid rgba(201,140,70,0.7);border-radius:20px;color:#E9B97A;font-size:16px;font-weight:600;cursor:pointer;">'+_UI.close+'</span></div></div>';
   const card = ov.querySelector('#alae-ti-card');
   /* 18/10 : essai Amiri italique (style site ALAE) sur la fenetre des perles */
   if (C.font) { card.style.fontFamily = C.font; card.querySelectorAll('p').forEach(x => { x.style.fontStyle = 'italic'; x.style.textAlign = 'center'; x.style.fontSize = '19px'; x.style.lineHeight = '1.6'; }); }
@@ -6599,6 +6693,16 @@ function LibraryScreen({
       done: 'Done',
       deleted: 'Dhikr deleted',
       undo: 'Undo'
+    }, tur: {
+      edit: "Düzenle",
+      done: "Bitti",
+      deleted: "Zikir silindi",
+      undo: "Geri al"
+    }, ind: {
+      edit: "Ubah",
+      done: "Selesai",
+      deleted: "Zikir dihapus",
+      undo: "Urungkan"
     },
     ar: {
       edit: 'تعديل',
@@ -6682,7 +6786,7 @@ function LibraryScreen({
       color: '#F6DCA0',
       textShadow: '0 0 8px rgba(216,138,62,0.7), 0 0 20px rgba(201,124,46,0.5), 0 0 2px rgba(255,238,198,0.85)'
     }
-  }, isAr ? 'الأذكار' : lang === 'fr' ? 'Mes dhikrs' : 'My dhikrs'), /*#__PURE__*/React.createElement("button", {
+  }, isAr ? 'الأذكار' : lang === 'fr' ? 'Mes dhikrs' : lang === 'tur' ? "Zikirlerim" : lang === 'ind' ? "Zikir Saya" : 'My dhikrs'), /*#__PURE__*/React.createElement("button", {
     onClick: onAddDhikr,
     style: {
       position: 'absolute',
@@ -6760,7 +6864,7 @@ function LibraryScreen({
       color: T.textMuted,
       whiteSpace: 'nowrap'
     }
-  }, isAr ? 'مختاراتك وذكرى يومك' : lang === 'fr' ? 'Tes favoris, gardés au chaud' : 'Your favourites, kept close'))), /*#__PURE__*/React.createElement("div", {
+  }, isAr ? 'مختاراتك وذكرى يومك' : lang === 'fr' ? 'Tes favoris, gardés au chaud' : lang === 'tur' ? "Favorilerin hep yanında" : lang === 'ind' ? "Favoritmu, selalu dekat" : 'Your favourites, kept close'))), /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'absolute',
       top: 162,
@@ -6792,7 +6896,7 @@ function LibraryScreen({
     onToggleFav: x => window.DhikrStore.toggleFav(x.id),
     onEdit: onEdit
   }))), others.length > 0 && /*#__PURE__*/React.createElement(SectionLabel, {
-    text: isAr ? 'أخرى' : (lang === 'fr' ? 'Bibliothèque' : 'Library').toUpperCase(),
+    text: isAr ? 'أخرى' : (lang === 'fr' ? 'Bibliothèque' : lang === 'tur' ? "Kütüphane" : lang === 'ind' ? "Pustaka" : 'Library').toUpperCase(),
     lang: lang
   }), /*#__PURE__*/React.createElement("div", {
     style: {
@@ -7081,6 +7185,32 @@ function HistoryScreen({
       emptySub: 'Start counting — your history will appear here.',
       breakdown: 'BREAKDOWN',
       total: 'all time'
+    }, tur: {
+      thisMonth: "30 günde zikir",
+      p7: "7 gün",
+      p30: "30 gün",
+      best: "en iyi gün",
+      avg: "günlük ortalama",
+      act: "aktif gün",
+      thisWeek: "bu hafta zikir",
+      today: "bugün",
+      empty: "Henüz zikir kaydedilmedi",
+      emptySub: "Saymaya başla — geçmişin burada görünecek.",
+      breakdown: "DAĞILIM",
+      total: "tüm zamanlar"
+    }, ind: {
+      thisMonth: "zikir dalam 30 hari",
+      p7: "7 hari",
+      p30: "30 hari",
+      best: "hari terbaik",
+      avg: "rata-rata harian",
+      act: "hari aktif",
+      thisWeek: "zikir minggu ini",
+      today: "hari ini",
+      empty: "Belum ada zikir tercatat",
+      emptySub: "Mulailah menghitung — riwayatmu akan muncul di sini.",
+      breakdown: "RINCIAN",
+      total: "sepanjang waktu"
     },
     ar: {
       thisMonth: 'ذِكر في ٣٠ يومًا',
@@ -7180,7 +7310,7 @@ function HistoryScreen({
       letterSpacing: '0.01em',
       textShadow: '0 0 10px rgba(216,138,62,0.35)'
     }
-  }, isAr ? 'عدّاد التسبيح' : lang === 'fr' ? 'Compteur de dhikr' : 'Dhikr counter'), !S.hasData ? /*#__PURE__*/React.createElement("div", {
+  }, isAr ? 'عدّاد التسبيح' : lang === 'fr' ? 'Compteur de dhikr' : lang === 'tur' ? "Zikir sayacı" : lang === 'ind' ? "Penghitung zikir" : 'Dhikr counter'), !S.hasData ? /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'absolute',
       top: 0,
@@ -7527,6 +7657,14 @@ function SettingsScreen({
     id: 'en',
     label: 'English',
     flag: '🇬🇧'
+  }, {
+    id: 'tur',
+    label: 'Türkçe',
+    flag: '🇹🇷'
+  }, {
+    id: 'ind',
+    label: 'Bahasa Indonesia',
+    flag: '🇮🇩'
   }].filter(l => window.I18N && window.I18N[l.id]);
   const curLang = LANGS.find(l => l.id === lang) || LANGS[0];
   const RECITERS = [{
@@ -7658,10 +7796,10 @@ function SettingsScreen({
   };
   const [shareToast, setShareToast] = React.useState('');
   const handleShare = () => {
-    const text = isAr ? 'تطبيق آلاء — سبحة رقمية' : 'آلاء — tasbih numérique';
+    const text = isAr ? 'تطبيق آلاء — سبحة رقمية' : lang === 'tur' ? "آلاء — dijital tesbih" : lang === 'ind' ? "آلاء — tasbih digital" : 'آلاء — tasbih numérique';
     const url = 'https://www.lestyle.be/alaeApp';
-    const okMsg = isAr ? 'تمّت المشاركة' : lang === 'fr' ? 'Partagé' : 'Shared';
-    const copyMsg = isAr ? 'تمّ نسخ الرابط' : lang === 'fr' ? 'Lien copié' : 'Link copied';
+    const okMsg = isAr ? 'تمّت المشاركة' : lang === 'fr' ? 'Partagé' : lang === 'tur' ? "Paylaşıldı" : lang === 'ind' ? "Dibagikan" : 'Shared';
+    const copyMsg = isAr ? 'تمّ نسخ الرابط' : lang === 'fr' ? 'Lien copié' : lang === 'tur' ? "Bağlantı kopyalandı" : lang === 'ind' ? "Tautan disalin" : 'Link copied';
     // 1) Native iOS share sheet via Swift bridge
     try {
       if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.alae) {
@@ -7791,7 +7929,7 @@ function SettingsScreen({
     onChange: () => saveSetting('notifEnabled', !settings.notifEnabled),
     icon: 'bell'
   }, ...(settings.notifEnabled ? [{
-    label: isAr ? 'المؤذّن' : lang === 'fr' ? 'Mu\'addhin' : 'Reciter',
+    label: isAr ? 'المؤذّن' : lang === 'fr' ? 'Mu\'addhin' : lang === 'tur' ? "Müezzin" : lang === 'ind' ? "Muazin" : 'Reciter',
     value: `${RECITERS.find(r => r.id === settings.notifReciter)?.flag || ''} ${reciterLabel}`,
     icon: 'mic',
     onClick: () => {
@@ -7801,35 +7939,35 @@ function SettingsScreen({
       } catch (_) {}
     }
   }, {
-    label: isAr ? 'قبل الأذان' : lang === 'fr' ? 'Avant prière' : 'Before prayer',
-    value: settings.notifBefore === 0 ? isAr ? 'في الوقت' : lang === 'fr' ? 'à l\'heure' : 'on time' : `${settings.notifBefore} ${isAr ? 'دقيقة' : 'min'}`,
+    label: isAr ? 'قبل الأذان' : lang === 'fr' ? 'Avant prière' : lang === 'tur' ? "Namazdan önce" : lang === 'ind' ? "Sebelum salat" : 'Before prayer',
+    value: settings.notifBefore === 0 ? isAr ? 'في الوقت' : lang === 'fr' ? 'à l\'heure' : lang === 'tur' ? "vaktinde" : lang === 'ind' ? "tepat waktu" : 'on time' : `${settings.notifBefore} ${isAr ? 'دقيقة' : 'min'}`,
     icon: 'clock',
     onClick: cycleBefore
   }] : []), {
-    label: isAr ? 'تذكير أذكار الصباح' : lang === 'fr' ? 'Rappel adhkar du matin' : 'Morning adhkar reminder',
+    label: isAr ? 'تذكير أذكار الصباح' : lang === 'fr' ? 'Rappel adhkar du matin' : lang === 'tur' ? "Sabah zikri hatırlatıcısı" : lang === 'ind' ? "Pengingat zikir pagi" : 'Morning adhkar reminder',
     toggle: true,
     on: rappels.matin.on,
     icon: 'bell',
     onChange: () => majRappel('matin', { on: !rappels.matin.on })
   }, ...(rappels.matin.on ? [{
-    label: isAr ? 'وقت الصباح' : lang === 'fr' ? 'Heure du matin' : 'Morning time',
+    label: isAr ? 'وقت الصباح' : lang === 'fr' ? 'Heure du matin' : lang === 'tur' ? "Sabah saati" : lang === 'ind' ? "Waktu pagi" : 'Morning time',
     value: rappels.matin.h,
     icon: 'clock',
     onClick: () => setRoue('matin')
   }] : []), {
-    label: isAr ? 'تذكير أذكار المساء' : lang === 'fr' ? 'Rappel adhkar du soir' : 'Evening adhkar reminder',
+    label: isAr ? 'تذكير أذكار المساء' : lang === 'fr' ? 'Rappel adhkar du soir' : lang === 'tur' ? "Akşam zikri hatırlatıcısı" : lang === 'ind' ? "Pengingat zikir petang" : 'Evening adhkar reminder',
     toggle: true,
     on: rappels.soir.on,
     icon: 'moon',
     onChange: () => majRappel('soir', { on: !rappels.soir.on })
   }, ...(rappels.soir.on ? [{
-    label: isAr ? 'وقت المساء' : lang === 'fr' ? 'Heure du soir' : 'Evening time',
+    label: isAr ? 'وقت المساء' : lang === 'fr' ? 'Heure du soir' : lang === 'tur' ? "Akşam saati" : lang === 'ind' ? "Waktu petang" : 'Evening time',
     value: rappels.soir.h,
     icon: 'clock',
     onClick: () => setRoue('soir')
   }] : []), {
     /* 19/10 : rappels du vendredi (ALAE) */
-    label: isAr ? 'تذكير يوم الجمعة' : lang === 'fr' ? 'Rappels du vendredi' : 'Friday reminders',
+    label: isAr ? 'تذكير يوم الجمعة' : lang === 'fr' ? 'Rappels du vendredi' : lang === 'tur' ? "Cuma hatırlatıcıları" : lang === 'ind' ? "Pengingat Jumat" : 'Friday reminders',
     toggle: true,
     on: !!(rappels.jumua && rappels.jumua.on),
     icon: 'bell',
@@ -7845,7 +7983,7 @@ function SettingsScreen({
     on: settings.sound,
     onChange: () => saveSetting('sound', !settings.sound)
   }, {
-    label: isAr ? 'المظهر' : lang === 'fr' ? 'Thème' : 'Theme',
+    label: isAr ? 'المظهر' : lang === 'fr' ? 'Thème' : lang === 'tur' ? "Tema" : lang === 'ind' ? "Tema" : 'Theme',
     value: window.alaeThemeLabel(settings.theme, lang),
     icon: 'moon',
     onClick: () => {
@@ -7857,18 +7995,18 @@ function SettingsScreen({
       } catch {}
     }
   }, {
-    label: isAr ? 'الوضع الليلي تلقائي' : lang === 'fr' ? 'Mode nuit auto' : 'Auto night mode',
+    label: isAr ? 'الوضع الليلي تلقائي' : lang === 'fr' ? 'Mode nuit auto' : lang === 'tur' ? "Otomatik gece modu" : lang === 'ind' ? "Mode malam otomatis" : 'Auto night mode',
     toggle: true,
     on: settings.darkMode === 'auto',
     onChange: () => saveSetting('darkMode', settings.darkMode === 'auto' ? 'off' : 'auto')
   }, {
     /* 14/10 : accessibilite (ALAE). */
-    label: isAr ? 'حجم الخط' : lang === 'fr' ? 'Taille du texte' : 'Text size',
+    label: isAr ? 'حجم الخط' : lang === 'fr' ? 'Taille du texte' : lang === 'tur' ? "Metin boyutu" : lang === 'ind' ? "Ukuran teks" : 'Text size',
     value: ({
-      s: isAr ? 'صغير' : lang === 'fr' ? 'Petit' : 'Small',
-      m: isAr ? 'عادي' : lang === 'fr' ? 'Normal' : 'Normal',
-      l: isAr ? 'كبير' : lang === 'fr' ? 'Grand' : 'Large',
-      xl: isAr ? 'كبير جدًا' : lang === 'fr' ? 'Très grand' : 'Extra large'
+      s: isAr ? 'صغير' : lang === 'fr' ? 'Petit' : lang === 'tur' ? "Küçük" : lang === 'ind' ? "Kecil" : 'Small',
+      m: isAr ? 'عادي' : lang === 'fr' ? 'Normal' : lang === 'tur' ? "Normal" : lang === 'ind' ? "Normal" : 'Normal',
+      l: isAr ? 'كبير' : lang === 'fr' ? 'Grand' : lang === 'tur' ? "Büyük" : lang === 'ind' ? "Besar" : 'Large',
+      xl: isAr ? 'كبير جدًا' : lang === 'fr' ? 'Très grand' : lang === 'tur' ? "Çok büyük" : lang === 'ind' ? "Sangat besar" : 'Extra large'
     })[settings.textSize] || '',
     onClick: () => {
       const opts = ['m', 'l', 'xl']; /* 20/10 : plus de 'petit' (ALAE). */
@@ -7877,7 +8015,7 @@ function SettingsScreen({
       saveSetting('textSize', v);
     }
   }, {
-    label: isAr ? 'تباين عالٍ' : lang === 'fr' ? 'Contraste élevé' : 'High contrast',
+    label: isAr ? 'تباين عالٍ' : lang === 'fr' ? 'Contraste élevé' : lang === 'tur' ? "Yüksek kontrast" : lang === 'ind' ? "Kontras tinggi" : 'High contrast',
     toggle: true,
     on: settings.contrast,
     onChange: () => {
@@ -7904,7 +8042,7 @@ function SettingsScreen({
     onClick: handleShare
   }, {
     /* 28/10 : icone de l'app au choix (ALAE). */
-    label: isAr ? 'أيقونة التطبيق' : lang === 'fr' ? "Icône de l'app" : 'App icon',
+    label: isAr ? 'أيقونة التطبيق' : lang === 'fr' ? "Icône de l'app" : lang === 'tur' ? "Uygulama simgesi" : lang === 'ind' ? "Ikon aplikasi" : 'App icon',
     value: settings.appIcon === 'AppIcon-Onyx' ? (isAr ? 'أسود' : 'Onyx') : (isAr ? 'لازوردي' : 'Lapis'),
     onClick: () => {
       const v = settings.appIcon === 'AppIcon-Onyx' ? 'AppIcon' : 'AppIcon-Onyx';
@@ -7914,7 +8052,7 @@ function SettingsScreen({
     }
   }, {
     /* 28/10 : noter l'app (ALAE). */
-    label: isAr ? 'التقييمات والمراجعات' : lang === 'fr' ? 'Notes et avis' : 'Ratings & Reviews',
+    label: isAr ? 'التقييمات والمراجعات' : lang === 'fr' ? 'Notes et avis' : lang === 'tur' ? "Puanlar ve yorumlar" : lang === 'ind' ? "Rating & ulasan" : 'Ratings & Reviews',
     value: '☆☆☆☆☆',
     icon: 'star',
     accent: true,
@@ -8222,7 +8360,7 @@ function SettingsScreen({
   }, "\u203A")) : null))), roue && /*#__PURE__*/React.createElement(window.AlaeRoueHeure, {
     valeur: rappels[roue].h,
     lang: lang,
-    titre: roue === 'matin' ? (isAr ? 'وقت أذكار الصباح' : lang === 'fr' ? 'Heure du matin' : 'Morning time') : (isAr ? 'وقت أذكار المساء' : lang === 'fr' ? 'Heure du soir' : 'Evening time'),
+    titre: roue === 'matin' ? (isAr ? 'وقت أذكار الصباح' : lang === 'fr' ? 'Heure du matin' : lang === 'tur' ? "Sabah saati" : lang === 'ind' ? "Waktu pagi" : 'Morning time') : (isAr ? 'وقت أذكار المساء' : lang === 'fr' ? 'Heure du soir' : lang === 'tur' ? "Akşam saati" : lang === 'ind' ? "Waktu petang" : 'Evening time'),
     onOk: v => { majRappel(roue, { h: v }); setRoue(null); },
     onClose: () => setRoue(null)
   }), langOpen && /*#__PURE__*/React.createElement("div", {
@@ -8393,7 +8531,7 @@ function SettingsScreen({
       WebkitTextFillColor: 'transparent',
       animation: 'alaeShine 5.5s ease-in-out infinite'
     }
-  }, isAr ? 'اختر المؤذّن' : lang === 'fr' ? 'Choisir le mu\u2019addhin' : 'Choose the reciter'), /*#__PURE__*/React.createElement("div", null, [null].map(() => {
+  }, isAr ? 'اختر المؤذّن' : lang === 'fr' ? 'Choisir le mu\u2019addhin' : lang === 'tur' ? "Müezzini seç" : lang === 'ind' ? "Pilih muazin" : 'Choose the reciter'), /*#__PURE__*/React.createElement("div", null, [null].map(() => {
     /* ═══ VERROUILLE — 24/09/2026. Liste des mu'addhin validee par ALAE : style I
        (rosace). Fond de la feuille facon cadre subhan Allah (sans bleu), rosace
        doree avec courant electrique doux, sans couronne ni cercle du milieu,
@@ -8414,7 +8552,7 @@ function SettingsScreen({
     const mode = 'liste'; /* 19/10 : style 1a retenu par ALAE */
     const OR = 'linear-gradient(135deg,#F6DDAE,#C98A44)';
     const CC = { hadioui: 'MA', kouchi: 'MA', younes: 'MA', kzabri: 'MA', karaca: 'TR', mecca: 'SA', silent: '' };
-    const PAYS = { MA: isAr ? 'المغرب' : lang === 'fr' ? 'Maroc' : 'Morocco', TR: isAr ? 'تركيا' : lang === 'fr' ? 'Turquie' : 'Türkiye', SA: isAr ? 'مكة' : lang === 'fr' ? 'La Mecque' : 'Mecca', '': isAr ? 'صامت' : lang === 'fr' ? 'Silencieux' : 'Silent' };
+    const PAYS = { MA: isAr ? 'المغرب' : lang === 'fr' ? 'Maroc' : lang === 'tur' ? "Fas" : lang === 'ind' ? "Maroko" : 'Morocco', TR: isAr ? 'تركيا' : lang === 'fr' ? 'Turquie' : lang === 'tur' ? "Türkiye" : lang === 'ind' ? "Turki" : 'Türkiye', SA: isAr ? 'مكة' : lang === 'fr' ? 'La Mecque' : lang === 'tur' ? "Mekke" : lang === 'ind' ? "Mekkah" : 'Mecca', '': isAr ? 'صامت' : lang === 'fr' ? 'Silencieux' : lang === 'tur' ? "Sessiz" : lang === 'ind' ? "Senyap" : 'Silent' };
     const pick = id => { stopAdhanPreview(); saveSetting('notifReciter', id); };
     const toggle = id => { if (id === 'silent') return; if (previewId === id) { stopAdhanPreview(); return; } if (settings.notifReciter !== id) saveSetting('notifReciter', id); previewReciter(id); };
     const ico = (p, c, s) => hh('svg', { width: s || 14, height: s || 14, viewBox: '0 0 14 14', style: { display: 'block', marginLeft: p ? 0 : 2 } }, p ? [hh('rect', { key: 1, x: 3.5, y: 2.5, width: 2.4, height: 9, rx: 1, fill: c }), hh('rect', { key: 2, x: 8.1, y: 2.5, width: 2.4, height: 9, rx: 1, fill: c })] : hh('path', { d: 'M4 2.5v9l7.5-4.5z', fill: c }));
@@ -8660,6 +8798,22 @@ function DhikrDetailScreen({
       target: 'Goal',
       favorite: 'Favourite',
       start: 'Start'
+    }, tur: {
+      back: "Geri",
+      translit: "Okunuşu",
+      meaning: "Anlamı",
+      virtue: "Fazileti",
+      target: "Hedef",
+      favorite: "Favori",
+      start: "Başla"
+    }, ind: {
+      back: "Kembali",
+      translit: "Transliterasi",
+      meaning: "Arti",
+      virtue: "Keutamaan",
+      target: "Target",
+      favorite: "Favorit",
+      start: "Mulai"
     },
     ar: {
       back: 'رجوع',
@@ -8673,12 +8827,12 @@ function DhikrDetailScreen({
   }, lang);
   const meaning = window.alaePick({
     fr: 'Gloire à Allah — louange à Allah — il n\'y a de divinité qu\'Allah — Allah est le plus grand.',
-    en: 'Glory to Allah — praise be to Allah — there is no god but Allah — Allah is the greatest.',
+    en: 'Glory to Allah — praise be to Allah — there is no god but Allah — Allah is the greatest.', tur: "Sübhanallah — Elhamdülillah — Lâ ilâhe illallah — Allahu ekber.", ind: "Subhanallah — Alhamdulillah — La ilaha illallah — Allahu akbar.",
     ar: 'سبحان الله — الحمد لله — لا إله إلا الله — الله أكبر.'
   }, lang);
   const virtue = window.alaePick({
     fr: 'Rapporté du Prophète ﷺ : « Deux paroles légères sur la langue, lourdes dans la balance, aimées du Tout-Miséricordieux. »',
-    en: '« Two words light on the tongue, heavy on the scale, beloved of the Most Merciful. » — Prophet ﷺ',
+    en: '« Two words light on the tongue, heavy on the scale, beloved of the Most Merciful. » — Prophet ﷺ', tur: "« Dilde hafif, mizanda ağır, Rahman'a sevimli iki kelime. » — Peygamber ﷺ", ind: "« Dua kalimat yang ringan di lisan, berat di timbangan, dicintai oleh Yang Maha Pengasih. » — Nabi ﷺ",
     ar: '« كَلِمَتَانِ خَفِيفَتَانِ عَلَى اللِّسَانِ، ثَقِيلَتَانِ فِي الْمِيزَانِ، حَبِيبَتَانِ إِلَى الرَّحْمَٰنِ. »'
   }, lang);
   return /*#__PURE__*/React.createElement("div", {
@@ -8953,6 +9107,22 @@ function CustomDhikrModal({
       target: 'Goal',
       cancel: 'Cancel',
       save: 'Save'
+    }, tur: {
+      title: "Yeni zikir",
+      sub: "Okuyuşunu kişiselleştir",
+      arabic: "Arapça metin",
+      translit: "Okunuşu",
+      target: "Hedef",
+      cancel: "İptal",
+      save: "Kaydet"
+    }, ind: {
+      title: "Zikir baru",
+      sub: "Personalisasi bacaanmu",
+      arabic: "Teks Arab",
+      translit: "Transliterasi",
+      target: "Target",
+      cancel: "Batal",
+      save: "Simpan"
     },
     ar: {
       title: 'ذكر جديد',
@@ -8967,12 +9137,12 @@ function CustomDhikrModal({
   const editing = !!editDhikr;
   const titleTxt = editing ? window.alaePick({
     fr: 'Modifier le dhikr',
-    en: 'Edit dhikr',
+    en: 'Edit dhikr', tur: "Zikri düzenle", ind: "Ubah zikir",
     ar: 'تعديل الذكر'
   }, lang) : L.title;
   const subTxt = editing ? window.alaePick({
     fr: "Ajuste le texte et l'objectif",
-    en: 'Adjust text and goal',
+    en: 'Adjust text and goal', tur: "Metni ve hedefi ayarla", ind: "Atur teks dan target",
     ar: 'عدّل النص والهدف'
   }, lang) : L.sub;
   const baseTargets = [33, 99, 100, 500, 1000];
@@ -9265,7 +9435,7 @@ function CustomDhikrModal({
       lineHeight: 1.5,
       textAlign: isAr ? 'right' : 'left'
     }
-  }, isAr ? '"الصلاة على النبي ﷺ تُكتب لك بها عشر حسنات."' : lang === 'fr' ? '« Quiconque prie sur le Prophète ﷺ une fois, Allah prie sur lui dix fois. »' : '« Whoever sends one blessing upon the Prophet ﷺ, Allah will send ten upon him. »'))), /*#__PURE__*/React.createElement("div", {
+  }, isAr ? '"الصلاة على النبي ﷺ تُكتب لك بها عشر حسنات."' : lang === 'fr' ? '« Quiconque prie sur le Prophète ﷺ une fois, Allah prie sur lui dix fois. »' : lang === 'tur' ? "« Kim Peygamber ﷺ'e bir salavat getirirse, Allah ona on salavat getirir. »" : lang === 'ind' ? "« Barang siapa bershalawat kepada Nabi ﷺ satu kali, Allah akan bershalawat kepadanya sepuluh kali. »" : '« Whoever sends one blessing upon the Prophet ﷺ, Allah will send ten upon him. »'))), /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'absolute',
       bottom: 0,
@@ -9338,6 +9508,20 @@ function EndOfCycleScreen({
       again: 'Again',
       stop: 'Finish',
       share: 'Share'
+    }, tur: {
+      eyebrow: "Tur tamamlandı",
+      title: "Allāhumma taqabbal",
+      sub: `You completed ${completed} ${d.tr.toLowerCase()}.`,
+      again: "Tekrar",
+      stop: "Bitir",
+      share: "Paylaş"
+    }, ind: {
+      eyebrow: "Putaran selesai",
+      title: "Allāhumma taqabbal",
+      sub: `You completed ${completed} ${d.tr.toLowerCase()}.`,
+      again: "Ulangi",
+      stop: "Selesai",
+      share: "Bagikan"
     },
     ar: {
       eyebrow: 'تمّت الجولة',
@@ -9700,6 +9884,24 @@ function CommunityScreen({
       fav: 'Favorites',
       all: 'All 114 surahs',
       none: 'No surah found'
+    }, tur: {
+      title: "Kur'an'ım",
+      search: "Sure ara…",
+      resume: "Devam et",
+      page: "sayfa",
+      pages: "sayfa",
+      fav: "Favoriler",
+      all: "114 surenin tümü",
+      none: "Sure bulunamadı"
+    }, ind: {
+      title: "Al-Qur'anku",
+      search: "Cari surah…",
+      resume: "Lanjutkan",
+      page: "halaman",
+      pages: "halaman",
+      fav: "Favorit",
+      all: "Semua 114 surah",
+      none: "Surah tidak ditemukan"
     },
     ar: {
       title: 'مُصحفي',
@@ -10406,6 +10608,12 @@ function SurahReader({
     en: {
       saved: 'Bookmark saved',
       sur: 'of'
+    }, tur: {
+      saved: "Yer imi kaydedildi",
+      sur: "/"
+    }, ind: {
+      saved: "Penanda disimpan",
+      sur: "dari"
     },
     ar: {
       saved: 'حُفِظ المِعلام',
@@ -11127,7 +11335,7 @@ function PrayerScreen({
         }
       } catch (e2) {}
     }
-    if (!horaires) return isAr ? 'لا يوجد اتصال بالإنترنت' : 'Pas de connexion — ouvrez une fois avec internet';
+    if (!horaires) return isAr ? 'لا يوجد اتصال بالإنترنت' : lang === 'tur' ? "Bağlantı yok — bir kez internetle açın" : lang === 'ind' ? "Tidak ada koneksi — buka sekali dengan internet" : 'Pas de connexion — ouvrez une fois avec internet';
     /* La date vient normalement de l'API. Hors connexion elle manquait, et tout le
        bloc date de l'en-tete disparaissait. Elle est calculee ici par le telephone. */
     var d = new Date();
@@ -11155,7 +11363,7 @@ function PrayerScreen({
     } catch (e3) {}
     var lisible = '';
     try {
-      lisible = d.toLocaleDateString(isAr ? 'ar' : 'fr-FR', {
+      lisible = d.toLocaleDateString(isAr ? 'ar' : lang === 'tur' ? 'tr-TR' : lang === 'ind' ? 'id-ID' : 'fr-FR', {
         day: 'numeric',
         month: 'short',
         year: 'numeric'
@@ -11207,7 +11415,7 @@ function PrayerScreen({
       maxAge: 300000,
       timeout: 8000
     }).then(p => loadPrayers(p.lat, p.lon, p.city || null)).catch(() => {
-      setError(isAr ? 'تعذّر الحصول على الموقع' : 'Impossible d\'obtenir la position');
+      setError(isAr ? 'تعذّر الحصول على الموقع' : lang === 'tur' ? "Konum alınamadı" : lang === 'ind' ? "Tidak dapat memperoleh lokasi" : 'Impossible d\'obtenir la position');
       setLoading(false);
     });
   };
@@ -11216,7 +11424,7 @@ function PrayerScreen({
   const PRAYERS = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
   const PRAYER_LABELS = {
     fr: ['Sobh', 'Chourouk', 'Dohr', 'Aasr', 'Magreb', 'Ichaa'],
-    en: ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'],
+    en: ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'], tur: ["İmsak", "Güneş", "Öğle", "İkindi", "Akşam", "Yatsı"], ind: ["Subuh", "Terbit", "Zuhur", "Asar", "Magrib", "Isya"],
     ar: ['الفجر', 'الشروق', 'الظهر', 'العصر', 'المغرب', 'العشاء']
   };
   const PRAYER_AR_INLINE = ['الفجر', 'الشروق', 'الظهر', 'العصر', 'المغرب', 'العشاء'];
@@ -11245,6 +11453,24 @@ function PrayerScreen({
       myPos: 'My location',
       loading: 'Loading…',
       change: 'Change'
+    }, tur: {
+      title: "Namazlar",
+      nextLabel: "SONRAKİ NAMAZ",
+      in: "Kalan",
+      remaining: "kalan",
+      passed: "geçen",
+      myPos: "Konumum",
+      loading: "Yükleniyor…",
+      change: "Değiştir"
+    }, ind: {
+      title: "Waktu salat",
+      nextLabel: "SALAT BERIKUTNYA",
+      in: "dalam",
+      remaining: "tersisa",
+      passed: "berlalu",
+      myPos: "Lokasi saya",
+      loading: "Memuat…",
+      change: "Ubah"
     },
     ar: {
       title: 'الصلاة',
@@ -11533,7 +11759,7 @@ function PrayerScreen({
   })), /*#__PURE__*/React.createElement("input", {
     value: citySearch,
     onChange: e => setCitySearch(e.target.value),
-    placeholder: isAr ? 'ابحث عن مدينة…' : lang === 'fr' ? 'Chercher une ville…' : 'Search a city…',
+    placeholder: isAr ? 'ابحث عن مدينة…' : lang === 'fr' ? 'Chercher une ville…' : lang === 'tur' ? "Şehir ara…" : lang === 'ind' ? "Cari kota…" : 'Search a city…',
     autoFocus: true,
     style: {
       flex: 1,
@@ -11580,7 +11806,7 @@ function PrayerScreen({
       fontFamily: isAr ? 'ReemKufi,sans-serif' : '-apple-system,sans-serif',
       fontSize: 12
     }
-  }, isAr ? 'لا توجد مدينة' : lang === 'fr' ? 'Aucune ville' : 'No city'), cityResults.map(r => /*#__PURE__*/React.createElement("button", {
+  }, isAr ? 'لا توجد مدينة' : lang === 'fr' ? 'Aucune ville' : lang === 'tur' ? "Şehir bulunamadı" : lang === 'ind' ? "Kota tidak ditemukan" : 'No city'), cityResults.map(r => /*#__PURE__*/React.createElement("button", {
     key: r.id,
     onClick: () => pickSearchResult(r),
     style: {
@@ -11770,7 +11996,7 @@ function PrayerScreen({
       fontSize: 11,
       letterSpacing: '.02em'
     }
-  }, horsLigne === true ? isAr ? 'أوقات محفوظة — بدون اتصال' : 'Horaires enregistrés — hors connexion' : isAr ? 'أوقات ' + horsLigne : 'Horaires du ' + horsLigne + ' — hors connexion'), error && !data && /*#__PURE__*/React.createElement("div", {
+  }, horsLigne === true ? isAr ? 'أوقات محفوظة — بدون اتصال' : lang === 'tur' ? "Kayıtlı vakitler — çevrimdışı" : lang === 'ind' ? "Jadwal tersimpan — luring" : 'Horaires enregistrés — hors connexion' : isAr ? 'أوقات ' + horsLigne : lang === 'tur' ? horsLigne + ' tarihli vakitler — çevrimdışı' : lang === 'ind' ? 'Jadwal ' + horsLigne + ' — luring' : 'Horaires du ' + horsLigne + ' — hors connexion'), error && !data && /*#__PURE__*/React.createElement("div", {
     style: {
       textAlign: 'center',
       padding: '24px',
@@ -12236,6 +12462,34 @@ function QiblaScreen({
       km: 'km',
       noSensor: 'Compass unavailable on this device',
       noSensorHint: 'Use the bearing shown above'
+    }, tur: {
+      title: "Kıble",
+      sub: "Kâbe yönü",
+      enable: "Pusulayı etkinleştir",
+      perm: "Pusulaya izin vermek için dokun",
+      noLoc: "Konum gerekli",
+      reqPos: "📍 Konumumu paylaş",
+      aligned: "Mekke'ye hizalandı",
+      flat: "iPhone'u yatay tut",
+      degree: "°",
+      distance: "Mesafe",
+      km: "km",
+      noSensor: "Bu cihazda pusula kullanılamıyor",
+      noSensorHint: "Yukarıda gösterilen yönü kullanın"
+    }, ind: {
+      title: "Kiblat",
+      sub: "Arah ke Kakbah",
+      enable: "Aktifkan kompas",
+      perm: "Ketuk untuk mengizinkan kompas",
+      noLoc: "Lokasi diperlukan",
+      reqPos: "📍 Bagikan lokasi saya",
+      aligned: "Sejajar dengan Mekkah",
+      flat: "Pegang iPhone secara datar",
+      degree: "°",
+      distance: "Jarak",
+      km: "km",
+      noSensor: "Kompas tidak tersedia di perangkat ini",
+      noSensorHint: "Gunakan arah yang ditampilkan di atas"
     },
     ar: {
       title: 'القبلة',
@@ -12506,7 +12760,7 @@ function QiblaScreen({
       alignItems: 'stretch'
     }
   }, /*#__PURE__*/React.createElement(InfoChip, {
-    label: isAr ? 'القبلة' : lang === 'fr' ? 'Direction' : 'Bearing',
+    label: isAr ? 'القبلة' : lang === 'fr' ? 'Direction' : lang === 'tur' ? "Yön" : lang === 'ind' ? "Arah" : 'Bearing',
     value: `${Math.round(qiblaBearing)}${I18N.degree}`,
     T: T
   }), /*#__PURE__*/React.createElement(InfoChip, {
@@ -13553,12 +13807,12 @@ function AdhkarScreen({
     morning: {
       ar: 'أَذكَار الصَّبَاح',
       fr: 'Adhkar du matin',
-      en: 'Morning adhkar'
+      en: 'Morning adhkar', tur: "Sabah zikri", ind: "Zikir pagi"
     },
     evening: {
       ar: 'أَذكَار المَسَاء',
       fr: 'Adhkar du soir',
-      en: 'Evening adhkar'
+      en: 'Evening adhkar', tur: "Akşam zikri", ind: "Zikir petang"
     }
   };
   const tap = idx => {
@@ -13703,7 +13957,7 @@ function AdhkarScreen({
       transition: 'all 0.25s ease',
       boxShadow: tab === t ? '0 4px 14px rgba(201,124,46,0.45), inset 0 1px 0 rgba(255,245,210,0.7)' : 'none'
     }
-  }, t === 'morning' ? isAr ? 'الصَّبَاح' : 'Matin' : isAr ? 'المَسَاء' : 'Soir')))), /*#__PURE__*/React.createElement("div", {
+  }, t === 'morning' ? isAr ? 'الصَّبَاح' : lang === 'tur' ? 'Sabah' : lang === 'ind' ? 'Pagi' : 'Matin' : isAr ? 'المَسَاء' : lang === 'tur' ? 'Akşam' : lang === 'ind' ? 'Petang' : 'Soir')))), /*#__PURE__*/React.createElement("div", {
     className: "adhkar-scroll",
     style: {
       position: 'absolute',
@@ -13896,7 +14150,7 @@ function AdhkarScreen({
       fontSize: 13,
       color: T.textDim
     }
-  }, isAr ? 'اضغط على الذكر لعدّه' : lang === 'fr' ? 'Tape sur le dhikr pour compter' : 'Tap a dhikr to count')));
+  }, isAr ? 'اضغط على الذكر لعدّه' : lang === 'fr' ? 'Tape sur le dhikr pour compter' : lang === 'tur' ? "Saymak için bir zikre dokun" : lang === 'ind' ? "Ketuk zikir untuk menghitung" : 'Tap a dhikr to count')));
 }
 window.AdhkarScreen = AdhkarScreen;
 </script><script>
@@ -14093,15 +14347,15 @@ window.MORNING_DOUAS = [
 window.ALAE_DEFIS = [
   /* 14/10 : ordre demande par ALAE : salat, istighfar, hamd, tahlil, takbir. */
   {id:'salat7', dhikr:'salat', cible:100, jours:7,
-   ar:'أسبوع الصلاة على النبي ﷺ', fr:'7 jours de salat sur le Prophète ﷺ', en:'7 days of salawat ﷺ', txt:'ٱللَّٰهُمَّ صَلِّ عَلَىٰ مُحَمَّد'},
+   ar:'أسبوع الصلاة على النبي ﷺ', fr:'7 jours de salat sur le Prophète ﷺ', en:'7 days of salawat ﷺ', tur: "7 gün salavat ﷺ", ind: "7 hari shalawat ﷺ", txt:'ٱللَّٰهُمَّ صَلِّ عَلَىٰ مُحَمَّد'},
   {id:'istighfar30', dhikr:'istighfar', cible:100, jours:30,
-   ar:'ثلاثون يومًا من الاستغفار', fr:"30 jours d'Istighfar", en:'30 days of Istighfar', txt:'أَسْتَغْفِرُ ٱللَّٰهَ'},
+   ar:'ثلاثون يومًا من الاستغفار', fr:"30 jours d'Istighfar", en:'30 days of Istighfar', tur: "30 gün İstiğfar", ind: "30 hari Istighfar", txt:'أَسْتَغْفِرُ ٱللَّٰهَ'},
   {id:'hamd40', dhikr:'hamd', cible:33, jours:40,
-   ar:'أربعون يومًا من الحمد', fr:'40 jours de Al-hamdu lillah', en:'40 days of Alhamdulillah', txt:'ٱلْحَمْدُ لِلَّٰهِ'},
+   ar:'أربعون يومًا من الحمد', fr:'40 jours de Al-hamdu lillah', en:'40 days of Alhamdulillah', tur: "40 gün Elhamdülillah", ind: "40 hari Alhamdulillah", txt:'ٱلْحَمْدُ لِلَّٰهِ'},
   {id:'lailaha30', dhikr:'lailaha', cible:100, jours:30,
-   ar:'ثلاثون يومًا من التهليل', fr:'30 jours de La ilaha illa Allah', en:'30 days of La ilaha illa Allah', txt:'لَا إِلَٰهَ إِلَّا ٱللَّٰهُ'},
+   ar:'ثلاثون يومًا من التهليل', fr:'30 jours de La ilaha illa Allah', en:'30 days of La ilaha illa Allah', tur: "30 gün Lâ ilâhe illallah", ind: "30 hari La ilaha illallah", txt:'لَا إِلَٰهَ إِلَّا ٱللَّٰهُ'},
   {id:'akbar30', dhikr:'akbar', cible:33, jours:30,
-   ar:'ثلاثون يومًا من التكبير', fr:'30 jours de Allahu akbar', en:'30 days of Allahu akbar', txt:'ٱللَّٰهُ أَكْبَرُ'}
+   ar:'ثلاثون يومًا من التكبير', fr:'30 jours de Allahu akbar', en:'30 days of Allahu akbar', tur: "30 gün Allahu ekber", ind: "30 hari Allahu akbar", txt:'ٱللَّٰهُ أَكْبَرُ'}
 ];
 /* 14/10 : liseré or qui scintille autour des cartes de defi (ALAE). */
 try { if (!document.getElementById('alae-defi-css')) { const s = document.createElement('style'); s.id = 'alae-defi-css'; s.textContent = '@keyframes alaeOrDefi{0%{background-position:0% 50%}100%{background-position:-100% 50%}}'; document.head.appendChild(s); } } catch (e) {}
@@ -14127,7 +14381,7 @@ function DefisScreen({ lang = 'fr' }) {
   const L = {
     ar: { titre: 'التحديات', parJour: 'يوميًا', jours: 'يومًا', jour: 'يوم', reussis: 'أيام منجزة', go: 'ابدأ التحدي', stop: 'إيقاف', sur: 'اضغط مجددًا للإيقاف', fini: 'اكتمل التحدي', refaire: 'أعد التحدي', aujourd: 'اليوم' },
     fr: { titre: 'Défis', parJour: 'par jour', jours: 'jours', jour: 'Jour', reussis: 'jours réussis', go: 'Commencer', stop: 'Arrêter', sur: 'Touchez encore pour arrêter', fini: 'Défi terminé', refaire: 'Recommencer', aujourd: "Aujourd'hui" },
-    en: { titre: 'Challenges', parJour: 'per day', jours: 'days', jour: 'Day', reussis: 'days completed', go: 'Start', stop: 'Stop', sur: 'Tap again to stop', fini: 'Challenge complete', refaire: 'Start again', aujourd: 'Today' }
+    en: { titre: 'Challenges', parJour: 'per day', jours: 'days', jour: 'Day', reussis: 'days completed', go: 'Start', stop: 'Stop', sur: 'Tap again to stop', fini: 'Challenge complete', refaire: 'Start again', aujourd: 'Today' }, tur: { titre: "Meydan okumalar", parJour: "günde", jours: "gün", jour: "Gün", reussis: "gün tamamlandı", go: "Başla", stop: "Durdur", sur: "Durdurmak için tekrar dokun", fini: "Meydan okuma tamamlandı", refaire: "Yeniden başla", aujourd: "Bugün" }, ind: { titre: "Tantangan", parJour: "per hari", jours: "hari", jour: "Hari", reussis: "hari selesai", go: "Mulai", stop: "Hentikan", sur: "Ketuk lagi untuk menghentikan", fini: "Tantangan selesai", refaire: "Mulai lagi", aujourd: "Hari ini" }
   }[lang] || {};
   const ui = isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif';
   const AIDE = {
@@ -14151,7 +14405,19 @@ function DefisScreen({ lang = 'fr' }) {
       "Each small diamond is a day. The outlined one is today: it turns gold when you reach the goal.",
       'A missed day stays empty, but the challenge goes on and nothing resets.',
       'On the last day the card shows "Challenge complete" with your score, and you can start again.',
-      'To stop, tap "Stop" twice.'] }
+      'To stop, tap "Stop" twice.'] }, tur: { titre: "Meydan okuma nasıl işler?", ok: "Anladım", etapes: [
+      "Her gün sayacı aç, meydan okumanın zikrini seç ve günlük hedefe kadar say. Meydan okuma kendiliğinden dolar, buraya dönmen gerekmez.",
+      "Çubuğun yanındaki sayı bugünkü ilerlemeyi gösterir.",
+      "Her küçük baklava bir gündür. Çerçeveli olan bugündür: hedefe ulaşınca altın rengine döner.",
+      "Kaçırılan gün boş kalır ama meydan okuma devam eder ve hiçbir şey sıfırlanmaz.",
+      "Son gün kart, puanınla birlikte \"Meydan okuma tamamlandı\" yazar ve yeniden başlayabilirsin.",
+      "Durdurmak için \"Durdur\"a iki kez dokun."] }, ind: { titre: "Bagaimana tantangan bekerja?", ok: "Mengerti", etapes: [
+      "Setiap hari, buka penghitung, pilih zikir tantangan, lalu hitung hingga target harian. Tantangan terisi sendiri, tak perlu kembali ke sini.",
+      "Angka di samping bilah menunjukkan kemajuan hari ini.",
+      "Setiap berlian kecil adalah satu hari. Yang berbingkai adalah hari ini: ia berubah emas saat targetmu tercapai.",
+      "Hari yang terlewat tetap kosong, tetapi tantangan terus berjalan dan tidak ada yang diatur ulang.",
+      "Pada hari terakhir, kartu menampilkan \"Tantangan selesai\" beserta skormu, dan kamu bisa memulai lagi.",
+      "Untuk menghentikan, ketuk \"Hentikan\" dua kali."] }
   }[lang] || {};
   const num = '"Cormorant Garamond",serif';
   const bouton = (lib, onClick, plein) => h("button", { onClick, style: { alignSelf: 'center', padding: '9px 22px', borderRadius: 20, cursor: 'pointer', fontFamily: ui, fontSize: isAr ? 15 : 13, fontWeight: 600, letterSpacing: isAr ? 0 : '0.04em', background: plein ? 'linear-gradient(180deg,' + T.goldLight + ',' + T.gold + ')' : 'transparent', color: plein ? '#1A1410' : T.goldLight, border: plein ? 'none' : '0.5px solid ' + T.hairline } }, lib);
@@ -14282,7 +14548,7 @@ function AlaeRoueHeure({ valeur = '06:30', titre = '', lang = 'ar', onOk, onClos
         h("span", { style: Object.assign({ display: 'inline-block', fontFamily: '"Cormorant Garamond",serif', fontSize: 34, fontWeight: ad < 0.5 ? 600 : 500, lineHeight: 1, fontVariantNumeric: 'lining-nums', fontFeatureSettings: '"lnum" 1', color: ad < 0.5 ? COUL : 'rgba(236,222,196,0.62)', opacity: Math.max(0.1, 1 - ad * 0.36).toFixed(2), transform: 'rotateX(' + Math.max(-70, Math.min(70, -dd * 24)).toFixed(1) + 'deg) scale(' + (0.74 + 0.3 * lisse).toFixed(3) + ')', textShadow: ad < 0.5 ? '0 0 14px rgba(232,180,90,0.28), 0 2px 3px rgba(0,0,0,0.6)' : 'none', willChange: 'transform, opacity' }, ad < 0.5 ? MIEL_CHIFFRE : {}) }, deux(v)));
     }),
     h("div", { style: { height: H * 2 } })));
-  const L = { ar: { ok: 'تم', non: 'إلغاء', am: 'صباحًا', pm: 'مساءً' }, fr: { ok: 'Valider', non: 'Annuler', am: 'matin', pm: 'soir' }, en: { ok: 'Done', non: 'Cancel', am: 'AM', pm: 'PM' } }[lang] || { ok: 'OK', non: 'X', am: '', pm: '' };
+  const L = { ar: { ok: 'تم', non: 'إلغاء', am: 'صباحًا', pm: 'مساءً' }, fr: { ok: 'Valider', non: 'Annuler', am: 'matin', pm: 'soir' }, en: { ok: 'Done', non: 'Cancel', am: 'AM', pm: 'PM' }, tur: { ok: "Bitti", non: "İptal", am: "ÖÖ", pm: "ÖS" }, ind: { ok: "Selesai", non: "Batal", am: "AM", pm: "PM" } }[lang] || { ok: 'OK', non: 'X', am: '', pm: '' };
   const ui = isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif';
   const OR = 'rgba(232,190,112,';
   return h("div", { onClick: onClose, style: { position: 'absolute', inset: 0, zIndex: 400, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)', display: 'flex', alignItems: 'flex-end' } },
@@ -14357,7 +14623,7 @@ function AlaeRoueHeureUltra({ valeur = '06:30', titre = '', lang = 'ar', onOk, o
     const g = i % 5 === 0;
     index.push(h("div", { key: 'i' + i, style: { position: 'absolute', left: '50%', top: '50%', width: g ? 2.2 : 1, height: g ? 11 : 5, marginLeft: g ? -1.1 : -0.5, background: g ? 'linear-gradient(180deg,#FFF0C4,#C8954A)' : 'rgba(232,200,140,0.45)', borderRadius: 1, transform: 'rotate(' + i * 6 + 'deg) translateY(' + (-(D / 2) + 22) + 'px)', transformOrigin: '50% 0', boxShadow: g ? '0 0 3px rgba(240,190,100,0.5)' : 'none' } }));
   }
-  const L = { ar: { ok: 'تم', non: 'إلغاء', am: 'صباحًا', pm: 'مساءً' }, fr: { ok: 'Valider', non: 'Annuler', am: 'MATIN', pm: 'SOIR' }, en: { ok: 'Done', non: 'Cancel', am: 'AM', pm: 'PM' } }[lang] || { ok: 'OK', non: 'X', am: '', pm: '' };
+  const L = { ar: { ok: 'تم', non: 'إلغاء', am: 'صباحًا', pm: 'مساءً' }, fr: { ok: 'Valider', non: 'Annuler', am: 'MATIN', pm: 'SOIR' }, en: { ok: 'Done', non: 'Cancel', am: 'AM', pm: 'PM' }, tur: { ok: "Bitti", non: "İptal", am: "ÖÖ", pm: "ÖS" }, ind: { ok: "Selesai", non: "Batal", am: "AM", pm: "PM" } }[lang] || { ok: 'OK', non: 'X', am: '', pm: '' };
   const ui = isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif';
   return h("div", { onClick: onClose, style: { position: 'absolute', inset: 0, zIndex: 400, background: 'radial-gradient(ellipse at 50% 70%, rgba(0,0,0,0.5), rgba(0,0,0,0.82))', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', display: 'flex', alignItems: 'flex-end' } },
     h("div", { onClick: e => e.stopPropagation(), style: { position: 'relative', overflow: 'hidden', width: '100%', boxSizing: 'border-box', padding: '10px 22px 32px', borderRadius: '34px 34px 0 0', background: 'linear-gradient(180deg, rgba(22,19,15,0.9) 0%, rgba(6,5,4,0.98) 55%), var(--silk-img) center / cover', borderTop: '0.5px solid rgba(232,190,112,0.55)', boxShadow: '0 -24px 60px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,236,196,0.1)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, animation: 'auIn .55s cubic-bezier(.16,1,.3,1) both' } },
@@ -14393,10 +14659,10 @@ window.AlaeRoueHeure = AlaeRoueHeureUltra;
    Les taps comptent aussi dans l'historique et les defis (recordDhikrTap).
    Cles a part : alae.series (series perso), alae.series.etat (avancement). */
 window.ALAE_SERIES = [
-  {id:'salat', ar:'أذكار بعد الصلاة', fr:'Après la prière', en:'After prayer', etapes:[{d:'subhan',n:33},{d:'hamd',n:33},{d:'akbar',n:33},{d:'lailaha',n:1}]},
-  {id:'matin', ar:'سلسلة الصباح', fr:'Série du matin', en:'Morning series', etapes:[{d:'subhan',n:100},{d:'istighfar',n:100},{d:'salat',n:10}]},
-  {id:'soir', ar:'سلسلة المساء', fr:'Série du soir', en:'Evening series', etapes:[{d:'hasbiya',n:7},{d:'istighfar',n:100},{d:'salat',n:10}]},
-  {id:'nuit', ar:'قبل النوم', fr:'Avant de dormir', en:'Before sleep', etapes:[{d:'subhan',n:33},{d:'hamd',n:33},{d:'akbar',n:34}]}
+  {id:'salat', ar:'أذكار بعد الصلاة', fr:'Après la prière', en:'After prayer', tur: "Namazdan sonra", ind: "Setelah salat", etapes:[{d:'subhan',n:33},{d:'hamd',n:33},{d:'akbar',n:33},{d:'lailaha',n:1}]},
+  {id:'matin', ar:'سلسلة الصباح', fr:'Série du matin', en:'Morning series', tur: "Sabah serisi", ind: "Seri pagi", etapes:[{d:'subhan',n:100},{d:'istighfar',n:100},{d:'salat',n:10}]},
+  {id:'soir', ar:'سلسلة المساء', fr:'Série du soir', en:'Evening series', tur: "Akşam serisi", ind: "Seri petang", etapes:[{d:'hasbiya',n:7},{d:'istighfar',n:100},{d:'salat',n:10}]},
+  {id:'nuit', ar:'قبل النوم', fr:'Avant de dormir', en:'Before sleep', tur: "Uyumadan önce", ind: "Sebelum tidur", etapes:[{d:'subhan',n:33},{d:'hamd',n:33},{d:'akbar',n:34}]}
 ];
 function SeriesScreen({ lang = 'fr' }) {
   const T = window.THEME;
@@ -14414,7 +14680,7 @@ function SeriesScreen({ lang = 'fr' }) {
   const L = {
     ar: { titre: 'السلاسل', go: 'ابدأ', reprendre: 'تابِع', modif: 'تعديل', nouv: '+ سلسلة جديدة', fini: 'اكتملت السلسلة', encore: 'أعِد', retour: 'رجوع', reset: 'أعد الخطوة', quitter: 'إنهاء', nom: 'اسم السلسلة', ajout: '+ أضف ذكرًا', ok: 'حفظ', non: 'إلغاء', del: 'حذف السلسلة', sur: 'اضغط مجددًا للحذف', etape: 'الخطوة', toucher: 'اِلمس للعدّ' },
     fr: { titre: 'Séries', go: 'Commencer', reprendre: 'Reprendre', modif: 'Modifier', nouv: '+ Nouvelle série', fini: 'Série terminée', encore: 'Recommencer', retour: 'Retour', reset: "Refaire l'étape", quitter: 'Quitter', nom: 'Nom de la série', ajout: '+ Ajouter un dhikr', ok: 'Enregistrer', non: 'Annuler', del: 'Supprimer la série', sur: 'Touchez encore pour supprimer', etape: 'Étape', toucher: 'Touchez pour compter' },
-    en: { titre: 'Series', go: 'Start', reprendre: 'Resume', modif: 'Edit', nouv: '+ New series', fini: 'Series complete', encore: 'Again', retour: 'Back', reset: 'Redo step', quitter: 'Quit', nom: 'Series name', ajout: '+ Add a dhikr', ok: 'Save', non: 'Cancel', del: 'Delete series', sur: 'Tap again to delete', etape: 'Step', toucher: 'Tap to count' }
+    en: { titre: 'Series', go: 'Start', reprendre: 'Resume', modif: 'Edit', nouv: '+ New series', fini: 'Series complete', encore: 'Again', retour: 'Back', reset: 'Redo step', quitter: 'Quit', nom: 'Series name', ajout: '+ Add a dhikr', ok: 'Save', non: 'Cancel', del: 'Delete series', sur: 'Tap again to delete', etape: 'Step', toucher: 'Tap to count' }, tur: { titre: "Seriler", go: "Başla", reprendre: "Devam et", modif: "Düzenle", nouv: "+ Yeni seri", fini: "Seri tamamlandı", encore: "Tekrar", retour: "Geri", reset: "Adımı tekrarla", quitter: "Çık", nom: "Seri adı", ajout: "+ Zikir ekle", ok: "Kaydet", non: "İptal", del: "Seriyi sil", sur: "Silmek için tekrar dokun", etape: "Adım", toucher: "Saymak için dokun" }, ind: { titre: "Seri", go: "Mulai", reprendre: "Lanjutkan", modif: "Ubah", nouv: "+ Seri baru", fini: "Seri selesai", encore: "Ulangi", retour: "Kembali", reset: "Ulangi langkah", quitter: "Keluar", nom: "Nama seri", ajout: "+ Tambah zikir", ok: "Simpan", non: "Batal", del: "Hapus seri", sur: "Ketuk lagi untuk menghapus", etape: "Langkah", toucher: "Ketuk untuk menghitung" }
   }[lang] || {};
   const ui = isAr ? 'ReemKufi, sans-serif' : '-apple-system, sans-serif';
   const num = '"Cormorant Garamond",serif';
@@ -14526,7 +14792,7 @@ function MorningCardScreen({
   const isAr = lang === "ar";
   const [dayOffset, setDayOffset] = React.useState(0);
   const [toast, setToast] = React.useState("");
-  const locale = isAr ? "ar" : lang === "en" ? "en-US" : "fr-FR";
+  const locale = isAr ? "ar" : lang === "en" ? "en-US" : lang === "tur" ? "tr-TR" : lang === "ind" ? "id-ID" : "fr-FR";
   const tt = m => {
     setToast(m);
     setTimeout(() => setToast(""), 1800);
@@ -14537,8 +14803,8 @@ function MorningCardScreen({
       navigator.vibrate(10);
     } catch (e) {}
     const text = card.isFriday ? "\u062C\u064F\u0645\u0639\u0629 \u0645\u0628\u0627\u0631\u0643\u0629 \uD83D\uDC9B\n\n\uD83D\uDCF2 \u062D\u0645\u0651\u0644 \u062A\u0637\u0628\u064A\u0642 \u0622\u0644\u0627\u0621:\nhttps://www.lestyle.be/alaeApp" : "\u0635\u064E\u0628\u064E\u0627\u062D\u064F \u0627\u0644\u062E\u064E\u064A\u0631 \uD83D\uDC9B\n\n\uD83D\uDCF2 \u062D\u0645\u0651\u0644 \u062A\u0637\u0628\u064A\u0642 \u0622\u0644\u0627\u0621:\nhttps://www.lestyle.be/alaeApp";
-    const okMsg = isAr ? "\u062A\u0645\u0651\u062A \u0627\u0644\u0645\u0634\u0627\u0631\u0643\u0629" : lang === "fr" ? "Partag\u00E9" : "Shared";
-    const dlMsg = isAr ? "\u062A\u0645\u0651 \u0627\u0644\u062D\u0641\u0638" : lang === "fr" ? "Image enregistr\u00E9e" : "Saved";
+    const okMsg = isAr ? "\u062A\u0645\u0651\u062A \u0627\u0644\u0645\u0634\u0627\u0631\u0643\u0629" : lang === "fr" ? "Partag\u00E9" : lang === 'tur' ? "Paylaşıldı" : lang === 'ind' ? "Dibagikan" : "Shared";
+    const dlMsg = isAr ? "\u062A\u0645\u0651 \u0627\u0644\u062D\u0641\u0638" : lang === "fr" ? "Image enregistr\u00E9e" : lang === 'tur' ? "Kaydedildi" : lang === 'ind' ? "Tersimpan" : "Saved";
     try {
       let blob = null;
       try {
@@ -14629,9 +14895,9 @@ function MorningCardScreen({
     }
   };
   const names = {
-    "0": isAr ? "\u0627\u0644\u064A\u0648\u0645" : lang === "fr" ? "Aujourd\u2019hui" : "Today",
-    "1": isAr ? "\u063A\u062F\u064B\u0627" : lang === "fr" ? "Demain" : "Tomorrow",
-    "-1": isAr ? "\u0623\u0645\u0633" : lang === "fr" ? "Hier" : "Yesterday"
+    "0": isAr ? "\u0627\u0644\u064A\u0648\u0645" : lang === "fr" ? "Aujourd\u2019hui" : lang === 'tur' ? "Bugün" : lang === 'ind' ? "Hari ini" : "Today",
+    "1": isAr ? "\u063A\u062F\u064B\u0627" : lang === "fr" ? "Demain" : lang === 'tur' ? "Yarın" : lang === 'ind' ? "Besok" : "Tomorrow",
+    "-1": isAr ? "\u0623\u0645\u0633" : lang === "fr" ? "Hier" : lang === 'tur' ? "Dün" : lang === 'ind' ? "Kemarin" : "Yesterday"
   };
   const d = window.morningDateFor(dayOffset);
   const dayLabel = d.toLocaleDateString(locale, {
@@ -14745,7 +15011,7 @@ function MorningCardScreen({
       direction: "rtl",
       filter: "drop-shadow(0 0 10px rgba(232,185,122,0.4))"
     }
-  }, isAr ? "دُعَاء صَبَاحي" : lang === "fr" ? "Prière matinale" : "Morning du’a")), /*#__PURE__*/React.createElement("div", {
+  }, isAr ? "دُعَاء صَبَاحي" : lang === "fr" ? "Prière matinale" : lang === 'tur' ? "Sabah duası" : lang === 'ind' ? "Doa pagi" : "Morning du’a")), /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: "Amiri,serif",
       fontSize: 13,
@@ -14754,7 +15020,7 @@ function MorningCardScreen({
       textShadow: "0 1px 5px rgba(0,0,0,0.75)",
       textAlign: "center"
     }
-  }, isAr ? "\u062F\u064F\u0639\u064E\u0627\u0621 \u0644\u0643\u0644 \u0635\u0628\u0627\u062D \u2014 \u0634\u0627\u0631\u0643\u0647\u0627 \u0645\u0639 \u0623\u062D\u0628\u0627\u0626\u0643" : lang === "fr" ? "Une dou3a chaque matin \u2014 \u00E0 envoyer \u00E0 tes proches" : "A morning du\u2019a each day \u2014 share it with your loved ones"), /*#__PURE__*/React.createElement("div", {
+  }, isAr ? "\u062F\u064F\u0639\u064E\u0627\u0621 \u0644\u0643\u0644 \u0635\u0628\u0627\u062D \u2014 \u0634\u0627\u0631\u0643\u0647\u0627 \u0645\u0639 \u0623\u062D\u0628\u0627\u0626\u0643" : lang === "fr" ? "Une dou3a chaque matin \u2014 \u00E0 envoyer \u00E0 tes proches" : lang === 'tur' ? "Her sabah bir dua — sevdiklerinle paylaş" : lang === 'ind' ? "Satu doa setiap pagi — bagikan kepada orang-orang tercinta" : "A morning du\u2019a each day \u2014 share it with your loved ones"), /*#__PURE__*/React.createElement("div", {
     style: {
       display: "flex",
       alignItems: "center",
@@ -14865,7 +15131,7 @@ function MorningCardScreen({
       color: T.goldLight,
       letterSpacing: "0.04em"
     }
-  }, isAr ? "\u062C\u064F\u0645\u0639\u0629 \u0645\u0628\u0627\u0631\u0643\u0629" : "Jumu\u2019a Mubaraka"), /*#__PURE__*/React.createElement("button", {
+  }, isAr ? "\u062C\u064F\u0645\u0639\u0629 \u0645\u0628\u0627\u0631\u0643\u0629" : lang === 'tur' ? "Cuma Mübarek" : lang === 'ind' ? "Jumat Berkah" : "Jumu\u2019a Mubaraka"), /*#__PURE__*/React.createElement("button", {
     onClick: doShare,
     style: {
       marginTop: 22,
@@ -14911,7 +15177,7 @@ function MorningCardScreen({
     stroke: "currentColor",
     strokeWidth: "1.2",
     strokeLinecap: "round"
-  })), /*#__PURE__*/React.createElement("span", null, isAr ? "\u0634\u0627\u0631\u0643" : lang === "fr" ? "Partager" : "Share")), /*#__PURE__*/React.createElement("a", {
+  })), /*#__PURE__*/React.createElement("span", null, isAr ? "\u0634\u0627\u0631\u0643" : lang === "fr" ? "Partager" : lang === 'tur' ? "Paylaş" : lang === 'ind' ? "Bagikan" : "Share")), /*#__PURE__*/React.createElement("a", {
     href: "https://www.lestyle.be/alaeApp",
     target: "_blank",
     rel: "noopener noreferrer",
@@ -14987,122 +15253,182 @@ window.MorningCardScreen = MorningCardScreen;
 window.DUAA_LIST = [{
   ar: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى وَالتُّقَى وَالْعَفَافَ وَالْغِنَى',
   fr: 'Ô Allah, je Te demande la guidance, la piété, la chasteté et la richesse (de l\'âme).',
+  tur: "Allah'ım, senden hidayet, takva, iffet ve gönül zenginliği dilerim.",
+  ind: "Ya Allah, aku memohon kepada-Mu petunjuk, ketakwaan, kesucian diri, dan kekayaan jiwa.",
   ref: 'مسلم'
 }, {
   ar: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ',
   fr: 'Notre Seigneur, donne-nous une belle vie ici-bas et dans l\'au-delà, et préserve-nous du châtiment du Feu.',
+  tur: "Rabbimiz, bize dünyada da iyilik ver, ahirette de iyilik ver ve bizi ateş azabından koru.",
+  ind: "Ya Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan lindungilah kami dari azab neraka.",
   ref: 'البقرة 201'
 }, {
   ar: 'اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ',
   fr: 'Ô Allah, aide-moi à me souvenir de Toi, à Te remercier et à T\'adorer de la meilleure manière.',
+  tur: "Allah'ım, Seni anmama, sana şükretmeme ve sana en güzel şekilde ibadet etmeme yardım et.",
+  ind: "Ya Allah, bantulah aku untuk mengingat-Mu, bersyukur kepada-Mu, dan beribadah kepada-Mu dengan sebaik-baiknya.",
   ref: 'أبو داود'
 }, {
   ar: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ ، وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ ، وَأَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ ، وَأَعُوذُ بِكَ مِنْ غَلَبَةِ الدَّيْنِ وَقَهْرِ الرِّجَالِ',
   fr: 'Ô Allah, je cherche refuge auprès de Toi contre le souci et la tristesse, l\'incapacité et la paresse, la lâcheté et l\'avarice, le poids des dettes et l\'oppression des hommes.',
+  tur: "Allah'ım, tasadan ve hüzünden, acizlikten ve tembellikten, korkaklıktan ve cimrilikten, borç yükünden ve insanların baskısından sana sığınırım.",
+  ind: "Ya Allah, aku berlindung kepada-Mu dari kesedihan dan kegundahan, kelemahan dan kemalasan, sifat pengecut dan kikir, lilitan utang, dan penindasan manusia.",
   ref: 'البخاري'
 }, {
   ar: 'رَبِّ اشْرَحْ لِي صَدْرِي ، وَيَسِّرْ لِي أَمْرِي ، وَاحْلُلْ عُقْدَةً مِنْ لِسَانِي ، يَفْقَهُوا قَوْلِي',
   fr: 'Mon Seigneur, ouvre-moi la poitrine, facilite ma tâche et délie ma langue afin qu\'ils comprennent mes paroles.',
+  tur: "Rabbim, göğsümü aç, işimi kolaylaştır ve dilimdeki düğümü çöz ki sözümü anlasınlar.",
+  ind: "Ya Tuhanku, lapangkanlah dadaku, mudahkanlah urusanku, dan lepaskanlah kekakuan lidahku agar mereka mengerti perkataanku.",
   ref: 'طه 25-28'
 }, {
   ar: 'اللَّهُمَّ اغْفِرْ لِي ذَنْبِي كُلَّهُ ، دِقَّهُ وَجِلَّهُ ، وَأَوَّلَهُ وَآخِرَهُ ، وَعَلَانِيَتَهُ وَسِرَّهُ',
   fr: 'Ô Allah, pardonne-moi tous mes péchés — petits et grands, premiers et derniers, apparents et cachés.',
+  tur: "Allah'ım, bütün günahlarımı bağışla — küçüğünü de büyüğünü de, ilkini de sonunu da, açığını da gizlisini de.",
+  ind: "Ya Allah, ampunilah semua dosaku — yang kecil dan yang besar, yang pertama dan yang terakhir, yang terang-terangan dan yang tersembunyi.",
   ref: 'مسلم'
 }, {
   ar: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْجَنَّةَ وَأَعُوذُ بِكَ مِنَ النَّارِ',
   fr: 'Ô Allah, je Te demande le Paradis et je cherche refuge auprès de Toi contre le Feu.',
+  tur: "Allah'ım, senden cenneti dilerim ve ateşten sana sığınırım.",
+  ind: "Ya Allah, aku memohon surga kepada-Mu dan berlindung kepada-Mu dari neraka.",
   ref: 'أبو داود'
 }, {
   ar: 'رَبَّنَا لَا تُؤَاخِذْنَا إِنْ نَسِينَا أَوْ أَخْطَأْنَا',
   fr: 'Notre Seigneur, ne nous tiens pas rigueur d\'avoir oublié ou commis une erreur.',
+  tur: "Rabbimiz, unutursak ya da hata edersek bizi sorumlu tutma.",
+  ind: "Ya Tuhan kami, janganlah Engkau hukum kami jika kami lupa atau tersalah.",
   ref: 'البقرة 286'
 }, {
   ar: 'اللَّهُمَّ بَارِكْ لَنَا فِيمَا رَزَقْتَنَا ، وَقِنَا عَذَابَ النَّارِ',
   fr: 'Ô Allah, bénis-nous dans ce que Tu nous as accordé, et préserve-nous du châtiment du Feu.',
+  tur: "Allah'ım, bize verdiğin şeyde bizi bereketlendir ve bizi ateş azabından koru.",
+  ind: "Ya Allah, berkahilah kami dalam apa yang Engkau karuniakan kepada kami, dan lindungilah kami dari azab neraka.",
   ref: 'أحمد'
 }, {
   ar: 'اللَّهُمَّ اهْدِنِي وَسَدِّدْنِي',
   fr: 'Ô Allah, guide-moi et rends mon chemin droit.',
+  tur: "Allah'ım, beni hidayete erdir ve yolumu doğru kıl.",
+  ind: "Ya Allah, tunjukilah aku dan luruskanlah jalanku.",
   ref: 'مسلم'
 }, {
   ar: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْمًا نَافِعًا ، وَرِزْقًا طَيِّبًا ، وَعَمَلًا مُتَقَبَّلًا',
   fr: 'Ô Allah, je Te demande un savoir utile, une subsistance pure, et une œuvre acceptée.',
+  tur: "Allah'ım, senden faydalı bir ilim, temiz bir rızık ve kabul edilmiş bir amel dilerim.",
+  ind: "Ya Allah, aku memohon kepada-Mu ilmu yang bermanfaat, rezeki yang baik, dan amal yang diterima.",
   ref: 'ابن ماجه'
 }, {
   ar: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ زَوَالِ نِعْمَتِكَ ، وَتَحَوُّلِ عَافِيَتِكَ ، وَفُجَاءَةِ نِقْمَتِكَ ، وَجَمِيعِ سَخَطِكَ',
   fr: 'Ô Allah, je cherche refuge auprès de Toi contre la disparition de Ton bienfait, la perte de Ta santé, l\'arrivée soudaine de Ton châtiment et tout Ton courroux.',
+  tur: "Allah'ım, nimetinin yok olmasından, afiyetinin geri çekilmesinden, azabının ansızın gelmesinden ve tüm gazabından sana sığınırım.",
+  ind: "Ya Allah, aku berlindung kepada-Mu dari hilangnya nikmat-Mu, berubahnya kesehatan yang Engkau berikan, datangnya azab-Mu secara tiba-tiba, dan dari segala murka-Mu.",
   ref: 'مسلم'
 }, {
   ar: 'رَبِّ زِدْنِي عِلْمًا',
   fr: 'Mon Seigneur, augmente mes connaissances.',
+  tur: "Rabbim, ilmimi artır.",
+  ind: "Ya Tuhanku, tambahkanlah ilmuku.",
   ref: 'طه 114'
 }, {
   ar: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ مُوجِبَاتِ رَحْمَتِكَ ، وَعَزَائِمَ مَغْفِرَتِكَ ، وَالسَّلَامَةَ مِنْ كُلِّ إِثْمٍ ، وَالْغَنِيمَةَ مِنْ كُلِّ بِرٍّ ، وَالْفَوْزَ بِالْجَنَّةِ ، وَالنَّجَاةَ مِنَ النَّارِ',
   fr: 'Ô Allah, je Te demande tout ce qui suscite Ta miséricorde et Ton pardon, la préservation de tout péché, le profit de toute bonté, le succès au Paradis et le salut du Feu.',
+  tur: "Allah'ım, rahmetini ve mağfiretini gerektiren her şeyi, her günahtan korunmayı, her iyilikten nasibi, cennete ulaşmayı ve ateşten kurtuluşu dilerim.",
+  ind: "Ya Allah, aku memohon kepada-Mu segala yang mendatangkan rahmat dan ampunan-Mu, keselamatan dari setiap dosa, bagian dari setiap kebaikan, keberhasilan meraih surga, dan keselamatan dari neraka.",
   ref: 'الحاكم'
 }, {
   ar: 'اللَّهُمَّ ارْحَمْنِي ، وَاهْدِنِي ، وَعَافِنِي ، وَارْزُقْنِي',
   fr: 'Ô Allah, fais-moi miséricorde, guide-moi, préserve-moi et accorde-moi Ta subsistance.',
+  tur: "Allah'ım, bana merhamet et, beni hidayete erdir, beni koru ve bana rızık ver.",
+  ind: "Ya Allah, rahmatilah aku, tunjukilah aku, lindungilah aku, dan berilah aku rezeki.",
   ref: 'مسلم'
 }, {
   ar: 'حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ',
   fr: 'Allah nous suffit, et quel Excellent Protecteur !',
+  tur: "Allah bize yeter, ne güzel vekildir O!",
+  ind: "Cukuplah Allah bagi kami, dan Dialah sebaik-baik pelindung.",
   ref: 'آل عمران 173'
 }, {
   ar: 'اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا ، وَأَنْتَ تَجْعَلُ الْحَزْنَ إِذَا شِئْتَ سَهْلًا',
   fr: 'Ô Allah, rien n\'est facile sauf ce que Tu rends facile, et Tu peux, si Tu veux, rendre la difficulté facile.',
+  tur: "Allah'ım, Senin kolay kıldığından başka kolay yoktur; dilersen zoru da kolay kılarsın.",
+  ind: "Ya Allah, tiada kemudahan kecuali apa yang Engkau jadikan mudah, dan Engkau dapat menjadikan kesulitan itu mudah jika Engkau menghendaki.",
   ref: 'ابن حبان'
 }, {
   ar: 'اللَّهُمَّ اقْسِمْ لَنَا مِنْ خَشْيَتِكَ مَا يَحُولُ بَيْنَنَا وَبَيْنَ مَعَاصِيكَ',
   fr: 'Ô Allah, accorde-nous de Ta crainte de quoi nous éloigner de Tes désobéissances.',
+  tur: "Allah'ım, bize, günahlardan bizi alıkoyacak kadar korkunu nasip et.",
+  ind: "Ya Allah, anugerahkanlah kepada kami rasa takut kepada-Mu yang menghalangi kami dari berbuat maksiat kepada-Mu.",
   ref: 'الترمذي'
 }, {
   ar: 'اللَّهُمَّ أَصْلِحْ لِي دِينِي الَّذِي هُوَ عِصْمَةُ أَمْرِي ، وَأَصْلِحْ لِي دُنْيَايَ الَّتِي فِيهَا مَعَاشِي ، وَأَصْلِحْ لِي آخِرَتِي الَّتِي إِلَيْهَا مَعَادِي',
   fr: 'Ô Allah, rends meilleure ma religion qui est la sauvegarde de mes affaires, rends meilleure ma vie ici-bas où je vis, et rends meilleur mon au-delà vers lequel je retourne.',
+  tur: "Allah'ım, işlerimin koruyucusu olan dinimi, geçimimin olduğu dünyamı ve dönüş yerim olan ahiretimi düzelt.",
+  ind: "Ya Allah, perbaikilah agamaku yang menjadi penjaga urusanku, perbaikilah duniaku tempat aku hidup, dan perbaikilah akhiratku tempat aku kembali.",
   ref: 'مسلم'
 }, {
   ar: 'رَبَّنَا اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ',
   fr: 'Notre Seigneur, pardonne-moi, ainsi qu\'à mes parents et aux croyants, le jour où aura lieu le jugement.',
+  tur: "Rabbimiz, hesabın görüleceği gün beni, anne babamı ve müminleri bağışla.",
+  ind: "Ya Tuhan kami, ampunilah aku, kedua orang tuaku, dan semua orang beriman pada hari terjadinya perhitungan.",
   ref: 'إبراهيم 41'
 }, {
   ar: 'اللَّهُمَّ آتِ نَفْسِي تَقْوَاهَا ، وَزَكِّهَا أَنْتَ خَيْرُ مَنْ زَكَّاهَا ، أَنْتَ وَلِيُّهَا وَمَوْلَاهَا',
   fr: 'Ô Allah, accorde à mon âme sa piété et purifie-la — Tu es Le Meilleur à la purifier, Tu es son Maître et son Protecteur.',
+  tur: "Allah'ım, nefsime takvasını ver ve onu arındır — onu en iyi arındıran Sensin, onun velisi ve mevlâsı Sensin.",
+  ind: "Ya Allah, anugerahkanlah ketakwaan kepada jiwaku dan sucikanlah ia — Engkau sebaik-baik yang menyucikannya, Engkaulah Penolong dan Pelindungnya.",
   ref: 'مسلم'
 }, {
   ar: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ عِلْمٍ لَا يَنْفَعُ ، وَمِنْ قَلْبٍ لَا يَخْشَعُ ، وَمِنْ نَفْسٍ لَا تَشْبَعُ ، وَمِنْ دَعْوَةٍ لَا يُسْتَجَابُ لَهَا',
   fr: 'Ô Allah, je cherche refuge auprès de Toi contre un savoir inutile, un cœur sans crainte, une âme insatiable et une invocation non exaucée.',
+  tur: "Allah'ım, faydasız ilimden, huşû duymayan kalpten, doymayan nefisten ve kabul edilmeyen duadan sana sığınırım.",
+  ind: "Ya Allah, aku berlindung kepada-Mu dari ilmu yang tidak bermanfaat, hati yang tidak khusyuk, jiwa yang tidak pernah puas, dan doa yang tidak dikabulkan.",
   ref: 'مسلم'
 }, {
   ar: 'رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِنْ ذُرِّيَّتِي ، رَبَّنَا وَتَقَبَّلْ دُعَاءِ',
   fr: 'Mon Seigneur, fais que j\'accomplisse la prière, ainsi qu\'une partie de ma descendance ; ô Notre Seigneur, accepte mon invocation.',
+  tur: "Rabbim, beni ve soyumdan gelenleri namazı dosdoğru kılanlardan eyle; Rabbimiz, duamı kabul buyur.",
+  ind: "Ya Tuhanku, jadikanlah aku dan sebagian keturunanku orang yang mendirikan salat; ya Tuhan kami, kabulkanlah doaku.",
   ref: 'إبراهيم 40'
 }, {
   ar: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ حُبَّكَ ، وَحُبَّ مَنْ يُحِبُّكَ ، وَالْعَمَلَ الَّذِي يُبَلِّغُنِي حُبَّكَ',
   fr: 'Ô Allah, je Te demande Ton amour, l\'amour de ceux qui T\'aiment, et l\'œuvre qui me rapproche de Ton amour.',
+  tur: "Allah'ım, senden sevgini, seni sevenlerin sevgisini ve beni sevgine yaklaştıracak ameli dilerim.",
+  ind: "Ya Allah, aku memohon kepada-Mu cinta-Mu, cinta orang-orang yang mencintai-Mu, dan amal yang mendekatkanku kepada cinta-Mu.",
   ref: 'الترمذي'
 }, {
   ar: 'اللَّهُمَّ إِنَّكَ عَفُوٌّ كَرِيمٌ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي',
   fr: 'Ô Allah, Tu es Pardonneur, Tu aimes pardonner, alors pardonne-moi.',
+  tur: "Allah'ım, Sen affedicisin, affetmeyi seversin; beni de affet.",
+  ind: "Ya Allah, Engkau Maha Pemaaf dan menyukai maaf, maka maafkanlah aku.",
   ref: 'الترمذي'
 }, {
   ar: 'رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا',
   fr: 'Notre Seigneur, accorde-nous, en nos épouses et nos descendants, la joie des yeux, et fais de nous des guides pour les pieux.',
+  tur: "Rabbimiz, bize eşlerimizden ve çocuklarımızdan gözümüze ferahlık ver ve bizi takva sahiplerine önder kıl.",
+  ind: "Ya Tuhan kami, anugerahkanlah kepada kami pasangan dan keturunan sebagai penyejuk mata kami, dan jadikanlah kami pemimpin bagi orang-orang yang bertakwa.",
   ref: 'الفرقان 74'
 }, {
   ar: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى ، وَالسَّدَادَ',
   fr: 'Ô Allah, je Te demande la guidance et la droiture.',
+  tur: "Allah'ım, senden hidayet ve istikamet dilerim.",
+  ind: "Ya Allah, aku memohon kepada-Mu petunjuk dan keteguhan di jalan yang lurus.",
   ref: 'مسلم'
 }, {
   ar: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْفِتَنِ ، مَا ظَهَرَ مِنْهَا وَمَا بَطَنَ',
   fr: 'Ô Allah, je cherche refuge auprès de Toi contre les épreuves, apparentes et cachées.',
+  tur: "Allah'ım, açık ve gizli fitnelerden sana sığınırım.",
+  ind: "Ya Allah, aku berlindung kepada-Mu dari fitnah, yang tampak maupun yang tersembunyi.",
   ref: 'مسلم'
 }, {
   ar: 'اللَّهُمَّ يَا مُقَلِّبَ الْقُلُوبِ ثَبِّتْ قَلْبِي عَلَى دِينِكَ',
   fr: 'Ô Allah, Toi qui retournes les cœurs, raffermis mon cœur sur Ta religion.',
+  tur: "Ey kalpleri evirip çeviren Allah'ım, kalbimi dinin üzere sabit kıl.",
+  ind: "Wahai Dzat yang membolak-balikkan hati, teguhkanlah hatiku di atas agama-Mu.",
   ref: 'الترمذي'
 }, {
   ar: 'اللَّهُمَّ أَلْهِمْنِي رُشْدِي ، وَأَعِذْنِي مِنْ شَرِّ نَفْسِي',
   fr: 'Ô Allah, inspire-moi la droiture et préserve-moi du mal de moi-même.',
+  tur: "Allah'ım, bana doğruyu ilham et ve beni nefsimin şerrinden koru.",
+  ind: "Ya Allah, ilhamkanlah kepadaku kebenaran dan lindungilah aku dari keburukan diriku sendiri.",
   ref: 'الترمذي'
 }];
 
@@ -15130,7 +15456,7 @@ window.getDuaaOccasion = function (date) {
   const TAKBIR = {
     ar: 'اللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، لَا إِلَٰهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ، اللَّهُ أَكْبَرُ، وَلِلَّهِ الْحَمْدُ',
     fr: 'Allah est le plus grand, Allah est le plus grand. Nulle divinité sauf Allah. Allah est le plus grand, Allah est le plus grand, et à Allah la louange.',
-    en: 'Allah is the greatest, Allah is the greatest. There is no god but Allah. Allah is the greatest, Allah is the greatest, and to Allah be praise.',
+    en: 'Allah is the greatest, Allah is the greatest. There is no god but Allah. Allah is the greatest, Allah is the greatest, and to Allah be praise.', tur: "Allah en büyüktür, Allah en büyüktür. Allah'tan başka ilah yoktur. Allah en büyüktür, Allah en büyüktür, hamd Allah'a mahsustur.", ind: "Allah Mahabesar, Allah Mahabesar. Tiada tuhan selain Allah. Allah Mahabesar, Allah Mahabesar, dan segala puji bagi Allah.",
     ref: 'تَكْبِيرُ العِيد'
   };
   const O = {
@@ -15140,12 +15466,12 @@ window.getDuaaOccasion = function (date) {
       banner: {
         ar: 'يَوْمُ عَرَفَة',
         fr: 'Jour de Arafat',
-        en: 'Day of Arafah'
+        en: 'Day of Arafah', tur: "Arefe Günü", ind: "Hari Arafah"
       },
       duaa: {
         ar: 'لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ',
         fr: 'Nulle divinité sauf Allah, Seul, sans associé. À Lui la royauté, à Lui la louange, et Il est Puissant sur toute chose.',
-        en: 'There is no god but Allah alone, without partner. His is the dominion and His the praise, and He is able to do all things.',
+        en: 'There is no god but Allah alone, without partner. His is the dominion and His the praise, and He is able to do all things.', tur: "Allah'tan başka ilah yoktur; tektir, ortağı yoktur. Mülk O'nundur, hamd O'nundur ve O her şeye gücü yetendir.", ind: "Tiada tuhan selain Allah semata, tiada sekutu bagi-Nya. Milik-Nya kerajaan dan milik-Nya segala puji, dan Dia Mahakuasa atas segala sesuatu.",
         ref: 'الترمذي'
       }
     },
@@ -15155,7 +15481,7 @@ window.getDuaaOccasion = function (date) {
       banner: {
         ar: 'عِيدُ الأَضْحَىٰ مُبَارَك',
         fr: 'Aïd al-Adha Moubarak',
-        en: 'Eid al-Adha Mubarak'
+        en: 'Eid al-Adha Mubarak', tur: "Kurban Bayramınız Mübarek Olsun", ind: "Selamat Idul Adha"
       },
       duaa: TAKBIR
     },
@@ -15165,12 +15491,12 @@ window.getDuaaOccasion = function (date) {
       banner: {
         ar: 'عَشْرُ ذِي الحِجَّة',
         fr: 'Les 10 jours de Dhul-Hijja',
-        en: 'First 10 days of Dhul-Hijjah'
+        en: 'First 10 days of Dhul-Hijjah', tur: "Zilhicce'nin ilk 10 günü", ind: "10 hari pertama Dzulhijjah"
       },
       duaa: {
         ar: 'سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَلَا إِلَٰهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ',
         fr: 'Gloire à Allah, louange à Allah, nulle divinité sauf Allah, et Allah est le plus grand.',
-        en: 'Glory be to Allah, praise be to Allah, there is no god but Allah, and Allah is the greatest.',
+        en: 'Glory be to Allah, praise be to Allah, there is no god but Allah, and Allah is the greatest.', tur: "Allah'ı tesbih ederim, hamd Allah'a mahsustur, Allah'tan başka ilah yoktur ve Allah en büyüktür.", ind: "Maha Suci Allah, segala puji bagi Allah, tiada tuhan selain Allah, dan Allah Mahabesar.",
         ref: 'ذِكْرُ العَشْر'
       }
     },
@@ -15180,7 +15506,7 @@ window.getDuaaOccasion = function (date) {
       banner: {
         ar: 'عِيدُ الفِطْرِ مُبَارَك',
         fr: 'Aïd al-Fitr Moubarak',
-        en: 'Eid al-Fitr Mubarak'
+        en: 'Eid al-Fitr Mubarak', tur: "Ramazan Bayramınız Mübarek Olsun", ind: "Selamat Idul Fitri"
       },
       duaa: TAKBIR
     },
@@ -15190,12 +15516,12 @@ window.getDuaaOccasion = function (date) {
       banner: {
         ar: 'رَمَضَانُ مُبَارَك',
         fr: 'Ramadan Moubarak',
-        en: 'Ramadan Mubarak'
+        en: 'Ramadan Mubarak', tur: "Ramazanınız Mübarek Olsun", ind: "Selamat Ramadhan"
       },
       duaa: {
         ar: 'اللَّهُمَّ إِنَّكَ عَفُوٌّ تُحِبُّ الْعَفْوَ فَاعْفُ عَنِّي',
         fr: 'Ô Allah, Tu es Pardonneur et Tu aimes le pardon, pardonne-moi donc.',
-        en: 'O Allah, You are Most Forgiving and love forgiveness, so forgive me.',
+        en: 'O Allah, You are Most Forgiving and love forgiveness, so forgive me.', tur: "Allah'ım, Sen çok bağışlayansın, affı seversin; beni de affet.", ind: "Ya Allah, Engkau Maha Pemaaf dan menyukai maaf, maka maafkanlah aku.",
         ref: 'الترمذي'
       }
     },
@@ -15205,12 +15531,12 @@ window.getDuaaOccasion = function (date) {
       banner: {
         ar: 'يَوْمُ عَاشُورَاء',
         fr: 'Jour de Achoura',
-        en: 'Day of Ashura'
+        en: 'Day of Ashura', tur: "Aşure Günü", ind: "Hari Asyura"
       },
       duaa: {
         ar: 'رَبَّنَا تَقَبَّلْ مِنَّا إِنَّكَ أَنْتَ السَّمِيعُ الْعَلِيمُ',
         fr: 'Notre Seigneur, accepte de nous. Tu es l’Audient, l’Omniscient.',
-        en: 'Our Lord, accept from us. You are the All-Hearing, the All-Knowing.',
+        en: 'Our Lord, accept from us. You are the All-Hearing, the All-Knowing.', tur: "Rabbimiz, bizden kabul buyur. Şüphesiz Sen işitensin, bilensin.", ind: "Ya Tuhan kami, terimalah dari kami. Sungguh Engkaulah Yang Maha Mendengar, Maha Mengetahui.",
         ref: 'البقرة ١٢٧'
       }
     },
@@ -15220,12 +15546,12 @@ window.getDuaaOccasion = function (date) {
       banner: {
         ar: 'عَامٌ هِجْرِيٌّ جَدِيد',
         fr: 'Bonne année hégirienne',
-        en: 'Happy Hijri New Year'
+        en: 'Happy Hijri New Year', tur: "Hicri Yılbaşınız Kutlu Olsun", ind: "Selamat Tahun Baru Hijriah"
       },
       duaa: {
         ar: 'اللَّهُمَّ أَهِلَّهُ عَلَيْنَا بِالْيُمْنِ وَالْإِيمَانِ، وَالسَّلَامَةِ وَالْإِسْلَامِ، رَبِّي وَرَبُّكَ اللَّهُ',
         fr: 'Ô Allah, fais lever ce mois sur nous avec la bénédiction, la foi, la sécurité et l’Islam. Mon Seigneur et ton Seigneur est Allah.',
-        en: 'O Allah, bring it upon us with blessing, faith, safety and Islam. My Lord and your Lord is Allah.',
+        en: 'O Allah, bring it upon us with blessing, faith, safety and Islam. My Lord and your Lord is Allah.', tur: "Allah'ım, bu yeni yılı bize bereket, iman, güven ve İslam ile getir. Benim de Rabbim, senin de Rabbin Allah'tır.", ind: "Ya Allah, datangkanlah bulan ini kepada kami dengan keberkahan, iman, keamanan, dan Islam. Tuhanku dan Tuhanmu adalah Allah.",
         ref: 'الترمذي'
       }
     },
@@ -15235,12 +15561,12 @@ window.getDuaaOccasion = function (date) {
       banner: {
         ar: 'يَوْمُ الجُمُعَة',
         fr: 'Vendredi béni',
-        en: 'Blessed Friday'
+        en: 'Blessed Friday', tur: "Hayırlı Cumalar", ind: "Jumat Berkah"
       },
       duaa: {
         ar: 'اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَىٰ نَبِيِّنَا مُحَمَّدٍ',
         fr: 'Ô Allah, prie et accorde le salut sur notre Prophète Muhammad ﷺ.',
-        en: 'O Allah, send blessings and peace upon our Prophet Muhammad ﷺ.',
+        en: 'O Allah, send blessings and peace upon our Prophet Muhammad ﷺ.', tur: "Allah'ım, Peygamberimiz Muhammed'e salât ve selâm eyle ﷺ.", ind: "Ya Allah, limpahkanlah shalawat dan salam kepada Nabi kami Muhammad ﷺ.",
         ref: 'فَضْلُ الجُمُعَة'
       }
     }
@@ -15277,7 +15603,7 @@ function DuaaScreen({
   const occasion = React.useMemo(() => window.getDuaaOccasion ? window.getDuaaOccasion() : null, []);
   const duaa = occasion && occasion.duaa ? occasion.duaa : window.DUAA_LIST[duaaIdx];
   const now = new Date();
-  const dateStr = now.toLocaleDateString(lang === 'ar' ? 'ar-u-nu-latn' : lang === 'fr' ? 'fr-FR' : 'en-US', {
+  const dateStr = now.toLocaleDateString(lang === 'ar' ? 'ar-u-nu-latn' : lang === 'fr' ? 'fr-FR' : lang === 'tur' ? 'tr-TR' : lang === 'ind' ? 'id-ID' : 'en-US', {
     weekday: 'long',
     day: 'numeric',
     month: 'long'
@@ -15294,6 +15620,16 @@ function DuaaScreen({
       sub: 'One invocation a day',
       share: 'Share',
       meaning: 'Meaning'
+    }, tur: {
+      eyebrow: "GÜNÜN DUASI",
+      sub: "Günde bir dua",
+      share: "Paylaş",
+      meaning: "Anlamı"
+    }, ind: {
+      eyebrow: "DOA HARI INI",
+      sub: "Satu doa setiap hari",
+      share: "Bagikan",
+      meaning: "Arti"
     },
     ar: {
       eyebrow: 'دُعَاء اليَوم',
@@ -15308,12 +15644,12 @@ function DuaaScreen({
     if (hr >= 3 && hr < 13) return {
       ar: 'صَبَاحُ الخَيْر',
       fr: 'Bonjour',
-      en: 'Good morning'
+      en: 'Good morning', tur: "Günaydın", ind: "Selamat pagi"
     };
     return {
       ar: 'مَسَاءُ الخَيْر',
       fr: 'Bonsoir',
-      en: 'Good evening'
+      en: 'Good evening', tur: "İyi akşamlar", ind: "Selamat petang"
     };
   }, []);
   const [shareToast, setShareToast] = React.useState('');
@@ -15323,8 +15659,8 @@ function DuaaScreen({
       navigator.vibrate(10);
     } catch (e2) {}
     const text = `${duaa.ar}\n\n${duaa[lang] || duaa.fr}\n— آلَاء\n\n📲 حمّل تطبيق آلاء:\nhttps://www.lestyle.be/alaeApp`;
-    const okMsg = isAr ? 'تمّت المشاركة' : lang === 'fr' ? 'Partagé' : 'Shared';
-    const copyMsg = isAr ? 'تمّ نسخ الدعاء' : lang === 'fr' ? "Dou'a copié" : 'Copied';
+    const okMsg = isAr ? 'تمّت المشاركة' : lang === 'fr' ? 'Partagé' : lang === 'tur' ? "Paylaşıldı" : lang === 'ind' ? "Dibagikan" : 'Shared';
+    const copyMsg = isAr ? 'تمّ نسخ الدعاء' : lang === 'fr' ? "Dou'a copié" : lang === 'tur' ? "Kopyalandı" : lang === 'ind' ? "Disalin" : 'Copied';
     const toast = m => {
       setShareToast(m);
       setTimeout(() => setShareToast(''), 1800);
@@ -15793,105 +16129,105 @@ window.DuaaScreen = DuaaScreen;
 </script><script>
 /* أسماء الله الحسنى — 99 noms, translittération + sens (ar/fr/en/nl) */
 window.ASMA_NAMES = [
-{n:1,ar:"الرَّحْمَن",tr:"Ar-Rahman",mar:"الرحمن الذي وسعت رحمته كل شيء",fr:"Le Tout Miséricordieux",en:"The Most Compassionate",duaaFr:"Ya Rahman, fais-moi miséricorde et enveloppe ma famille de Ta grâce.",duaaAr:"يا رحمن، ارحمني برحمتك الواسعة في الدنيا والآخرة."},
-{n:2,ar:"الرَّحِيم",tr:"Ar-Rahim",mar:"الرحيم بعباده المؤمنين",fr:"Le Très Miséricordieux",en:"The Most Merciful",duaaFr:"Ya Rahim, accorde-moi Ta miséricorde ici-bas et dans l'au-delà.",duaaAr:"يا رحيم، ارحم ضعفي واغفر ذنبي وارزقني رحمتك."},
-{n:3,ar:"الْمَلِك",tr:"Al-Malik",mar:"المالك لكل شيء المتصرف فيه",fr:"Le Souverain",en:"The King, The Sovereign",duaaFr:"Ya Malik, purifie mon cœur et aide-moi à soumettre ma vie à Ton ordre.",duaaAr:"يا ملك، أصلح لي شأني كله، وتولَّ أمري بما تحب وترضى."},
-{n:4,ar:"الْقُدُّوس",tr:"Al-Quddus",mar:"المنزّه عن كل نقص",fr:"Le Pur, le Saint",en:"The Most Holy",duaaFr:"Ya Qouddous, purifie mon âme de mes péchés et de mes mauvais penchants.",duaaAr:"يا قدوس، طهّر قلبي من الذنوب والهموم وكل ما لا يرضيك."},
-{n:5,ar:"السَّلَام",tr:"As-Salam",mar:"السالم من كل عيب، مصدر السلام",fr:"La Paix, le Salut",en:"The Source of Peace",duaaFr:"Ya Salam, accorde la paix à mon esprit, à mon foyer et préserve-moi de tout mal.",duaaAr:"يا سلام، أنزل السكينة والسلام على قلبي وحياتي."},
-{n:6,ar:"الْمُؤْمِن",tr:"Al-Mu'min",mar:"المصدّق لرسله، مانح الأمان",fr:"Le Rassurant, le Fidèle",en:"The Granter of Security",duaaFr:"Ya Mo'min, accorde-moi la foi véritable et rassure mon cœur face à mes peurs.",duaaAr:"يا مؤمن، أمِّن قلبي من الخوف، وارزقني الأمن والإيمان."},
-{n:7,ar:"الْمُهَيْمِن",tr:"Al-Muhaymin",mar:"الرقيب الحافظ على خلقه",fr:"Le Prépondérant, le Gardien",en:"The Guardian, The Overseer",duaaFr:"Ya Mouhaymin, veille sur moi et protège-moi de ce qui m'est caché.",duaaAr:"يا مهيمن، احفظني بعنايتك من كل سوء وشر."},
-{n:8,ar:"الْعَزِيز",tr:"Al-'Aziz",mar:"العزيز الذي لا يُغلَب",fr:"Le Tout-Puissant",en:"The Almighty",duaaFr:"Ya 'Aziz, accorde-moi la force et la dignité face aux épreuves.",duaaAr:"يا عزيز، أعزني بطاعتك ولا تذلني بمعصيتك."},
-{n:9,ar:"الْجَبَّار",tr:"Al-Jabbar",mar:"الجبار الذي تنفذ مشيئته",fr:"Le Contraignant, le Réparateur",en:"The Compeller",duaaFr:"Ya Jabbar, répare ce qui est brisé dans ma vie et soigne mes blessures.",duaaAr:"يا جبار، اجبر كسري، واشفِ قلبي، وأصلح حالي."},
-{n:10,ar:"الْمُتَكَبِّر",tr:"Al-Mutakabbir",mar:"المتكبر المتعالي عن صفات الخلق",fr:"Le Suprême, le Majestueux",en:"The Supreme, The Majestic",duaaFr:"Ya Moutakabbir, éloigne de moi l'orgueil et préserve-moi de l'injustice.",duaaAr:"يا متكبر، طهّر قلبي من الكبر واجعلني متواضعًا لك."},
-{n:11,ar:"الْخَالِق",tr:"Al-Khaliq",mar:"الخالق الموجِد لكل شيء من عدم",fr:"Le Créateur",en:"The Creator",duaaFr:"Ya Khaliq, façonne en moi un comportement noble et accorde-moi le bien.",duaaAr:"يا خالق، أصلح خلقي وخُلقي، وبارك لي في حياتي."},
-{n:12,ar:"الْبَارِئ",tr:"Al-Bari'",mar:"البارئ المبدع للخلق على غير مثال",fr:"Le Producteur, le Novateur",en:"The Originator, The Maker",duaaFr:"Ya Bari', harmonise ma vie et facilite-moi chaque entreprise.",duaaAr:"يا بارئ، أبرئ قلبي من كل مرض، وصدري من كل هم."},
-{n:13,ar:"الْمُصَوِّر",tr:"Al-Musawwir",mar:"المصوّر الذي أعطى كل شيء صورته",fr:"Le Formateur",en:"The Fashioner of Forms",duaaFr:"Ya Moussawwir, embellit mon caractère comme Tu as embelli ma création.",duaaAr:"يا مصور، حسّن خُلقي كما حسّنت خَلقي."},
-{n:14,ar:"الْغَفَّار",tr:"Al-Ghaffar",mar:"الغفار الكثير المغفرة",fr:"Le Grand Pardonneur",en:"The All-Forgiving",duaaFr:"Ya Ghaffar, pardonne mes péchés passés, présents et futurs.",duaaAr:"يا غفار، اغفر لي ذنوبي كلها سرّها وعلانيتها."},
-{n:15,ar:"الْقَهَّار",tr:"Al-Qahhar",mar:"القهار الغالب لكل شيء",fr:"Le Dominateur suprême",en:"The Subduer",duaaFr:"Ya Qahhar, soumets mes passions et protège-moi de l'oppression.",duaaAr:"يا قهار، اقهر عني شر نفسي وشر كل من أراد بي سوءًا."},
-{n:16,ar:"الْوَهَّاب",tr:"Al-Wahhab",mar:"الوهاب الكثير العطاء بلا مقابل",fr:"Le Donateur suprême",en:"The Bestower",duaaFr:"Ya Wahhab, accorde-moi Tes bienfaits sans compter.",duaaAr:"يا وهّاب، هب لي من فضلك رزقًا طيبًا وفرحًا لا ينقطع."},
-{n:17,ar:"الرَّزَّاق",tr:"Ar-Razzaq",mar:"الرزاق الذي يرزق جميع خلقه",fr:"Le Pourvoyeur",en:"The Provider",duaaFr:"Ya Razzaq, bénis ma subsistance et accorde-moi un gain licite.",duaaAr:"يا رزاق، ارزقني رزقًا حلالًا واسعًا مباركًا فيه."},
-{n:18,ar:"الْفَتَّاح",tr:"Al-Fattah",mar:"الفتاح الذي يفتح أبواب الرحمة والرزق",fr:"Celui qui ouvre (les portes)",en:"The Opener, The Judge",duaaFr:"Ya Fattah, ouvre-moi les portes de la réussite et de Ta miséricorde.",duaaAr:"يا فتاح، افتح لي أبواب الخير والرزق والفرج."},
-{n:19,ar:"الْعَلِيم",tr:"Al-'Alim",mar:"العليم بكل شيء ظاهرًا وباطنًا",fr:"L'Omniscient",en:"The All-Knowing",duaaFr:"Ya 'Alim, augmente ma science et accorde-moi la sagesse.",duaaAr:"يا عليم، علّمني ما ينفعني وانفعني بما علمتني."},
-{n:20,ar:"الْقَابِض",tr:"Al-Qabid",mar:"القابض الذي يقبض الرزق والأرواح بحكمته",fr:"Celui qui restreint",en:"The Withholder",duaaFr:"Ya Qabid, préserve-moi d'éparpiller mon énergie dans le faux.",duaaAr:"يا قابض، اقبض عني كل شر وضر، وثبّت قلبي على طاعتك."},
-{n:21,ar:"الْبَاسِط",tr:"Al-Basit",mar:"الباسط الذي يبسط الرزق لمن يشاء",fr:"Celui qui étend (les biens)",en:"The Extender",duaaFr:"Ya Basit, élargis ma subsistance et épanouis ma poitrine.",duaaAr:"يا باسط، ابسط عليّ من رحمتك ورزقك وفضلك."},
-{n:22,ar:"الْخَافِض",tr:"Al-Khafid",mar:"الخافض للمتكبرين والظالمين",fr:"Celui qui abaisse",en:"The Abaser",duaaFr:"Ya Khafidh, abaisse l'orgueil dans mon cœur et détruis le mal.",duaaAr:"يا خافض، اخفض عني كل بلاء، واحفظني من أسباب الهلاك."},
-{n:23,ar:"الرَّافِع",tr:"Ar-Rafi'",mar:"الرافع لأوليائه بالطاعة",fr:"Celui qui élève",en:"The Exalter",duaaFr:"Ya Rafi', élève ma station dans cette vie et au Paradis.",duaaAr:"يا رافع، ارفع قدري بالإيمان والعمل الصالح."},
-{n:24,ar:"الْمُعِز",tr:"Al-Mu'izz",mar:"المعز الذي يمنح العزة لمن يشاء",fr:"Celui qui honore",en:"The Giver of Honor",duaaFr:"Ya Mo'izz, accorde-moi l'honneur par l'obéissance à Tes ordres.",duaaAr:"يا معز، أعزني بطاعتك وكرامتك، ولا تجعل عزتي في غيرك."},
-{n:25,ar:"الْمُذِل",tr:"Al-Mudhill",mar:"المذل الذي يذل من يشاء بعدله",fr:"Celui qui humilie",en:"The Giver of Dishonor",duaaFr:"Ya Moudhill, préserve-moi d'être humilié par mes propres fautes.",duaaAr:"يا مذل، أذلّ عني الباطل والشر، ولا تجعلني من أهل المعصية."},
-{n:26,ar:"السَّمِيع",tr:"As-Sami'",mar:"السميع الذي يسمع كل شيء",fr:"Celui qui entend tout",en:"The All-Hearing",duaaFr:"Ya Sami', écoute mes invocations et réponds à mes prières.",duaaAr:"يا سميع، اسمع دعائي واستجب لي، فإنك تسمع كل شيء."},
-{n:27,ar:"الْبَصِير",tr:"Al-Basir",mar:"البصير الذي يرى كل شيء",fr:"Celui qui voit tout",en:"The All-Seeing",duaaFr:"Ya Basir, guide mes yeux vers le bien et protège-moi de l'aveuglement.",duaaAr:"يا بصير، أبصرني عيوبي وأصلح قلبي وأعمالي."},
-{n:28,ar:"الْحَكَم",tr:"Al-Hakam",mar:"الحكم العدل الذي يفصل بين خلقه",fr:"Le Juge suprême",en:"The Judge",duaaFr:"Ya Hakam, juge entre nous avec justice et guide-moi vers la vérité.",duaaAr:"يا حكم، احكم لي بالخير، وارضّني بقضائك وقدرك."},
-{n:29,ar:"الْعَدْل",tr:"Al-'Adl",mar:"العدل الذي لا يجور",fr:"Le Juste",en:"The Utterly Just",duaaFr:"Ya 'Adl, aide-moi à être juste envers moi-même et envers autrui.",duaaAr:"يا عدل، اجعلني عادلًا في قولي وفعلي، ولا تجعلني أظلم أحدًا."},
-{n:30,ar:"اللَّطِيف",tr:"Al-Latif",mar:"اللطيف بعباده الرفيق بهم",fr:"Le Subtil, le Bienveillant",en:"The Subtle, The Gentle",duaaFr:"Ya Latif, sois bienveillant envers moi dans les moments difficiles.",duaaAr:"يا لطيف، الطف بي فيما جرت به المقادير، واختر لي الخير حيث كان."},
-{n:31,ar:"الْخَبِير",tr:"Al-Khabir",mar:"الخبير العالم بحقائق الأمور",fr:"Le Parfaitement Informé",en:"The All-Aware",duaaFr:"Ya Khabir, purifie mes intentions secrètes.",duaaAr:"يا خبير، أنت أعلم بحالي، فدبّر لي فإني لا أحسن التدبير."},
-{n:32,ar:"الْحَلِيم",tr:"Al-Halim",mar:"الحليم الذي لا يعجل بالعقوبة",fr:"Le Longanime, le Clément",en:"The Forbearing",duaaFr:"Ya Halim, ne te presse pas de me punir et accorde-moi la patience.",duaaAr:"يا حليم، احلم عن تقصيري، وارزقني حلمًا وصبرًا جميلًا."},
-{n:33,ar:"الْعَظِيم",tr:"Al-'Azim",mar:"العظيم الذي لا شيء أعظم منه",fr:"L'Immense, le Magnifique",en:"The Magnificent",duaaFr:"Ya 'Azim, mets dans mon cœur le respect profond de Ta grandeur.",duaaAr:"يا عظيم، عظّم الإيمان في قلبي، ولا تجعل الدنيا أكبر همي."},
-{n:34,ar:"الْغَفُور",tr:"Al-Ghafur",mar:"الغفور الساتر لذنوب عباده",fr:"Le Très Pardonnant",en:"The Much-Forgiving",duaaFr:"Ya Ghafour, efface mes fautes et couvre mes défauts.",duaaAr:"يا غفور، اغفر لي وارحمني وتجاوز عن سيئاتي."},
-{n:35,ar:"الشَّكُور",tr:"Ash-Shakur",mar:"الشكور الذي يجازي على القليل بالكثير",fr:"Le Très Reconnaissant",en:"The Most Appreciative",duaaFr:"Ya Shakour, accepte mes petites actions et décuple leurs récompenses.",duaaAr:"يا شكور، أعنّي على شكرك وذكرك وحسن عبادتك."},
-{n:36,ar:"الْعَلِي",tr:"Al-'Ali",mar:"العلي الذي علا على كل شيء",fr:"Le Très Haut",en:"The Most High",duaaFr:"Ya 'Aliyy, élève mon esprit au-dessus des vanités terrestres.",duaaAr:"يا علي، ارفع همتي ودرجتي، واجعلني من عبادك الصالحين."},
-{n:37,ar:"الْكَبِير",tr:"Al-Kabir",mar:"الكبير الذي كل شيء دونه",fr:"Le Très Grand",en:"The Most Great",duaaFr:"Ya Kabir, rappelle-moi Ta grandeur face à tous mes soucis.",duaaAr:"يا كبير، كبّر في قلبي محبتك وتعظيمك، وصغّر في عيني الدنيا."},
-{n:38,ar:"الْحَفِيظ",tr:"Al-Hafiz",mar:"الحفيظ الحافظ لكل شيء",fr:"Le Gardien vigilant",en:"The Preserver",duaaFr:"Ya Hafiz, protège-moi, mes proches et ma foi.",duaaAr:"يا حفيظ، احفظني وأهلي ومن أحب من كل سوء."},
-{n:39,ar:"الْمُقِيت",tr:"Al-Muqit",mar:"المقيت الذي يقيت الخلق ويقدر أقواتهم",fr:"Le Nourricier",en:"The Sustainer",duaaFr:"Ya Mouqit, alimente mon corps et mon âme de Ta lumière.",duaaAr:"يا مقيت، اكفني ما أهمني، وارزقني القوة والصبر."},
-{n:40,ar:"الْحَسِيب",tr:"Al-Hasib",mar:"الحسيب الكافي لعباده المحاسب لهم",fr:"Celui qui suffit, qui règle les comptes",en:"The Reckoner",duaaFr:"Ya Hasib, facilite mon jugement au Jour Dernier.",duaaAr:"يا حسيب، كن حسبي في كل أمر، واكفني ما أهمني."},
-{n:41,ar:"الْجَلِيل",tr:"Al-Jalil",mar:"الجليل ذو الجلال والعظمة",fr:"Le Majestueux",en:"The Majestic",duaaFr:"Ya Jalil, remplis mon âme d'émerveillement face à Ta majesté.",duaaAr:"يا جليل، ارزقني إجلالك وتعظيمك والخشوع بين يديك."},
-{n:42,ar:"الْكَرِيم",tr:"Al-Karim",mar:"الكريم الكثير الخير والعطاء",fr:"Le Généreux, le Noble",en:"The Most Generous",duaaFr:"Ya Karim, traite-moi selon Ta générosité et non selon mes mérites.",duaaAr:"يا كريم، أكرمني بفضلك، واغمرني بجودك ورحمتك."},
-{n:43,ar:"الرَّقِيب",tr:"Ar-Raqib",mar:"الرقيب المراقب لكل شيء",fr:"Le Vigilant",en:"The Watchful",duaaFr:"Ya Raqib, rappelle-moi que Tu me vois à chaque instant.",duaaAr:"يا رقيب، اجعلني أراقبك في السر والعلن."},
-{n:44,ar:"الْمُجِيب",tr:"Al-Mujib",mar:"المجيب الذي يجيب دعاء عباده",fr:"Celui qui exauce",en:"The Responsive",duaaFr:"Ya Moujib, exauce mes du'as et soulage mon cœur.",duaaAr:"يا مجيب، أجب دعائي وحقق لي ما فيه الخير."},
-{n:45,ar:"الْوَاسِع",tr:"Al-Wasi'",mar:"الواسع الذي وسع كل شيء علمًا ورحمة",fr:"L'Immensément Vaste",en:"The All-Encompassing",duaaFr:"Ya Wasi', élargis mon horizon et bénis mes ressources.",duaaAr:"يا واسع، وسّع عليّ في رزقي وصدري ورحمتي."},
-{n:46,ar:"الْحَكِيم",tr:"Al-Hakim",mar:"الحكيم في خلقه وأمره",fr:"Le Sage",en:"The All-Wise",duaaFr:"Ya Hakim, accorde-moi la sagesse de comprendre Tes décrets.",duaaAr:"يا حكيم، اختر لي ولا تخيرني، ودبّر لي فإنك أعلم بما يصلحني."},
-{n:47,ar:"الْوَدُود",tr:"Al-Wadud",mar:"الودود المحب لأوليائه",fr:"Le Tout Aimant",en:"The Most Loving",duaaFr:"Ya Wadoud, mets Ton amour dans mon cœur et fais que les pieux m'aiment.",duaaAr:"يا ودود، ارزقني حبك وحب من يحبك، واجعلني محبوبًا عندك."},
-{n:48,ar:"الْمَجِيد",tr:"Al-Majid",mar:"المجيد العظيم في ذاته وصفاته",fr:"Le Tout Glorieux",en:"The Most Glorious",duaaFr:"Ya Majid, glorifié sois-Tu, accorde-moi une fin honorable.",duaaAr:"يا مجيد، اجعل لي نصيبًا من كرمك ومجدك وفضلك."},
-{n:49,ar:"الْبَاعِث",tr:"Al-Ba'ith",mar:"الباعث الذي يبعث الخلق يوم القيامة",fr:"Celui qui ressuscite",en:"The Resurrector",duaaFr:"Ya Ba'ith, ressuscite mon cœur par la foi et la lumière.",duaaAr:"يا باعث، ابعث في قلبي الهمة والإيمان، وأحيِ قلبي بطاعتك."},
-{n:50,ar:"الشَّهِيد",tr:"Ash-Shahid",mar:"الشهيد الحاضر الذي لا يغيب عنه شيء",fr:"Le Témoin",en:"The Witness",duaaFr:"Ya Shahid, fais que mes paroles et mes actes témoignent en ma faveur.",duaaAr:"يا شهيد، اشهد لي بالإيمان والتوحيد والعمل الصالح."},
-{n:51,ar:"الْحَق",tr:"Al-Haqq",mar:"الحق الثابت الذي لا يتغير",fr:"La Vérité, le Vrai",en:"The Absolute Truth",duaaFr:"Ya Haqq, fixe-moi sur le chemin de la vérité.",duaaAr:"يا حق، ثبّتني على الحق ولا تجعلني من أهل الباطل."},
-{n:52,ar:"الْوَكِيل",tr:"Al-Wakil",mar:"الوكيل الكفيل بأرزاق العباد",fr:"Le Garant, le Protecteur",en:"The Trustee, The Disposer",duaaFr:"Ya Wakil, je place toute ma confiance en Toi pour mes affaires.",duaaAr:"يا وكيل، توكلت عليك، فاكفني ما أهمني ودبّر لي أمري."},
-{n:53,ar:"الْقَوِي",tr:"Al-Qawiyy",mar:"القوي الكامل القدرة",fr:"Le Très Fort",en:"The All-Strong",duaaFr:"Ya Qawiyy, accorde-moi la force physique et spirituelle.",duaaAr:"يا قوي، قوّني على طاعتك وعلى مواجهة كل ما يبعدني عنك."},
-{n:54,ar:"الْمَتِين",tr:"Al-Matin",mar:"المتين الشديد القوة الذي لا يلحقه تعب",fr:"L'Inébranlable, le Ferme",en:"The Firm, The Steadfast",duaaFr:"Ya Matin, raffermis ma foi face aux tentations.",duaaAr:"يا متين، ثبّت قلبي على دينك ولا تزلّه بعد إذ هديتني."},
-{n:55,ar:"الْوَلِي",tr:"Al-Waliyy",mar:"الولي الناصر لعباده المؤمنين",fr:"Le Protecteur, l'Allié",en:"The Protecting Friend",duaaFr:"Ya Waliyy, sois mon allié et mon guide dans la vie.",duaaAr:"يا ولي، تولّني برعايتك، وكن معي في كل خطوة."},
-{n:56,ar:"الْحَمِيد",tr:"Al-Hamid",mar:"الحميد المحمود في كل حال",fr:"Le Digne de louange",en:"The Praiseworthy",duaaFr:"Ya Hamid, fais que ma langue Te loue en toute circonstance.",duaaAr:"يا حميد، اجعلني من الحامدين لك في السراء والضراء."},
-{n:57,ar:"الْمُحْصِي",tr:"Al-Muhsi",mar:"المحصي الذي أحصى كل شيء عددًا",fr:"Celui qui dénombre tout",en:"The All-Enumerating",duaaFr:"Ya Mouhsi, aide-moi à rentabiliser mes jours dans Ton obéissance.",duaaAr:"يا محصي، لا تجعل عمري يضيع فيما لا ينفعني."},
-{n:58,ar:"الْمُبْدِئ",tr:"Al-Mubdi'",mar:"المبدئ الذي بدأ الخلق",fr:"Celui qui commence (la création)",en:"The Originator",duaaFr:"Ya Moubdi', accorde-moi un renouveau bénéfique dans ma vie.",duaaAr:"يا مبدئ، ابدأ لي بداية خير، وافتح لي أبوابًا جديدة من فضلك."},
-{n:59,ar:"الْمُعِيد",tr:"Al-Mu'id",mar:"المعيد الذي يعيد الخلق بعد الموت",fr:"Celui qui redonne vie",en:"The Restorer",duaaFr:"Ya Mo'id, restaure la paix et la foi dans mon foyer.",duaaAr:"يا معيد، أعد إليّ كل خير فقدته، وأصلح لي ما فسد من أمري."},
-{n:60,ar:"الْمُحْيِي",tr:"Al-Muhyi",mar:"المحيي الذي يهب الحياة",fr:"Celui qui donne la vie",en:"The Giver of Life",duaaFr:"Ya Mouhyi, donne vie à mon cœur par le Coran.",duaaAr:"يا محيي، أحْيِ قلبي بالإيمان والقرآن والطمأنينة."},
-{n:61,ar:"الْمُمِيت",tr:"Al-Mumit",mar:"المميت الذي يقدّر الموت على خلقه",fr:"Celui qui donne la mort",en:"The Bringer of Death",duaaFr:"Ya Moumit, fais-moi mourir en état de soumission et de foi.",duaaAr:"يا مميت، ارزقني حسن الخاتمة، واجعل آخر كلامي شهادة أن لا إله إلا الله."},
-{n:62,ar:"الْحَي",tr:"Al-Hayy",mar:"الحي الدائم الذي لا يموت",fr:"Le Vivant",en:"The Ever-Living",duaaFr:"Ya Hayy, fais vivre mon âme sous Ta bienveillance.",duaaAr:"يا حي، أصلح حياتي كلها، ولا تكلني إلى نفسي طرفة عين."},
-{n:63,ar:"الْقَيُّوم",tr:"Al-Qayyum",mar:"القيوم القائم بنفسه المقيم لغيره",fr:"Le Subsistant par Soi",en:"The Self-Subsisting",duaaFr:"Ya Qayyoum, soutiens-moi et règle tous mes problèmes.",duaaAr:"يا قيوم، أقِم حياتي على طاعتك، وكن لي في كل أمري."},
-{n:64,ar:"الْوَاجِد",tr:"Al-Wajid",mar:"الواجد الذي لا يعوزه شيء",fr:"Celui qui trouve, l'Opulent",en:"The Perceiver, The Finder",duaaFr:"Ya Wajid, fais que je ne manque jamais de l'essentiel.",duaaAr:"يا واجد، أغنني بك عمن سواك، واجعل غناي في قلبي."},
-{n:65,ar:"الْمَاجِد",tr:"Al-Majid",mar:"الماجد الواسع الكرم والمجد",fr:"Le Noble, le Glorieux",en:"The Noble, The Glorious",duaaFr:"Ya Majid, annoblis mon comportement et mes intentions.",duaaAr:"يا ماجد، أكرمني بكرمك، وبلّغني ما أتمنى إن كان خيرًا لي."},
-{n:66,ar:"الْوَاحِد",tr:"Al-Wahid",mar:"الواحد الأحد المتفرد",fr:"L'Unique",en:"The One",duaaFr:"Ya Wahid, préserve mon cœur du shirk et de l'association.",duaaAr:"يا واحد، وحّد قلبي عليك ولا تجعل فيه تعلقًا يبعدني عنك."},
-{n:67,ar:"الْأَحَد",tr:"Al-Ahad",mar:"الأحد الفرد الذي لا نظير له",fr:"L'Un absolu",en:"The Indivisible One",duaaFr:"Ya Ahad, fais que Ton unicité soit la plus grande certitude de mon cœur.",duaaAr:"يا أحد، اجعل توحيدك أعظم نعمة في قلبي، وثبّتني عليه."},
-{n:68,ar:"الصَّمَد",tr:"As-Samad",mar:"الصمد الذي يُقصد في الحوائج",fr:"Le Soutien universel",en:"The Eternal Refuge",duaaFr:"Ya Samad, je me tourne vers Toi pour tous mes besoins.",duaaAr:"يا صمد، إليك أرفع حاجتي، فاقضِ حاجتي ولا تردني خائبًا."},
-{n:69,ar:"الْقَادِر",tr:"Al-Qadir",mar:"القادر على كل شيء",fr:"Le Détenteur du pouvoir",en:"The Capable",duaaFr:"Ya Qadir, Tu es capable de tout, facilite-moi l'impossible.",duaaAr:"يا قادر، إنك على كل شيء قدير، فحقق لي الخير الذي أعجز عنه."},
-{n:70,ar:"الْمُقْتَدِر",tr:"Al-Muqtadir",mar:"المقتدر الكامل القدرة",fr:"Le Tout-Puissant déterminant",en:"The Omnipotent",duaaFr:"Ya Mouqtadir, donne-moi la maîtrise de mon ego.",duaaAr:"يا مقتدر، بقدرتك فرّج همي ويسّر أمري."},
-{n:71,ar:"الْمُقَدِّم",tr:"Al-Muqaddim",mar:"المقدّم الذي يقدّم ما يشاء",fr:"Celui qui met en avant",en:"The Expediter",duaaFr:"Ya Mouqaddim, fais-moi avancer dans le bien.",duaaAr:"يا مقدم، قدّم لي الخير حيث كان، وقدّم لي ما يقربني إليك."},
-{n:72,ar:"الْمُؤَخِّر",tr:"Al-Mu'akhkhir",mar:"المؤخّر الذي يؤخّر ما يشاء",fr:"Celui qui diffère",en:"The Delayer",duaaFr:"Ya Mou'akhkhir, éloigne-moi du mal et des mauvaises fréquentations.",duaaAr:"يا مؤخر، أخّر عني كل شر، واصرف عني ما لا خير فيه."},
-{n:73,ar:"الْأَوَّل",tr:"Al-Awwal",mar:"الأول الذي ليس قبله شيء",fr:"Le Premier",en:"The First",duaaFr:"Ya Awwal, fais que Tu sois la priorité dans ma vie.",duaaAr:"يا أول، اجعل أول أمري طاعة، وأول قلبي محبتك."},
-{n:74,ar:"الْآخِر",tr:"Al-Akhir",mar:"الآخر الذي ليس بعده شيء",fr:"Le Dernier",en:"The Last",duaaFr:"Ya Akhir, fais que ma dernière parole soit l'attestation de foi.",duaaAr:"يا آخر، اجعل خاتمة أمري خيرًا، واختم لي بالصالحات."},
-{n:75,ar:"الظَّاهِر",tr:"Az-Zahir",mar:"الظاهر الذي دلّت عليه آياته",fr:"L'Apparent, le Manifeste",en:"The Manifest",duaaFr:"Ya Zahir, montre-moi les signes de Ta grandeur.",duaaAr:"يا ظاهر، أظهر لي الحق واهدني إليه."},
-{n:76,ar:"الْبَاطِن",tr:"Al-Batin",mar:"الباطن الذي احتجب عن الأبصار",fr:"Le Caché, l'Intime",en:"The Hidden",duaaFr:"Ya Batin, purifie mes pensées intimes.",duaaAr:"يا باطن، أصلح سريرتي وقلبي، وطهّر ما خفي عن الناس."},
-{n:77,ar:"الْوَالِي",tr:"Al-Wali",mar:"الوالي المتولي لأمور خلقه",fr:"Le Maître, le Gouverneur",en:"The Governor",duaaFr:"Ya Wali, prends en charge ma vie et dirige mes pas.",duaaAr:"يا والي، تولّ أمري وأمري من أحب، واختر لنا الخير."},
-{n:78,ar:"الْمُتَعَالِي",tr:"Al-Muta'ali",mar:"المتعالي عن كل نقص",fr:"Le Sublime, le Transcendant",en:"The Most Exalted",duaaFr:"Ya Mouta'ali, élève-moi au-dessus des péchés.",duaaAr:"يا متعالي، نزّه قلبي عن كل ما لا يليق، وارفعني بطاعتك."},
-{n:79,ar:"الْبَر",tr:"Al-Barr",mar:"البر المحسن إلى عباده",fr:"Le Bienfaisant",en:"The Source of Goodness",duaaFr:"Ya Barr, accorde-moi Ta bonté et rends-moi bon envers mes parents.",duaaAr:"يا بر، أحسن إليّ كما تحسن إلى عبادك، وارزقني برك ورضاك."},
-{n:80,ar:"التَّوَّاب",tr:"At-Tawwab",mar:"التواب الذي يقبل توبة عباده",fr:"Celui qui accueille le repentir",en:"The Accepter of Repentance",duaaFr:"Ya Tawwab, accepte mon repentir sincère.",duaaAr:"يا تواب، تب عليّ توبة نصوحًا لا أعود بعدها إلى الذنب."},
-{n:81,ar:"الْمُنْتَقِم",tr:"Al-Muntaqim",mar:"المنتقم من الظالمين بعدله",fr:"Le Vengeur (des injustes)",en:"The Avenger",duaaFr:"Ya Mountaqim, protège-moi des oppresseurs.",duaaAr:"يا منتقم، اكفني ظلم الظالمين، وانصرني بالحق دون ظلم أو عدوان."},
-{n:82,ar:"الْعَفُو",tr:"Al-'Afuww",mar:"العفو الذي يمحو الذنوب",fr:"Celui qui efface les péchés",en:"The Pardoner",duaaFr:"Ya 'Afouww, Tu aimes le pardon, alors pardonne-moi.",duaaAr:"يا عفو، اعفُ عني وامحُ ذنوبي كأنها لم تكن."},
-{n:83,ar:"الرَّؤُوف",tr:"Ar-Ra'uf",mar:"الرؤوف الرحيم بعباده",fr:"Le Très Bienveillant",en:"The Most Kind",duaaFr:"Ya Ra'ouf, traite-moi avec douceur et compassion.",duaaAr:"يا رؤوف، ارفق بي وارحمني، وألهمني الرفق بعبادك."},
-{n:84,ar:"مَالِكُ الْمُلْك",tr:"Malik-ul-Mulk",mar:"مالك الملك المتصرف في ملكه كيف يشاء",fr:"Le Maître absolu de la royauté",en:"Master of the Kingdom",duaaFr:"Ya Malik al-Moulk, bénis ce que Tu m'as accordé.",duaaAr:"يا مالك الملك، آتني من فضلك ما فيه خير لي، ولا تجعل الدنيا تملك قلبي."},
-{n:85,ar:"ذُو الْجَلَالِ وَالْإِكْرَام",tr:"Dhul-Jalali wal-Ikram",mar:"ذو الجلال والإكرام صاحب العظمة والفضل",fr:"Le Détenteur de la Majesté et de la Générosité",en:"Lord of Majesty and Bounty",duaaFr:"Ya Dhou al-Jalali wa al-Ikram, accorde-moi Tes dons précieux.",duaaAr:"يا ذا الجلال والإكرام، أكرمني برضاك والجنة، وأجرني من النار."},
-{n:86,ar:"الْمُقْسِط",tr:"Al-Muqsit",mar:"المقسط العادل في حكمه",fr:"L'Équitable",en:"The Equitable",duaaFr:"Ya Mouqsit, aide-moi à toujours agir avec justice.",duaaAr:"يا مقسط، ارزقني العدل والإنصاف، واجعلني سببًا للخير بين الناس."},
-{n:87,ar:"الْجَامِع",tr:"Al-Jami'",mar:"الجامع للخلق ليوم الحساب",fr:"Celui qui rassemble",en:"The Gatherer",duaaFr:"Ya Jami', rassemble-moi avec les pieux au Paradis.",duaaAr:"يا جامع، اجمع لي خير الدنيا والآخرة، واجمع قلبي على طاعتك."},
-{n:88,ar:"الْغَنِي",tr:"Al-Ghaniyy",mar:"الغني عن كل ما سواه",fr:"Le Riche, l'Autosuffisant",en:"The Self-Sufficient",duaaFr:"Ya Ghaniyy, passe-moi de dépendre des hommes grâce à Ta richesse.",duaaAr:"يا غني، أغنني بحلالك عن حرامك، وبفضلك عمن سواك."},
-{n:89,ar:"الْمُغْنِي",tr:"Al-Mughni",mar:"المغني الذي يُغني من يشاء",fr:"Celui qui enrichit",en:"The Enricher",duaaFr:"Ya Moughni, enrichis mon cœur de contentement et de foi.",duaaAr:"يا مغني، أغنني من فضلك، وأغنِ قلبي بالإيمان والرضا."},
-{n:90,ar:"الْمَانِع",tr:"Al-Mani'",mar:"المانع الذي يمنع ما يشاء بحكمته",fr:"Celui qui préserve, qui empêche",en:"The Preventer",duaaFr:"Ya Mani', préserve-moi des épreuves et du malheur.",duaaAr:"يا مانع، امنع عني الشر والبلاء، واصرف عني كل ما يؤذيني."},
-{n:91,ar:"الضَّار",tr:"Ad-Darr",mar:"الضار الذي يقدّر الضرّ بحكمته",fr:"Celui qui peut nuire (par sagesse)",en:"The Distresser",duaaFr:"Ya Darr, détourne de moi tout mal préjudiciable.",duaaAr:"يا ضار، إن مسني ضر فلا كاشف له إلا أنت، فاكشف عني الضر."},
-{n:92,ar:"النَّافِع",tr:"An-Nafi'",mar:"النافع الذي يقدّر النفع لعباده",fr:"Celui qui accorde le bienfait",en:"The Benefactor",duaaFr:"Ya Nafi', fais que tout ce que j'apprends me soit utile.",duaaAr:"يا نافع، انفعني بما علّمتني، وارزقني ما ينفعني في ديني ودنياي."},
-{n:93,ar:"النُّور",tr:"An-Nur",mar:"النور الذي نوّر السماوات والأرض",fr:"La Lumière",en:"The Light",duaaFr:"Ya Nour, illumine mon cœur, mes yeux et mon chemin.",duaaAr:"يا نور السماوات والأرض، نوّر قلبي بنور الإيمان والقرآن."},
-{n:94,ar:"الْهَادِي",tr:"Al-Hadi",mar:"الهادي الذي يهدي عباده",fr:"Le Guide",en:"The Guide",duaaFr:"Ya Hadi, guide-moi vers le droit chemin et garde-moi dessus.",duaaAr:"يا هادي، اهدني إلى صراطك المستقيم ولا تضلني بعد هداك."},
-{n:95,ar:"الْبَدِيع",tr:"Al-Badi'",mar:"البديع الذي أبدع الخلق بلا مثال",fr:"Le Novateur absolu",en:"The Incomparable Originator",duaaFr:"Ya Badi', accorde-moi une fin magnifique.",duaaAr:"يا بديع السماوات والأرض، اصنع لي من أمري فرجًا ومخرجًا من حيث لا أحتسب."},
-{n:96,ar:"الْبَاقِي",tr:"Al-Baqi",mar:"الباقي الدائم الذي لا يفنى",fr:"L'Éternel, le Permanent",en:"The Everlasting",duaaFr:"Ya Baqi, fais que mes œuvres pieuses me survivent.",duaaAr:"يا باقي، اجعل عملي باقيًا لي بعد موتي، وارزقني حسن الأثر."},
-{n:97,ar:"الْوَارِث",tr:"Al-Warith",mar:"الوارث الباقي بعد فناء الخلق",fr:"L'Héritier suprême",en:"The Inheritor",duaaFr:"Ya Warith, accorde-moi une descendance pieuse.",duaaAr:"يا وارث، اجعل خير ما أتركه خلفي عملًا صالحًا وذكرًا طيبًا."},
-{n:98,ar:"الرَّشِيد",tr:"Ar-Rashid",mar:"الرشيد الذي أرشد الخلق إلى مصالحهم",fr:"Le Guide juste, le Sensé",en:"The Guide to the Right Path",duaaFr:"Ya Rachid, oriente mes choix vers ce qui est le meilleur pour moi.",duaaAr:"يا رشيد، أرشدني في قراراتي، واختر لي ولا تخيرني، واهدني لما فيه خيري."},
-{n:99,ar:"الصَّبُور",tr:"As-Sabur",mar:"الصبور الذي لا يعجل بعقوبة العصاة",fr:"Le Très Patient",en:"The Most Patient",duaaFr:"Ya Sabour, insuffle en moi une grande patience face aux épreuves.",duaaAr:"يا صبور، ألهمني الصبر الجميل عند البلاء وارزقني السكينة."},
+{n:1,ar:"الرَّحْمَن",tr:"Ar-Rahman",mar:"الرحمن الذي وسعت رحمته كل شيء",fr:"Le Tout Miséricordieux",en:"The Most Compassionate", tur: "Çok Merhametli", ind: "Maha Pengasih",duaaFr:"Ya Rahman, fais-moi miséricorde et enveloppe ma famille de Ta grâce.",duaaTur:"Yâ Rahmân, bana merhamet et ve ailemi lütfunla kuşat.",duaaInd:"Ya Rahman, rahmatilah aku dan liputilah keluargaku dengan karunia-Mu.",duaaAr:"يا رحمن، ارحمني برحمتك الواسعة في الدنيا والآخرة."},
+{n:2,ar:"الرَّحِيم",tr:"Ar-Rahim",mar:"الرحيم بعباده المؤمنين",fr:"Le Très Miséricordieux",en:"The Most Merciful", tur: "Çok Esirgeyen", ind: "Maha Penyayang",duaaFr:"Ya Rahim, accorde-moi Ta miséricorde ici-bas et dans l'au-delà.",duaaTur:"Yâ Rahîm, bana dünyada da ahirette de rahmetini ihsan et.",duaaInd:"Ya Rahim, anugerahkanlah rahmat-Mu kepadaku di dunia dan di akhirat.",duaaAr:"يا رحيم، ارحم ضعفي واغفر ذنبي وارزقني رحمتك."},
+{n:3,ar:"الْمَلِك",tr:"Al-Malik",mar:"المالك لكل شيء المتصرف فيه",fr:"Le Souverain",en:"The King, The Sovereign", tur: "Mülkün Sahibi, Hükümdar", ind: "Raja, Penguasa",duaaFr:"Ya Malik, purifie mon cœur et aide-moi à soumettre ma vie à Ton ordre.",duaaTur:"Yâ Melik, kalbimi arındır ve hayatımı emrine teslim etmeme yardım et.",duaaInd:"Ya Malik, sucikanlah hatiku dan bantulah aku menyerahkan hidupku pada perintah-Mu.",duaaAr:"يا ملك، أصلح لي شأني كله، وتولَّ أمري بما تحب وترضى."},
+{n:4,ar:"الْقُدُّوس",tr:"Al-Quddus",mar:"المنزّه عن كل نقص",fr:"Le Pur, le Saint",en:"The Most Holy", tur: "Her Türlü Eksiklikten Uzak", ind: "Maha Suci",duaaFr:"Ya Qouddous, purifie mon âme de mes péchés et de mes mauvais penchants.",duaaTur:"Yâ Kuddûs, nefsimi günahlarımdan ve kötü eğilimlerimden arındır.",duaaInd:"Ya Quddus, sucikanlah jiwaku dari dosa-dosa dan kecenderungan burukku.",duaaAr:"يا قدوس، طهّر قلبي من الذنوب والهموم وكل ما لا يرضيك."},
+{n:5,ar:"السَّلَام",tr:"As-Salam",mar:"السالم من كل عيب، مصدر السلام",fr:"La Paix, le Salut",en:"The Source of Peace", tur: "Esenlik Veren", ind: "Sumber Kedamaian",duaaFr:"Ya Salam, accorde la paix à mon esprit, à mon foyer et préserve-moi de tout mal.",duaaTur:"Yâ Selâm, aklıma, yuvama huzur ver ve beni her kötülükten koru.",duaaInd:"Ya Salam, anugerahkanlah kedamaian pada pikiranku dan rumahku, dan lindungilah aku dari segala keburukan.",duaaAr:"يا سلام، أنزل السكينة والسلام على قلبي وحياتي."},
+{n:6,ar:"الْمُؤْمِن",tr:"Al-Mu'min",mar:"المصدّق لرسله، مانح الأمان",fr:"Le Rassurant, le Fidèle",en:"The Granter of Security", tur: "Güven Veren", ind: "Pemberi Keamanan",duaaFr:"Ya Mo'min, accorde-moi la foi véritable et rassure mon cœur face à mes peurs.",duaaTur:"Yâ Mü'min, bana gerçek imanı ver ve korkularım karşısında kalbimi yatıştır.",duaaInd:"Ya Mu'min, anugerahkanlah iman yang sejati kepadaku dan tenangkanlah hatiku dari rasa takutku.",duaaAr:"يا مؤمن، أمِّن قلبي من الخوف، وارزقني الأمن والإيمان."},
+{n:7,ar:"الْمُهَيْمِن",tr:"Al-Muhaymin",mar:"الرقيب الحافظ على خلقه",fr:"Le Prépondérant, le Gardien",en:"The Guardian, The Overseer", tur: "Koruyup Gözeten", ind: "Pemelihara, Pengawas",duaaFr:"Ya Mouhaymin, veille sur moi et protège-moi de ce qui m'est caché.",duaaTur:"Yâ Müheymin, beni gözet ve bana gizli kalan şeylerden koru.",duaaInd:"Ya Muhaymin, awasilah aku dan lindungilah aku dari apa yang tersembunyi dariku.",duaaAr:"يا مهيمن، احفظني بعنايتك من كل سوء وشر."},
+{n:8,ar:"الْعَزِيز",tr:"Al-'Aziz",mar:"العزيز الذي لا يُغلَب",fr:"Le Tout-Puissant",en:"The Almighty", tur: "Mutlak Güç Sahibi", ind: "Maha Perkasa",duaaFr:"Ya 'Aziz, accorde-moi la force et la dignité face aux épreuves.",duaaTur:"Yâ Azîz, imtihanlar karşısında bana güç ve izzet ver.",duaaInd:"Ya Aziz, berilah aku kekuatan dan martabat dalam menghadapi ujian.",duaaAr:"يا عزيز، أعزني بطاعتك ولا تذلني بمعصيتك."},
+{n:9,ar:"الْجَبَّار",tr:"Al-Jabbar",mar:"الجبار الذي تنفذ مشيئته",fr:"Le Contraignant, le Réparateur",en:"The Compeller", tur: "Dilediğini Yaptıran", ind: "Maha Pemaksa",duaaFr:"Ya Jabbar, répare ce qui est brisé dans ma vie et soigne mes blessures.",duaaTur:"Yâ Cebbâr, hayatımdaki kırıkları onar ve yaralarımı iyileştir.",duaaInd:"Ya Jabbar, perbaikilah apa yang retak dalam hidupku dan sembuhkanlah luka-lukaku.",duaaAr:"يا جبار، اجبر كسري، واشفِ قلبي، وأصلح حالي."},
+{n:10,ar:"الْمُتَكَبِّر",tr:"Al-Mutakabbir",mar:"المتكبر المتعالي عن صفات الخلق",fr:"Le Suprême, le Majestueux",en:"The Supreme, The Majestic", tur: "Yüce, Azametli", ind: "Maha Agung, Maha Mulia",duaaFr:"Ya Moutakabbir, éloigne de moi l'orgueil et préserve-moi de l'injustice.",duaaTur:"Yâ Mütekebbir, kibri benden uzaklaştır ve beni zulümden koru.",duaaInd:"Ya Mutakabbir, jauhkanlah kesombongan dariku dan lindungilah aku dari kezaliman.",duaaAr:"يا متكبر، طهّر قلبي من الكبر واجعلني متواضعًا لك."},
+{n:11,ar:"الْخَالِق",tr:"Al-Khaliq",mar:"الخالق الموجِد لكل شيء من عدم",fr:"Le Créateur",en:"The Creator", tur: "Yaratıcı", ind: "Maha Pencipta",duaaFr:"Ya Khaliq, façonne en moi un comportement noble et accorde-moi le bien.",duaaTur:"Yâ Hâlik, bende asil bir ahlak oluştur ve bana hayır ihsan et.",duaaInd:"Ya Khaliq, bentuklah dalam diriku akhlak yang mulia dan anugerahkanlah kebaikan kepadaku.",duaaAr:"يا خالق، أصلح خلقي وخُلقي، وبارك لي في حياتي."},
+{n:12,ar:"الْبَارِئ",tr:"Al-Bari'",mar:"البارئ المبدع للخلق على غير مثال",fr:"Le Producteur, le Novateur",en:"The Originator, The Maker", tur: "Yoktan Var Eden", ind: "Maha Pembuat",duaaFr:"Ya Bari', harmonise ma vie et facilite-moi chaque entreprise.",duaaTur:"Yâ Bâri', hayatımı ahenkli kıl ve her işimi kolaylaştır.",duaaInd:"Ya Bari', selarasakanlah hidupku dan mudahkanlah setiap urusanku.",duaaAr:"يا بارئ، أبرئ قلبي من كل مرض، وصدري من كل هم."},
+{n:13,ar:"الْمُصَوِّر",tr:"Al-Musawwir",mar:"المصوّر الذي أعطى كل شيء صورته",fr:"Le Formateur",en:"The Fashioner of Forms", tur: "Şekil Veren", ind: "Maha Pembentuk Rupa",duaaFr:"Ya Moussawwir, embellit mon caractère comme Tu as embelli ma création.",duaaTur:"Yâ Musavvir, yaratılışımı güzelleştirdiğin gibi ahlakımı da güzelleştir.",duaaInd:"Ya Musawwir, indahkanlah akhlakku sebagaimana Engkau telah memperindah penciptaanku.",duaaAr:"يا مصور، حسّن خُلقي كما حسّنت خَلقي."},
+{n:14,ar:"الْغَفَّار",tr:"Al-Ghaffar",mar:"الغفار الكثير المغفرة",fr:"Le Grand Pardonneur",en:"The All-Forgiving", tur: "Çok Bağışlayan", ind: "Maha Pengampun",duaaFr:"Ya Ghaffar, pardonne mes péchés passés, présents et futurs.",duaaTur:"Yâ Gaffâr, geçmiş, şimdiki ve gelecek günahlarımı bağışla.",duaaInd:"Ya Ghaffar, ampunilah dosa-dosaku yang lalu, sekarang, dan yang akan datang.",duaaAr:"يا غفار، اغفر لي ذنوبي كلها سرّها وعلانيتها."},
+{n:15,ar:"الْقَهَّار",tr:"Al-Qahhar",mar:"القهار الغالب لكل شيء",fr:"Le Dominateur suprême",en:"The Subduer", tur: "Üstün Gelen", ind: "Maha Menundukkan",duaaFr:"Ya Qahhar, soumets mes passions et protège-moi de l'oppression.",duaaTur:"Yâ Kahhâr, hevâma galip gelmemi sağla ve beni zulümden koru.",duaaInd:"Ya Qahhar, tundukkanlah hawa nafsuku dan lindungilah aku dari penindasan.",duaaAr:"يا قهار، اقهر عني شر نفسي وشر كل من أراد بي سوءًا."},
+{n:16,ar:"الْوَهَّاب",tr:"Al-Wahhab",mar:"الوهاب الكثير العطاء بلا مقابل",fr:"Le Donateur suprême",en:"The Bestower", tur: "Çokça Bağışlayan", ind: "Maha Pemberi Karunia",duaaFr:"Ya Wahhab, accorde-moi Tes bienfaits sans compter.",duaaTur:"Yâ Vehhâb, bana nimetlerini hesapsızca ihsan et.",duaaInd:"Ya Wahhab, karuniakanlah nikmat-Mu kepadaku tanpa batas.",duaaAr:"يا وهّاب، هب لي من فضلك رزقًا طيبًا وفرحًا لا ينقطع."},
+{n:17,ar:"الرَّزَّاق",tr:"Ar-Razzaq",mar:"الرزاق الذي يرزق جميع خلقه",fr:"Le Pourvoyeur",en:"The Provider", tur: "Rızık Veren", ind: "Maha Pemberi Rezeki",duaaFr:"Ya Razzaq, bénis ma subsistance et accorde-moi un gain licite.",duaaTur:"Yâ Rezzâk, rızkımı bereketlendir ve bana helal kazanç ver.",duaaInd:"Ya Razzaq, berkahilah rezekiku dan anugerahkanlah penghasilan yang halal.",duaaAr:"يا رزاق، ارزقني رزقًا حلالًا واسعًا مباركًا فيه."},
+{n:18,ar:"الْفَتَّاح",tr:"Al-Fattah",mar:"الفتاح الذي يفتح أبواب الرحمة والرزق",fr:"Celui qui ouvre (les portes)",en:"The Opener, The Judge", tur: "Hükmeden, Fetheden", ind: "Maha Pembuka, Maha Hakim",duaaFr:"Ya Fattah, ouvre-moi les portes de la réussite et de Ta miséricorde.",duaaTur:"Yâ Fettâh, bana başarının ve rahmetinin kapılarını aç.",duaaInd:"Ya Fattah, bukakanlah pintu-pintu keberhasilan dan rahmat-Mu untukku.",duaaAr:"يا فتاح، افتح لي أبواب الخير والرزق والفرج."},
+{n:19,ar:"الْعَلِيم",tr:"Al-'Alim",mar:"العليم بكل شيء ظاهرًا وباطنًا",fr:"L'Omniscient",en:"The All-Knowing", tur: "Her Şeyi Bilen", ind: "Maha Mengetahui",duaaFr:"Ya 'Alim, augmente ma science et accorde-moi la sagesse.",duaaTur:"Yâ Alîm, ilmimi artır ve bana hikmet ver.",duaaInd:"Ya 'Alim, tambahkanlah ilmuku dan anugerahkanlah hikmah kepadaku.",duaaAr:"يا عليم، علّمني ما ينفعني وانفعني بما علمتني."},
+{n:20,ar:"الْقَابِض",tr:"Al-Qabid",mar:"القابض الذي يقبض الرزق والأرواح بحكمته",fr:"Celui qui restreint",en:"The Withholder", tur: "Daraltan", ind: "Maha Penahan",duaaFr:"Ya Qabid, préserve-moi d'éparpiller mon énergie dans le faux.",duaaTur:"Yâ Kâbid, gücümü batıl yolda harcamaktan beni koru.",duaaInd:"Ya Qabid, jagalah aku dari menyia-nyiakan tenagaku dalam kebatilan.",duaaAr:"يا قابض، اقبض عني كل شر وضر، وثبّت قلبي على طاعتك."},
+{n:21,ar:"الْبَاسِط",tr:"Al-Basit",mar:"الباسط الذي يبسط الرزق لمن يشاء",fr:"Celui qui étend (les biens)",en:"The Extender", tur: "Genişleten", ind: "Maha Pelapang",duaaFr:"Ya Basit, élargis ma subsistance et épanouis ma poitrine.",duaaTur:"Yâ Bâsit, rızkımı genişlet ve göğsümü aç.",duaaInd:"Ya Basit, lapangkanlah rezekiku dan bukakanlah dadaku.",duaaAr:"يا باسط، ابسط عليّ من رحمتك ورزقك وفضلك."},
+{n:22,ar:"الْخَافِض",tr:"Al-Khafid",mar:"الخافض للمتكبرين والظالمين",fr:"Celui qui abaisse",en:"The Abaser", tur: "Alçaltan", ind: "Maha Perendah",duaaFr:"Ya Khafidh, abaisse l'orgueil dans mon cœur et détruis le mal.",duaaTur:"Yâ Hâfid, kalbimdeki kibri alçalt ve kötülüğü yok et.",duaaInd:"Ya Khafid, rendahkanlah kesombongan dalam hatiku dan musnahkanlah keburukan.",duaaAr:"يا خافض، اخفض عني كل بلاء، واحفظني من أسباب الهلاك."},
+{n:23,ar:"الرَّافِع",tr:"Ar-Rafi'",mar:"الرافع لأوليائه بالطاعة",fr:"Celui qui élève",en:"The Exalter", tur: "Yücelten", ind: "Maha Peninggi",duaaFr:"Ya Rafi', élève ma station dans cette vie et au Paradis.",duaaTur:"Yâ Râfi', dünyada ve cennette derecemi yükselt.",duaaInd:"Ya Rafi', tinggikanlah derajatku di dunia ini dan di surga.",duaaAr:"يا رافع، ارفع قدري بالإيمان والعمل الصالح."},
+{n:24,ar:"الْمُعِز",tr:"Al-Mu'izz",mar:"المعز الذي يمنح العزة لمن يشاء",fr:"Celui qui honore",en:"The Giver of Honor", tur: "İzzet Veren", ind: "Maha Pemberi Kemuliaan",duaaFr:"Ya Mo'izz, accorde-moi l'honneur par l'obéissance à Tes ordres.",duaaTur:"Yâ Mu'izz, emirlerine itaatle bana izzet ver.",duaaInd:"Ya Mu'izz, muliakanlah aku dengan menaati perintah-Mu.",duaaAr:"يا معز، أعزني بطاعتك وكرامتك، ولا تجعل عزتي في غيرك."},
+{n:25,ar:"الْمُذِل",tr:"Al-Mudhill",mar:"المذل الذي يذل من يشاء بعدله",fr:"Celui qui humilie",en:"The Giver of Dishonor", tur: "Zillete Düşüren", ind: "Maha Penghinaan",duaaFr:"Ya Moudhill, préserve-moi d'être humilié par mes propres fautes.",duaaTur:"Yâ Müzill, beni kendi hatalarımla zelil olmaktan koru.",duaaInd:"Ya Mudzill, jagalah aku agar tidak terhina oleh kesalahanku sendiri.",duaaAr:"يا مذل، أذلّ عني الباطل والشر، ولا تجعلني من أهل المعصية."},
+{n:26,ar:"السَّمِيع",tr:"As-Sami'",mar:"السميع الذي يسمع كل شيء",fr:"Celui qui entend tout",en:"The All-Hearing", tur: "Her Şeyi İşiten", ind: "Maha Mendengar",duaaFr:"Ya Sami', écoute mes invocations et réponds à mes prières.",duaaTur:"Yâ Semî', dualarımı işit ve niyazlarıma cevap ver.",duaaInd:"Ya Sami', dengarkanlah doa-doaku dan jawablah permohonanku.",duaaAr:"يا سميع، اسمع دعائي واستجب لي، فإنك تسمع كل شيء."},
+{n:27,ar:"الْبَصِير",tr:"Al-Basir",mar:"البصير الذي يرى كل شيء",fr:"Celui qui voit tout",en:"The All-Seeing", tur: "Her Şeyi Gören", ind: "Maha Melihat",duaaFr:"Ya Basir, guide mes yeux vers le bien et protège-moi de l'aveuglement.",duaaTur:"Yâ Basîr, gözlerimi hayra yönelt ve beni körlükten koru.",duaaInd:"Ya Basir, arahkanlah pandanganku pada kebaikan dan lindungilah aku dari kebutaan.",duaaAr:"يا بصير، أبصرني عيوبي وأصلح قلبي وأعمالي."},
+{n:28,ar:"الْحَكَم",tr:"Al-Hakam",mar:"الحكم العدل الذي يفصل بين خلقه",fr:"Le Juge suprême",en:"The Judge", tur: "Hüküm Veren", ind: "Maha Hakim",duaaFr:"Ya Hakam, juge entre nous avec justice et guide-moi vers la vérité.",duaaTur:"Yâ Hakem, aramızda adaletle hükmet ve beni hakikate ilet.",duaaInd:"Ya Hakam, putuskanlah di antara kami dengan adil dan tuntunlah aku kepada kebenaran.",duaaAr:"يا حكم، احكم لي بالخير، وارضّني بقضائك وقدرك."},
+{n:29,ar:"الْعَدْل",tr:"Al-'Adl",mar:"العدل الذي لا يجور",fr:"Le Juste",en:"The Utterly Just", tur: "Tam Adil", ind: "Maha Adil",duaaFr:"Ya 'Adl, aide-moi à être juste envers moi-même et envers autrui.",duaaTur:"Yâ Adl, kendime ve başkalarına karşı adil olmama yardım et.",duaaInd:"Ya 'Adl, bantulah aku berlaku adil terhadap diriku sendiri dan orang lain.",duaaAr:"يا عدل، اجعلني عادلًا في قولي وفعلي، ولا تجعلني أظلم أحدًا."},
+{n:30,ar:"اللَّطِيف",tr:"Al-Latif",mar:"اللطيف بعباده الرفيق بهم",fr:"Le Subtil, le Bienveillant",en:"The Subtle, The Gentle", tur: "Lütuf Sahibi, Nazik", ind: "Maha Lembut",duaaFr:"Ya Latif, sois bienveillant envers moi dans les moments difficiles.",duaaTur:"Yâ Latîf, zor anlarımda bana lütfet.",duaaInd:"Ya Latif, berlemah-lembutlah kepadaku di saat-saat sulit.",duaaAr:"يا لطيف، الطف بي فيما جرت به المقادير، واختر لي الخير حيث كان."},
+{n:31,ar:"الْخَبِير",tr:"Al-Khabir",mar:"الخبير العالم بحقائق الأمور",fr:"Le Parfaitement Informé",en:"The All-Aware", tur: "Her Şeyden Haberdar", ind: "Maha Teliti",duaaFr:"Ya Khabir, purifie mes intentions secrètes.",duaaTur:"Yâ Habîr, gizli niyetlerimi arındır.",duaaInd:"Ya Khabir, sucikanlah niat-niatku yang tersembunyi.",duaaAr:"يا خبير، أنت أعلم بحالي، فدبّر لي فإني لا أحسن التدبير."},
+{n:32,ar:"الْحَلِيم",tr:"Al-Halim",mar:"الحليم الذي لا يعجل بالعقوبة",fr:"Le Longanime, le Clément",en:"The Forbearing", tur: "Yumuşak Davranan", ind: "Maha Penyantun",duaaFr:"Ya Halim, ne te presse pas de me punir et accorde-moi la patience.",duaaTur:"Yâ Halîm, beni cezalandırmakta acele etme ve bana sabır ver.",duaaInd:"Ya Halim, janganlah segera menghukumku dan anugerahkanlah kesabaran kepadaku.",duaaAr:"يا حليم، احلم عن تقصيري، وارزقني حلمًا وصبرًا جميلًا."},
+{n:33,ar:"الْعَظِيم",tr:"Al-'Azim",mar:"العظيم الذي لا شيء أعظم منه",fr:"L'Immense, le Magnifique",en:"The Magnificent", tur: "Pek Büyük", ind: "Maha Agung",duaaFr:"Ya 'Azim, mets dans mon cœur le respect profond de Ta grandeur.",duaaTur:"Yâ Azîm, kalbime senin büyüklüğüne duyulan derin saygıyı yerleştir.",duaaInd:"Ya 'Azim, tanamkanlah dalam hatiku rasa hormat yang dalam terhadap keagungan-Mu.",duaaAr:"يا عظيم، عظّم الإيمان في قلبي، ولا تجعل الدنيا أكبر همي."},
+{n:34,ar:"الْغَفُور",tr:"Al-Ghafur",mar:"الغفور الساتر لذنوب عباده",fr:"Le Très Pardonnant",en:"The Much-Forgiving", tur: "Çok Bağışlayan", ind: "Maha Pengampun",duaaFr:"Ya Ghafour, efface mes fautes et couvre mes défauts.",duaaTur:"Yâ Gafûr, hatalarımı sil ve kusurlarımı ört.",duaaInd:"Ya Ghafur, hapuskanlah kesalahanku dan tutupilah aibku.",duaaAr:"يا غفور، اغفر لي وارحمني وتجاوز عن سيئاتي."},
+{n:35,ar:"الشَّكُور",tr:"Ash-Shakur",mar:"الشكور الذي يجازي على القليل بالكثير",fr:"Le Très Reconnaissant",en:"The Most Appreciative", tur: "Karşılığını Veren", ind: "Maha Penghargai",duaaFr:"Ya Shakour, accepte mes petites actions et décuple leurs récompenses.",duaaTur:"Yâ Şekûr, küçük amellerimi kabul et ve karşılığını kat kat artır.",duaaInd:"Ya Syakur, terimalah amal-amalku yang kecil dan lipatgandakanlah pahalanya.",duaaAr:"يا شكور، أعنّي على شكرك وذكرك وحسن عبادتك."},
+{n:36,ar:"الْعَلِي",tr:"Al-'Ali",mar:"العلي الذي علا على كل شيء",fr:"Le Très Haut",en:"The Most High", tur: "En Yüce", ind: "Maha Tinggi",duaaFr:"Ya 'Aliyy, élève mon esprit au-dessus des vanités terrestres.",duaaTur:"Yâ Aliyy, ruhumu dünyevi gösterişlerin üstüne yükselt.",duaaInd:"Ya 'Aliyy, angkatlah jiwaku di atas kesia-siaan duniawi.",duaaAr:"يا علي، ارفع همتي ودرجتي، واجعلني من عبادك الصالحين."},
+{n:37,ar:"الْكَبِير",tr:"Al-Kabir",mar:"الكبير الذي كل شيء دونه",fr:"Le Très Grand",en:"The Most Great", tur: "En Büyük", ind: "Maha Besar",duaaFr:"Ya Kabir, rappelle-moi Ta grandeur face à tous mes soucis.",duaaTur:"Yâ Kebîr, tüm dertlerim karşısında bana büyüklüğünü hatırlat.",duaaInd:"Ya Kabir, ingatkanlah aku akan keagungan-Mu di hadapan segala kekhawatiranku.",duaaAr:"يا كبير، كبّر في قلبي محبتك وتعظيمك، وصغّر في عيني الدنيا."},
+{n:38,ar:"الْحَفِيظ",tr:"Al-Hafiz",mar:"الحفيظ الحافظ لكل شيء",fr:"Le Gardien vigilant",en:"The Preserver", tur: "Koruyan", ind: "Maha Pemelihara",duaaFr:"Ya Hafiz, protège-moi, mes proches et ma foi.",duaaTur:"Yâ Hafîz, beni, yakınlarımı ve imanımı koru.",duaaInd:"Ya Hafiz, lindungilah aku, orang-orang terdekatku, dan imanku.",duaaAr:"يا حفيظ، احفظني وأهلي ومن أحب من كل سوء."},
+{n:39,ar:"الْمُقِيت",tr:"Al-Muqit",mar:"المقيت الذي يقيت الخلق ويقدر أقواتهم",fr:"Le Nourricier",en:"The Sustainer", tur: "Rızıklandıran", ind: "Maha Pemberi Kecukupan",duaaFr:"Ya Mouqit, alimente mon corps et mon âme de Ta lumière.",duaaTur:"Yâ Mukît, bedenimi ve ruhumu nurunla besle.",duaaInd:"Ya Muqit, nafkahilah tubuh dan jiwaku dengan cahaya-Mu.",duaaAr:"يا مقيت، اكفني ما أهمني، وارزقني القوة والصبر."},
+{n:40,ar:"الْحَسِيب",tr:"Al-Hasib",mar:"الحسيب الكافي لعباده المحاسب لهم",fr:"Celui qui suffit, qui règle les comptes",en:"The Reckoner", tur: "Hesaba Çeken", ind: "Maha Penghitung",duaaFr:"Ya Hasib, facilite mon jugement au Jour Dernier.",duaaTur:"Yâ Hasîb, Son Gün'de hesabımı kolay kıl.",duaaInd:"Ya Hasib, mudahkanlah perhitunganku di Hari Akhir.",duaaAr:"يا حسيب، كن حسبي في كل أمر، واكفني ما أهمني."},
+{n:41,ar:"الْجَلِيل",tr:"Al-Jalil",mar:"الجليل ذو الجلال والعظمة",fr:"Le Majestueux",en:"The Majestic", tur: "Azamet Sahibi", ind: "Maha Mulia",duaaFr:"Ya Jalil, remplis mon âme d'émerveillement face à Ta majesté.",duaaTur:"Yâ Celîl, ruhumu azametin karşısında hayranlıkla doldur.",duaaInd:"Ya Jalil, penuhilah jiwaku dengan takjub akan keagungan-Mu.",duaaAr:"يا جليل، ارزقني إجلالك وتعظيمك والخشوع بين يديك."},
+{n:42,ar:"الْكَرِيم",tr:"Al-Karim",mar:"الكريم الكثير الخير والعطاء",fr:"Le Généreux, le Noble",en:"The Most Generous", tur: "Çok Cömert", ind: "Maha Dermawan",duaaFr:"Ya Karim, traite-moi selon Ta générosité et non selon mes mérites.",duaaTur:"Yâ Kerîm, bana liyakatime göre değil, cömertliğine göre muamele et.",duaaInd:"Ya Karim, perlakukanlah aku sesuai kemurahan-Mu, bukan sesuai amalku.",duaaAr:"يا كريم، أكرمني بفضلك، واغمرني بجودك ورحمتك."},
+{n:43,ar:"الرَّقِيب",tr:"Ar-Raqib",mar:"الرقيب المراقب لكل شيء",fr:"Le Vigilant",en:"The Watchful", tur: "Gözeten", ind: "Maha Mengawasi",duaaFr:"Ya Raqib, rappelle-moi que Tu me vois à chaque instant.",duaaTur:"Yâ Rakîb, beni her an gördüğünü bana hatırlat.",duaaInd:"Ya Raqib, ingatkanlah aku bahwa Engkau melihatku setiap saat.",duaaAr:"يا رقيب، اجعلني أراقبك في السر والعلن."},
+{n:44,ar:"الْمُجِيب",tr:"Al-Mujib",mar:"المجيب الذي يجيب دعاء عباده",fr:"Celui qui exauce",en:"The Responsive", tur: "Duaları Kabul Eden", ind: "Maha Mengabulkan",duaaFr:"Ya Moujib, exauce mes du'as et soulage mon cœur.",duaaTur:"Yâ Mücîb, dualarımı kabul et ve kalbimi ferahlat.",duaaInd:"Ya Mujib, kabulkanlah doa-doaku dan lapangkanlah hatiku.",duaaAr:"يا مجيب، أجب دعائي وحقق لي ما فيه الخير."},
+{n:45,ar:"الْوَاسِع",tr:"Al-Wasi'",mar:"الواسع الذي وسع كل شيء علمًا ورحمة",fr:"L'Immensément Vaste",en:"The All-Encompassing", tur: "Her Şeyi Kuşatan", ind: "Maha Luas",duaaFr:"Ya Wasi', élargis mon horizon et bénis mes ressources.",duaaTur:"Yâ Vâsi', ufkumu genişlet ve imkânlarımı bereketlendir.",duaaInd:"Ya Wasi', luaskanlah wawasanku dan berkahilah sumber dayaku.",duaaAr:"يا واسع، وسّع عليّ في رزقي وصدري ورحمتي."},
+{n:46,ar:"الْحَكِيم",tr:"Al-Hakim",mar:"الحكيم في خلقه وأمره",fr:"Le Sage",en:"The All-Wise", tur: "Hikmet Sahibi", ind: "Maha Bijaksana",duaaFr:"Ya Hakim, accorde-moi la sagesse de comprendre Tes décrets.",duaaTur:"Yâ Hakîm, bana hükümlerini anlama hikmetini ver.",duaaInd:"Ya Hakim, anugerahkanlah hikmah kepadaku untuk memahami ketetapan-Mu.",duaaAr:"يا حكيم، اختر لي ولا تخيرني، ودبّر لي فإنك أعلم بما يصلحني."},
+{n:47,ar:"الْوَدُود",tr:"Al-Wadud",mar:"الودود المحب لأوليائه",fr:"Le Tout Aimant",en:"The Most Loving", tur: "Çok Seven", ind: "Maha Pengasih",duaaFr:"Ya Wadoud, mets Ton amour dans mon cœur et fais que les pieux m'aiment.",duaaTur:"Yâ Vedûd, kalbime sevgini yerleştir ve takva sahipleri beni sevsin.",duaaInd:"Ya Wadud, tanamkanlah cinta-Mu dalam hatiku dan jadikanlah orang-orang saleh mencintaiku.",duaaAr:"يا ودود، ارزقني حبك وحب من يحبك، واجعلني محبوبًا عندك."},
+{n:48,ar:"الْمَجِيد",tr:"Al-Majid",mar:"المجيد العظيم في ذاته وصفاته",fr:"Le Tout Glorieux",en:"The Most Glorious", tur: "Şanı Yüce", ind: "Maha Mulia",duaaFr:"Ya Majid, glorifié sois-Tu, accorde-moi une fin honorable.",duaaTur:"Yâ Mecîd, şanın yücedir; bana şerefli bir son nasip et.",duaaInd:"Ya Majid, Maha Mulia Engkau; anugerahkanlah akhir yang terhormat kepadaku.",duaaAr:"يا مجيد، اجعل لي نصيبًا من كرمك ومجدك وفضلك."},
+{n:49,ar:"الْبَاعِث",tr:"Al-Ba'ith",mar:"الباعث الذي يبعث الخلق يوم القيامة",fr:"Celui qui ressuscite",en:"The Resurrector", tur: "Dirilten", ind: "Maha Membangkitkan",duaaFr:"Ya Ba'ith, ressuscite mon cœur par la foi et la lumière.",duaaTur:"Yâ Bâis, kalbimi iman ve nurla dirilt.",duaaInd:"Ya Ba'ith, hidupkanlah hatiku dengan iman dan cahaya.",duaaAr:"يا باعث، ابعث في قلبي الهمة والإيمان، وأحيِ قلبي بطاعتك."},
+{n:50,ar:"الشَّهِيد",tr:"Ash-Shahid",mar:"الشهيد الحاضر الذي لا يغيب عنه شيء",fr:"Le Témoin",en:"The Witness", tur: "Şahit", ind: "Maha Menyaksikan",duaaFr:"Ya Shahid, fais que mes paroles et mes actes témoignent en ma faveur.",duaaTur:"Yâ Şehîd, sözlerimin ve amellerimin lehime şahitlik etmesini sağla.",duaaInd:"Ya Syahid, jadikanlah ucapan dan perbuatanku bersaksi untuk kebaikanku.",duaaAr:"يا شهيد، اشهد لي بالإيمان والتوحيد والعمل الصالح."},
+{n:51,ar:"الْحَق",tr:"Al-Haqq",mar:"الحق الثابت الذي لا يتغير",fr:"La Vérité, le Vrai",en:"The Absolute Truth", tur: "Mutlak Hak", ind: "Maha Benar",duaaFr:"Ya Haqq, fixe-moi sur le chemin de la vérité.",duaaTur:"Yâ Hak, beni hakikat yolunda sabit kıl.",duaaInd:"Ya Haqq, teguhkanlah aku di jalan kebenaran.",duaaAr:"يا حق، ثبّتني على الحق ولا تجعلني من أهل الباطل."},
+{n:52,ar:"الْوَكِيل",tr:"Al-Wakil",mar:"الوكيل الكفيل بأرزاق العباد",fr:"Le Garant, le Protecteur",en:"The Trustee, The Disposer", tur: "Vekil", ind: "Maha Pemelihara Urusan",duaaFr:"Ya Wakil, je place toute ma confiance en Toi pour mes affaires.",duaaTur:"Yâ Vekîl, işlerimde bütün güvenimi sana bağlıyorum.",duaaInd:"Ya Wakil, aku menyerahkan seluruh kepercayaanku kepada-Mu dalam segala urusanku.",duaaAr:"يا وكيل، توكلت عليك، فاكفني ما أهمني ودبّر لي أمري."},
+{n:53,ar:"الْقَوِي",tr:"Al-Qawiyy",mar:"القوي الكامل القدرة",fr:"Le Très Fort",en:"The All-Strong", tur: "Çok Güçlü", ind: "Maha Kuat",duaaFr:"Ya Qawiyy, accorde-moi la force physique et spirituelle.",duaaTur:"Yâ Kaviyy, bana bedensel ve ruhsal güç ver.",duaaInd:"Ya Qawiyy, anugerahkanlah kekuatan jasmani dan rohani kepadaku.",duaaAr:"يا قوي، قوّني على طاعتك وعلى مواجهة كل ما يبعدني عنك."},
+{n:54,ar:"الْمَتِين",tr:"Al-Matin",mar:"المتين الشديد القوة الذي لا يلحقه تعب",fr:"L'Inébranlable, le Ferme",en:"The Firm, The Steadfast", tur: "Sarsılmaz", ind: "Maha Kokoh",duaaFr:"Ya Matin, raffermis ma foi face aux tentations.",duaaTur:"Yâ Metîn, ayartmalar karşısında imanımı pekiştir.",duaaInd:"Ya Matin, kokohkanlah imanku di hadapan godaan.",duaaAr:"يا متين، ثبّت قلبي على دينك ولا تزلّه بعد إذ هديتني."},
+{n:55,ar:"الْوَلِي",tr:"Al-Waliyy",mar:"الولي الناصر لعباده المؤمنين",fr:"Le Protecteur, l'Allié",en:"The Protecting Friend", tur: "Dost ve Koruyucu", ind: "Maha Pelindung",duaaFr:"Ya Waliyy, sois mon allié et mon guide dans la vie.",duaaTur:"Yâ Veliyy, hayatta dostum ve rehberim ol.",duaaInd:"Ya Waliyy, jadilah Penolong dan Penuntunku dalam hidup.",duaaAr:"يا ولي، تولّني برعايتك، وكن معي في كل خطوة."},
+{n:56,ar:"الْحَمِيد",tr:"Al-Hamid",mar:"الحميد المحمود في كل حال",fr:"Le Digne de louange",en:"The Praiseworthy", tur: "Övülmeye Layık", ind: "Maha Terpuji",duaaFr:"Ya Hamid, fais que ma langue Te loue en toute circonstance.",duaaTur:"Yâ Hamîd, dilimin her durumda seni övmesini sağla.",duaaInd:"Ya Hamid, jadikanlah lisanku memuji-Mu dalam setiap keadaan.",duaaAr:"يا حميد، اجعلني من الحامدين لك في السراء والضراء."},
+{n:57,ar:"الْمُحْصِي",tr:"Al-Muhsi",mar:"المحصي الذي أحصى كل شيء عددًا",fr:"Celui qui dénombre tout",en:"The All-Enumerating", tur: "Her Şeyi Sayan", ind: "Maha Menghitung",duaaFr:"Ya Mouhsi, aide-moi à rentabiliser mes jours dans Ton obéissance.",duaaTur:"Yâ Muhsî, günlerimi sana itaatle değerlendirmeme yardım et.",duaaInd:"Ya Muhsi, bantulah aku memanfaatkan hari-hariku dalam ketaatan kepada-Mu.",duaaAr:"يا محصي، لا تجعل عمري يضيع فيما لا ينفعني."},
+{n:58,ar:"الْمُبْدِئ",tr:"Al-Mubdi'",mar:"المبدئ الذي بدأ الخلق",fr:"Celui qui commence (la création)",en:"The Originator", tur: "Yoktan Yaratan", ind: "Maha Memulai",duaaFr:"Ya Moubdi', accorde-moi un renouveau bénéfique dans ma vie.",duaaTur:"Yâ Mübdi', hayatımda hayırlı bir yenilenme ver.",duaaInd:"Ya Mubdi', anugerahkanlah pembaruan yang bermanfaat dalam hidupku.",duaaAr:"يا مبدئ، ابدأ لي بداية خير، وافتح لي أبوابًا جديدة من فضلك."},
+{n:59,ar:"الْمُعِيد",tr:"Al-Mu'id",mar:"المعيد الذي يعيد الخلق بعد الموت",fr:"Celui qui redonne vie",en:"The Restorer", tur: "Yeniden Var Eden", ind: "Maha Mengembalikan",duaaFr:"Ya Mo'id, restaure la paix et la foi dans mon foyer.",duaaTur:"Yâ Mu'îd, yuvama huzuru ve imanı geri getir.",duaaInd:"Ya Mu'id, kembalikanlah kedamaian dan iman di rumahku.",duaaAr:"يا معيد، أعد إليّ كل خير فقدته، وأصلح لي ما فسد من أمري."},
+{n:60,ar:"الْمُحْيِي",tr:"Al-Muhyi",mar:"المحيي الذي يهب الحياة",fr:"Celui qui donne la vie",en:"The Giver of Life", tur: "Hayat Veren", ind: "Maha Menghidupkan",duaaFr:"Ya Mouhyi, donne vie à mon cœur par le Coran.",duaaTur:"Yâ Muhyî, kalbimi Kur'an ile ihya et.",duaaInd:"Ya Muhyi, hidupkanlah hatiku dengan Al-Qur'an.",duaaAr:"يا محيي، أحْيِ قلبي بالإيمان والقرآن والطمأنينة."},
+{n:61,ar:"الْمُمِيت",tr:"Al-Mumit",mar:"المميت الذي يقدّر الموت على خلقه",fr:"Celui qui donne la mort",en:"The Bringer of Death", tur: "Öldüren", ind: "Maha Mematikan",duaaFr:"Ya Moumit, fais-moi mourir en état de soumission et de foi.",duaaTur:"Yâ Mümît, beni teslimiyet ve iman üzere öldür.",duaaInd:"Ya Mumit, wafatkanlah aku dalam keadaan berserah diri dan beriman.",duaaAr:"يا مميت، ارزقني حسن الخاتمة، واجعل آخر كلامي شهادة أن لا إله إلا الله."},
+{n:62,ar:"الْحَي",tr:"Al-Hayy",mar:"الحي الدائم الذي لا يموت",fr:"Le Vivant",en:"The Ever-Living", tur: "Daima Diri", ind: "Maha Hidup",duaaFr:"Ya Hayy, fais vivre mon âme sous Ta bienveillance.",duaaTur:"Yâ Hayy, ruhumu senin himayende yaşat.",duaaInd:"Ya Hayy, hidupkanlah jiwaku di bawah naungan-Mu.",duaaAr:"يا حي، أصلح حياتي كلها، ولا تكلني إلى نفسي طرفة عين."},
+{n:63,ar:"الْقَيُّوم",tr:"Al-Qayyum",mar:"القيوم القائم بنفسه المقيم لغيره",fr:"Le Subsistant par Soi",en:"The Self-Subsisting", tur: "Kendi Kendine Var Olan", ind: "Maha Berdiri Sendiri",duaaFr:"Ya Qayyoum, soutiens-moi et règle tous mes problèmes.",duaaTur:"Yâ Kayyûm, beni ayakta tut ve bütün sorunlarımı çöz.",duaaInd:"Ya Qayyum, tegakkanlah aku dan selesaikanlah semua masalahku.",duaaAr:"يا قيوم، أقِم حياتي على طاعتك، وكن لي في كل أمري."},
+{n:64,ar:"الْوَاجِد",tr:"Al-Wajid",mar:"الواجد الذي لا يعوزه شيء",fr:"Celui qui trouve, l'Opulent",en:"The Perceiver, The Finder", tur: "Her Şeyi Bulan", ind: "Maha Menemukan",duaaFr:"Ya Wajid, fais que je ne manque jamais de l'essentiel.",duaaTur:"Yâ Vâcid, bana asla gerekli olandan yoksun bırakma.",duaaInd:"Ya Wajid, jangan biarkan aku kekurangan hal yang pokok.",duaaAr:"يا واجد، أغنني بك عمن سواك، واجعل غناي في قلبي."},
+{n:65,ar:"الْمَاجِد",tr:"Al-Majid",mar:"الماجد الواسع الكرم والمجد",fr:"Le Noble, le Glorieux",en:"The Noble, The Glorious", tur: "Şerefli, Yüce", ind: "Maha Mulia",duaaFr:"Ya Majid, annoblis mon comportement et mes intentions.",duaaTur:"Yâ Mâcid, davranışlarımı ve niyetlerimi asilleştir.",duaaInd:"Ya Majid, muliakanlah perilaku dan niatku.",duaaAr:"يا ماجد، أكرمني بكرمك، وبلّغني ما أتمنى إن كان خيرًا لي."},
+{n:66,ar:"الْوَاحِد",tr:"Al-Wahid",mar:"الواحد الأحد المتفرد",fr:"L'Unique",en:"The One", tur: "Bir", ind: "Maha Esa",duaaFr:"Ya Wahid, préserve mon cœur du shirk et de l'association.",duaaTur:"Yâ Vâhid, kalbimi şirkten ve ortak koşmaktan koru.",duaaInd:"Ya Wahid, jagalah hatiku dari syirik dan menyekutukan-Mu.",duaaAr:"يا واحد، وحّد قلبي عليك ولا تجعل فيه تعلقًا يبعدني عنك."},
+{n:67,ar:"الْأَحَد",tr:"Al-Ahad",mar:"الأحد الفرد الذي لا نظير له",fr:"L'Un absolu",en:"The Indivisible One", tur: "Bölünmez Tek", ind: "Maha Tunggal",duaaFr:"Ya Ahad, fais que Ton unicité soit la plus grande certitude de mon cœur.",duaaTur:"Yâ Ahad, birliğin kalbimin en büyük yakini olsun.",duaaInd:"Ya Ahad, jadikanlah keesaan-Mu keyakinan terbesar di hatiku.",duaaAr:"يا أحد، اجعل توحيدك أعظم نعمة في قلبي، وثبّتني عليه."},
+{n:68,ar:"الصَّمَد",tr:"As-Samad",mar:"الصمد الذي يُقصد في الحوائج",fr:"Le Soutien universel",en:"The Eternal Refuge", tur: "Her Şeyin Dayandığı", ind: "Tempat Bergantung",duaaFr:"Ya Samad, je me tourne vers Toi pour tous mes besoins.",duaaTur:"Yâ Samed, bütün ihtiyaçlarımda sana yöneliyorum.",duaaInd:"Ya Shamad, aku menghadap kepada-Mu dalam segala kebutuhanku.",duaaAr:"يا صمد، إليك أرفع حاجتي، فاقضِ حاجتي ولا تردني خائبًا."},
+{n:69,ar:"الْقَادِر",tr:"Al-Qadir",mar:"القادر على كل شيء",fr:"Le Détenteur du pouvoir",en:"The Capable", tur: "Güç Yetiren", ind: "Maha Kuasa",duaaFr:"Ya Qadir, Tu es capable de tout, facilite-moi l'impossible.",duaaTur:"Yâ Kâdir, her şeye gücün yeter; imkânsızı bana kolaylaştır.",duaaInd:"Ya Qadir, Engkau mampu atas segalanya; mudahkanlah bagiku yang mustahil.",duaaAr:"يا قادر، إنك على كل شيء قدير، فحقق لي الخير الذي أعجز عنه."},
+{n:70,ar:"الْمُقْتَدِر",tr:"Al-Muqtadir",mar:"المقتدر الكامل القدرة",fr:"Le Tout-Puissant déterminant",en:"The Omnipotent", tur: "Her Şeye Gücü Yeten", ind: "Maha Berkuasa",duaaFr:"Ya Mouqtadir, donne-moi la maîtrise de mon ego.",duaaTur:"Yâ Muktedir, nefsime hâkim olmamı sağla.",duaaInd:"Ya Muqtadir, anugerahkanlah kepadaku penguasaan atas egoku.",duaaAr:"يا مقتدر، بقدرتك فرّج همي ويسّر أمري."},
+{n:71,ar:"الْمُقَدِّم",tr:"Al-Muqaddim",mar:"المقدّم الذي يقدّم ما يشاء",fr:"Celui qui met en avant",en:"The Expediter", tur: "Öne Alan", ind: "Maha Mendahulukan",duaaFr:"Ya Mouqaddim, fais-moi avancer dans le bien.",duaaTur:"Yâ Mukaddim, beni hayırda ilerlet.",duaaInd:"Ya Muqaddim, majukanlah aku dalam kebaikan.",duaaAr:"يا مقدم، قدّم لي الخير حيث كان، وقدّم لي ما يقربني إليك."},
+{n:72,ar:"الْمُؤَخِّر",tr:"Al-Mu'akhkhir",mar:"المؤخّر الذي يؤخّر ما يشاء",fr:"Celui qui diffère",en:"The Delayer", tur: "Geriye Bırakan", ind: "Maha Mengakhirkan",duaaFr:"Ya Mou'akhkhir, éloigne-moi du mal et des mauvaises fréquentations.",duaaTur:"Yâ Muahhir, beni kötülükten ve kötü arkadaşlardan uzak tut.",duaaInd:"Ya Mu'akhkhir, jauhkanlah aku dari keburukan dan pergaulan yang buruk.",duaaAr:"يا مؤخر، أخّر عني كل شر، واصرف عني ما لا خير فيه."},
+{n:73,ar:"الْأَوَّل",tr:"Al-Awwal",mar:"الأول الذي ليس قبله شيء",fr:"Le Premier",en:"The First", tur: "İlk", ind: "Yang Awal",duaaFr:"Ya Awwal, fais que Tu sois la priorité dans ma vie.",duaaTur:"Yâ Evvel, hayatımda öncelik Sen ol.",duaaInd:"Ya Awwal, jadikanlah Engkau prioritas dalam hidupku.",duaaAr:"يا أول، اجعل أول أمري طاعة، وأول قلبي محبتك."},
+{n:74,ar:"الْآخِر",tr:"Al-Akhir",mar:"الآخر الذي ليس بعده شيء",fr:"Le Dernier",en:"The Last", tur: "Son", ind: "Yang Akhir",duaaFr:"Ya Akhir, fais que ma dernière parole soit l'attestation de foi.",duaaTur:"Yâ Âhir, son sözüm kelime-i şehadet olsun.",duaaInd:"Ya Akhir, jadikanlah ucapan terakhirku kalimat syahadat.",duaaAr:"يا آخر، اجعل خاتمة أمري خيرًا، واختم لي بالصالحات."},
+{n:75,ar:"الظَّاهِر",tr:"Az-Zahir",mar:"الظاهر الذي دلّت عليه آياته",fr:"L'Apparent, le Manifeste",en:"The Manifest", tur: "Âşikâr Olan", ind: "Yang Nyata",duaaFr:"Ya Zahir, montre-moi les signes de Ta grandeur.",duaaTur:"Yâ Zâhir, bana büyüklüğünün âyetlerini göster.",duaaInd:"Ya Zahir, perlihatkanlah kepadaku tanda-tanda keagungan-Mu.",duaaAr:"يا ظاهر، أظهر لي الحق واهدني إليه."},
+{n:76,ar:"الْبَاطِن",tr:"Al-Batin",mar:"الباطن الذي احتجب عن الأبصار",fr:"Le Caché, l'Intime",en:"The Hidden", tur: "Gizli Olan", ind: "Yang Tersembunyi",duaaFr:"Ya Batin, purifie mes pensées intimes.",duaaTur:"Yâ Bâtın, içimdeki düşünceleri arındır.",duaaInd:"Ya Batin, sucikanlah pikiran-pikiranku yang terdalam.",duaaAr:"يا باطن، أصلح سريرتي وقلبي، وطهّر ما خفي عن الناس."},
+{n:77,ar:"الْوَالِي",tr:"Al-Wali",mar:"الوالي المتولي لأمور خلقه",fr:"Le Maître, le Gouverneur",en:"The Governor", tur: "Yöneten", ind: "Maha Penguasa",duaaFr:"Ya Wali, prends en charge ma vie et dirige mes pas.",duaaTur:"Yâ Vâlî, hayatımı üstlen ve adımlarımı yönlendir.",duaaInd:"Ya Wali, ambillah alih urusan hidupku dan arahkanlah langkahku.",duaaAr:"يا والي، تولّ أمري وأمري من أحب، واختر لنا الخير."},
+{n:78,ar:"الْمُتَعَالِي",tr:"Al-Muta'ali",mar:"المتعالي عن كل نقص",fr:"Le Sublime, le Transcendant",en:"The Most Exalted", tur: "Pek Yüce", ind: "Maha Tinggi",duaaFr:"Ya Mouta'ali, élève-moi au-dessus des péchés.",duaaTur:"Yâ Müteâlî, beni günahların üstüne yükselt.",duaaInd:"Ya Muta'ali, angkatlah aku di atas dosa-dosa.",duaaAr:"يا متعالي، نزّه قلبي عن كل ما لا يليق، وارفعني بطاعتك."},
+{n:79,ar:"الْبَر",tr:"Al-Barr",mar:"البر المحسن إلى عباده",fr:"Le Bienfaisant",en:"The Source of Goodness", tur: "İyiliğin Kaynağı", ind: "Sumber Kebaikan",duaaFr:"Ya Barr, accorde-moi Ta bonté et rends-moi bon envers mes parents.",duaaTur:"Yâ Berr, bana iyiliğini ihsan et ve beni anne babama karşı iyi kıl.",duaaInd:"Ya Barr, anugerahkanlah kebaikan-Mu kepadaku dan jadikanlah aku berbakti kepada kedua orang tuaku.",duaaAr:"يا بر، أحسن إليّ كما تحسن إلى عبادك، وارزقني برك ورضاك."},
+{n:80,ar:"التَّوَّاب",tr:"At-Tawwab",mar:"التواب الذي يقبل توبة عباده",fr:"Celui qui accueille le repentir",en:"The Accepter of Repentance", tur: "Tövbeleri Kabul Eden", ind: "Maha Penerima Tobat",duaaFr:"Ya Tawwab, accepte mon repentir sincère.",duaaTur:"Yâ Tevvâb, samimi tövbemi kabul et.",duaaInd:"Ya Tawwab, terimalah tobatku yang tulus.",duaaAr:"يا تواب، تب عليّ توبة نصوحًا لا أعود بعدها إلى الذنب."},
+{n:81,ar:"الْمُنْتَقِم",tr:"Al-Muntaqim",mar:"المنتقم من الظالمين بعدله",fr:"Le Vengeur (des injustes)",en:"The Avenger", tur: "İntikam Alan", ind: "Maha Pemberi Balasan",duaaFr:"Ya Mountaqim, protège-moi des oppresseurs.",duaaTur:"Yâ Müntakim, beni zalimlerden koru.",duaaInd:"Ya Muntaqim, lindungilah aku dari orang-orang zalim.",duaaAr:"يا منتقم، اكفني ظلم الظالمين، وانصرني بالحق دون ظلم أو عدوان."},
+{n:82,ar:"الْعَفُو",tr:"Al-'Afuww",mar:"العفو الذي يمحو الذنوب",fr:"Celui qui efface les péchés",en:"The Pardoner", tur: "Affeden", ind: "Maha Pemaaf",duaaFr:"Ya 'Afouww, Tu aimes le pardon, alors pardonne-moi.",duaaTur:"Yâ Afüvv, affı seversin; beni de affet.",duaaInd:"Ya 'Afuww, Engkau menyukai maaf, maka maafkanlah aku.",duaaAr:"يا عفو، اعفُ عني وامحُ ذنوبي كأنها لم تكن."},
+{n:83,ar:"الرَّؤُوف",tr:"Ar-Ra'uf",mar:"الرؤوف الرحيم بعباده",fr:"Le Très Bienveillant",en:"The Most Kind", tur: "Çok Şefkatli", ind: "Maha Lembut",duaaFr:"Ya Ra'ouf, traite-moi avec douceur et compassion.",duaaTur:"Yâ Raûf, bana yumuşaklıkla ve şefkatle muamele et.",duaaInd:"Ya Ra'uf, perlakukanlah aku dengan kelembutan dan kasih sayang.",duaaAr:"يا رؤوف، ارفق بي وارحمني، وألهمني الرفق بعبادك."},
+{n:84,ar:"مَالِكُ الْمُلْك",tr:"Malik-ul-Mulk",mar:"مالك الملك المتصرف في ملكه كيف يشاء",fr:"Le Maître absolu de la royauté",en:"Master of the Kingdom", tur: "Mülkün Sahibi", ind: "Penguasa Kerajaan",duaaFr:"Ya Malik al-Moulk, bénis ce que Tu m'as accordé.",duaaTur:"Yâ Mâlikülmülk, bana verdiğin şeyi bereketlendir.",duaaInd:"Ya Malikal-Mulk, berkahilah apa yang telah Engkau anugerahkan kepadaku.",duaaAr:"يا مالك الملك، آتني من فضلك ما فيه خير لي، ولا تجعل الدنيا تملك قلبي."},
+{n:85,ar:"ذُو الْجَلَالِ وَالْإِكْرَام",tr:"Dhul-Jalali wal-Ikram",mar:"ذو الجلال والإكرام صاحب العظمة والفضل",fr:"Le Détenteur de la Majesté et de la Générosité",en:"Lord of Majesty and Bounty", tur: "Celâl ve İkram Sahibi", ind: "Pemilik Keagungan dan Kemuliaan",duaaFr:"Ya Dhou al-Jalali wa al-Ikram, accorde-moi Tes dons précieux.",duaaTur:"Yâ Zel-Celâli vel-İkrâm, bana değerli lütuflarını ihsan et.",duaaInd:"Ya Dzal-Jalali wal-Ikram, anugerahkanlah karunia-Mu yang berharga kepadaku.",duaaAr:"يا ذا الجلال والإكرام، أكرمني برضاك والجنة، وأجرني من النار."},
+{n:86,ar:"الْمُقْسِط",tr:"Al-Muqsit",mar:"المقسط العادل في حكمه",fr:"L'Équitable",en:"The Equitable", tur: "Adaletli", ind: "Maha Adil",duaaFr:"Ya Mouqsit, aide-moi à toujours agir avec justice.",duaaTur:"Yâ Muksit, her zaman adaletle davranmama yardım et.",duaaInd:"Ya Muqsith, bantulah aku untuk selalu bertindak adil.",duaaAr:"يا مقسط، ارزقني العدل والإنصاف، واجعلني سببًا للخير بين الناس."},
+{n:87,ar:"الْجَامِع",tr:"Al-Jami'",mar:"الجامع للخلق ليوم الحساب",fr:"Celui qui rassemble",en:"The Gatherer", tur: "Toplayan", ind: "Maha Pengumpul",duaaFr:"Ya Jami', rassemble-moi avec les pieux au Paradis.",duaaTur:"Yâ Câmi', beni cennette takva sahipleriyle bir araya getir.",duaaInd:"Ya Jami', kumpulkanlah aku bersama orang-orang bertakwa di surga.",duaaAr:"يا جامع، اجمع لي خير الدنيا والآخرة، واجمع قلبي على طاعتك."},
+{n:88,ar:"الْغَنِي",tr:"Al-Ghaniyy",mar:"الغني عن كل ما سواه",fr:"Le Riche, l'Autosuffisant",en:"The Self-Sufficient", tur: "Hiçbir Şeye Muhtaç Olmayan", ind: "Maha Kaya",duaaFr:"Ya Ghaniyy, passe-moi de dépendre des hommes grâce à Ta richesse.",duaaTur:"Yâ Ganiyy, zenginliğinle beni insanlara muhtaç olmaktan kurtar.",duaaInd:"Ya Ghaniyy, cukupkanlah aku dengan kekayaan-Mu sehingga tidak bergantung pada manusia.",duaaAr:"يا غني، أغنني بحلالك عن حرامك، وبفضلك عمن سواك."},
+{n:89,ar:"الْمُغْنِي",tr:"Al-Mughni",mar:"المغني الذي يُغني من يشاء",fr:"Celui qui enrichit",en:"The Enricher", tur: "Zengin Kılan", ind: "Maha Pemberi Kekayaan",duaaFr:"Ya Moughni, enrichis mon cœur de contentement et de foi.",duaaTur:"Yâ Muğnî, kalbimi kanaat ve imanla zenginleştir.",duaaInd:"Ya Mughni, kayakanlah hatiku dengan rasa cukup dan iman.",duaaAr:"يا مغني، أغنني من فضلك، وأغنِ قلبي بالإيمان والرضا."},
+{n:90,ar:"الْمَانِع",tr:"Al-Mani'",mar:"المانع الذي يمنع ما يشاء بحكمته",fr:"Celui qui préserve, qui empêche",en:"The Preventer", tur: "Engelleyen", ind: "Maha Pencegah",duaaFr:"Ya Mani', préserve-moi des épreuves et du malheur.",duaaTur:"Yâ Mâni', beni musibetlerden ve talihsizlikten koru.",duaaInd:"Ya Mani', lindungilah aku dari cobaan dan kemalangan.",duaaAr:"يا مانع، امنع عني الشر والبلاء، واصرف عني كل ما يؤذيني."},
+{n:91,ar:"الضَّار",tr:"Ad-Darr",mar:"الضار الذي يقدّر الضرّ بحكمته",fr:"Celui qui peut nuire (par sagesse)",en:"The Distresser", tur: "Zarar Veren", ind: "Maha Pemberi Mudarat",duaaFr:"Ya Darr, détourne de moi tout mal préjudiciable.",duaaTur:"Yâ Dârr, bana zarar verecek her kötülüğü benden uzaklaştır.",duaaInd:"Ya Dharr, jauhkanlah dariku segala keburukan yang membahayakan.",duaaAr:"يا ضار، إن مسني ضر فلا كاشف له إلا أنت، فاكشف عني الضر."},
+{n:92,ar:"النَّافِع",tr:"An-Nafi'",mar:"النافع الذي يقدّر النفع لعباده",fr:"Celui qui accorde le bienfait",en:"The Benefactor", tur: "Fayda Veren", ind: "Maha Pemberi Manfaat",duaaFr:"Ya Nafi', fais que tout ce que j'apprends me soit utile.",duaaTur:"Yâ Nâfi', öğrendiğim her şeyi bana faydalı kıl.",duaaInd:"Ya Nafi', jadikanlah segala yang kupelajari bermanfaat bagiku.",duaaAr:"يا نافع، انفعني بما علّمتني، وارزقني ما ينفعني في ديني ودنياي."},
+{n:93,ar:"النُّور",tr:"An-Nur",mar:"النور الذي نوّر السماوات والأرض",fr:"La Lumière",en:"The Light", tur: "Nur", ind: "Cahaya",duaaFr:"Ya Nour, illumine mon cœur, mes yeux et mon chemin.",duaaTur:"Yâ Nûr, kalbimi, gözlerimi ve yolumu aydınlat.",duaaInd:"Ya Nur, terangilah hatiku, mataku, dan jalanku.",duaaAr:"يا نور السماوات والأرض، نوّر قلبي بنور الإيمان والقرآن."},
+{n:94,ar:"الْهَادِي",tr:"Al-Hadi",mar:"الهادي الذي يهدي عباده",fr:"Le Guide",en:"The Guide", tur: "Hidayet Veren", ind: "Maha Pemberi Petunjuk",duaaFr:"Ya Hadi, guide-moi vers le droit chemin et garde-moi dessus.",duaaTur:"Yâ Hâdî, beni doğru yola ilet ve onda sabit tut.",duaaInd:"Ya Hadi, tuntunlah aku ke jalan yang lurus dan teguhkanlah aku di atasnya.",duaaAr:"يا هادي، اهدني إلى صراطك المستقيم ولا تضلني بعد هداك."},
+{n:95,ar:"الْبَدِيع",tr:"Al-Badi'",mar:"البديع الذي أبدع الخلق بلا مثال",fr:"Le Novateur absolu",en:"The Incomparable Originator", tur: "Eşsiz Yaratıcı", ind: "Pencipta Tiada Banding",duaaFr:"Ya Badi', accorde-moi une fin magnifique.",duaaTur:"Yâ Bedî', bana güzel bir son nasip et.",duaaInd:"Ya Badi', anugerahkanlah akhir yang indah kepadaku.",duaaAr:"يا بديع السماوات والأرض، اصنع لي من أمري فرجًا ومخرجًا من حيث لا أحتسب."},
+{n:96,ar:"الْبَاقِي",tr:"Al-Baqi",mar:"الباقي الدائم الذي لا يفنى",fr:"L'Éternel, le Permanent",en:"The Everlasting", tur: "Ebedî", ind: "Maha Kekal",duaaFr:"Ya Baqi, fais que mes œuvres pieuses me survivent.",duaaTur:"Yâ Bâkî, salih amellerimin benden sonra da kalmasını sağla.",duaaInd:"Ya Baqi, jadikanlah amal salehku tetap hidup setelah aku tiada.",duaaAr:"يا باقي، اجعل عملي باقيًا لي بعد موتي، وارزقني حسن الأثر."},
+{n:97,ar:"الْوَارِث",tr:"Al-Warith",mar:"الوارث الباقي بعد فناء الخلق",fr:"L'Héritier suprême",en:"The Inheritor", tur: "Mirasçı", ind: "Maha Pewaris",duaaFr:"Ya Warith, accorde-moi une descendance pieuse.",duaaTur:"Yâ Vâris, bana salih bir nesil ihsan et.",duaaInd:"Ya Warits, anugerahkanlah kepadaku keturunan yang saleh.",duaaAr:"يا وارث، اجعل خير ما أتركه خلفي عملًا صالحًا وذكرًا طيبًا."},
+{n:98,ar:"الرَّشِيد",tr:"Ar-Rashid",mar:"الرشيد الذي أرشد الخلق إلى مصالحهم",fr:"Le Guide juste, le Sensé",en:"The Guide to the Right Path", tur: "Doğru Yola İleten", ind: "Penunjuk Jalan Lurus",duaaFr:"Ya Rachid, oriente mes choix vers ce qui est le meilleur pour moi.",duaaTur:"Yâ Reşîd, tercihlerimi benim için en hayırlı olana yönlendir.",duaaInd:"Ya Rasyid, arahkanlah pilihan-pilihanku pada apa yang terbaik bagiku.",duaaAr:"يا رشيد، أرشدني في قراراتي، واختر لي ولا تخيرني، واهدني لما فيه خيري."},
+{n:99,ar:"الصَّبُور",tr:"As-Sabur",mar:"الصبور الذي لا يعجل بعقوبة العصاة",fr:"Le Très Patient",en:"The Most Patient", tur: "Çok Sabırlı", ind: "Maha Sabar",duaaFr:"Ya Sabour, insuffle en moi une grande patience face aux épreuves.",duaaTur:"Yâ Sabûr, imtihanlar karşısında bana büyük bir sabır ver.",duaaInd:"Ya Shabur, tanamkanlah dalam diriku kesabaran yang besar dalam menghadapi ujian.",duaaAr:"يا صبور، ألهمني الصبر الجميل عند البلاء وارزقني السكينة."},
 ];
 </script><script type="text/alae-js">
 /* ═══ أسماء الله الحسنى — écran 99 noms ═══ */
@@ -15973,10 +16309,10 @@ function AsmaScreen({
     }
   };
   const L = {
-    title: isAr ? 'أسماء الله الحسنى' : lang === 'fr' ? 'Les 99 noms d\'Allah' : 'The 99 Names of Allah',
+    title: isAr ? 'أسماء الله الحسنى' : lang === 'fr' ? 'Les 99 noms d\'Allah' : lang === 'tur' ? "Allah'ın 99 İsmi (Esmaül Hüsna)" : lang === 'ind' ? "Asmaul Husna (99 Nama Allah)" : 'The 99 Names of Allah',
     sub: '﴿وَلِلَّهِ الْأَسْمَاءُ الْحُسْنَىٰ فَادْعُوهُ بِهَا﴾ [الأعراف: 180]',
-    search: isAr ? 'ابحث عن اسم…' : lang === 'fr' ? 'Rechercher un nom…' : 'Search a name…',
-    empty: isAr ? 'لا نتيجة' : lang === 'fr' ? 'Aucun résultat' : 'No result'
+    search: isAr ? 'ابحث عن اسم…' : lang === 'fr' ? 'Rechercher un nom…' : lang === 'tur' ? "İsim ara…" : lang === 'ind' ? "Cari nama…" : 'Search a name…',
+    empty: isAr ? 'لا نتيجة' : lang === 'fr' ? 'Aucun résultat' : lang === 'tur' ? "Sonuç yok" : lang === 'ind' ? "Tidak ada hasil" : 'No result'
   };
   const norm = s => (s || '').toString().toLowerCase().normalize('NFD').replace(/[\u064B-\u0652\u0300-\u036f]/g, '');
   const list = NAMES.filter(it => {
@@ -15989,8 +16325,8 @@ function AsmaScreen({
       navigator.vibrate(8);
     } catch {}
     const text = `${it.ar}\n${it.tr} — ${meaningOf(it)}\n\n📲 آلاء:\nhttps://www.lestyle.be/alaeApp`;
-    const ok = isAr ? 'تمّت المشاركة' : lang === 'fr' ? 'Partagé' : 'Shared';
-    const cp = isAr ? 'تمّ النسخ' : lang === 'fr' ? 'Copié' : 'Copied';
+    const ok = isAr ? 'تمّت المشاركة' : lang === 'fr' ? 'Partagé' : lang === 'tur' ? "Paylaşıldı" : lang === 'ind' ? "Dibagikan" : 'Shared';
+    const cp = isAr ? 'تمّ النسخ' : lang === 'fr' ? 'Copié' : lang === 'tur' ? "Kopyalandı" : lang === 'ind' ? "Disalin" : 'Copied';
     const tt = m => {
       setToast(m);
       setTimeout(() => setToast(''), 1600);
@@ -16455,7 +16791,7 @@ function AsmaScreen({
       opacity: 0.85,
       marginBottom: 8
     }
-  }, isAr ? 'دُعَاء' : 'Doua'), isAr ? /*#__PURE__*/React.createElement("div", {
+  }, isAr ? 'دُعَاء' : lang === 'tur' ? 'Dua' : lang === 'ind' ? 'Doa' : 'Doua'), isAr ? /*#__PURE__*/React.createElement("div", {
     style: {
       fontFamily: '"Amiri",serif',
       fontSize: 19,
@@ -16471,7 +16807,7 @@ function AsmaScreen({
       color: T.goldLight,
       lineHeight: 1.6
     }
-  }, sel.duaaFr)))))), toast && /*#__PURE__*/React.createElement("div", {
+  }, lang === 'tur' && sel.duaaTur ? sel.duaaTur : lang === 'ind' && sel.duaaInd ? sel.duaaInd : sel.duaaFr)))))), toast && /*#__PURE__*/React.createElement("div", {
     style: {
       position: 'absolute',
       bottom: 34,
@@ -16591,10 +16927,10 @@ window.AsmaScreen = AsmaScreen;
   var CDN = 'https://cdn.mp3quran.net/audio/';
   /* 16/10 : 33 recitateurs en 4 groupes (Maroc en tete). Sans Mishary Alafasy. */
   var GROUPS = [
-    { id:'ma',    ar:'المغرب · رواية ورش', fr:'Maroc · Warsh',       en:'Morocco · Warsh' },
-    { id:'haram', ar:'أئمة الحرمين',        fr:'Imams des deux Haram', en:'Imams of the Two Mosques' },
-    { id:'eg',    ar:'مصر',                 fr:'Égypte',              en:'Egypt' },
-    { id:'gulf',  ar:'الخليج وغيرها',       fr:'Golfe et autres',     en:'Gulf and others' }
+    { id:'ma',    ar:'المغرب · رواية ورش', fr:'Maroc · Warsh',       en:'Morocco · Warsh', tur: "Fas · Verş", ind: "Maroko · Warsy" },
+    { id:'haram', ar:'أئمة الحرمين',        fr:'Imams des deux Haram', en:'Imams of the Two Mosques', tur: "İki Harem İmamları", ind: "Imam Dua Masjid Suci" },
+    { id:'eg',    ar:'مصر',                 fr:'Égypte',              en:'Egypt', tur: "Mısır", ind: "Mesir" },
+    { id:'gulf',  ar:'الخليج وغيرها',       fr:'Golfe et autres',     en:'Gulf and others', tur: "Körfez ve diğerleri", ind: "Teluk dan lainnya" }
   ];
   var QARIS = [
     { id:'qazabri',  g:'ma', ar:'عمر القزابري',          lat:'Omar Al-Qazabri',        dir:'omar-kazabri/r1/', warsh:true },
@@ -16754,7 +17090,7 @@ window.AsmaScreen = AsmaScreen;
   var useQA = function(){ var st = React.useState(0); React.useEffect(function(){ return QA.sub(function(){ st[1](function(x){ return x + 1; }); }); }, []); return S; };
   var TXT = {
     fr: { title:'Écouter le Coran', search:'Rechercher une sourate…', used:'Hors ligne', delAll:'Tout supprimer', confirm:'Supprimer toutes les sourates téléchargées ?', del:'Supprimer cette sourate téléchargée ?', once:'Une fois', repeat:'Répéter', next:'Enchaîner', sleep:'Minuterie', end:'Fin de sourate', off:'Désactivée', err:'Téléchargement impossible', warsh:'Warsh', qari:'RÉCITATEUR', change:'Changer', qaris:'Récitateurs', searchQari:'Rechercher un récitateur…', src:'Récitations : mp3quran.net' },
-    en: { title:'Listen to the Quran', search:'Search a surah…', used:'Offline', delAll:'Delete all', confirm:'Delete all downloaded surahs?', del:'Delete this downloaded surah?', once:'Once', repeat:'Repeat', next:'Continue', sleep:'Sleep timer', end:'End of surah', off:'Off', err:'Download failed', warsh:'Warsh', qari:'RECITER', change:'Change', qaris:'Reciters', searchQari:'Search a reciter…', src:'Recitations: mp3quran.net' },
+    en: { title:'Listen to the Quran', search:'Search a surah…', used:'Offline', delAll:'Delete all', confirm:'Delete all downloaded surahs?', del:'Delete this downloaded surah?', once:'Once', repeat:'Repeat', next:'Continue', sleep:'Sleep timer', end:'End of surah', off:'Off', err:'Download failed', warsh:'Warsh', qari:'RECITER', change:'Change', qaris:'Reciters', searchQari:'Search a reciter…', src:'Recitations: mp3quran.net' }, tur: { title:"Kur'an Dinle", search:"Sure ara…", used:"Çevrimdışı", delAll:"Tümünü sil", confirm:"İndirilen tüm sureler silinsin mi?", del:"İndirilen bu sure silinsin mi?", once:"Bir kez", repeat:"Tekrarla", next:"Devam", sleep:"Uyku zamanlayıcı", end:"Sure sonu", off:"Kapalı", err:"İndirme başarısız", warsh:"Verş", qari:"KARİ", change:"Değiştir", qaris:"Kâriler", searchQari:"Kâri ara…", src:"Tilavetler: mp3quran.net" }, ind: { title:"Dengarkan Al-Qur'an", search:"Cari surah…", used:"Luring", delAll:"Hapus semua", confirm:"Hapus semua surah yang diunduh?", del:"Hapus surah yang diunduh ini?", once:"Sekali", repeat:"Ulangi", next:"Lanjutkan", sleep:"Pengatur waktu tidur", end:"Akhir surah", off:"Mati", err:"Gagal mengunduh", warsh:"Warsy", qari:"QARI", change:"Ubah", qaris:"Qari", searchQari:"Cari qari…", src:"Qiraah: mp3quran.net" },
     ar: { title:'الاستماع للقرآن', search:'ابحث عن سورة…', used:'بدون إنترنت', delAll:'حذف الكل', confirm:'حذف كل السور المحمّلة؟', del:'حذف هذه السورة المحمّلة؟', once:'مرة واحدة', repeat:'تكرار', next:'متتالية', sleep:'مؤقت النوم', end:'نهاية السورة', off:'متوقف', err:'تعذّر التحميل', warsh:'ورش', qari:'القارئ', change:'تغيير', qaris:'القرّاء', searchQari:'ابحث عن قارئ…', src:'التلاوات: mp3quran.net' }
   };
   var mb = function(b){ return b > 1e9 ? (b / 1e9).toFixed(1) + ' Go' : Math.round(b / 1e6) + ' Mo'; };
@@ -16777,9 +17113,9 @@ window.AsmaScreen = AsmaScreen;
   var togFav = function(n){ var f = favs().slice(), i = f.indexOf(n); if (i >= 0) f.splice(i, 1); else f.push(n); wr(FAVK, f); vib(); window.dispatchEvent(new Event('qa-favs')); };
   function useFavs(){ var u = React.useState(0); React.useEffect(function(){ var f = function(){ u[1](function(x){ return x + 1; }); }; window.addEventListener('qa-favs', f); return function(){ window.removeEventListener('qa-favs', f); }; }, []); return favs(); }
   var heart = function(s, on){ return h('svg', { width:s, height:s, viewBox:'0 0 20 20', fill:on ? 'currentColor' : 'none', stroke:'currentColor', strokeWidth:1.4, strokeLinejoin:'round' }, h('path', { d:'M10 16.5S3 12.3 3 7.6A3.6 3.6 0 0110 5.9a3.6 3.6 0 017 1.7c0 4.7-7 8.9-7 8.9z' })); };
-  var DLF = { fr:'Télécharger pour écouter après', en:'Download to listen later', ar:'حمّل للاستماع لاحقاً', nl:'Downloaden om later te luisteren' };
-  var DLMSG = { fr:'Aucune sourate téléchargée pour ce récitateur. Quand tu as internet, touche ↓ à côté d’une sourate : elle sera disponible sans connexion.', en:'No downloaded surahs for this reciter. When you are online, tap ↓ next to a surah to keep it for offline listening.', ar:'لا توجد سور محمّلة لهذا القارئ. عند الاتصال بالإنترنت، اضغط ↓ بجانب السورة لتستمع إليها بدون إنترنت.', nl:'Geen gedownloade soera’s voor deze reciteur. Tik online op ↓ naast een soera om die offline te beluisteren.' };
-  var FAVMSG = { fr:'Aucune sourate en favori. Touche le cœur dans le lecteur pour en ajouter.', en:'No favourite surahs yet. Tap the heart in the player to add one.', ar:'لا توجد سور مفضلة. اضغط على القلب في المشغل لإضافة سورة.', nl:'Nog geen favoriete soera’s. Tik op het hart in de speler om er een toe te voegen.' };
+  var DLF = { fr:'Télécharger pour écouter après', en:'Download to listen later', tur: "Daha sonra dinlemek için indir", ind: "Unduh untuk didengarkan nanti", ar:'حمّل للاستماع لاحقاً', nl:'Downloaden om later te luisteren' };
+  var DLMSG = { fr:'Aucune sourate téléchargée pour ce récitateur. Quand tu as internet, touche ↓ à côté d’une sourate : elle sera disponible sans connexion.', en:'No downloaded surahs for this reciter. When you are online, tap ↓ next to a surah to keep it for offline listening.', tur: "Bu kâri için indirilmiş sure yok. Çevrimiçi olduğunda, çevrimdışı dinlemek için bir surenin yanındaki ↓ simgesine dokun.", ind: "Belum ada surah yang diunduh untuk qari ini. Saat daring, ketuk ↓ di samping surah untuk menyimpannya agar bisa didengarkan secara luring.", ar:'لا توجد سور محمّلة لهذا القارئ. عند الاتصال بالإنترنت، اضغط ↓ بجانب السورة لتستمع إليها بدون إنترنت.', nl:'Geen gedownloade soera’s voor deze reciteur. Tik online op ↓ naast een soera om die offline te beluisteren.' };
+  var FAVMSG = { fr:'Aucune sourate en favori. Touche le cœur dans le lecteur pour en ajouter.', en:'No favourite surahs yet. Tap the heart in the player to add one.', tur: "Henüz favori sure yok. Eklemek için oynatıcıdaki kalbe dokun.", ind: "Belum ada surah favorit. Ketuk ikon hati di pemutar untuk menambahkannya.", ar:'لا توجد سور مفضلة. اضغط على القلب في المشغل لإضافة سورة.', nl:'Nog geen favoriete soera’s. Tik op het hart in de speler om er een toe te voegen.' };
   function QuranListenScreen(p){
     var lang = p.lang || 'fr', L = TXT[lang] || TXT.fr, T = window.THEME, isAr = lang === 'ar';
     var s = useQA(); var qs = React.useState(''); var q = qs[0].trim(); var ps = React.useState(false); var rq = React.useState(''); var FV = useFavs(), ff = React.useState(false), df = React.useState(false);
@@ -16828,9 +17164,9 @@ window.AsmaScreen = AsmaScreen;
     var gs = React.useState('all'), sel = gs[0]; var fl = React.useState(null), flash = fl[0]; React.useEffect(function(){ document.documentElement.setAttribute('data-qa-sheet', '1'); return function(){ document.documentElement.removeAttribute('data-qa-sheet'); }; }, []);
     var match = function(x){ return !f || p.strip(x.ar).indexOf(f) >= 0 || p.strip(x.lat).indexOf(f) >= 0; };
     var SF = '-apple-system,"SF Pro Text",system-ui,sans-serif', FA = isAr ? 'Amiri, serif' : SF;
-    var all = { id:'all', ar:'الكل', fr:'Tous', en:'All' };
+    var all = { id:'all', ar:'الكل', fr:'Tous', en:'All', tur: "Tümü", ind: "Semua" };
     var list = QARIS.filter(function(x){ return (sel === 'all' || x.g === sel) && match(x); });
-    var SHORT = { haram:{ ar:'الحرمين', fr:'Haram', en:'Haram' }, gulf:{ ar:'الخليج…', fr:'Golfe…', en:'Gulf…' } };
+    var SHORT = { haram:{ ar:'الحرمين', fr:'Haram', en:'Haram', tur: "Harem", ind: "Haram" }, gulf:{ ar:'الخليج…', fr:'Golfe…', en:'Gulf…', tur: "Körfez…", ind: "Teluk…" } };
     var chip = function(g){ var on = sel === g.id;
       return h('button', { key:g.id, onClick:function(){ gs[1](g.id); }, style:{ position:'relative', overflow:'hidden', isolation:'isolate', flex:'1 1 auto', minWidth:0, whiteSpace:'nowrap', padding:'8px 6px', backgroundClip:'padding-box', borderRadius:999, border:'none', cursor:'pointer', backgroundColor:'#1A140C', backgroundImage:on ? 'radial-gradient(ellipse 70% 60% at 30% 0%, rgba(255,240,200,0.38), rgba(255,240,200,0) 70%), linear-gradient(160deg, rgba(255,235,190,0.12), rgba(0,0,0,0.10)), var(--silk-img)' : 'radial-gradient(ellipse 70% 60% at 30% 0%, rgba(255,240,200,0.22), rgba(255,240,200,0) 70%), linear-gradient(rgba(0,0,0,0.18), rgba(0,0,0,0.30)), var(--silk-img)', backgroundSize:'100% 100%, 100% 100%, 300% auto', backgroundRepeat:'no-repeat', backgroundPosition:'center, center, ' + (20 + ['all','ma','haram','eg','gulf'].indexOf(g.id) * 15) + '% 45%', boxShadow:on ? 'inset 0 0 0 1px rgba(232,195,120,0.9), inset 0 1px 0 rgba(255,245,215,0.55)' : 'inset 0 0 0 0.5px rgba(232,195,120,0.5), inset 0 1px 0 rgba(255,245,215,0.3)', color:'#FFFFFF', textShadow:'0 1px 2px rgba(0,0,0,0.55)', fontFamily:FA, fontSize:isAr ? 14.5 : 12.5, fontWeight:700, transition:'color .2s', WebkitTapHighlightColor:'transparent' } },
         false && h('span', { style:{ position:'absolute', left:12, right:12, top:2, height:'40%', borderRadius:999, background:'linear-gradient(180deg, rgba(240,215,160,0.3), rgba(240,215,160,0))', pointerEvents:'none' } }),
@@ -16888,7 +17224,7 @@ window.AsmaScreen = AsmaScreen;
     var openBar = function(){ vib(); os[1](true); poke(); };
     React.useEffect(function(){ return function(){ clearTimeout(idle.current); }; }, []);
     var mp = React.useState(function(){ return rd('alae.mini.pos', null); }), md = React.useRef(null);
-    var mi = React.useState(false), MSG = { fr:'Attention : quand une sourate joue et que tu passes sur une autre page, le son continue, mais le bouton pause n’est plus visible. Pour arrêter, il faut revenir dans le Coran.', en:'Note: when a surah is playing and you go to another page, the sound keeps going, but the pause button is no longer visible. To stop it, come back to the Quran.', ar:'تنبيه: عند تشغيل سورة والانتقال إلى صفحة أخرى، يستمر الصوت لكن زر الإيقاف لا يظهر. للإيقاف، ارجع إلى صفحة القرآن.', nl:'Let op: als een soera speelt en je naar een andere pagina gaat, gaat het geluid door, maar de pauzeknop is niet meer zichtbaar. Ga terug naar de Koran om te stoppen.' };
+    var mi = React.useState(false), MSG = { fr:'Attention : quand une sourate joue et que tu passes sur une autre page, le son continue, mais le bouton pause n’est plus visible. Pour arrêter, il faut revenir dans le Coran.', en:'Note: when a surah is playing and you go to another page, the sound keeps going, but the pause button is no longer visible. To stop it, come back to the Quran.', tur: "Not: Bir sure çalarken başka bir sayfaya geçersen ses devam eder ama duraklat düğmesi artık görünmez. Durdurmak için Kur'an'a geri dön.", ind: "Catatan: saat surah sedang diputar lalu kamu pindah halaman, suara tetap berlanjut, tetapi tombol jeda tidak lagi terlihat. Untuk menghentikannya, kembali ke Al-Qur'an.", ar:'تنبيه: عند تشغيل سورة والانتقال إلى صفحة أخرى، يستمر الصوت لكن زر الإيقاف لا يظهر. للإيقاف، ارجع إلى صفحة القرآن.', nl:'Let op: als een soera speelt en je naar een andere pagina gaat, gaat het geluid door, maar de pauzeknop is niet meer zichtbaar. Ga terug naar de Koran om te stoppen.' };
     var mDown = function(e){ var el = barRef.current, par = el && el.offsetParent; if (!par) return; var R = par.getBoundingClientRect(), r = el.getBoundingClientRect();
       md.current = { sx:e.clientX, sy:e.clientY, ox:r.left - R.left, oy:r.top - R.top, W:R.width, H:R.height, moved:false }; try { el.setPointerCapture(e.pointerId); } catch(_){} };
     var mMove = function(e){ var d = md.current; if (!d) return; var dx = e.clientX - d.sx, dy = e.clientY - d.sy;
@@ -16957,7 +17293,7 @@ window.AsmaScreen = AsmaScreen;
     var place = P ? { left:(P.x * 100) + '%', top:(P.y * 100) + '%' } : { left:'50%', marginLeft:-24, bottom:s.n ? 104 : 28, transition:'bottom .3s ease' };
 
     var inf = React.useState(false), lang = p.lang || 'fr', isAr = lang === 'ar';
-    var MSG = { fr:'Attention : quand une sourate joue et que tu passes sur une autre page, le son continue, mais le bouton pause n’est plus visible. Pour arrêter, il faut revenir dans le Coran.', en:'Audio keeps playing when you change page. To pause, come back to the Quran.', ar:'يستمر الصوت عند الانتقال إلى صفحة أخرى. للإيقاف، عُد إلى القرآن.', nl:'Het geluid speelt door als je van pagina wisselt. Kom terug naar de Koran om te pauzeren.' };
+    var MSG = { fr:'Attention : quand une sourate joue et que tu passes sur une autre page, le son continue, mais le bouton pause n’est plus visible. Pour arrêter, il faut revenir dans le Coran.', en:'Audio keeps playing when you change page. To pause, come back to the Quran.', tur: "Sayfa değiştirsen de ses çalmaya devam eder. Duraklatmak için Kur'an'a geri dön.", ind: "Audio tetap berputar saat kamu berpindah halaman. Untuk menjeda, kembali ke Al-Qur'an.", ar:'يستمر الصوت عند الانتقال إلى صفحة أخرى. للإيقاف، عُد إلى القرآن.', nl:'Het geluid speelt door als je van pagina wisselt. Kom terug naar de Koran om te pauzeren.' };
     var ipos = P ? { left:'calc(' + (P.x * 100) + '% + 56px)', top:'calc(' + (P.y * 100) + '% + 12px)' } : { left:'50%', marginLeft:32, bottom:(s.n ? 104 : 28) + 12, transition:'bottom .3s ease' };
     var ibtn = h('button', { key:'i', 'aria-label':'info', onClick:function(){ inf[1](!inf[0]); }, style:Object.assign({ position:'absolute', zIndex:160, width:24, height:24, borderRadius:'50%', border:'none', padding:0, cursor:'pointer', background:'rgba(12,9,6,0.82)', boxShadow:'inset 0 0 0 1px rgba(240,215,154,0.45)', color:'#F0D79A', fontFamily:'Georgia, serif', fontStyle:'italic', fontWeight:700, fontSize:13, lineHeight:'24px', textAlign:'center', WebkitTapHighlightColor:'transparent' }, ipos) }, 'i');
     var tip = inf[0] && h('div', { key:'t', onClick:function(){ inf[1](false); }, style:{ position:'absolute', zIndex:161, left:16, right:16, bottom:(s.n ? 104 : 28) + 62, padding:'12px 14px', borderRadius:14, background:'rgba(14,11,8,0.94)', boxShadow:'inset 0 0 0 0.5px rgba(240,215,154,0.4), 0 0 24px rgba(0,0,0,0.5)', color:'#FBEFD6', fontFamily:isAr ? 'Amiri, serif' : '-apple-system,sans-serif', fontSize:isAr ? 15 : 13, lineHeight:1.45, direction:isAr ? 'rtl' : 'ltr', textAlign:isAr ? 'right' : 'left', animation:'qaIn .25s ease both' } }, MSG[lang] || MSG.fr);
@@ -17114,7 +17450,9 @@ window.AsmaScreen = AsmaScreen;
     const J = {
       fr: n => n === 1 ? '1 jour' : n + ' jours',
       en: n => n === 1 ? '1 day' : n + ' days',
-      ar: n => n === 1 ? 'يوم واحد' : n === 2 ? 'يومين' : n <= 10 ? n + ' أيام' : n + ' يومًا'
+      ar: n => n === 1 ? 'يوم واحد' : n === 2 ? 'يومين' : n <= 10 ? n + ' أيام' : n + ' يومًا',
+      tur: n => n + ' gün',
+      ind: n => n + ' hari'
     };
     const TX = {
       fr: {
@@ -17146,6 +17484,36 @@ window.AsmaScreen = AsmaScreen;
         garde: n => 'Day ' + n + ' · streak kept',
         palier: n => J.en(n) + ' in a row · ما شاء الله',
         objectif: g => 'Goal of ' + g + ' reached'
+      },
+      tur: {
+        dangerTitre: n => 'آلَاء · Seri: ' + J.tur(n),
+        dangerCorps: n => 'Serin ' + J.tur(n) + ' oldu, bozma!\nوَاذْكُر رَّبَّكَ إِذَا نَسِيتَ\n"Unuttuğun zaman Rabbini an." (18:24)',
+        objectifTitre: () => 'آلَاء · Bugünün hedefi',
+        objectifCorps: (g, r) => 'Bugünkü ' + g + ' hedefini unutma: ' + r + ' kaldı.\nيَا أَيُّهَا الَّذِينَ آمَنُوا اذْكُرُوا اللَّهَ ذِكْرًا كَثِيرًا\n"Ey iman edenler! Allah\'ı çokça zikredin." (33:41)',
+        matinTitre: () => 'آلَاء · Sabah zikri',
+        matinCorps: () => 'Sabah zikrinin vakti geldi.\nوَسَبِّحُوهُ بُكْرَةً وَأَصِيلًا\n"Sabah akşam O\'nu tesbih edin." (33:42)',
+        retourTitre: () => 'آلَاء',
+        retourCorps: () => 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ\n"Biliniz ki kalpler ancak Allah\'ı anmakla huzur bulur." (13:28)',
+        retour7Corps: () => 'أَلَمْ يَأْنِ لِلَّذِينَ آمَنُوا أَن تَخْشَعَ قُلُوبُهُمْ لِذِكْرِ اللَّهِ\n"İman edenlerin kalplerinin Allah\'ı anmaya saygıyla eğilme zamanı gelmedi mi?" (57:16)',
+        ouverture: n => 'Serin ' + J.tur(n) + ' · korumak için bugün zikrini yap',
+        garde: n => 'Gün ' + n + ' · seri korundu',
+        palier: n => J.tur(n) + ' üst üste · ما شاء الله',
+        objectif: g => g + ' hedefine ulaşıldı'
+      },
+      ind: {
+        dangerTitre: n => 'آلَاء · Rentetan ' + J.ind(n),
+        dangerCorps: n => 'Rentetanmu sudah ' + J.ind(n) + ', jangan sampai putus!\nوَاذْكُر رَّبَّكَ إِذَا نَسِيتَ\n"Dan ingatlah Tuhanmu apabila engkau lupa." (18:24)',
+        objectifTitre: () => 'آلَاء · Target hari ini',
+        objectifCorps: (g, r) => 'Jangan lupa targetmu ' + g + ': tinggal ' + r + '.\nيَا أَيُّهَا الَّذِينَ آمَنُوا اذْكُرُوا اللَّهَ ذِكْرًا كَثِيرًا\n"Wahai orang-orang yang beriman, berzikirlah kepada Allah sebanyak-banyaknya." (33:41)',
+        matinTitre: () => 'آلَاء · Zikir pagi',
+        matinCorps: () => 'Saatnya zikir pagimu.\nوَسَبِّحُوهُ بُكْرَةً وَأَصِيلًا\n"Dan bertasbihlah kepada-Nya pada waktu pagi dan petang." (33:42)',
+        retourTitre: () => 'آلَاء',
+        retourCorps: () => 'أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ\n"Ingatlah, hanya dengan mengingat Allah hati menjadi tenteram." (13:28)',
+        retour7Corps: () => 'أَلَمْ يَأْنِ لِلَّذِينَ آمَنُوا أَن تَخْشَعَ قُلُوبُهُمْ لِذِكْرِ اللَّهِ\n"Belumkah tiba waktunya bagi orang-orang yang beriman untuk menundukkan hati mereka mengingat Allah?" (57:16)',
+        ouverture: n => 'Rentetan ' + J.ind(n) + ' · berzikirlah hari ini untuk menjaganya',
+        garde: n => 'Hari ' + n + ' · rentetan terjaga',
+        palier: n => J.ind(n) + ' berturut-turut · ما شاء الله',
+        objectif: g => 'Target ' + g + ' tercapai'
       },
       ar: {
         dangerTitre: n => 'آلَاء · سلسلة ' + J.ar(n),
@@ -17247,7 +17615,7 @@ window.AsmaScreen = AsmaScreen;
     const daily = s.daily || {};
     const WD = {
       fr: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
-      en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+      en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'], tur: ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"], ind: ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"],
       ar: ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت']
     }[lang] || ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const week = [];
@@ -17635,7 +18003,7 @@ window.AsmaScreen = AsmaScreen;
     const I = window.I18N[lang];
     const items = [{
       id: 'onboarding',
-      label: isAr ? 'النِّيَّة' : lang === 'fr' ? "L'intention" : 'Intention',
+      label: isAr ? 'النِّيَّة' : lang === 'fr' ? "L'intention" : lang === 'tur' ? "Niyet" : lang === 'ind' ? "Niat" : 'Intention',
       icon: 'star'
     }, {
       /* 17/10 : le 3adad juste sous la niyya (ALAE) */
@@ -17644,43 +18012,43 @@ window.AsmaScreen = AsmaScreen;
       icon: 'circle'
     }, {
       id: 'prayer',
-      label: isAr ? 'مَوَاقِيت الصَّلَاة' : lang === 'fr' ? 'Prières' : 'Prayers',
+      label: isAr ? 'مَوَاقِيت الصَّلَاة' : lang === 'fr' ? 'Prières' : lang === 'tur' ? "Namazlar" : lang === 'ind' ? "Waktu salat" : 'Prayers',
       icon: 'mosque'
     }, {
       id: 'qibla',
-      label: isAr ? 'القبلة' : lang === 'fr' ? 'Qibla' : 'Qibla',
+      label: isAr ? 'القبلة' : lang === 'fr' ? 'Qibla' : lang === 'tur' ? "Kıble" : lang === 'ind' ? "Kiblat" : 'Qibla',
       icon: 'compass'
     }, {
       id: 'adhkar',
-      label: isAr ? 'أذكار الصباح والمساء' : lang === 'fr' ? 'Adhkar matin/soir' : 'Morning/Evening adhkar',
+      label: isAr ? 'أذكار الصباح والمساء' : lang === 'fr' ? 'Adhkar matin/soir' : lang === 'tur' ? "Sabah/Akşam zikirleri" : lang === 'ind' ? "Zikir pagi/petang" : 'Morning/Evening adhkar',
       icon: 'sun'
     }, {
       id: 'morningcard',
-      label: isAr ? 'دُعَاء صَبَاحي' : lang === 'fr' ? 'Prière matinale' : 'Morning du\'a',
+      label: isAr ? 'دُعَاء صَبَاحي' : lang === 'fr' ? 'Prière matinale' : lang === 'tur' ? "Sabah duası" : lang === 'ind' ? "Doa pagi" : 'Morning du\'a',
       icon: 'sun'
     }, {
       id: 'community',
-      label: isAr ? 'مُصحفي' : lang === 'fr' ? 'Mon Coran' : 'My Quran',
+      label: isAr ? 'مُصحفي' : lang === 'fr' ? 'Mon Coran' : lang === 'tur' ? "Kur'an'ım" : lang === 'ind' ? "Al-Qur'anku" : 'My Quran',
       icon: 'people'
     }, {
       id: 'listen',
-      label: isAr ? 'الاستماع للقرآن' : lang === 'fr' ? 'Écouter le Coran' : 'Listen to the Quran',
+      label: isAr ? 'الاستماع للقرآن' : lang === 'fr' ? 'Écouter le Coran' : lang === 'tur' ? "Kur'an Dinle" : lang === 'ind' ? "Dengarkan Al-Qur'an" : 'Listen to the Quran',
       icon: 'listen'
     }, {
       id: 'duaa',
-      label: isAr ? 'دُعَاء اليوم' : lang === 'fr' ? 'Dou\'a du jour' : 'Daily du\'a',
+      label: isAr ? 'دُعَاء اليوم' : lang === 'fr' ? 'Dou\'a du jour' : lang === 'tur' ? "Günün duası" : lang === 'ind' ? "Doa harian" : 'Daily du\'a',
       icon: 'heart'
     }, {
       id: 'asma',
-      label: isAr ? 'أسماء الله الحسنى' : lang === 'fr' ? 'Les 99 noms d\'Allah' : 'The 99 Names',
+      label: isAr ? 'أسماء الله الحسنى' : lang === 'fr' ? 'Les 99 noms d\'Allah' : lang === 'tur' ? "Esmaül Hüsna" : lang === 'ind' ? "Asmaul Husna" : 'The 99 Names',
       icon: 'star'
     }, {
       id: 'series',
-      label: isAr ? 'السلاسل' : lang === 'fr' ? 'Séries de dhikr' : 'Dhikr series',
+      label: isAr ? 'السلاسل' : lang === 'fr' ? 'Séries de dhikr' : lang === 'tur' ? "Zikir serileri" : lang === 'ind' ? "Seri zikir" : 'Dhikr series',
       icon: 'list'
     }, {
       id: 'defis',
-      label: isAr ? 'التحديات' : lang === 'fr' ? 'Défis' : 'Challenges',
+      label: isAr ? 'التحديات' : lang === 'fr' ? 'Défis' : lang === 'tur' ? "Meydan okumalar" : lang === 'ind' ? "Tantangan" : 'Challenges',
       icon: 'target'
     }, {
       id: 'library',
@@ -17692,7 +18060,7 @@ window.AsmaScreen = AsmaScreen;
       icon: 'chart'
     }, {
       id: 'custom',
-      label: isAr ? 'ذكر جديد' : lang === 'fr' ? 'Créer un dhikr' : 'New dhikr',
+      label: isAr ? 'ذكر جديد' : lang === 'fr' ? 'Créer un dhikr' : lang === 'tur' ? "Yeni zikir" : lang === 'ind' ? "Zikir baru" : 'New dhikr',
       icon: 'plus'
     }, {
       id: 'settings',
@@ -19238,7 +19606,7 @@ window.AsmaScreen = AsmaScreen;
           zIndex: 10000,
           fontWeight: 500
         }
-      }, isAr ? '· اضغط للمتابعة ·' : '· Tap to continue ·'), /*#__PURE__*/React.createElement("style", null, `@keyframes tapHint { 0%, 100% { opacity: 0.5 } 50% { opacity: 1 } }`));
+      }, isAr ? '· اضغط للمتابعة ·' : lang === 'tur' ? "· Devam etmek için dokun ·" : lang === 'ind' ? "· Ketuk untuk melanjutkan ·" : '· Tap to continue ·'), /*#__PURE__*/React.createElement("style", null, `@keyframes tapHint { 0%, 100% { opacity: 0.5 } 50% { opacity: 1 } }`));
     }
 
     // ── Daily Dou'a splash (random, tap to continue, auto-dismiss after 6s) ──
@@ -19591,16 +19959,16 @@ window.AsmaScreen = AsmaScreen;
       { id: 'ar', label: 'العربية', sub: 'Arabic', titre: 'اختر لغتك', btn: 'متابعة', ar: true },
       { id: 'fr', label: 'Français', sub: 'French', titre: 'Choisissez votre langue', btn: 'Continuer' },
       /* apparaissent automatiquement des que window.I18N.tr / .id existent */
-      { id: 'tr', label: 'Türkçe', titre: 'Dilinizi seçin', btn: 'Devam', pied: 'Ayarlardan istediğiniz zaman değiştirebilirsiniz' },
-      { id: 'id', label: 'Bahasa Indonesia', titre: 'Pilih bahasa Anda', btn: 'Lanjutkan', pied: 'Bisa diubah kapan saja di pengaturan' }
+      { id: 'tur', label: 'Türkçe', titre: 'Dilinizi seçin', btn: 'Devam', pied: 'Ayarlardan istediğiniz zaman değiştirebilirsiniz' },
+      { id: 'ind', label: 'Bahasa Indonesia', titre: 'Pilih bahasa Anda', btn: 'Lanjutkan', pied: 'Bisa diubah kapan saja di pengaturan' }
     ].filter(o => window.I18N && window.I18N[o.id]);
     const devine = () => {
       try {
         const l = String((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
         if (l.indexOf('ar') === 0) return 'ar';
         if (l.indexOf('fr') === 0) return 'fr';
-        if (l.indexOf('tr') === 0 && window.I18N && window.I18N.tr) return 'tr';
-        if ((l.indexOf('id') === 0 || l.indexOf('in') === 0 || l.indexOf('ms') === 0) && window.I18N && window.I18N.id) return 'id';
+        if (l.indexOf('tr') === 0 && window.I18N && window.I18N.tur) return 'tur';
+        if ((l.indexOf('id') === 0 || l.indexOf('in') === 0 || l.indexOf('ms') === 0) && window.I18N && window.I18N.ind) return 'ind';
         if (l) return 'en';
       } catch (e) {}
       return 'ar';

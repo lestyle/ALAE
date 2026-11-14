@@ -1,0 +1,4 @@
+"CFBundleDisplayName" = "ALAE";
+"NSLocationWhenInUseUsageDescription" = "ALAE menggunakan lokasi Anda untuk menghitung waktu salat dan arah kiblat. Data ini tidak pernah keluar dari iPhone Anda.";
+"NSMotionUsageDescription" = "ALAE menggunakan kompas iPhone Anda untuk menunjukkan arah kiblat menuju Kakbah.";
+"NSUserNotificationsUsageDescription" = "ALAE mengirimkan pengingat setiap waktu salat, dengan azan pilihan Anda.";
