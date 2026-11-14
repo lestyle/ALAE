@@ -19587,7 +19587,8 @@ window.AsmaScreen = AsmaScreen;
     /* lettres d'or en relief : tranche en epaisseur (adoucie), face polie, ombre portee */
     const or3d = (txt, size, ar, prof) => {
       const n = prof || Math.max(6, Math.round(size / 3.4)), steps = Array.from({ length: n }, (_, k) => n - k);
-      return h('div', { style: { position: 'relative', display: 'inline-block', fontFamily: ar ? '"Amiri",serif' : '"Cormorant Garamond",serif', fontSize: size, fontWeight: 700, letterSpacing: ar ? 0 : '0.04em', lineHeight: 1.2, direction: ar ? 'rtl' : 'ltr', whiteSpace: 'nowrap', filter: 'drop-shadow(0 ' + Math.round(size / 4) + 'px ' + Math.round(size / 4) + 'px rgba(0,0,0,.75)) drop-shadow(0 2px 3px rgba(0,0,0,.6))' } },
+      /* 14/11 : police Didone (Didot / Bodoni 72, integrees a iOS), en capitales, choix d'ALAE. */
+      return h('div', { style: { position: 'relative', display: 'inline-block', fontFamily: ar ? '"Amiri",serif' : 'Didot, "Bodoni 72", "Bodoni MT", "Playfair Display", "Cormorant Garamond", serif', textTransform: ar ? 'none' : 'uppercase', fontSize: size, fontWeight: 700, letterSpacing: ar ? 0 : '0.03em', lineHeight: 1.2, direction: ar ? 'rtl' : 'ltr', whiteSpace: 'nowrap', filter: 'drop-shadow(0 ' + Math.round(size / 4) + 'px ' + Math.round(size / 4) + 'px rgba(0,0,0,.75)) drop-shadow(0 2px 3px rgba(0,0,0,.6))' } },
         h('div', { 'aria-hidden': true, style: { position: 'absolute', inset: 0, filter: 'blur(0.45px)' } }, ...steps.map(k => { const t = k / n, c = v => Math.round(v); return h('span', { key: 'e' + k, style: { position: 'absolute', left: 0, top: k * 0.5, whiteSpace: 'nowrap', color: 'transparent', WebkitTextFillColor: 'rgb(' + c(176 - 110 * t) + ',' + c(122 - 78 * t) + ',' + c(52 - 38 * t) + ')' } }, txt); })),
         h('span', { style: { position: 'relative', whiteSpace: 'nowrap', color: 'transparent', backgroundImage: 'linear-gradient(180deg,#FFFDF4 0%,#FBE7B6 25%,#E9C27A 45%,#C99448 58%,#E8BE72 78%,#FCE7B4 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' } }, txt));
     };
@@ -19603,7 +19604,7 @@ window.AsmaScreen = AsmaScreen;
         @keyframes lcShine{0%,100%{background-position:100% 0}50%{background-position:0% 0}}
         @keyframes lcGlow{0%,100%{opacity:.55;transform:translate(-50%,-50%) scale(1)}50%{opacity:.85;transform:translate(-50%,-50%) scale(1.08)}}
         @keyframes lcSheen{0%{left:-60%}60%,100%{left:130%}}
-        @keyframes lcDiam{0%,100%{filter:brightness(1) drop-shadow(0 1px 2px rgba(0,0,0,.7))}50%{filter:brightness(1.22) contrast(1.08) drop-shadow(0 0 3px rgba(235,245,255,.55)) drop-shadow(0 1px 2px rgba(0,0,0,.7))}}
+        @keyframes lcDiam{0%,100%{filter:drop-shadow(0 0 2px rgba(220,235,255,.45)) drop-shadow(0 2px 2px rgba(0,0,0,.7))}50%{filter:brightness(1.12) drop-shadow(0 0 5px rgba(235,245,255,.85)) drop-shadow(0 2px 2px rgba(0,0,0,.7))}}
         @keyframes lcHalo{0%,100%{opacity:.45;transform:scale(.85)}50%{opacity:1;transform:scale(1.15)}}
         @keyframes lcRayons{to{transform:rotate(360deg)}}
         @keyframes lcEclat{0%,35%,65%,100%{opacity:0;transform:scale(.3) rotate(0deg)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
@@ -19617,7 +19618,7 @@ window.AsmaScreen = AsmaScreen;
       h('div', { style: { position: 'absolute', left: '50%', top: 380, width: 420, height: 420, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,214,140,.22), rgba(224,162,63,.07) 55%, rgba(0,0,0,0) 100%)', animation: 'lcGlow 5s ease-in-out infinite', pointerEvents: 'none' } }),
       /* titre dans la langue choisie */
       /* 14/11 : titre dans la meme police que Continuer : lettres d'or en relief (ALAE). */
-      h('div', { key: 't' + o.id, style: { position: 'absolute', top: 116, left: 0, right: 0, textAlign: 'center', animation: 'lcFade .5s ease both' } }, or3d(o.titre, o.ar ? 30 : 30, o.ar)),
+      h('div', { key: 't' + o.id, lang: o.id, style: { position: 'absolute', top: 116, left: 0, right: 0, textAlign: 'center', animation: 'lcFade .5s ease both' } }, or3d(o.titre, o.ar ? 30 : (o.titre.length > 20 ? 23 : 26), o.ar)),
       h('div', { style: { position: 'absolute', top: 170, left: '50%', marginLeft: -75, width: 150, display: 'flex', alignItems: 'center', gap: 10, animation: 'lcFade 1s ease .3s both' } },
         h('div', { style: { flex: 1, height: 1, background: 'linear-gradient(90deg, rgba(232,194,122,0), rgba(232,194,122,.8))' } }),
         h('div', { style: { width: 6, height: 6, transform: 'rotate(45deg)', background: OR, boxShadow: '0 0 10px rgba(255,214,140,.8)' } }),
@@ -19647,10 +19648,24 @@ window.AsmaScreen = AsmaScreen;
           /* ALAE grave */
           h('div', { style: { position: 'absolute', left: 0, right: 0, top: 24, textAlign: 'center', fontFamily: '"Cormorant Garamond",serif', fontSize: 15, fontWeight: 700, letterSpacing: 7, paddingLeft: 7, color: 'transparent', backgroundImage: 'linear-gradient(180deg,#8A6430 0%,#E9C88A 60%,#FFF0C8 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 -1px 0 rgba(0,0,0,.9)) drop-shadow(0 1px 0 rgba(255,230,180,.25))' } }, 'ALAE'),
           /* diamant serti dans un petit creux */
-          h('div', { style: { position: 'absolute', left: '50%', top: 48, width: 46, height: 46, marginLeft: -23, borderRadius: '50%', background: 'radial-gradient(circle at 50% 40%, rgba(0,0,0,.25), rgba(0,0,0,.7))', boxShadow: 'inset 0 6px 10px rgba(0,0,0,.9), 0 1px 0 rgba(255,225,170,.25)' } },
+          h('div', { style: { position: 'absolute', left: '50%', top: 46, width: 52, height: 52, marginLeft: -26, borderRadius: '50%', background: 'radial-gradient(circle at 50% 40%, rgba(0,0,0,.25), rgba(0,0,0,.7))', boxShadow: 'inset 0 6px 10px rgba(0,0,0,.9), 0 1px 0 rgba(255,225,170,.25)' } },
             /* 14/11 : le bijou net et brillant (choix ALAE : sans halo), 3 eclats decales */
-            h('img', { src: DIAM, alt: '', 'aria-hidden': true, style: { position: 'absolute', left: 6, top: 11, width: 34, display: 'block', animation: 'lcDiam 2.6s ease-in-out infinite' } }),
-            ...[[2, 2, 0, 18], [32, 30, 1.1, 12], [-4, 26, 1.9, 10]].map(([x, y, d, z], k) => h('div', { key: 'ec' + k, 'aria-hidden': true, style: { position: 'absolute', left: x + 6, top: y, width: z, height: z, animation: 'lcEclat 2.6s ease-in-out ' + d + 's infinite', pointerEvents: 'none', background: 'radial-gradient(circle, #fff 0 1.5px, rgba(255,255,255,0) 2px), linear-gradient(0deg, rgba(255,255,255,0) 42%, #fff 50%, rgba(255,255,255,0) 58%), linear-gradient(90deg, rgba(255,255,255,0) 42%, #fff 50%, rgba(255,255,255,0) 58%)', filter: 'drop-shadow(0 0 4px rgba(220,235,255,1))' } }))),
+            /* 14/11 : diamant dessine en vecteur (net a toutes les tailles, plus de photo floue) (ALAE). */
+            h('svg', { 'aria-hidden': true, viewBox: '0 0 100 76', width: 40, height: 30.4, style: { position: 'absolute', left: 6, top: 11, overflow: 'visible', animation: 'lcDiam 2.6s ease-in-out infinite' } },
+              h('g', { stroke: 'rgba(255,255,255,.85)', strokeWidth: 0.9, strokeLinejoin: 'round' },
+              h('polygon', { points: '4,26 30,8 27,26', fill: '#EAF4FF' }),
+              h('polygon', { points: '30,8 50,26 27,26', fill: '#C3D8F2' }),
+              h('polygon', { points: '30,8 70,8 50,26', fill: '#FFFFFF' }),
+              h('polygon', { points: '70,8 73,26 50,26', fill: '#D6E7FA' }),
+              h('polygon', { points: '70,8 96,26 73,26', fill: '#AFC9EC' }),
+              h('polygon', { points: '4,26 27,26 50,72', fill: '#D9E9FB' }),
+              h('polygon', { points: '27,26 50,26 50,72', fill: '#93B6E2' }),
+              h('polygon', { points: '50,26 73,26 50,72', fill: '#F4F9FF' }),
+              h('polygon', { points: '73,26 96,26 50,72', fill: '#A6C3EA' })),
+              h('polygon', { points: '30,8 70,8 50,26', fill: 'rgba(255,255,255,.55)' }),
+              h('polyline', { points: '4,26 96,26', stroke: '#fff', strokeWidth: 1.4, fill: 'none' }),
+              h('polygon', { points: '38,30 46,30 50,58', fill: 'rgba(255,255,255,.7)' })),
+            /* 14/11 : eclats poses SUR les pointes du diamant (bord droit, bord gauche, table), plus a cote (ALAE). */ ...[[44.4, 21.4, 0, 15], [7.6, 21.4, 1.1, 11], [26, 14.2, 1.9, 9]].map(([x, y, d, z], k) => h('div', { key: 'ec' + k, 'aria-hidden': true, style: { position: 'absolute', left: x - z / 2, top: y - z / 2, width: z, height: z, animation: 'lcEclat 2.6s ease-in-out ' + d + 's infinite', pointerEvents: 'none', background: 'radial-gradient(circle, #fff 0 1.5px, rgba(255,255,255,0) 2px), linear-gradient(0deg, rgba(255,255,255,0) 42%, #fff 50%, rgba(255,255,255,0) 58%), linear-gradient(90deg, rgba(255,255,255,0) 42%, #fff 50%, rgba(255,255,255,0) 58%)', filter: 'drop-shadow(0 0 4px rgba(220,235,255,1))' } }))),
           /* guichet encore plus profond */
           h('div', { style: { position: 'absolute', left: 18, right: 18, top: 122, height: H * 3 + 6, borderRadius: 22, padding: 3, boxSizing: 'border-box',
               background: 'linear-gradient(180deg, rgba(0,0,0,.9), rgba(0,0,0,.6) 70%, rgba(0,0,0,.9))',
@@ -19679,11 +19694,7 @@ window.AsmaScreen = AsmaScreen;
         style: { position: 'absolute', left: 40, right: 40, bottom: 140, height: 80, border: 'none', background: 'transparent', cursor: 'pointer', WebkitTapHighlightColor: 'transparent', padding: 0, animation: 'lcUp .8s ease 1s both' }
       },
         h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 58, width: 300, height: 46, marginLeft: -150, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,196,110,.22), rgba(0,0,0,0))', pointerEvents: 'none' } }),
-        h('div', { key: 'b' + o.id, style: { position: 'relative', display: 'inline-block', fontFamily: o.ar ? '"Amiri",serif' : '"Cormorant Garamond",serif', fontSize: o.ar ? 40 : 40, fontWeight: 700, letterSpacing: o.ar ? 0 : '0.06em', lineHeight: 1.2, direction: o.ar ? 'rtl' : 'ltr', animation: 'lcFade .5s ease both', filter: 'drop-shadow(0 10px 10px rgba(0,0,0,.75)) drop-shadow(0 2px 3px rgba(0,0,0,.6))' } },
-          /* tranche : copies decalees vers le bas */
-          h('div', { 'aria-hidden': true, style: { position: 'absolute', inset: 0, filter: 'blur(0.45px)' } }, ...[12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1].map(k => { const t = k / 12, c = n => Math.round(n); return h('span', { key: 'e' + k, 'aria-hidden': true, style: { position: 'absolute', left: 0, top: k * 0.5, whiteSpace: 'nowrap', color: 'transparent', WebkitTextFillColor: 'rgb(' + c(176 - 110 * t) + ',' + c(122 - 78 * t) + ',' + c(52 - 38 * t) + ')' } }, o.btn); })),
-          /* face polie */
-          h('span', { style: { position: 'relative', whiteSpace: 'nowrap', color: 'transparent', backgroundImage: 'linear-gradient(180deg,#FFFDF4 0%,#FBE7B6 25%,#E9C27A 45%,#C99448 58%,#E8BE72 78%,#FCE7B4 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' } }, o.btn)),
+        h('div', { key: 'b' + o.id, lang: o.id, style: { position: 'relative', display: 'inline-block', animation: 'lcFade .5s ease both' } }, or3d(o.btn, o.ar ? 40 : 38, o.ar)),
         /* filet de lumiere */
         h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 66, width: 280, height: 2, marginLeft: -140, background: 'radial-gradient(closest-side, #FFF3D0, rgba(255,200,110,.45) 40%, rgba(255,200,110,0))', pointerEvents: 'none' } })
       ),
