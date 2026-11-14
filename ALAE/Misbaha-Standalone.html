@@ -19544,13 +19544,18 @@ window.AsmaScreen = AsmaScreen;
     const OPTS = [
       { id: 'ar', label: 'العربية', sub: 'Arabic', titre: 'اختر لغتك', btn: 'متابعة', ar: true },
       { id: 'fr', label: 'Français', sub: 'French', titre: 'Choisissez votre langue', btn: 'Continuer' },
-      { id: 'en', label: 'English', sub: 'Anglais', titre: 'Choose your language', btn: 'Continue' }
+      { id: 'en', label: 'English', sub: 'Anglais', titre: 'Choose your language', btn: 'Continue' },
+      /* apparaissent automatiquement des que window.I18N.tr / .id existent */
+      { id: 'tr', label: 'Türkçe', titre: 'Dilinizi seçin', btn: 'Devam', pied: 'Ayarlardan istediğiniz zaman değiştirebilirsiniz' },
+      { id: 'id', label: 'Bahasa Indonesia', titre: 'Pilih bahasa Anda', btn: 'Lanjutkan', pied: 'Bisa diubah kapan saja di pengaturan' }
     ].filter(o => window.I18N && window.I18N[o.id]);
     const devine = () => {
       try {
         const l = String((navigator.languages && navigator.languages[0]) || navigator.language || '').toLowerCase();
         if (l.indexOf('ar') === 0) return 'ar';
         if (l.indexOf('fr') === 0) return 'fr';
+        if (l.indexOf('tr') === 0 && window.I18N && window.I18N.tr) return 'tr';
+        if ((l.indexOf('id') === 0 || l.indexOf('in') === 0 || l.indexOf('ms') === 0) && window.I18N && window.I18N.id) return 'id';
         if (l) return 'en';
       } catch (e) {}
       return 'ar';
@@ -19582,9 +19587,9 @@ window.AsmaScreen = AsmaScreen;
       /* halo d'or qui respire */
       h('div', { style: { position: 'absolute', left: '50%', top: 170, width: 360, height: 360, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,214,140,.30), rgba(224,162,63,.10) 55%, rgba(0,0,0,0) 100%)', animation: 'lcGlow 5s ease-in-out infinite', pointerEvents: 'none' } }),
       /* calligraphie */
-      h('div', { style: { position: 'absolute', top: 92, left: 0, right: 0, textAlign: 'center', animation: 'lcUp .9s ease .15s both' } },
-        h('div', { 'aria-hidden': true, style: { position: 'absolute', top: 0, left: 0, right: 0, fontFamily: '"ArefRuqaa","Amiri",serif', fontSize: 92, lineHeight: 1.25, direction: 'rtl', color: 'rgba(255,200,110,.55)', filter: 'blur(14px)', pointerEvents: 'none' } }, 'آلَاء'),
-        h('div', { style: { position: 'relative', fontFamily: '"ArefRuqaa","Amiri",serif', fontSize: 92, lineHeight: 1.25, direction: 'rtl', color: 'transparent', backgroundImage: 'linear-gradient(100deg, #C98E45 0%, #F3D493 22%, #FFE9B8 34%, #FFFBEF 42%, #FFE3A0 50%, #E2AE62 64%, #F6D896 80%, #C98E45 100%)', backgroundSize: '260% 100%', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', animation: 'lcShine 4.5s ease-in-out 1s infinite' } }, 'آلَاء'),
+      h('div', { style: { position: 'absolute', top: 64, left: 0, right: 0, textAlign: 'center', animation: 'lcUp .9s ease .15s both' } },
+        h('div', { 'aria-hidden': true, style: { position: 'absolute', top: 0, left: 0, right: 0, fontFamily: '"ArefRuqaa","Amiri",serif', fontSize: 80, lineHeight: 1.25, direction: 'rtl', color: 'rgba(255,200,110,.55)', filter: 'blur(14px)', pointerEvents: 'none' } }, 'آلَاء'),
+        h('div', { style: { position: 'relative', fontFamily: '"ArefRuqaa","Amiri",serif', fontSize: 80, lineHeight: 1.25, direction: 'rtl', color: 'transparent', backgroundImage: 'linear-gradient(100deg, #C98E45 0%, #F3D493 22%, #FFE9B8 34%, #FFFBEF 42%, #FFE3A0 50%, #E2AE62 64%, #F6D896 80%, #C98E45 100%)', backgroundSize: '260% 100%', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', animation: 'lcShine 4.5s ease-in-out 1s infinite' } }, 'آلَاء'),
         h('div', { style: { marginTop: 2, fontFamily: '"Cormorant Garamond",serif', fontSize: 15, letterSpacing: '0.62em', paddingLeft: '0.62em', color: '#E8C98A', opacity: .9 } }, 'ALAE'),
         h('div', { style: { margin: '18px auto 0', width: 170, display: 'flex', alignItems: 'center', gap: 10 } },
           h('div', { style: { flex: 1, height: 1, background: 'linear-gradient(90deg, rgba(232,194,122,0), rgba(232,194,122,.8))' } }),
@@ -19593,16 +19598,16 @@ window.AsmaScreen = AsmaScreen;
         )
       ),
       /* titre dans la langue choisie */
-      h('div', { key: 't' + o.id, style: { position: 'absolute', top: 336, left: 24, right: 24, textAlign: 'center', direction: o.ar ? 'rtl' : 'ltr', fontFamily: o.ar ? '"Amiri",serif' : '"Cormorant Garamond",serif', fontStyle: o.ar ? 'normal' : 'italic', fontSize: o.ar ? 27 : 26, color: '#F6E7C4', textShadow: '0 2px 14px rgba(0,0,0,.6)', animation: 'lcFade .5s ease both' } }, o.titre),
+      h('div', { key: 't' + o.id, style: { position: 'absolute', top: 290, left: 24, right: 24, textAlign: 'center', direction: o.ar ? 'rtl' : 'ltr', fontFamily: o.ar ? '"Amiri",serif' : '"Cormorant Garamond",serif', fontStyle: o.ar ? 'normal' : 'italic', fontSize: o.ar ? 27 : 26, color: '#F6E7C4', textShadow: '0 2px 14px rgba(0,0,0,.6)', animation: 'lcFade .5s ease both' } }, o.titre),
       /* les langues */
-      h('div', { style: { position: 'absolute', top: 410, left: 44, right: 44, display: 'flex', flexDirection: 'column', gap: 16 } },
+      h('div', { style: { position: 'absolute', top: 350, left: 52, right: 52, display: 'flex', flexDirection: 'column', gap: 11 } },
         OPTS.map((x, i) => {
           const on = x.id === sel;
           return h('button', {
             key: x.id, className: 'lc-card',
             onClick: () => { if (!on) vibre(); setSel(x.id); },
             style: {
-              position: 'relative', height: 74, borderRadius: 20, cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
+              position: 'relative', height: 56, borderRadius: 16, cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
               display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 1,
               background: on ? 'linear-gradient(180deg, rgba(255,226,160,.20), rgba(176,116,47,.16))' : 'linear-gradient(180deg, rgba(20,15,9,.62), rgba(12,9,6,.72))',
               border: on ? '1.5px solid rgba(246,214,150,.95)' : '0.5px solid rgba(232,194,122,.38)',
@@ -19611,10 +19616,9 @@ window.AsmaScreen = AsmaScreen;
               animation: 'lcUp .7s ease ' + (0.45 + i * 0.12) + 's both'
             }
           },
-            h('span', { style: { fontFamily: x.ar ? '"Amiri",serif' : '"Cormorant Garamond",serif', fontSize: x.ar ? 27 : 26, fontWeight: x.ar ? 700 : 600, lineHeight: 1.15, color: on ? 'transparent' : '#EBD9B0', WebkitTextFillColor: on ? 'transparent' : '#EBD9B0', backgroundImage: on ? 'linear-gradient(180deg,#FFFBEF 0%,#FCE6B0 40%,#F0C77E 75%,#E2AE62 100%)' : 'none', WebkitBackgroundClip: on ? 'text' : 'border-box', backgroundClip: on ? 'text' : 'border-box' } }, x.label),
-            h('span', { style: { fontFamily: '-apple-system,sans-serif', fontSize: 9.5, letterSpacing: '0.3em', textTransform: 'uppercase', color: on ? 'rgba(246,224,175,.9)' : 'rgba(232,200,140,.5)' } }, x.sub),
+            h('span', { style: { fontFamily: x.ar ? '"Amiri",serif' : '"Cormorant Garamond",serif', fontSize: x.ar ? 23 : 21, fontWeight: x.ar ? 700 : 600, lineHeight: 1.1, color: on ? 'transparent' : '#EBD9B0', WebkitTextFillColor: on ? 'transparent' : '#EBD9B0', backgroundImage: on ? 'linear-gradient(180deg,#FFFBEF 0%,#FCE6B0 40%,#F0C77E 75%,#E2AE62 100%)' : 'none', WebkitBackgroundClip: on ? 'text' : 'border-box', backgroundClip: on ? 'text' : 'border-box' } }, x.label),
             /* pastille de selection */
-            h('span', { style: { position: 'absolute', right: 18, top: '50%', marginTop: -11, width: 22, height: 22, borderRadius: '50%', border: on ? 'none' : '1px solid rgba(232,194,122,.45)', background: on ? OR : 'transparent', boxShadow: on ? '0 0 12px rgba(255,214,140,.8)' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .3s ease' } },
+            h('span', { style: { position: 'absolute', right: 16, top: '50%', marginTop: -10, width: 20, height: 20, borderRadius: '50%', border: on ? 'none' : '1px solid rgba(232,194,122,.45)', background: on ? OR : 'transparent', boxShadow: on ? '0 0 12px rgba(255,214,140,.8)' : 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .3s ease' } },
               on && h('svg', { width: 12, height: 12, viewBox: '0 0 12 12' }, h('path', { d: 'M2.2 6.3 L4.9 8.8 L9.8 3.4', fill: 'none', stroke: '#3A2408', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' })))
           );
         })
@@ -19633,7 +19637,7 @@ window.AsmaScreen = AsmaScreen;
         h('span', { style: { position: 'relative' } }, o.btn)
       ),
       h('div', { style: { position: 'absolute', bottom: 50, left: 0, right: 0, textAlign: 'center', fontFamily: '-apple-system,sans-serif', fontSize: 10.5, letterSpacing: '0.12em', color: 'rgba(232,200,140,.55)', animation: 'lcFade 1s ease 1.4s both', direction: o.ar ? 'rtl' : 'ltr' } },
-        o.ar ? 'يمكنك تغييرها لاحقًا من الإعدادات' : o.id === 'fr' ? 'Modifiable à tout moment dans les réglages' : 'You can change it anytime in settings')
+        o.pied || (o.ar ? 'يمكنك تغييرها لاحقًا من الإعدادات' : o.id === 'fr' ? 'Modifiable à tout moment dans les réglages' : 'You can change it anytime in settings'))
     );
   }
   function frameStyle() {
