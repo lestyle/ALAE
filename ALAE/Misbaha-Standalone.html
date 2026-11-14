@@ -19584,6 +19584,13 @@ window.AsmaScreen = AsmaScreen;
     const vibre = () => { try { window.webkit.messageHandlers.alae.postMessage({ type: 'haptic', style: 'light' }); } catch (e) { try { navigator.vibrate && navigator.vibrate(8); } catch (_) {} } };
     const fond = window.__alaeBootFond && window.__alaeBootFond.url || 'assets/silk-istabraq.jpg';
     const OR = 'linear-gradient(180deg,#FFF3D6 0%,#F1D08C 28%,#D9A55A 55%,#B0742F 80%,#E8C27A 100%)';
+    /* lettres d'or en relief : tranche en epaisseur (adoucie), face polie, ombre portee */
+    const or3d = (txt, size, ar, prof) => {
+      const n = prof || Math.max(6, Math.round(size / 3.4)), steps = Array.from({ length: n }, (_, k) => n - k);
+      return h('div', { style: { position: 'relative', display: 'inline-block', fontFamily: ar ? '"Amiri",serif' : '"Cormorant Garamond",serif', fontSize: size, fontWeight: 700, letterSpacing: ar ? 0 : '0.04em', lineHeight: 1.2, direction: ar ? 'rtl' : 'ltr', whiteSpace: 'nowrap', filter: 'drop-shadow(0 ' + Math.round(size / 4) + 'px ' + Math.round(size / 4) + 'px rgba(0,0,0,.75)) drop-shadow(0 2px 3px rgba(0,0,0,.6))' } },
+        h('div', { 'aria-hidden': true, style: { position: 'absolute', inset: 0, filter: 'blur(0.45px)' } }, ...steps.map(k => { const t = k / n, c = v => Math.round(v); return h('span', { key: 'e' + k, style: { position: 'absolute', left: 0, top: k * 0.5, whiteSpace: 'nowrap', color: 'transparent', WebkitTextFillColor: 'rgb(' + c(176 - 110 * t) + ',' + c(122 - 78 * t) + ',' + c(52 - 38 * t) + ')' } }, txt); })),
+        h('span', { style: { position: 'relative', whiteSpace: 'nowrap', color: 'transparent', backgroundImage: 'linear-gradient(180deg,#FFFDF4 0%,#FBE7B6 25%,#E9C27A 45%,#C99448 58%,#E8BE72 78%,#FCE7B4 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' } }, txt));
+    };
     const valider = () => {
       if (sortie) return;
       vibre(); setSortie(true);
@@ -19596,7 +19603,9 @@ window.AsmaScreen = AsmaScreen;
         @keyframes lcShine{0%,100%{background-position:100% 0}50%{background-position:0% 0}}
         @keyframes lcGlow{0%,100%{opacity:.55;transform:translate(-50%,-50%) scale(1)}50%{opacity:.85;transform:translate(-50%,-50%) scale(1.08)}}
         @keyframes lcSheen{0%{left:-60%}60%,100%{left:130%}}
-        @keyframes lcDiam{0%,100%{filter:brightness(.95) drop-shadow(0 1px 2px rgba(0,0,0,.7))}50%{filter:brightness(1.25) drop-shadow(0 0 6px rgba(225,235,255,.6)) drop-shadow(0 1px 2px rgba(0,0,0,.7))}}
+        @keyframes lcDiam{0%,100%{filter:brightness(1.05) drop-shadow(0 0 3px rgba(225,235,255,.5)) drop-shadow(0 1px 2px rgba(0,0,0,.7))}50%{filter:brightness(1.7) contrast(1.1) drop-shadow(0 0 10px rgba(235,245,255,.95)) drop-shadow(0 0 3px #fff)}}
+        @keyframes lcHalo{0%,100%{opacity:.45;transform:scale(.85)}50%{opacity:1;transform:scale(1.15)}}
+        @keyframes lcRayons{to{transform:rotate(360deg)}}
         @keyframes lcEclat{0%,35%,65%,100%{opacity:0;transform:scale(.3) rotate(0deg)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
         .lc-card{transition:transform .25s ease, box-shadow .35s ease, background .35s ease, border-color .35s ease}
         .lc-card:active{transform:scale(.97)}
@@ -19607,7 +19616,8 @@ window.AsmaScreen = AsmaScreen;
       /* halo d'or qui respire */
       h('div', { style: { position: 'absolute', left: '50%', top: 380, width: 420, height: 420, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,214,140,.22), rgba(224,162,63,.07) 55%, rgba(0,0,0,0) 100%)', animation: 'lcGlow 5s ease-in-out infinite', pointerEvents: 'none' } }),
       /* titre dans la langue choisie */
-      h('div', { key: 't' + o.id, style: { position: 'absolute', top: 122, left: 24, right: 24, textAlign: 'center', direction: o.ar ? 'rtl' : 'ltr', fontFamily: o.ar ? '"Amiri",serif' : '"Cormorant Garamond",serif', fontStyle: o.ar ? 'normal' : 'italic', fontSize: o.ar ? 27 : 27, color: 'transparent', backgroundImage: 'linear-gradient(180deg,#FFF6DE 0%,#F3D493 55%,#D9A55A 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', animation: 'lcFade .5s ease both' } }, o.titre),
+      /* 14/11 : titre dans la meme police que Continuer : lettres d'or en relief (ALAE). */
+      h('div', { key: 't' + o.id, style: { position: 'absolute', top: 116, left: 0, right: 0, textAlign: 'center', animation: 'lcFade .5s ease both' } }, or3d(o.titre, o.ar ? 30 : 30, o.ar)),
       h('div', { style: { position: 'absolute', top: 170, left: '50%', marginLeft: -75, width: 150, display: 'flex', alignItems: 'center', gap: 10, animation: 'lcFade 1s ease .3s both' } },
         h('div', { style: { flex: 1, height: 1, background: 'linear-gradient(90deg, rgba(232,194,122,0), rgba(232,194,122,.8))' } }),
         h('div', { style: { width: 6, height: 6, transform: 'rotate(45deg)', background: OR, boxShadow: '0 0 10px rgba(255,214,140,.8)' } }),
@@ -19622,7 +19632,7 @@ window.AsmaScreen = AsmaScreen;
           animation: 'lcFade 1s ease .35s both' } },
         /* parois : fines stries verticales, sombres en haut, accrochent la lumiere en bas */
         h('div', { 'aria-hidden': true, style: { position: 'absolute', inset: 0, borderRadius: 72, padding: 15, boxSizing: 'border-box', pointerEvents: 'none',
-            background: 'repeating-linear-gradient(90deg, rgba(255,232,190,.10) 0 1px, rgba(0,0,0,0) 1px 4px), linear-gradient(180deg, rgba(0,0,0,.85) 0%, rgba(0,0,0,.55) 45%, rgba(40,28,14,.35) 80%, rgba(255,214,150,.22) 100%)',
+            background: 'linear-gradient(180deg, rgba(0,0,0,.85) 0%, rgba(0,0,0,.55) 45%, rgba(40,28,14,.35) 80%, rgba(255,214,150,.22) 100%)',
             WebkitMask: 'linear-gradient(#000,#000) content-box, linear-gradient(#000,#000)', WebkitMaskComposite: 'xor', mask: 'linear-gradient(#000,#000) content-box exclude, linear-gradient(#000,#000)' } }),
         /* fond du creux */
         h('div', { style: { position: 'absolute', inset: 15, borderRadius: 58, overflow: 'hidden',
@@ -19632,11 +19642,14 @@ window.AsmaScreen = AsmaScreen;
           h('div', { style: { position: 'absolute', left: 0, right: 0, top: 24, textAlign: 'center', fontFamily: '"Cormorant Garamond",serif', fontSize: 15, fontWeight: 700, letterSpacing: 7, paddingLeft: 7, color: 'transparent', backgroundImage: 'linear-gradient(180deg,#8A6430 0%,#E9C88A 60%,#FFF0C8 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', filter: 'drop-shadow(0 -1px 0 rgba(0,0,0,.9)) drop-shadow(0 1px 0 rgba(255,230,180,.25))' } }, 'ALAE'),
           /* diamant serti dans un petit creux */
           h('div', { style: { position: 'absolute', left: '50%', top: 48, width: 46, height: 46, marginLeft: -23, borderRadius: '50%', background: 'radial-gradient(circle at 50% 40%, rgba(0,0,0,.25), rgba(0,0,0,.7))', boxShadow: 'inset 0 6px 10px rgba(0,0,0,.9), 0 1px 0 rgba(255,225,170,.25)' } },
-            h('img', { src: DIAM, alt: '', 'aria-hidden': true, style: { position: 'absolute', left: 8, top: 12, width: 30, display: 'block', animation: 'lcDiam 3.5s ease-in-out infinite' } }),
-            h('div', { 'aria-hidden': true, style: { position: 'absolute', right: 2, top: 4, width: 16, height: 16, animation: 'lcEclat 3.5s ease-in-out infinite', pointerEvents: 'none', background: 'radial-gradient(circle, #fff 0 1.5px, rgba(255,255,255,0) 2px), linear-gradient(0deg, rgba(255,255,255,0) 40%, #fff 50%, rgba(255,255,255,0) 60%), linear-gradient(90deg, rgba(255,255,255,0) 40%, #fff 50%, rgba(255,255,255,0) 60%)', filter: 'drop-shadow(0 0 3px rgba(220,235,255,.9))' } })),
+            /* 14/11 : le bijou brille plus (ALAE) : halo qui pulse, rayons, 3 eclats decales */
+            h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: '50%', width: 70, height: 70, margin: '-35px 0 0 -35px', borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(235,245,255,.55), rgba(200,220,255,.18) 45%, rgba(255,255,255,0))', animation: 'lcHalo 2.6s ease-in-out infinite', pointerEvents: 'none' } }),
+            h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: '50%', width: 80, height: 80, margin: '-40px 0 0 -40px', background: 'conic-gradient(from 0deg, rgba(255,255,255,0) 0deg, rgba(255,255,255,.35) 6deg, rgba(255,255,255,0) 14deg, rgba(255,255,255,0) 90deg, rgba(255,255,255,.3) 96deg, rgba(255,255,255,0) 104deg, rgba(255,255,255,0) 180deg, rgba(255,255,255,.35) 186deg, rgba(255,255,255,0) 194deg, rgba(255,255,255,0) 270deg, rgba(255,255,255,.3) 276deg, rgba(255,255,255,0) 284deg)', WebkitMaskImage: 'radial-gradient(closest-side, #000 20%, transparent 75%)', maskImage: 'radial-gradient(closest-side, #000 20%, transparent 75%)', animation: 'lcRayons 9s linear infinite', pointerEvents: 'none' } }),
+            h('img', { src: DIAM, alt: '', 'aria-hidden': true, style: { position: 'absolute', left: 6, top: 11, width: 34, display: 'block', animation: 'lcDiam 2.6s ease-in-out infinite' } }),
+            ...[[2, 2, 0, 18], [32, 30, 1.1, 12], [-4, 26, 1.9, 10]].map(([x, y, d, z], k) => h('div', { key: 'ec' + k, 'aria-hidden': true, style: { position: 'absolute', left: x + 6, top: y, width: z, height: z, animation: 'lcEclat 2.6s ease-in-out ' + d + 's infinite', pointerEvents: 'none', background: 'radial-gradient(circle, #fff 0 1.5px, rgba(255,255,255,0) 2px), linear-gradient(0deg, rgba(255,255,255,0) 42%, #fff 50%, rgba(255,255,255,0) 58%), linear-gradient(90deg, rgba(255,255,255,0) 42%, #fff 50%, rgba(255,255,255,0) 58%)', filter: 'drop-shadow(0 0 4px rgba(220,235,255,1))' } }))),
           /* guichet encore plus profond */
           h('div', { style: { position: 'absolute', left: 18, right: 18, top: 116, height: H * 3 + 16, borderRadius: 26, padding: 8, boxSizing: 'border-box',
-              background: 'repeating-linear-gradient(90deg, rgba(255,232,190,.06) 0 1px, rgba(0,0,0,0) 1px 4px), linear-gradient(180deg, rgba(0,0,0,.9), rgba(0,0,0,.55) 70%, rgba(255,214,150,.14))',
+              background: 'linear-gradient(180deg, rgba(0,0,0,.9), rgba(0,0,0,.55) 70%, rgba(255,214,150,.14))',
               boxShadow: '0 1px 0 rgba(255,228,175,.22), 0 -1px 0 rgba(0,0,0,.7)' } },
             h('div', { style: { position: 'relative', width: '100%', height: '100%', borderRadius: 20, overflow: 'hidden', background: 'linear-gradient(180deg, #020202 0%, #0E0C0A 50%, #020202 100%)', boxShadow: 'inset 0 10px 16px rgba(0,0,0,.95), inset 0 -6px 12px rgba(0,0,0,.9)' } },
               h('div', { ref: roule, onScroll: suivre, style: { position: 'absolute', inset: 0, overflowY: 'scroll', scrollSnapType: 'y mandatory', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', zIndex: 2 } },
