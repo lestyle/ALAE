@@ -1039,6 +1039,36 @@ window.alaeCopyLegacy=function(t){try{var a=document.createElement('textarea');a
       o.start(t); o.stop(t+0.07);
     }catch(e){}
   };
+  /* 14/11 : froissement d'ailes des chardonnerets (page du Coran) — synthetise, aucun fichier : bruit filtre coupe ~15 fois/s, tres doux.
+     Joue seulement si le son est active, jamais pendant une recitation (ALAE). */
+  window.alaeAilesBuild=function(c,t,kind){
+    var leave=kind!=='land', n=leave?9:5, rate=leave?15:12, peak=leave?0.11:0.07;
+    var len=Math.floor(c.sampleRate*1.2), buf=c.createBuffer(1,len,c.sampleRate), d=buf.getChannelData(0), last=0;
+    for(var i=0;i<len;i++){ last=last*0.6+(Math.random()*2-1)*0.4; d[i]=last; }
+    var src=c.createBufferSource(); src.buffer=buf;
+    var hp=c.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=500;
+    var bp=c.createBiquadFilter(); bp.type='bandpass'; bp.Q.value=0.7;
+    bp.frequency.setValueAtTime(leave?1700:1300,t); bp.frequency.linearRampToValueAtTime(leave?1100:1500,t+n/rate);
+    var g=c.createGain(); g.gain.value=0.0001;
+    var pan=c.createStereoPanner?c.createStereoPanner():null;
+    src.connect(hp); hp.connect(bp); bp.connect(g);
+    if(pan){ g.connect(pan); pan.connect(c.destination); pan.pan.setValueAtTime(leave?0.1:0.5,t); pan.pan.linearRampToValueAtTime(leave?-0.7:0,t+n/rate); } else g.connect(c.destination);
+    for(var k=0;k<n;k++){
+      var tk=t+k/rate*(1+k*0.015), a=peak*(leave?(1-k/(n+2)):(0.6+0.4*k/n))*(0.75+Math.random()*0.5);
+      g.gain.setValueAtTime(0.0001,tk); g.gain.linearRampToValueAtTime(a,tk+0.006); g.gain.exponentialRampToValueAtTime(0.0001,tk+0.05);
+    }
+    src.start(t); src.stop(t+n/rate+0.1);
+  };
+  window.alaeAiles=function(kind){
+    try{
+      if(!on()) return;
+      if(window.ALAE_AUDIO&&window.ALAE_AUDIO.S&&(window.ALAE_AUDIO.S.playing||window.ALAE_AUDIO.S.loading)) return;
+      var AC=window.AudioContext||window.webkitAudioContext; if(!AC) return;
+      if(!ctx) ctx=new AC();
+      if(ctx.state==='suspended'){ try{ ctx.resume(); }catch(e){} }
+      window.alaeAilesBuild(ctx,ctx.currentTime+0.02,kind);
+    }catch(e){}
+  };
   /* 21/10 : son de goutte d'eau (Astaghfirullah) — synthetise, aucun fichier : bloop sinus qui monte + petite eclaboussure (ALAE). */
   /* 23/10 : son de goutte naturel (bulle de Minnaert) — une fois sec (6), une fois avec resonance de grotte (7) (ALAE). */
   /* 26/10 : vraie goutte enregistree (lestyle by alae.mp3) : 3 gouttes nettes decoupees, volume monte, fondu ; une au hasard a chaque impact (ALAE). */
@@ -10333,8 +10363,12 @@ function SurahReader({
   const [chrome, setChrome] = React.useState(true);
   /* chardonnerets : a chaque page tournee, l'oiseau pose sur la perle s'envole et un autre vient se poser sur la nouvelle perle (ALAE, 14/11) */
   const [flock, setFlock] = React.useState({ cur: page, prev: null, id: 0 });
+  const wingsFirst = React.useRef(true);
   React.useEffect(() => {
     setFlock(f => f.cur === page ? f : { cur: page, prev: f.cur, id: f.id + 1 });
+    /* de temps a autre : froissement d'ailes a l'envol, puis un plus doux a l'atterrissage */
+    if (wingsFirst.current) wingsFirst.current = false;
+    else if (Math.random() < 0.45) { try { window.alaeAiles && window.alaeAiles('leave'); setTimeout(() => { try { window.alaeAiles && window.alaeAiles('land'); } catch (e) {} }, 480); } catch (e) {} }
     const t = setTimeout(() => setFlock(f => ({ ...f, prev: null })), 1100);
     return () => clearTimeout(t);
   }, [page]);
