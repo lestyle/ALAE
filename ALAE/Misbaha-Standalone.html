@@ -19680,13 +19680,13 @@ window.AsmaScreen = AsmaScreen;
         onClick: valider,
         style: { position: 'absolute', left: 40, right: 40, bottom: 140, height: 80, border: 'none', background: 'transparent', cursor: 'pointer', WebkitTapHighlightColor: 'transparent', padding: 0, animation: 'lcUp .8s ease 1s both' }
       },
-        h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 39, width: 300, height: 46, marginLeft: -150, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,196,110,.22), rgba(0,0,0,0))', pointerEvents: 'none' } }),
+        h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 45, width: 300, height: 46, marginLeft: -150, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,196,110,.22), rgba(0,0,0,0))', pointerEvents: 'none' } }),
         h('div', { key: 'b' + o.id, lang: o.id, style: { position: 'relative', display: 'inline-block', animation: 'lcFade .5s ease both' } }, or3d(o.btn, o.ar ? 40 : 38, o.ar)),
         /* filet de lumiere */
-        h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 55, width: 280, height: 2, marginLeft: -140, background: 'radial-gradient(closest-side, #FFF3D0, rgba(255,200,110,.45) 40%, rgba(255,200,110,0))', pointerEvents: 'none' } }),
+        h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 61, width: 280, height: 2, marginLeft: -140, background: 'radial-gradient(closest-side, #FFF3D0, rgba(255,200,110,.45) 40%, rgba(255,200,110,0))', pointerEvents: 'none' } }),
         /* 14/11 : point de lumiere au milieu du filet (ALAE) */
-        h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 56 - 12, width: 120, height: 24, marginLeft: -60, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,246,214,.95), rgba(255,214,140,.5) 38%, rgba(255,200,110,0))', mixBlendMode: 'screen', pointerEvents: 'none', animation: 'lcPoint 3.2s ease-in-out infinite' } }),
-        h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 56 - 2.5, width: 8, height: 5, marginLeft: -4, borderRadius: '50%', background: '#FFFBEA', boxShadow: '0 0 8px 3px rgba(255,226,150,.95), 0 0 18px 6px rgba(255,200,110,.55)', pointerEvents: 'none', animation: 'lcPoint 3.2s ease-in-out infinite' } })
+        h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 62 - 12, width: 120, height: 24, marginLeft: -60, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,246,214,.95), rgba(255,214,140,.5) 38%, rgba(255,200,110,0))', mixBlendMode: 'screen', pointerEvents: 'none', animation: 'lcPoint 3.2s ease-in-out infinite' } }),
+        h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 62 - 2.5, width: 8, height: 5, marginLeft: -4, borderRadius: '50%', background: '#FFFBEA', boxShadow: '0 0 8px 3px rgba(255,226,150,.95), 0 0 18px 6px rgba(255,200,110,.55)', pointerEvents: 'none', animation: 'lcPoint 3.2s ease-in-out infinite' } })
       ),
       h('div', { style: { position: 'absolute', bottom: 128, left: 0, right: 0, textAlign: 'center', fontFamily: '-apple-system,sans-serif', fontSize: 10.5, letterSpacing: '0.12em', color: 'rgba(232,200,140,.55)', animation: 'lcFade 1s ease 1.4s both', direction: o.ar ? 'rtl' : 'ltr' } },
         o.pied || (o.ar ? 'يمكنك تغييرها لاحقًا من الإعدادات' : o.id === 'fr' ? 'Modifiable à tout moment dans les réglages' : 'You can change it anytime in settings'))
