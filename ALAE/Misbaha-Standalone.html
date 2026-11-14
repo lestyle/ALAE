@@ -10527,8 +10527,8 @@ function SurahReader({
         /* 06/09 : sens arabe. La feuille se rabat vers la droite, donc la page
            suivante se decouvre par la GAUCHE ; la precedente revient par la
            droite. C'etait l'inverse. */
-        @keyframes gfArrive { 0% { transform: translate(64px,-46px) scale(.72); } 72% { transform: translate(0,-5px) scale(1.02); } 100% { transform: translate(0,0) scale(1); } }
-        @keyframes gfLeave { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(-92px,-74px) scale(.66); opacity:0; } }
+        @keyframes gfArrive { 0% { transform: translate(70px,-58px) rotate(10deg) scale(.74); } 30% { transform: translate(38px,-46px) rotate(-9deg) scale(.86); } 58% { transform: translate(10px,-24px) rotate(7deg) scale(.96); } 82% { transform: translate(-2px,-7px) rotate(-3deg) scale(1.02); } 100% { transform: translate(0,0) rotate(0) scale(1); } }
+        @keyframes gfLeave { 0% { transform: translate(0,0) rotate(0) scale(1); opacity:1; } 22% { transform: translate(-6px,-20px) rotate(-10deg) scale(1.02); opacity:1; } 50% { transform: translate(-26px,-40px) rotate(9deg) scale(.92); opacity:1; } 76% { transform: translate(-58px,-54px) rotate(-8deg) scale(.78); opacity:.7; } 100% { transform: translate(-96px,-74px) rotate(4deg) scale(.6); opacity:0; } }
         @keyframes gfFlyShow { 0%,60% { opacity:1; } 74%,100% { opacity:0; } }
         @keyframes gfPerchShow { 0%,62% { opacity:0; } 76%,100% { opacity:1; } }
         @keyframes gfWingA { 0%,49.9% { opacity:1; } 50%,100% { opacity:0; } }
