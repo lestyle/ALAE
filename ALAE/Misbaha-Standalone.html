@@ -19606,15 +19606,15 @@ window.AsmaScreen = AsmaScreen;
       /* halo d'or qui respire */
       h('div', { style: { position: 'absolute', left: '50%', top: 380, width: 420, height: 420, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,214,140,.22), rgba(224,162,63,.07) 55%, rgba(0,0,0,0) 100%)', animation: 'lcGlow 5s ease-in-out infinite', pointerEvents: 'none' } }),
       /* titre dans la langue choisie */
-      h('div', { key: 't' + o.id, style: { position: 'absolute', top: 112, left: 24, right: 24, textAlign: 'center', direction: o.ar ? 'rtl' : 'ltr', fontFamily: o.ar ? '"Amiri",serif' : '"Cormorant Garamond",serif', fontStyle: o.ar ? 'normal' : 'italic', fontSize: o.ar ? 27 : 27, color: 'transparent', backgroundImage: 'linear-gradient(180deg,#FFF6DE 0%,#F3D493 55%,#D9A55A 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', animation: 'lcFade .5s ease both' } }, o.titre),
-      h('div', { style: { position: 'absolute', top: 160, left: '50%', marginLeft: -75, width: 150, display: 'flex', alignItems: 'center', gap: 10, animation: 'lcFade 1s ease .3s both' } },
+      h('div', { key: 't' + o.id, style: { position: 'absolute', top: 122, left: 24, right: 24, textAlign: 'center', direction: o.ar ? 'rtl' : 'ltr', fontFamily: o.ar ? '"Amiri",serif' : '"Cormorant Garamond",serif', fontStyle: o.ar ? 'normal' : 'italic', fontSize: o.ar ? 27 : 27, color: 'transparent', backgroundImage: 'linear-gradient(180deg,#FFF6DE 0%,#F3D493 55%,#D9A55A 100%)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent', animation: 'lcFade .5s ease both' } }, o.titre),
+      h('div', { style: { position: 'absolute', top: 170, left: '50%', marginLeft: -75, width: 150, display: 'flex', alignItems: 'center', gap: 10, animation: 'lcFade 1s ease .3s both' } },
         h('div', { style: { flex: 1, height: 1, background: 'linear-gradient(90deg, rgba(232,194,122,0), rgba(232,194,122,.8))' } }),
         h('div', { style: { width: 6, height: 6, transform: 'rotate(45deg)', background: OR, boxShadow: '0 0 10px rgba(255,214,140,.8)' } }),
         h('div', { style: { flex: 1, height: 1, background: 'linear-gradient(270deg, rgba(232,194,122,0), rgba(232,194,122,.8))' } })
       ),
       /* 14/11 : CADRAN rectangulaire (lunette laquee noire, cadran guilloche), ALAE + diamant
          qui brille, un guichet ou roulent les langues — meme esprit que la montre des rappels (ALAE). */
-      h('div', { style: { position: 'absolute', left: '50%', top: 196, width: 300, height: 404, marginLeft: -150, borderRadius: 70, padding: 8, boxSizing: 'border-box', direction: 'ltr',
+      h('div', { style: { position: 'absolute', left: '50%', top: 206, width: 300, height: 404, marginLeft: -150, borderRadius: 70, padding: 8, boxSizing: 'border-box', direction: 'ltr',
           background: 'radial-gradient(ellipse 60% 22% at 30% 6%, rgba(255,255,255,.30), rgba(255,255,255,0) 70%), linear-gradient(160deg, #3A3A3A 0%, #070707 22%, #262626 45%, #050505 62%, #303030 82%, #060606 100%)',
           boxShadow: '0 0 0 1px rgba(232,194,122,.55), 0 0 0 2.5px #0b0a09, 0 0 0 3.5px rgba(214,170,96,.35), 0 26px 60px rgba(0,0,0,.75), 0 0 46px rgba(240,190,105,.16)',
           animation: 'lcUp .9s ease .35s both' } },
@@ -19660,7 +19660,7 @@ window.AsmaScreen = AsmaScreen;
       h('button', {
         onClick: valider,
         style: {
-          position: 'absolute', left: 64, right: 64, bottom: 92, height: 58, borderRadius: 29, border: 'none', cursor: 'pointer', overflow: 'hidden', WebkitTapHighlightColor: 'transparent',
+          position: 'absolute', left: 64, right: 64, bottom: 150, height: 56, borderRadius: 28, border: 'none', cursor: 'pointer', overflow: 'hidden', WebkitTapHighlightColor: 'transparent',
           background: OR, boxShadow: '0 12px 30px rgba(176,116,47,.45), 0 0 26px rgba(255,214,140,.30), inset 0 1px 0 rgba(255,250,235,.9)',
           fontFamily: o.ar ? '"Amiri",serif' : '"Cormorant Garamond",serif', fontSize: o.ar ? 22 : 21, fontWeight: 700, letterSpacing: o.ar ? 0 : '0.14em', color: '#3A2408',
           animation: 'lcUp .8s ease 1s both'
@@ -19669,7 +19669,7 @@ window.AsmaScreen = AsmaScreen;
         h('span', { style: { position: 'absolute', top: 0, bottom: 0, width: '45%', left: '-60%', background: 'linear-gradient(100deg, rgba(255,255,255,0), rgba(255,255,255,.75), rgba(255,255,255,0))', transform: 'skewX(-18deg)', animation: 'lcSheen 3.2s ease-in-out 2s infinite', pointerEvents: 'none' } }),
         h('span', { style: { position: 'relative' } }, o.btn)
       ),
-      h('div', { style: { position: 'absolute', bottom: 50, left: 0, right: 0, textAlign: 'center', fontFamily: '-apple-system,sans-serif', fontSize: 10.5, letterSpacing: '0.12em', color: 'rgba(232,200,140,.55)', animation: 'lcFade 1s ease 1.4s both', direction: o.ar ? 'rtl' : 'ltr' } },
+      h('div', { style: { position: 'absolute', bottom: 112, left: 0, right: 0, textAlign: 'center', fontFamily: '-apple-system,sans-serif', fontSize: 10.5, letterSpacing: '0.12em', color: 'rgba(232,200,140,.55)', animation: 'lcFade 1s ease 1.4s both', direction: o.ar ? 'rtl' : 'ltr' } },
         o.pied || (o.ar ? 'يمكنك تغييرها لاحقًا من الإعدادات' : o.id === 'fr' ? 'Modifiable à tout moment dans les réglages' : 'You can change it anytime in settings'))
     );
   }
