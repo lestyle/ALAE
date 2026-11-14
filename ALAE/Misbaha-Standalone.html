@@ -10678,7 +10678,7 @@ function SurahReader({
     const spots = pg => { const i = idxOf(pg); return pg % 4 === 0 ? [i, i < B.length - 1 ? i + 1 : i - 1] : [i]; };
     const BASE = window.ALAE_PLAT ? '' : 'assets/';
     const img = (f, st) => h('img', { src: BASE + f, alt: '', draggable: false, style: { position: 'absolute', display: 'block', pointerEvents: 'none', ...st } });
-    const bird = (i, k, mode, n) => {
+    const bird = (i, k, mode, n, front) => {
       const mir = (n + i) % 2 === 1;
       const anim = mode === 'in' ? 'gfArrive 0.85s cubic-bezier(.3,.7,.3,1) both' : mode === 'out' ? 'gfLeave 0.95s cubic-bezier(.5,0,.9,.6) forwards' : 'none';
       const flying = mode !== 'rest';
@@ -10690,11 +10690,11 @@ function SurahReader({
               img('oiseau-up.png', { left: '-4%', top: '-52%', width: '92%', animation: 'gfWingA 0.2s steps(1) infinite' }),
               img('oiseau-down.png', { left: '-2%', top: '-40%', width: '96%', animation: 'gfWingB 0.2s steps(1) infinite' })),
             mode !== 'out' && h('div', { style: { position: 'absolute', inset: 0, opacity: 1, animation: mode === 'in' ? 'gfPerchShow 0.85s linear both' : 'none' } },
-              img('oiseau-perch.png', { left: 0, top: 0, width: '100%' })))));
+              front ? img('oiseau-front.png', { left: '50%', bottom: '-2%', height: '124%', transform: 'translateX(-50%)' }) : img('oiseau-perch.png', { left: 0, top: 0, width: '100%' })))));
     };
     return h(React.Fragment, null,
       (flock.prev !== null ? spots(flock.prev) : []).map((i, j) => bird(i, 'o' + flock.id + '_' + j, 'out', flock.id)),
-      spots(flock.cur).map((i, j) => bird(i, 'n' + flock.id + '_' + j, 'in', flock.id + 1)));
+      spots(flock.cur).map((i, j) => bird(i, 'n' + flock.id + '_' + j, 'in', flock.id + 1, (flock.cur + j) % 3 === 0)));
   })())), /*#__PURE__*/React.createElement("div", {
     ref: scroller,
     onTouchStart: onTouchStart,
