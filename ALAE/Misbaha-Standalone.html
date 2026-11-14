@@ -1420,6 +1420,7 @@ window.getThemeAccent = function () {
 // Arabe — langue unique de l'app
 /* 19/10 : repli des petits dictionnaires locaux {fr,en,ar}[lang] — tr/id prennent l'anglais tant qu'ils n'ont pas leur texte (evite tout ecran blanc). */
 window.alaePick = function(o, l){ if(!o) return o; if(o[l]!==undefined) return o[l]; if(o.en!==undefined) return o.en; return o.fr; };
+
 window.I18N = {
   ar: {
     appName: 'آلَاء',
@@ -10330,6 +10331,13 @@ function SurahReader({
   const [dir, setDir] = React.useState(1);
   const [zoom, setZoom] = React.useState(false);
   const [chrome, setChrome] = React.useState(true);
+  /* chardonnerets : a chaque page tournee, l'oiseau pose sur la perle s'envole et un autre vient se poser sur la nouvelle perle (ALAE, 14/11) */
+  const [flock, setFlock] = React.useState({ cur: page, prev: null, id: 0 });
+  React.useEffect(() => {
+    setFlock(f => f.cur === page ? f : { cur: page, prev: f.cur, id: f.id + 1 });
+    const t = setTimeout(() => setFlock(f => ({ ...f, prev: null })), 1100);
+    return () => clearTimeout(t);
+  }, [page]);
   const [justRead, setJustRead] = React.useState(false);
   const scroller = React.useRef(null);
   const lastTap = React.useRef(0);
@@ -10519,6 +10527,12 @@ function SurahReader({
         /* 06/09 : sens arabe. La feuille se rabat vers la droite, donc la page
            suivante se decouvre par la GAUCHE ; la precedente revient par la
            droite. C'etait l'inverse. */
+        @keyframes gfArrive { 0% { transform: translate(64px,-46px) scale(.72); } 72% { transform: translate(0,-5px) scale(1.02); } 100% { transform: translate(0,0) scale(1); } }
+        @keyframes gfLeave { 0% { transform: translate(0,0) scale(1); opacity:1; } 100% { transform: translate(-92px,-74px) scale(.66); opacity:0; } }
+        @keyframes gfFlyShow { 0%,60% { opacity:1; } 74%,100% { opacity:0; } }
+        @keyframes gfPerchShow { 0%,62% { opacity:0; } 76%,100% { opacity:1; } }
+        @keyframes gfWingA { 0%,49.9% { opacity:1; } 50%,100% { opacity:0; } }
+        @keyframes gfWingB { 0%,49.9% { opacity:0; } 50%,100% { opacity:1; } }
         @keyframes mushNext { from { opacity:0; transform:translateX(-34px) scale(0.985); } to { opacity:1; transform:none; } }
         @keyframes mushPrev { from { opacity:0; transform:translateX(34px) scale(0.985); } to { opacity:1; transform:none; } }
         @keyframes mushShimmer { 0% { background-position:-180px 0; } 100% { background-position:240px 0; } }
@@ -10659,40 +10673,28 @@ function SurahReader({
     /* 25/09 : on egrene comme un vrai tasbih — chaque page avance d'UNE perle
        (avant : position proportionnelle, donc la lueur ne bougeait que toutes
        les 2-3 pages). Apres la 20e perle on repart de la 1re. */
-    const X = B[(Math.max(1, page) - 1) % B.length];
-    return /*#__PURE__*/React.createElement("div", {
-      style: {
-        position: 'absolute',
-        top: '50%',
-        left: X / 1337 * 100 + '%',
-        width: '5.2%',
-        aspectRatio: '1',
-        transform: 'translate(-50%, -50%)',
-        transition: 'left 0.45s ease',
-        pointerEvents: 'none'
-      }
-    }, /*#__PURE__*/React.createElement("div", {
-      style: {
-        position: 'absolute',
-        inset: 0,
-        borderRadius: '50%',
-        background: 'radial-gradient(circle at 42% 38%, rgba(255,236,196,0.55) 0%, rgba(243,194,122,0.28) 42%, rgba(243,194,122,0) 70%)',
-        boxShadow: '0 0 8px 2px rgba(243,194,122,0.35)',
-        mixBlendMode: 'screen',
-        animation: 'alaeBeadGlow 2.8s ease-in-out infinite'
-      }
-    }), /*#__PURE__*/React.createElement("div", {
-      key: page,
-      style: {
-        position: 'absolute',
-        inset: -3,
-        borderRadius: '50%',
-        background: 'radial-gradient(circle at 42% 38%, rgba(255,240,205,0.8) 0%, rgba(243,194,122,0.35) 40%, rgba(243,194,122,0) 70%)',
-        mixBlendMode: 'screen',
-        opacity: 0,
-        animation: 'alaeBeadPulse 1.1s ease-out'
-      }
-    }));
+    const h = React.createElement;
+    const idxOf = pg => (Math.max(1, pg) - 1) % B.length;
+    const spots = pg => { const i = idxOf(pg); return pg % 4 === 0 ? [i, i < B.length - 1 ? i + 1 : i - 1] : [i]; };
+    const BASE = window.ALAE_PLAT ? '' : 'assets/';
+    const img = (f, st) => h('img', { src: BASE + f, alt: '', draggable: false, style: { position: 'absolute', display: 'block', pointerEvents: 'none', ...st } });
+    const bird = (i, k, mode, n) => {
+      const mir = (n + i) % 2 === 1;
+      const anim = mode === 'in' ? 'gfArrive 0.85s cubic-bezier(.3,.7,.3,1) both' : mode === 'out' ? 'gfLeave 0.95s cubic-bezier(.5,0,.9,.6) forwards' : 'none';
+      const flying = mode !== 'rest';
+      return h('div', { key: k, style: { position: 'absolute', top: '50%', left: B[i] / 1337 * 100 + '%', width: '9.6%', aspectRatio: '380 / 221', transform: 'translate(-50%, -60%)', pointerEvents: 'none', zIndex: 3 } },
+        h('div', { style: { position: 'absolute', inset: 0, transform: mir ? 'scaleX(-1)' : 'none' } },
+          h('div', { style: { position: 'absolute', inset: 0, animation: anim, filter: 'drop-shadow(0 2px 2px rgba(0,0,0,0.6))' } },
+            /* en vol : deux photos reelles (ailes en haut / ailes en bas) alternees = battement */
+            flying && h('div', { style: { position: 'absolute', inset: 0, opacity: mode === 'in' ? 1 : 1, animation: mode === 'in' ? 'gfFlyShow 0.85s linear both' : 'none' } },
+              img('oiseau-up.png', { left: '-4%', top: '-52%', width: '92%', animation: 'gfWingA 0.2s steps(1) infinite' }),
+              img('oiseau-down.png', { left: '-2%', top: '-40%', width: '96%', animation: 'gfWingB 0.2s steps(1) infinite' })),
+            mode !== 'out' && h('div', { style: { position: 'absolute', inset: 0, opacity: 1, animation: mode === 'in' ? 'gfPerchShow 0.85s linear both' : 'none' } },
+              img('oiseau-perch.png', { left: 0, top: 0, width: '100%' })))));
+    };
+    return h(React.Fragment, null,
+      (flock.prev !== null ? spots(flock.prev) : []).map((i, j) => bird(i, 'o' + flock.id + '_' + j, 'out', flock.id)),
+      spots(flock.cur).map((i, j) => bird(i, 'n' + flock.id + '_' + j, 'in', flock.id + 1)));
   })())), /*#__PURE__*/React.createElement("div", {
     ref: scroller,
     onTouchStart: onTouchStart,
