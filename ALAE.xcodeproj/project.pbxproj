@@ -104,6 +104,8 @@
 
 /* Begin PBXFileReference section */
 		DC09E0E83052BA50008802DA /* react-dom.production.min.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "react-dom.production.min.js"; sourceTree = "<group>"; };
+		DC15184730A8FDA900B6E86E /* tr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = tr; path = ../tr.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		DC15184830A8FDC900B6E86E /* id */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = id; path = ../id.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		DC2C9F1B3038EBCA006CFAFF /* Misbaha-Standalone.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "Misbaha-Standalone.html"; sourceTree = "<group>"; };
 		DC403D4D2FF9B59E00D408BE /* silence.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = silence.caf; sourceTree = "<group>"; };
 		DC40D225302D28A50067FAE9 /* ALAEWidget2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ALAEWidget2.swift; sourceTree = "<group>"; };
@@ -375,6 +377,8 @@
 				Base,
 				fr,
 				ar,
+				tr,
+				id,
 			);
 			mainGroup = DC61BCD72FB90CE400179D2E;
 			productRefGroup = DC61BCE12FB90CE500179D2E /* Products */;
@@ -516,6 +520,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				DC5808233092A4DD00EE17C4 /* en */,
+				DC15184730A8FDA900B6E86E /* tr */,
+				DC15184830A8FDC900B6E86E /* id */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -675,6 +681,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -712,6 +719,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen.storyboard;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				LD_RUNPATH_SEARCH_PATHS = (
