@@ -10641,53 +10641,53 @@ function SurahReader({
     const fwd = turn.to > turn.from;
     const src = fwd ? cands(turn.from)[Math.min(goodVary.current, cands(turn.from).length - 1)] : cands(page)[Math.min(vary, cands(page).length - 1)];
     if (window.__alaeTurnOff) return;
-    const N = 22, HH = Math.ceil(Math.hypot(bw, bh)), A0 = 40 * Math.PI / 180;
-    const root = document.createElement('div');
-    root.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;perspective:1500px;perspective-origin:50% 50%;pointer-events:none;z-index:4;filter:brightness(1.1) contrast(1.06) saturate(0.9);';
-    const wrap = document.createElement('div');
-    wrap.style.cssText = 'position:absolute;left:' + bw + 'px;top:0;width:0;height:0;transform-origin:0 0;transform-style:preserve-3d;';
-    root.appendChild(wrap);
-    const pic = () => { const d = document.createElement('div'); d.style.cssText = 'position:absolute;left:0;top:0;width:' + bw + 'px;height:' + bh + 'px;transform-origin:0 0;background:#fff url("' + src + '") no-repeat;background-size:' + (bw - 12) + 'px ' + (bh - 12) + 'px;background-position:6px 6px;'; return d; };
-    const strips = [];
-    for (let k = 0; k < N; k++) {
-      const st = document.createElement('div');
-      st.style.cssText = 'position:absolute;left:0;top:' + (-HH) + 'px;height:' + (2 * HH) + 'px;transform-origin:0% 50%;transform-style:preserve-3d;will-change:transform;';
-      const fr = document.createElement('div');
-      fr.style.cssText = 'position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;';
-      const pf = pic(); fr.appendChild(pf);
-      const sh = document.createElement('div'); sh.style.cssText = 'position:absolute;left:0;top:0;right:0;bottom:0;background:#1c1206;opacity:0;';
-      const hl = document.createElement('div'); hl.style.cssText = 'position:absolute;left:0;top:0;right:0;bottom:0;background:linear-gradient(90deg,rgba(255,248,224,0),rgba(255,248,224,0.95),rgba(255,248,224,0));opacity:0;';
-      fr.appendChild(sh); fr.appendChild(hl);
-      const bk = document.createElement('div');
-      bk.style.cssText = 'position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;transform:rotateY(180deg);backface-visibility:hidden;-webkit-backface-visibility:hidden;background:linear-gradient(90deg,#ece5d6,#f9f6ee);';
-      const pb = pic(); pb.style.opacity = '0.5'; pb.style.background = 'url("' + src + '") no-repeat'; pb.style.backgroundSize = (bw - 12) + 'px ' + (bh - 12) + 'px'; pb.style.backgroundPosition = '6px 6px'; bk.appendChild(pb);
-      st.appendChild(fr); st.appendChild(bk); wrap.appendChild(st); strips.push({ st, pf, pb, sh, hl });
-    }
-    box.appendChild(root);
-    const DUR = window.ALAE_TURN_DUR || 900, t0 = performance.now(); let raf = 0, nF = 0, tPrev = t0, slow = 0;
-    const frame = now => {
-      const p = Math.min(1, (now - t0) / DUR), q = fwd ? p : 1 - p, e = q < 0.5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2;
-      const al = A0 * Math.pow(1 - e, 1.3), ca = Math.cos(al), sa = Math.sin(al);
-      const Smax = bw * ca + bh * sa, ws = Smax / N, WS = ws + 0.8, f = Smax * (1 - e), F = 168 * Math.PI / 180 * Math.pow(e, 0.85);
-      wrap.style.transform = 'rotate(' + (Math.PI - al).toFixed(5) + 'rad)';
-      let hx = 0, hz = 0;
-      for (let k = 0; k < N; k++) {
-        const X = k * ws, u = X >= f ? Math.min(1, (X - f) / Math.max(1, Smax - f)) : 0, phi = F * Math.pow(u, 1.25), sn = Math.sin(Math.min(phi, Math.PI / 2));
-        const S = strips[k], tr = 'translate(' + (bw * ca - X).toFixed(2) + 'px,' + (bw * sa + HH).toFixed(2) + 'px) rotate(' + (Math.PI + al).toFixed(5) + 'rad)';
-        S.st.style.width = WS.toFixed(2) + 'px';
-        S.st.style.transform = 'translate3d(' + hx.toFixed(2) + 'px,0,' + hz.toFixed(2) + 'px) rotateY(' + (-phi).toFixed(4) + 'rad)';
-        S.pf.style.transform = tr; S.pb.style.transform = tr;
-        S.sh.style.opacity = (0.5 * sn).toFixed(3);
-        S.hl.style.opacity = (Math.max(0, 1 - Math.abs(phi - 1.1) / 0.5) * 0.16).toFixed(3);
-        hx += ws * Math.cos(phi); hz += ws * Math.sin(phi);
-      }
-      root.style.opacity = String(fwd ? Math.min(1, (1 - p) * 9) : Math.min(1, p * 9));
-      /* garde-fou : si l'appareil rame (images lentes), on coupe l'effet pour toute la session — la lecture passe avant le decor */
-      nF++; if (!window.ALAE_TURN_DUR) { if (now - tPrev > 90) slow++; tPrev = now; if (nF >= 5 && slow >= 3) { window.__alaeTurnOff = true; try { root.remove(); } catch (e) {} return; } }
-      if (p < 1) raf = requestAnimationFrame(frame); else { try { root.remove(); } catch (e) {} }
+    /* Page tournee en tenant le COIN BAS-GAUCHE : vrai pli diagonal (mediatrice coin/doigt), le dessous de la feuille apparait en miroir */
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const cv = document.createElement('canvas');
+    cv.width = Math.round(bw * dpr); cv.height = Math.round(bh * dpr);
+    cv.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:4;';
+    const ctx = cv.getContext('2d'); if (!ctx) return;
+    let raf = 0, dead = false;
+    const im = new Image();
+    const DUR = window.ALAE_TURN_DUR || 1000;
+    const W = bw, H = bh;
+    const drawPage = alpha => { ctx.globalAlpha = 1; ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = alpha; ctx.drawImage(im, 6, 6, W - 12, H - 12); ctx.globalAlpha = 1; };
+    const half = (mx, my, nx, ny, sign) => { const tx = -ny, ty = nx, L = 4000; ctx.beginPath(); ctx.moveTo(mx + tx * L, my + ty * L); ctx.lineTo(mx - tx * L, my - ty * L); ctx.lineTo(mx - tx * L + sign * nx * L, my - ty * L + sign * ny * L); ctx.lineTo(mx + tx * L + sign * nx * L, my + ty * L + sign * ny * L); ctx.closePath(); };
+    const draw = e => {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+      const Px = 2 * W * e, Py = H - H * 0.42 * Math.sin(Math.PI * Math.pow(e, 0.8));
+      const dx = Px, dy = Py - H, d = Math.hypot(dx, dy);
+      if (d < 2) { drawPage(1); return; }
+      const nx = dx / d, ny = dy / d, mx = Px / 2, my = (H + Py) / 2, k = mx * nx + my * ny;
+      /* 1. ombre portee sur la page d'en dessous (cote coin) */
+      ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip(); half(mx, my, nx, ny, -1); ctx.clip();
+      let g = ctx.createLinearGradient(mx, my, mx - nx * 60, my - ny * 60); g.addColorStop(0, 'rgba(20,12,4,0.38)'); g.addColorStop(1, 'rgba(20,12,4,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.restore();
+      /* 2. partie encore a plat (cote opposé au coin) */
+      ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip(); half(mx, my, nx, ny, 1); ctx.clip(); drawPage(1);
+      g = ctx.createLinearGradient(mx, my, mx + nx * 46, my + ny * 46); g.addColorStop(0, 'rgba(20,12,4,0.3)'); g.addColorStop(1, 'rgba(20,12,4,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.restore();
+      /* 3. partie pliee : symetrique par rapport au pli, on voit le dos du papier (texte en transparence) */
+      ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip();
+      ctx.transform(1 - 2 * nx * nx, -2 * nx * ny, -2 * nx * ny, 1 - 2 * ny * ny, 2 * k * nx, 2 * k * ny);
+      ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip(); half(mx, my, nx, ny, -1); ctx.clip();
+      ctx.fillStyle = '#f1ead9'; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 0.42; ctx.drawImage(im, 6, 6, W - 12, H - 12); ctx.globalAlpha = 1;
+      const Lg = Math.min(260, d * 1.4 + 60);
+      g = ctx.createLinearGradient(mx, my, mx - nx * Lg, my - ny * Lg);
+      g.addColorStop(0, 'rgba(255,252,240,0.55)'); g.addColorStop(0.10, 'rgba(255,255,255,0.28)'); g.addColorStop(0.22, 'rgba(40,24,8,0.10)'); g.addColorStop(1, 'rgba(40,24,8,0.30)');
+      ctx.fillStyle = g; ctx.fillRect(-W, -H, 3 * W, 3 * H);
+      ctx.restore();
     };
-    raf = requestAnimationFrame(frame);
-    return () => { cancelAnimationFrame(raf); try { root.remove(); } catch (e) {} };
+    const t0 = performance.now(); let nF = 0, tPrev = t0, slow = 0;
+    const frame = now => {
+      if (dead) return;
+      const p = Math.min(1, (now - t0) / DUR), q = fwd ? p : 1 - p, e = q < 0.5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2;
+      draw(e);
+      cv.style.opacity = String(fwd ? Math.min(1, (1 - p) * 12) : Math.min(1, p * 12));
+      nF++; if (!window.ALAE_TURN_DUR) { if (now - tPrev > 90) slow++; tPrev = now; if (nF >= 5 && slow >= 3) { window.__alaeTurnOff = true; try { cv.remove(); } catch (er) {} return; } }
+      if (p < 1) raf = requestAnimationFrame(frame); else { try { cv.remove(); } catch (er) {} }
+    };
+    im.onload = () => { if (dead) return; box.appendChild(cv); draw(fwd ? 0 : 1); raf = requestAnimationFrame(frame); };
+    im.src = src;
+    return () => { dead = true; cancelAnimationFrame(raf); try { cv.remove(); } catch (er) {} };
   }, [turn && turn.id, loaded, zoom]);
   const [justRead, setJustRead] = React.useState(false);
   const scroller = React.useRef(null);
