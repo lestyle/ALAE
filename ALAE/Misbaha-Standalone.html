@@ -4854,7 +4854,7 @@ function CompteurV1({
       letterSpacing: '0.3em',
       color: T.labelDim || _acc.dim
     }
-  }, window.I18N[lang].target.toUpperCase(), " \xB7 ", dhikr.target)), /* ═══ VERROUILLE — 23/10/2026. Valide par ALAE. NE PLUS MODIFIER sans demande explicite. ═══ */ /* 23/10 : Mudhammatan + Subhan Allah : la ligne claire de la feuille sous le pompon est floutee et estompee (ALAE). */ String(window.ALAE_SILK || '').indexOf('mudhamma') >= 0 && dhikr && dhikr.id === 'subhan' && /*#__PURE__*/React.createElement("div", { key: 'flouFeuille', style: { position: 'absolute', left: -30, top: 600, width: 462, height: 190, /* 23/10 : zone raccourcie, les veines de la feuille en bas ressortent (ALAE). */ borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(8,8,10,0.82), rgba(8,8,10,0.6) 60%, rgba(8,8,10,0) 100%)', WebkitBackdropFilter: 'blur(12px)', backdropFilter: 'blur(12px)', WebkitMaskImage: 'radial-gradient(closest-side, #000 55%, transparent 100%)', maskImage: 'radial-gradient(closest-side, #000 55%, transparent 100%)', pointerEvents: 'none', zIndex: 0 } }), /* ═══ VERROUILLE — 23/10/2026. Valide par ALAE. NE PLUS MODIFIER sans demande explicite. ═══ */ /* 23/10 : cadre en verre du compteur UNIQUEMENT sur Istabraq, fond trop lumineux (ALAE). */ _istab && /*#__PURE__*/React.createElement("div", { key: 'verreCompteur', style: { position: 'absolute', top: 354, left: '50%', width: 228, height: 228, marginLeft: -114, borderRadius: '50%', /* 23/10 : cale exactement sur l'anneau exterieur (R+22), ombre centree (ALAE). */ /* 23/10 : carre -> cercle (ALAE). */ background: 'linear-gradient(180deg, rgba(14,10,6,0.60), rgba(14,10,6,0.50))', border: '0.5px solid rgba(232,200,140,0.28)', boxShadow: '0 0 34px 6px rgba(0,0,0,0.55), inset 0 0 22px rgba(0,0,0,0.35)', pointerEvents: 'none', zIndex: 0 } }), /*#__PURE__*/React.createElement(Chapelet, {
+  }, window.I18N[lang].target.toUpperCase(), " \xB7 ", dhikr.target)), /* ═══ VERROUILLE — 23/10/2026. Valide par ALAE. NE PLUS MODIFIER sans demande explicite. ═══ */ /* 23/10 : Mudhammatan + Subhan Allah : la ligne claire de la feuille sous le pompon est floutee et estompee (ALAE). */ String(window.ALAE_SILK || '').indexOf('mudhamma') >= 0 && dhikr && dhikr.id === 'subhan' && /*#__PURE__*/React.createElement("div", { key: 'flouFeuille', style: { position: 'absolute', left: -30, top: 600, width: 462, height: 190, /* 23/10 : zone raccourcie, les veines de la feuille en bas ressortent (ALAE). */ borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(8,8,10,0.82), rgba(8,8,10,0.6) 60%, rgba(8,8,10,0) 100%)', WebkitBackdropFilter: 'blur(12px)', backdropFilter: 'blur(12px)', WebkitMaskImage: 'radial-gradient(closest-side, #000 55%, transparent 100%)', maskImage: 'radial-gradient(closest-side, #000 55%, transparent 100%)', pointerEvents: 'none', zIndex: 0 } }), /* ═══ VERROUILLE — 23/10/2026. Valide par ALAE. NE PLUS MODIFIER sans demande explicite. ═══ */ /* 23/10 : cadre en verre du compteur UNIQUEMENT sur Istabraq, fond trop lumineux (ALAE). */ _istab && /*#__PURE__*/React.createElement("div", { key: 'verreCompteur', style: { position: 'absolute', top: 354, left: '50%', width: 228, height: 228, marginLeft: -114, borderRadius: '50%', /* 23/10 : cale exactement sur l'anneau exterieur (R+22), ombre centree (ALAE). */ /* 23/10 : carre -> cercle (ALAE). */ background: 'linear-gradient(180deg, rgba(14,10,6,0.60), rgba(14,10,6,0.50))', border: '0.5px solid rgba(232,200,140,0.28)', boxShadow: '0 0 34px 6px rgba(0,0,0,0.55), inset 0 0 22px rgba(0,0,0,0.35)', pointerEvents: 'none', zIndex: 0 } }), /*#__PURE__*/React.createElement(dhikr.id === 'subhan' ? TigerRing : Chapelet, {
     count: t.count,
     target: N,
     y: 0,
@@ -5402,6 +5402,54 @@ window.alaeDoveAvoid = function () {
   };
   requestAnimationFrame(tick);
 };
+// ─── 15/11 : perles de la niyya sur le compteur Subhan Allah (a la place du chapelet, du fil et du pompon) (ALAE) ───
+(function(){ if (document.getElementById('alae-tiger-kf')) return; const s = document.createElement('style'); s.id = 'alae-tiger-kf'; s.textContent = `
+@keyframes tigerPop { 0% { transform: translate(-50%,-50%) scale(0.3); opacity: 0; filter: brightness(1.8) saturate(1.15); box-shadow: 0 0 0 0 rgba(245,190,110,0); } 45% { transform: translate(-50%,-50%) scale(1.9); opacity: 1; filter: brightness(1.45) saturate(1.15); box-shadow: 0 0 10px 3px rgba(245,190,110,0.8); } 100% { transform: translate(-50%,-50%) scale(1); opacity: 1; filter: brightness(1.08) saturate(1.15); box-shadow: 0 2px 3px rgba(0,0,0,0.5); } }
+@keyframes tigerFall { 0% { transform: translate(-50%,-50%) rotate(0deg); } 55% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(var(--rot)); } 70% { transform: translate(calc(-50% + var(--dx) * 1.06), calc(-50% + var(--dy) - var(--bh))) rotate(var(--rot)); } 84% { transform: translate(calc(-50% + var(--dx) * 1.1), calc(-50% + var(--dy))) rotate(var(--rot)); } 92% { transform: translate(calc(-50% + var(--dx) * 1.12), calc(-50% + var(--dy) - 3px)) rotate(var(--rot)); } 100% { transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--dy))) rotate(var(--rot)); } }
+@keyframes tigerRoll { 0% { transform: translate(-50%,-50%) rotate(0deg); animation-timing-function: cubic-bezier(.45,0,.75,.6); } 22% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(var(--rot)); animation-timing-function: ease-out; } 30% { transform: translate(calc(-50% + var(--dx) * 1.06), calc(-50% + var(--dy) - var(--bh))) rotate(var(--rot)); animation-timing-function: ease-in; } 38% { transform: translate(calc(-50% + var(--dx) * 1.1), calc(-50% + var(--dy))) rotate(var(--rot)); animation-timing-function: cubic-bezier(.15,.6,.3,1); } 100% { transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--dy))) rotate(calc(var(--rot) + var(--spin))); } }
+@keyframes tigerToward { 0% { transform: translate(-50%,-50%) rotate(0deg) scale(1); animation-timing-function: cubic-bezier(.45,0,.75,.6); } 16% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(var(--rot)) scale(1); animation-timing-function: ease-out; } 22% { transform: translate(calc(-50% + var(--dx) * 1.06), calc(-50% + var(--dy) - var(--bh))) rotate(var(--rot)) scale(1); animation-timing-function: ease-in; } 28% { transform: translate(calc(-50% + var(--dx) * 1.1), calc(-50% + var(--dy))) rotate(var(--rot)) scale(1); } 58% { transform: translate(calc(-50% + var(--dx) * 1.1), calc(-50% + var(--dy))) rotate(var(--rot)) scale(1); animation-timing-function: cubic-bezier(.3,.5,.3,1); } 100% { transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--dy) + var(--dz))) rotate(calc(var(--rot) + var(--spin))) scale(var(--zs)); } }
+@keyframes tigerBack { 0% { transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--dy) + var(--dz, 0px))) scale(var(--zs, 1)); opacity: 1; } 75% { transform: translate(-50%,-50%) scale(1.15); opacity: 1; } 100% { transform: translate(-50%,-50%) scale(0.6); opacity: 0; } }
+`; document.head.appendChild(s); })();
+function TigerRing({ count, target }) {
+  const CX = 201, CY = 468, RB = 125, SZ = 15, FLOOR = 188, KX = 1.15;
+  const S = Math.min(target || 33, 33), T0 = target || 33;
+  const TG = window.ALAE_TIGER || [];
+  const filled = count > 0 ? (count - 1) % T0 + 1 : 0;
+  const n = Math.round(filled / T0 * S);
+  const ref = React.useRef(null);
+  if (!ref.current) ref.current = count === 0 ? { fall: true, rest: true, back: false, lap: Math.floor(Math.random() * 997), last: 0, fallN: S, prevN: 0 } : { fall: false, rest: false, back: false, lap: Math.floor(Math.random() * 997), last: -1, fallN: S, prevN: n };
+  const st = ref.current;
+  if (count !== st.last) {
+    if (count > 0 && filled === T0) { st.fall = true; st.rest = false; st.back = false; st.lap++; st.fallN = S; }
+    else if (count === 0) { if (!st.fall && st.prevN > 0) { st.fall = true; st.rest = false; st.back = false; st.lap++; st.fallN = st.prevN; } }
+    else if (st.fall) { st.fall = false; st.back = true; }
+    else st.back = false;
+    st.last = count;
+  }
+  st.prevN = n;
+  const lap = st.lap, complete = st.fall, regroup = st.back;
+  const rnd = k => { const x = Math.sin(k * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+  const twSet = L => { const c = rnd(L * 1.37 + 5) > 0.5 ? 3 : 2, r = []; let t = 0; while (r.length < c && t < 60) { const j = Math.floor(rnd(L * 13.1 + t * 7.3) * S); t++; if (r.indexOf(j) < 0) r.push(j); } return r; };
+  const scat = (i, L) => {
+    const a = -Math.PI / 2 + i / S * 2 * Math.PI, sx = Math.cos(a) * RB, sy = Math.sin(a) * RB, sx0 = Math.cos(a) * 63;
+    const floorY = FLOOR + rnd(i * 7 + L * 13) * 14;
+    const dx0 = sx0 * 0.35 + (rnd(i * 3 + L) - 0.5) * 70;
+    const k = (i + L * 7) % S, tw = twSet(L).indexOf(i) >= 0; /* 15/11 : a chaque chute, 2 ou 3 perles differentes avancent vers toi (ALAE) */
+    const roll0 = tw ? (dx0 >= 0 ? 1 : -1) * (8 + rnd(i * 19 + L) * 12) : (k === 4 || k === 15 || k === 26) ? (dx0 >= 0 ? 1 : -1) * (26 + rnd(i * 17 + L) * 22) : 0;
+    const roll = roll0 * KX;
+    return { '--tw': tw ? 1 : 0, '--zs': tw ? (1.55 + rnd(i + L) * 0.25) * 0.9 : 1, '--dz': tw ? (22 + rnd(i * 23 + L) * 14) * 1.3 + 'px' : '0px', '--dx': ((sx0 + dx0) * KX - sx) + 'px', '--fx': ((sx0 + dx0 * 1.1) * KX + roll - sx) + 'px', '--roll': roll, '--spin': (roll / 5.5 * 57.3) + 'deg', '--dy': (floorY - sy) + 'px', '--rot': ((rnd(i + L * 5) - 0.5) * 540) + 'deg', '--bh': (6 + rnd(i * 11 + L) * 14) * 1.6 + 'px' };
+  };
+  const bead = (i, extra) => {
+    const a = -Math.PI / 2 + i / S * 2 * Math.PI;
+    return Object.assign({ position: 'absolute', left: CX + Math.cos(a) * RB, top: CY + Math.sin(a) * RB, width: SZ, height: SZ, borderRadius: '50%', transform: 'translate(-50%,-50%)', backgroundImage: TG.length ? `url(${TG[(i * 5) % TG.length]})` : 'radial-gradient(circle at 35% 30%, #F5D08A, #A8651F 60%, #4A2808)', backgroundSize: 'cover', backgroundPosition: 'center', boxShadow: '0 2px 3px rgba(0,0,0,0.5), inset 0 0 1px rgba(255,230,180,0.4)', filter: 'brightness(1.08) saturate(1.15)' }, extra);
+  };
+  const layer = { position: 'absolute', top: 0, left: '50%', marginLeft: -201, width: 402, height: 874, pointerEvents: 'none', zIndex: 1, overflow: 'visible' };
+  if (complete) return React.createElement("div", { "aria-hidden": "true", "data-tiger": "fall", style: layer },
+    Array.from({ length: st.fallN }, (_, i) => { const sc = scat(i, lap); return React.createElement("span", { key: 'f' + lap + '-' + i, style: bead(i, Object.assign(sc, { animation: st.rest ? `${sc['--tw'] ? 'tigerToward' : sc['--roll'] ? 'tigerRoll' : 'tigerFall'} 0.01s linear both` : sc['--tw'] ? `tigerToward ${5 + rnd(i * 13 + lap) * 1}s linear ${i * 0.012}s both` : sc['--roll'] ? `tigerRoll ${3.4 + rnd(i * 9 + lap) * 1.2}s linear ${i * 0.012}s both` : `tigerFall ${0.9 + rnd(i * 5 + lap) * 0.5}s cubic-bezier(.45,0,.75,.6) ${i * 0.012}s both` })) }); }));
+  return React.createElement("div", { "aria-hidden": "true", "data-tiger": "ring", style: layer },
+    regroup && Array.from({ length: Math.max(0, st.fallN - 1) }, (_, j) => { const i = j + 1; return React.createElement("span", { key: 'b' + lap + '-' + i + '-' + count, style: bead(i, Object.assign(scat(i, lap), { animation: `tigerBack 1.7s cubic-bezier(.3,.7,.3,1) ${j * 0.024}s both` })) }); }),
+    Array.from({ length: n }, (_, i) => React.createElement("span", { key: i, style: bead(i, { animation: i === n - 1 ? 'tigerPop 0.6s cubic-bezier(.25,.8,.35,1) both' : 'none', transition: 'width 0.2s, height 0.2s, box-shadow 0.3s' }) })));
+}
 // ─── Chapelet primitive ─────────────────────────────────────────────
 // SVG covers the entire phone frame (402×874) so bead positions are written
 // directly in frame coordinates — simpler math, and the silk pattern aligns
