@@ -10646,7 +10646,7 @@ function SurahReader({
     const strips = [];
     for (let k = 0; k < N; k++) {
       const st = document.createElement('div');
-      st.style.cssText = 'position:absolute;left:0;top:0;width:' + WS + 'px;height:' + bh + 'px;transform-origin:100% 50%;transform-style:preserve-3d;will-change:transform;';
+      st.style.cssText = 'position:absolute;left:0;top:0;width:' + WS + 'px;height:' + bh + 'px;transform-origin:100% 0%;transform-style:preserve-3d;will-change:transform;';
       const fr = document.createElement('div');
       fr.style.cssText = 'position:absolute;left:0;top:0;right:0;bottom:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#fff url("' + src + '") no-repeat;background-size:' + (bw - 12) + 'px ' + (bh - 12) + 'px;background-position:' + (6 - (bw - (k + 1) * ws)) + 'px 6px;';
       const sh = document.createElement('div'); sh.style.cssText = 'position:absolute;left:0;top:0;right:0;bottom:0;background:#1c1206;opacity:0;';
@@ -10654,6 +10654,7 @@ function SurahReader({
       fr.appendChild(sh); fr.appendChild(hl);
       const bk = document.createElement('div');
       bk.style.cssText = 'position:absolute;left:0;top:0;right:0;bottom:0;transform:rotateY(180deg);backface-visibility:hidden;-webkit-backface-visibility:hidden;background:linear-gradient(90deg,#ece5d6,#f9f6ee);';
+      const bi = document.createElement('div'); bi.style.cssText = 'position:absolute;left:0;top:0;right:0;bottom:0;background:url("' + src + '") no-repeat;background-size:' + (bw - 12) + 'px ' + (bh - 12) + 'px;background-position:' + (6 - (bw - (k + 1) * ws)) + 'px 6px;opacity:0.5;'; bk.appendChild(bi);
       st.appendChild(fr); st.appendChild(bk); root.appendChild(st); strips.push({ st, sh, hl });
     }
     box.appendChild(root);
@@ -10661,11 +10662,12 @@ function SurahReader({
     const frame = now => {
       const p = Math.min(1, (now - t0) / DUR), q = fwd ? p : 1 - p, e = q < 0.5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2, F = 168 * Math.PI / 180 * e;
       let hx = bw, hz = 0;
+      const G = (24 * Math.PI / 180) * Math.sin(Math.PI * Math.min(1, e)); /* 15/11 : le COIN BAS-GAUCHE se leve en premier (ALAE). */
       for (let k = 0; k < N; k++) {
-        const phi = F * Math.pow((k + 0.5) / N, 1.25), sn = Math.sin(Math.min(phi, Math.PI / 2));
-        strips[k].st.style.transform = 'translate3d(' + (hx - WS).toFixed(2) + 'px,0,' + hz.toFixed(2) + 'px) rotateY(' + phi.toFixed(4) + 'rad)';
+        const phi = F * Math.pow((k + 0.5) / N, 1.25), sn = Math.sin(Math.min(phi, Math.PI / 2)), gam = G * (k / N);
+        strips[k].st.style.transform = 'translate3d(' + (hx - WS).toFixed(2) + 'px,0,' + hz.toFixed(2) + 'px) rotateX(' + gam.toFixed(4) + 'rad) rotateY(' + phi.toFixed(4) + 'rad)';
         strips[k].sh.style.opacity = (0.55 * sn).toFixed(3);
-        strips[k].hl.style.opacity = (Math.max(0, 1 - Math.abs(phi - 1.1) / 0.5) * 0.5).toFixed(3);
+        strips[k].hl.style.opacity = (Math.max(0, 1 - Math.abs(phi - 1.1) / 0.5) * 0.16).toFixed(3);
         hx -= ws * Math.cos(phi); hz += ws * Math.sin(phi);
       }
       root.style.opacity = String(fwd ? Math.min(1, (1 - p) * 9) : Math.min(1, p * 9));
