@@ -10615,6 +10615,10 @@ function SurahReader({
   const [page, setPage] = React.useState(startPage);
   const [loaded, setLoaded] = React.useState(false);
   const [dir, setDir] = React.useState(1);
+  /* 15/11 : tour de page (ALAE) — la page qui part pivote autour de la reliure (droite), reflet d'or, onde de lumiere sur la soie, poussiere d'or. Coupe si « reduire les animations ». */
+  const [turn, setTurn] = React.useState(null);
+  const pageBoxRef = React.useRef(null);
+  const _calm = () => { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } };
   const [zoom, setZoom] = React.useState(false);
   const [chrome, setChrome] = React.useState(true);
   /* chardonnerets : a chaque page tournee, l'oiseau pose sur la perle s'envole et un autre vient se poser sur la nouvelle perle (ALAE, 14/11) */
@@ -10628,6 +10632,63 @@ function SurahReader({
     const t = setTimeout(() => setFlock(f => ({ ...f, prev: null })), 1100);
     return () => clearTimeout(t);
   }, [page]);
+  React.useEffect(() => { if (!turn || !loaded) return; const t = setTimeout(() => setTurn(null), 2300); return () => clearTimeout(t); }, [turn, loaded]);
+  /* 15/11 : vraie page qui se plie PAR LE COIN BAS-GAUCHE (ALAE) — comme sur la photo : le coin se souleve et se courbe le long d'un pli en diagonale, laisse voir la page d'en dessous, puis le pli se redresse, balaie la page et passe sur la reliure (droite). La page est coupee en 22 bandes perpendiculaires au pli ; chaque bande tourne un peu plus que sa voisine = le papier se courbe. Le dos de la page laisse voir le texte (papier fin). */
+  React.useEffect(() => {
+    if (!turn || turn.to !== page || !loaded || zoom) return;
+    const box = pageBoxRef.current; if (!box) return;
+    const r = box.getBoundingClientRect(), bw = r.width, bh = r.height; if (!bw || !bh) return;
+    const fwd = turn.to > turn.from;
+    const src = fwd ? cands(turn.from)[Math.min(goodVary.current, cands(turn.from).length - 1)] : cands(page)[Math.min(vary, cands(page).length - 1)];
+    if (window.__alaeTurnOff) return;
+    /* Page tournee en tenant le COIN BAS-GAUCHE : vrai pli diagonal (mediatrice coin/doigt), le dessous de la feuille apparait en miroir */
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const cv = document.createElement('canvas');
+    cv.width = Math.round(bw * dpr); cv.height = Math.round(bh * dpr);
+    cv.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:4;';
+    const ctx = cv.getContext('2d'); if (!ctx) return;
+    let raf = 0, dead = false;
+    const im = new Image();
+    const DUR = window.ALAE_TURN_DUR || 1000;
+    const W = bw, H = bh;
+    const drawPage = alpha => { ctx.globalAlpha = 1; ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = alpha; ctx.drawImage(im, 6, 6, W - 12, H - 12); ctx.globalAlpha = 1; };
+    const half = (mx, my, nx, ny, sign) => { const tx = -ny, ty = nx, L = 4000; ctx.beginPath(); ctx.moveTo(mx + tx * L, my + ty * L); ctx.lineTo(mx - tx * L, my - ty * L); ctx.lineTo(mx - tx * L + sign * nx * L, my - ty * L + sign * ny * L); ctx.lineTo(mx + tx * L + sign * nx * L, my + ty * L + sign * ny * L); ctx.closePath(); };
+    const draw = e => {
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+      const Px = 2 * W * e, Py = H - H * 0.42 * Math.sin(Math.PI * Math.pow(e, 0.8));
+      const dx = Px, dy = Py - H, d = Math.hypot(dx, dy);
+      if (d < 2) { drawPage(1); return; }
+      const nx = dx / d, ny = dy / d, mx = Px / 2, my = (H + Py) / 2, k = mx * nx + my * ny;
+      /* 1. ombre portee sur la page d'en dessous (cote coin) */
+      ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip(); half(mx, my, nx, ny, -1); ctx.clip();
+      let g = ctx.createLinearGradient(mx, my, mx - nx * 60, my - ny * 60); g.addColorStop(0, 'rgba(20,12,4,0.38)'); g.addColorStop(1, 'rgba(20,12,4,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.restore();
+      /* 2. partie encore a plat (cote opposé au coin) */
+      ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip(); half(mx, my, nx, ny, 1); ctx.clip(); drawPage(1);
+      g = ctx.createLinearGradient(mx, my, mx + nx * 46, my + ny * 46); g.addColorStop(0, 'rgba(20,12,4,0.3)'); g.addColorStop(1, 'rgba(20,12,4,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.restore();
+      /* 3. partie pliee : symetrique par rapport au pli, on voit le dos du papier (texte en transparence) */
+      ctx.save(); ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip();
+      ctx.transform(1 - 2 * nx * nx, -2 * nx * ny, -2 * nx * ny, 1 - 2 * ny * ny, 2 * k * nx, 2 * k * ny);
+      ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip(); half(mx, my, nx, ny, -1); ctx.clip();
+      ctx.fillStyle = '#f1ead9'; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 0.42; ctx.drawImage(im, 6, 6, W - 12, H - 12); ctx.globalAlpha = 1;
+      const Lg = Math.min(260, d * 1.4 + 60);
+      g = ctx.createLinearGradient(mx, my, mx - nx * Lg, my - ny * Lg);
+      g.addColorStop(0, 'rgba(255,252,240,0.55)'); g.addColorStop(0.10, 'rgba(255,255,255,0.28)'); g.addColorStop(0.22, 'rgba(40,24,8,0.10)'); g.addColorStop(1, 'rgba(40,24,8,0.30)');
+      ctx.fillStyle = g; ctx.fillRect(-W, -H, 3 * W, 3 * H);
+      ctx.restore();
+    };
+    const t0 = performance.now(); let nF = 0, tPrev = t0, slow = 0;
+    const frame = now => {
+      if (dead) return;
+      const p = Math.max(0, Math.min(1, (now - t0) / DUR)), q = fwd ? p : 1 - p, e = q < 0.5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2;
+      try { draw(e); } catch (er) { try { cv.remove(); } catch (e2) {} return; }
+      cv.style.opacity = String(fwd ? Math.min(1, (1 - p) * 12) : Math.min(1, p * 12));
+      nF++; if (!window.ALAE_TURN_DUR) { if (now - tPrev > 90) slow++; tPrev = now; if (nF >= 5 && slow >= 3) { window.__alaeTurnOff = true; try { cv.remove(); } catch (er) {} return; } }
+      if (p < 1) raf = requestAnimationFrame(frame); else { try { cv.remove(); } catch (er) {} }
+    };
+    im.onload = () => { if (dead) return; box.appendChild(cv); draw(fwd ? 0 : 1); raf = requestAnimationFrame(frame); };
+    im.src = src;
+    return () => { dead = true; cancelAnimationFrame(raf); try { cv.remove(); } catch (er) {} };
+  }, [turn && turn.id, loaded, zoom]);
   const [justRead, setJustRead] = React.useState(false);
   const scroller = React.useRef(null);
   const lastTap = React.useRef(0);
@@ -10716,6 +10777,7 @@ function SurahReader({
       const np = Math.max(1, Math.min(total, p + d));
       if (np !== p) {
         setDir(d);
+        try { if (!_calm() && !window.__alaeTurnOff) setTurn({ from: p, to: np, id: Date.now() }); } catch (e) {}
       }
       return np;
     });
@@ -10730,6 +10792,7 @@ function SurahReader({
       const np = Math.max(1, Math.min(total, n));
       if (np !== p) {
         setDir(np > p ? 1 : -1);
+        try { if (!_calm() && !window.__alaeTurnOff) setTurn({ from: p, to: np, id: Date.now() }); } catch (e) {}
         haptic('soft');
       }
       return np;
@@ -10833,6 +10896,8 @@ function SurahReader({
         @keyframes gfWingB { 0%,49.9% { opacity:0; } 50%,100% { opacity:1; } }
         @keyframes mushNext { from { opacity:0; transform:translateX(-34px) scale(0.985); } to { opacity:1; transform:none; } }
         @keyframes mushPrev { from { opacity:0; transform:translateX(34px) scale(0.985); } to { opacity:1; transform:none; } }
+        @keyframes alaeSweepF { 0% { transform:translateX(-135%); } 100% { transform:translateX(135%); } }
+        @keyframes alaeSweepB { 0% { transform:translateX(135%); } 100% { transform:translateX(-135%); } }
         @keyframes mushShimmer { 0% { background-position:-180px 0; } 100% { background-position:240px 0; } }
         @keyframes mushCheckPop { 0% { transform:scale(1); } 40% { transform:scale(1.18); } 100% { transform:scale(1); } }
       `), /*#__PURE__*/React.createElement("div", {
@@ -11024,6 +11089,7 @@ function SurahReader({
     }
   }), /*#__PURE__*/React.createElement("div", {
     key: page,
+    ref: pageBoxRef,
     onClick: onTap,
     style: {
       position: 'relative',
@@ -11034,7 +11100,7 @@ function SurahReader({
       background: '#ffffff',
       border: '1px solid rgba(220,220,220,0.8)',
       boxShadow: zoom ? 'none' : '0 0 0 1px rgba(232,200,140,0.4), 0 18px 52px rgba(0,0,0,0.72)',
-      animation: loaded && !zoom ? (dir > 0 ? 'mushNext' : 'mushPrev') + ' 0.4s cubic-bezier(.2,.7,.2,1)' : 'none',
+      animation: turn && turn.to === page ? 'none' : loaded && !zoom ? (dir > 0 ? 'mushNext' : 'mushPrev') + ' 0.4s cubic-bezier(.2,.7,.2,1)' : 'none',
       maxWidth: '100%',
       maxHeight: '100%'
     }
@@ -11069,7 +11135,14 @@ function SurahReader({
       opacity: loaded ? 1 : 0,
       transition: 'opacity 0.35s ease'
     }
-  })), !zoom && /*#__PURE__*/React.createElement("div", {
+  }), turn && turn.to === page && loaded && !zoom && (() => {
+    const E = React.createElement, fwd = turn.to > turn.from, fill = { position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, pointerEvents: 'none' };
+    const oldSrc = cands(turn.from)[Math.min(goodVary.current, cands(turn.from).length - 1)];
+    return [
+      fwd ? null : E("div", { key: 'old' + turn.id, style: Object.assign({}, fill, { background: '#ffffff', padding: 6, boxSizing: 'border-box' }) }, E("img", { src: oldSrc, alt: '', style: { display: 'block', width: '100%', height: '100%', borderRadius: 6, filter: 'brightness(1.1) contrast(1.06) saturate(0.9)' } })),
+      window.ALAE_TURN_FX === 'sans-reflet' ? null : E("div", { key: 'sw' + turn.id, style: Object.assign({}, fill, { zIndex: 3, mixBlendMode: 'screen', backgroundImage: 'linear-gradient(100deg, rgba(255,222,150,0) 30%, rgba(255,226,160,0.6) 50%, rgba(255,222,150,0) 70%)', animation: (fwd ? 'alaeSweepF' : 'alaeSweepB') + ' 0.95s cubic-bezier(.3,.1,.3,1) 0.04s both' }) })
+    ];
+  })()), !zoom && /*#__PURE__*/React.createElement("div", {
     onClick: () => go(1),
     style: {
       position: 'absolute',
