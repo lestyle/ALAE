@@ -10679,8 +10679,8 @@ function SurahReader({
     const t0 = performance.now(); let nF = 0, tPrev = t0, slow = 0;
     const frame = now => {
       if (dead) return;
-      const p = Math.min(1, (now - t0) / DUR), q = fwd ? p : 1 - p, e = q < 0.5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2;
-      draw(e);
+      const p = Math.max(0, Math.min(1, (now - t0) / DUR)), q = fwd ? p : 1 - p, e = q < 0.5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2;
+      try { draw(e); } catch (er) { try { cv.remove(); } catch (e2) {} return; }
       cv.style.opacity = String(fwd ? Math.min(1, (1 - p) * 12) : Math.min(1, p * 12));
       nF++; if (!window.ALAE_TURN_DUR) { if (now - tPrev > 90) slow++; tPrev = now; if (nF >= 5 && slow >= 3) { window.__alaeTurnOff = true; try { cv.remove(); } catch (er) {} return; } }
       if (p < 1) raf = requestAnimationFrame(frame); else { try { cv.remove(); } catch (er) {} }
