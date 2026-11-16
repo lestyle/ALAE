@@ -4678,6 +4678,8 @@ function CompteurV1({
     style: { filter: 'blur(6px)', pointerEvents: 'none' }
   }), /*#__PURE__*/React.createElement("g", {
     /* 17/10 : socle sous le compteur */
+    /* 16/11 : sur Subhan Allah le demi-cercle (et le losange) descendent de 14 px pour ne plus croiser les perles du bas (ALAE). */
+    transform: dhikr.id === 'subhan' ? 'translate(0 14)' : undefined,
     style: { pointerEvents: 'none' }
   }, /*#__PURE__*/React.createElement("defs", null,
     /*#__PURE__*/React.createElement("linearGradient", { id: "v1crArc", x1: "0", y1: "0", x2: "1", y2: "0" },
@@ -5473,7 +5475,7 @@ function TigerRing({ count, target }) {
     return Object.assign({ position: 'absolute', left: CX + Math.cos(a) * RB, top: CY + Math.sin(a) * RB, width: SZ, height: SZ, borderRadius: '50%', transform: 'translate(-50%,-50%)', backgroundImage: TG.length ? `url(${TG[(i * 5) % TG.length]})` : 'radial-gradient(circle at 35% 30%, #F5D08A, #A8651F 60%, #4A2808)', backgroundSize: 'cover', backgroundPosition: 'center', boxShadow: '0 2px 3px rgba(0,0,0,0.5), inset 0 0 1px rgba(255,230,180,0.4)', filter: 'brightness(1.08) saturate(1.15)' }, extra);
   };
   const layer = { position: 'absolute', top: 0, left: '50%', marginLeft: -201, width: 402, height: 874, pointerEvents: 'none', zIndex: 1, overflow: 'visible' };
-  const TX = 201, TY = CY + RB + 11;
+  const TX = 201, TY = CY + RB + 25; /* 16/11 : +14 comme le demi-cercle */
   if (complete) return React.createElement("div", { "aria-hidden": "true", "data-tiger": "fall", style: layer },
     Array.from({ length: st.fallN }, (_, i) => { const sc = scat(i, lap); return React.createElement("span", { key: 'f' + lap + '-' + i, style: bead(i, Object.assign(sc, { animation: st.rest ? `${sc['--tw'] ? 'tigerToward' : sc['--roll'] ? 'tigerRoll' : 'tigerFall'} 0.01s linear both` : sc['--tw'] ? `tigerToward ${5 + rnd(i * 13 + lap) * 1}s linear ${i * 0.012}s both` : sc['--roll'] ? `tigerRoll ${3.4 + rnd(i * 9 + lap) * 1.2}s linear ${i * 0.012}s both` : `tigerFall ${0.9 + rnd(i * 5 + lap) * 0.5}s cubic-bezier(.45,0,.75,.6) ${i * 0.012}s both` })) }); }),
     st.tas && !st.rest && React.createElement(AlaeTassel, { x: TX, y0: TY, mode: 'fall', key: 'tf' + lap }));
