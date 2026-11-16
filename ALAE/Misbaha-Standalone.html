@@ -5408,8 +5408,37 @@ window.alaeDoveAvoid = function () {
 @keyframes tigerFall { 0% { transform: translate(-50%,-50%) rotate(0deg); } 55% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(var(--rot)); } 70% { transform: translate(calc(-50% + var(--dx) * 1.06), calc(-50% + var(--dy) - var(--bh))) rotate(var(--rot)); } 84% { transform: translate(calc(-50% + var(--dx) * 1.1), calc(-50% + var(--dy))) rotate(var(--rot)); } 92% { transform: translate(calc(-50% + var(--dx) * 1.12), calc(-50% + var(--dy) - 3px)) rotate(var(--rot)); } 100% { transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--dy))) rotate(var(--rot)); } }
 @keyframes tigerRoll { 0% { transform: translate(-50%,-50%) rotate(0deg); animation-timing-function: cubic-bezier(.45,0,.75,.6); } 22% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(var(--rot)); animation-timing-function: ease-out; } 30% { transform: translate(calc(-50% + var(--dx) * 1.06), calc(-50% + var(--dy) - var(--bh))) rotate(var(--rot)); animation-timing-function: ease-in; } 38% { transform: translate(calc(-50% + var(--dx) * 1.1), calc(-50% + var(--dy))) rotate(var(--rot)); animation-timing-function: cubic-bezier(.15,.6,.3,1); } 100% { transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--dy))) rotate(calc(var(--rot) + var(--spin))); } }
 @keyframes tigerToward { 0% { transform: translate(-50%,-50%) rotate(0deg) scale(1); animation-timing-function: cubic-bezier(.45,0,.75,.6); } 16% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(var(--rot)) scale(1); animation-timing-function: ease-out; } 22% { transform: translate(calc(-50% + var(--dx) * 1.06), calc(-50% + var(--dy) - var(--bh))) rotate(var(--rot)) scale(1); animation-timing-function: ease-in; } 28% { transform: translate(calc(-50% + var(--dx) * 1.1), calc(-50% + var(--dy))) rotate(var(--rot)) scale(1); } 58% { transform: translate(calc(-50% + var(--dx) * 1.1), calc(-50% + var(--dy))) rotate(var(--rot)) scale(1); animation-timing-function: cubic-bezier(.3,.5,.3,1); } 100% { transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--dy) + var(--dz))) rotate(calc(var(--rot) + var(--spin))) scale(var(--zs)); } }
+@keyframes alaeBeadOut { from { opacity: 1; } to { opacity: 0; } }
+@keyframes alaeTasIn { 0% { opacity: 0; transform: translateY(-12px) scale(0.6); } 60% { opacity: 1; transform: translateY(2px) scale(1.06); } 100% { opacity: 1; transform: none; } }
+@keyframes alaeTasFall { 0% { transform: none; animation-timing-function: cubic-bezier(.5,0,.8,.6); } 40% { transform: translate(-26px, 50px) rotate(36deg); animation-timing-function: ease-out; } 58% { transform: translate(-46px, 40px) rotate(66deg); animation-timing-function: ease-in; } 76% { transform: translate(-60px, 52px) rotate(84deg); } 100% { transform: translate(-62px, 50px) rotate(78deg); } }
 @keyframes tigerBack { 0% { transform: translate(calc(-50% + var(--fx)), calc(-50% + var(--dy) + var(--dz, 0px))) scale(var(--zs, 1)); opacity: 1; } 75% { transform: translate(-50%,-50%) scale(1.15); opacity: 1; } 100% { transform: translate(-50%,-50%) scale(0.6); opacity: 0; } }
 `; document.head.appendChild(s); })();
+/* 16/11 : pompon du compteur Subhan Allah (meme dessin que l'ancien chapelet) : il apparait quand les perles arrivent en bas du cercle (moitie), reste jusqu'a 33, tombe avec les perles et se couche par terre (ALAE). */
+function AlaeTassel({ x, y0, mode }) {
+  const E = React.createElement, Y = k => y0 + k;
+  const sp = `M ${x} ${Y(10)} C ${x + 20} ${Y(20)} ${x + 21} ${Y(36)} ${x} ${Y(44)} C ${x - 21} ${Y(52)} ${x - 21} ${Y(68)} ${x} ${Y(76)} C ${x + 21} ${Y(84)} ${x + 20} ${Y(99)} ${x + 2} ${Y(106)} C ${x - 8} ${Y(110)} ${x - 3} ${Y(118)} ${x} ${Y(124)}`;
+  const fr = [];
+  for (let k = 0; k < 44; k++) { const u = k / 43 - 0.5, ex = x + u * 15 + Math.sin(k * 2.3) * 0.8, ey = Y(196) + Math.sin(k * 1.7) * 2.5 - Math.abs(u) * 4; fr.push(E("path", { key: 'fr' + k, d: `M ${x + u * 9} ${Y(128)} Q ${x + u * 12} ${Y(160)} ${ex} ${ey}`, stroke: 'url(#tsFrG2)', strokeWidth: k % 3 ? 0.9 : 1.2, fill: 'none', strokeLinecap: 'round', opacity: 0.92 })); }
+  const org = { transformOrigin: `${x}px ${y0}px`, transformBox: 'view-box' };
+  const anim = mode === 'fall' ? { animation: 'alaeTasFall 1.5s both', ...org } : mode === 'out' ? { transform: 'translate(-62px, 50px) rotate(78deg)', animation: 'alaeBeadOut 0.5s ease forwards', ...org } : mode === 'in' ? { animation: 'alaeTasIn 0.7s cubic-bezier(.25,.8,.35,1) both', ...org } : {};
+  return E("svg", { "aria-hidden": "true", "data-tiger": "tassel", width: 402, height: 874, style: { position: 'absolute', left: 0, top: 0, overflow: 'visible', pointerEvents: 'none' } },
+    E("defs", null,
+      E("linearGradient", { id: 'tsSpG2', gradientUnits: 'userSpaceOnUse', x1: 0, y1: Y(8), x2: 0, y2: Y(126) }, [['0', '#F5C677'], ['0.14', '#D9963F'], ['0.3', '#A8651F'], ['0.46', '#4A2808'], ['0.6', '#C47A2C'], ['0.74', '#F0B25E'], ['0.88', '#7A4212'], ['1', '#3A1F06']].map(([o, c], i) => E("stop", { key: i, offset: o, stopColor: c }))),
+      E("linearGradient", { id: 'tsFrG2', gradientUnits: 'userSpaceOnUse', x1: 0, y1: Y(128), x2: 0, y2: Y(198) }, [['0', '#F2B866'], ['0.45', '#C47A2C'], ['0.75', '#8A4A16'], ['1', '#4A2808']].map(([o, c], i) => E("stop", { key: i, offset: o, stopColor: c }))),
+      E("radialGradient", { id: 'tsBd2', cx: '0.35', cy: '0.3', r: '0.8' }, E("stop", { offset: '0', stopColor: '#F5D08A' }), E("stop", { offset: '0.6', stopColor: '#A8651F' }), E("stop", { offset: '1', stopColor: '#4A2808' }))),
+    E("g", { transform: `translate(${x} ${y0}) scale(0.35) translate(${-x} ${-y0})` },
+      E("g", { style: anim },
+        E("g", null, E("animateTransform", { attributeName: "transform", type: "rotate", values: `-3 ${x} ${y0};3 ${x} ${y0};-3 ${x} ${y0}`, dur: "6.5s", repeatCount: "indefinite" }),
+          E("line", { x1: x, y1: y0, x2: x, y2: Y(30), stroke: '#B9792C', strokeWidth: 1.1 }),
+          E("circle", { cx: x + 0.5, cy: Y(9) + 1.2, r: 4.2, fill: 'rgba(0,0,0,0.4)', style: { filter: 'blur(1px)' } }), E("circle", { cx: x, cy: Y(9), r: 4, fill: 'url(#tsBd2)' }), E("ellipse", { cx: x - 1.2, cy: Y(7.6), rx: 1.4, ry: 0.8, fill: 'rgba(255,240,210,0.55)' }),
+          E("circle", { cx: x + 0.6, cy: Y(22) + 1.5, r: 6.6, fill: 'rgba(0,0,0,0.4)', style: { filter: 'blur(1.2px)' } }), E("circle", { cx: x, cy: Y(22), r: 6.4, fill: 'url(#tsBd2)' }), E("ellipse", { cx: x - 2, cy: Y(19.8), rx: 2.2, ry: 1.2, fill: 'rgba(255,240,210,0.55)' }),
+          E("g", { transform: 'translate(0 24)' },
+            E("path", { d: sp, stroke: 'rgba(0,0,0,0.45)', strokeWidth: 14, fill: 'none', strokeLinecap: 'round', transform: 'translate(1.5 2.5)', style: { filter: 'blur(1.5px)' } }),
+            E("path", { d: sp, stroke: 'url(#tsSpG2)', strokeWidth: 12, fill: 'none', strokeLinecap: 'round' }),
+            E("path", { d: sp, stroke: 'rgba(40,20,6,0.35)', strokeWidth: 12, fill: 'none', strokeDasharray: '0.5 1.4' }),
+            E("path", { d: sp, stroke: 'rgba(255,245,225,0.35)', strokeWidth: 2.2, fill: 'none', strokeLinecap: 'round', transform: 'translate(-2.5 -1)' }),
+            E("rect", { x: x - 6.5, y: Y(122), width: 13, height: 7, rx: 2.5, fill: '#3E2410' }), fr)))));
+}
 function TigerRing({ count, target }) {
   const CX = 201, CY = 468, RB = 125, SZ = 15, FLOOR = 188, KX = 1.15;
   const S = Math.min(target || 33, 33), T0 = target || 33;
@@ -5420,10 +5449,10 @@ function TigerRing({ count, target }) {
   if (!ref.current) ref.current = count === 0 ? { fall: true, rest: true, back: false, lap: Math.floor(Math.random() * 997), last: 0, fallN: S, prevN: 0 } : { fall: false, rest: false, back: false, lap: Math.floor(Math.random() * 997), last: -1, fallN: S, prevN: n };
   const st = ref.current;
   if (count !== st.last) {
-    if (count > 0 && filled === T0) { st.fall = true; st.rest = false; st.back = false; st.lap++; st.fallN = S; }
-    else if (count === 0) { if (!st.fall && st.prevN > 0) { st.fall = true; st.rest = false; st.back = false; st.lap++; st.fallN = st.prevN; } }
+    if (count > 0 && filled === T0) { st.fall = true; st.rest = false; st.back = false; st.lap++; st.fallN = S; st.tas = true; }
+    else if (count === 0) { if (!st.fall && st.prevN > 0) { st.fall = true; st.rest = false; st.back = false; st.lap++; st.fallN = st.prevN; st.tas = st.prevN >= 17; } }
     else if (st.fall) { st.fall = false; st.back = true; }
-    else st.back = false;
+    else { st.back = false; st.tas = false; }
     st.last = count;
   }
   st.prevN = n;
@@ -5444,12 +5473,16 @@ function TigerRing({ count, target }) {
     return Object.assign({ position: 'absolute', left: CX + Math.cos(a) * RB, top: CY + Math.sin(a) * RB, width: SZ, height: SZ, borderRadius: '50%', transform: 'translate(-50%,-50%)', backgroundImage: TG.length ? `url(${TG[(i * 5) % TG.length]})` : 'radial-gradient(circle at 35% 30%, #F5D08A, #A8651F 60%, #4A2808)', backgroundSize: 'cover', backgroundPosition: 'center', boxShadow: '0 2px 3px rgba(0,0,0,0.5), inset 0 0 1px rgba(255,230,180,0.4)', filter: 'brightness(1.08) saturate(1.15)' }, extra);
   };
   const layer = { position: 'absolute', top: 0, left: '50%', marginLeft: -201, width: 402, height: 874, pointerEvents: 'none', zIndex: 1, overflow: 'visible' };
+  const TX = 201, TY = CY + RB + 11;
   if (complete) return React.createElement("div", { "aria-hidden": "true", "data-tiger": "fall", style: layer },
-    Array.from({ length: st.fallN }, (_, i) => { const sc = scat(i, lap); return React.createElement("span", { key: 'f' + lap + '-' + i, style: bead(i, Object.assign(sc, { animation: st.rest ? `${sc['--tw'] ? 'tigerToward' : sc['--roll'] ? 'tigerRoll' : 'tigerFall'} 0.01s linear both` : sc['--tw'] ? `tigerToward ${5 + rnd(i * 13 + lap) * 1}s linear ${i * 0.012}s both` : sc['--roll'] ? `tigerRoll ${3.4 + rnd(i * 9 + lap) * 1.2}s linear ${i * 0.012}s both` : `tigerFall ${0.9 + rnd(i * 5 + lap) * 0.5}s cubic-bezier(.45,0,.75,.6) ${i * 0.012}s both` })) }); }));
+    Array.from({ length: st.fallN }, (_, i) => { const sc = scat(i, lap); return React.createElement("span", { key: 'f' + lap + '-' + i, style: bead(i, Object.assign(sc, { animation: st.rest ? `${sc['--tw'] ? 'tigerToward' : sc['--roll'] ? 'tigerRoll' : 'tigerFall'} 0.01s linear both` : sc['--tw'] ? `tigerToward ${5 + rnd(i * 13 + lap) * 1}s linear ${i * 0.012}s both` : sc['--roll'] ? `tigerRoll ${3.4 + rnd(i * 9 + lap) * 1.2}s linear ${i * 0.012}s both` : `tigerFall ${0.9 + rnd(i * 5 + lap) * 0.5}s cubic-bezier(.45,0,.75,.6) ${i * 0.012}s both` })) }); }),
+    st.tas && !st.rest && React.createElement(AlaeTassel, { x: TX, y0: TY, mode: 'fall', key: 'tf' + lap }));
   return React.createElement("div", { "aria-hidden": "true", "data-tiger": "ring", style: layer },
     /* 16/11 : meme rythme que la niyya — par terre au depart, au 1er tap elles disparaissent, puis chaque tap pose UNE perle sur le cercle (ALAE). */
     regroup && Array.from({ length: Math.max(0, st.fallN - 1) }, (_, j) => { const i = j + 1; return React.createElement("span", { key: 'b' + lap + '-' + i + '-' + count, style: bead(i, Object.assign(scat(i, lap), { animation: `tigerBack 1.7s cubic-bezier(.3,.7,.3,1) ${j * 0.024}s both` })) }); }),
-    Array.from({ length: n }, (_, i) => React.createElement("span", { key: i, style: bead(i, { animation: i === n - 1 ? 'tigerPop 0.6s cubic-bezier(.25,.8,.35,1) both' : 'none', transition: 'width 0.2s, height 0.2s, box-shadow 0.3s' }) })));
+    Array.from({ length: n }, (_, i) => React.createElement("span", { key: i, style: bead(i, { animation: i === n - 1 ? 'tigerPop 0.6s cubic-bezier(.25,.8,.35,1) both' : 'none', transition: 'width 0.2s, height 0.2s, box-shadow 0.3s' }) })),
+    regroup && st.tas && React.createElement(AlaeTassel, { x: TX, y0: TY, mode: 'out', key: 'to' + lap }),
+    n >= 17 && React.createElement(AlaeTassel, { x: TX, y0: TY, mode: n === 17 ? 'in' : 'still', key: 'ts' + lap }));
 }
 // ─── Chapelet primitive ─────────────────────────────────────────────
 // SVG covers the entire phone frame (402×874) so bead positions are written
