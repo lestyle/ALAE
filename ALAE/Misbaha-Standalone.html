@@ -17875,19 +17875,19 @@ window.AsmaScreen = AsmaScreen;
   };
   /* 01/11 : meme eclaboussure, a n'importe quel point de l'ecran (gouttes du milieu : impact visible au sol) (ALAE). */
   window.alaeSplashAt = function (cx, cy, bw, full) {
+    /* 17/11 : ondes D3 : 3 cercles seulement, petits, naturels, blanc chaud (ALAE). */
     try {
-      var r = { width: bw };
-      if (!document.getElementById('alae-splash-k')) { var st = document.createElement('style'); st.id = 'alae-splash-k'; st.textContent = '@keyframes asRing{0%{opacity:0;transform:scale(.08)}12%{opacity:1}100%{opacity:0;transform:scale(1)}}@keyframes asCrown{0%{opacity:0;transform:scaleY(.2)}25%{opacity:.9;transform:scaleY(1)}100%{opacity:0;transform:scaleY(.4)}}@keyframes asDot{0%{opacity:0;transform:translate(0,0) scale(1)}10%{opacity:1}45%{opacity:1;transform:translate(calc(var(--dx) * .6),var(--dy)) scale(1)}100%{opacity:0;transform:translate(var(--dx),calc(var(--dy) * -.15 + 16px)) scale(.6)}}'; document.head.appendChild(st); }
-      var w = r.width * 2.2;
-      var d = document.createElement('div');
+      bw = bw * 1.5;
+      var w = bw * 3.2, d = document.createElement('div');
       d.style.cssText = 'position:fixed;left:' + (cx - w / 2) + 'px;top:' + (cy - w / 2) + 'px;width:' + w + 'px;height:' + w + 'px;pointer-events:none;z-index:99997';
-      var c = w / 2, s = '<svg width="' + w + '" height="' + w + '" viewBox="0 0 ' + w + ' ' + w + '" style="overflow:visible">';
-      [0, 1, 2].forEach(function (j) { var R = r.width * (0.32 + j * 0.16); /* 01/11 : seulement la moitie haute des ondes, l'autre est cachee par le bouton (ALAE). */ s += '<path d="M ' + (c - R) + ' ' + c + ' A ' + R + ' ' + (R * 0.3) + ' 0 0 1 ' + (c + R) + ' ' + c + (full ? ' A ' + R + ' ' + (R * 0.3) + ' 0 0 1 ' + (c - R) + ' ' + c : '') + '" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1" style="transform-origin:' + c + 'px ' + c + 'px;opacity:0;animation:asRing ' + (1.3 + j * 0.2) + 's cubic-bezier(.15,.6,.3,1) ' + (j * 0.1) + 's both;filter:blur(0.4px)"></path>'; });
-      s += '<path d="M ' + (c - 4) + ' ' + c + ' Q ' + (c - 1.5) + ' ' + (c - 8) + ' ' + c + ' ' + (c - 15) + ' Q ' + (c + 1.5) + ' ' + (c - 8) + ' ' + (c + 4) + ' ' + c + ' Z" fill="rgba(235,245,255,0.8)" style="transform-origin:' + c + 'px ' + c + 'px;opacity:0;animation:asCrown .55s ease-out both"></path>';
-      /* 01/11 : la goutte eclate sur le cercle : gouttelettes projetees en arc, puis retombent (ALAE). */ for (var NQ = 2 + (Math.random() < 0.5 ? 0 : 1), q = 0; q < NQ; q++) /* 17/11 : 2 ou 3 gouttelettes (au lieu de 11) (ALAE). */ { var an = Math.PI * (0.08 + 0.84 * (q / (NQ - 1))) + (Math.random() - 0.5) * 0.2, v = 16 + Math.random() * 14, dx = -Math.cos(an) * v * 1.4, dy = -Math.sin(an) * v - 4, rr = 0.9 + Math.random() * 1.1; s += '<ellipse cx="' + c + '" cy="' + (c - 2) + '" rx="' + rr + '" ry="' + (rr * 1.25) + '" fill="rgba(240,248,255,0.95)" style="--dx:' + dx.toFixed(1) + 'px;--dy:' + dy.toFixed(1) + 'px;opacity:0;animation:asDot ' + (0.7 + Math.random() * 0.25).toFixed(2) + 's cubic-bezier(.2,.6,.4,1) both;filter:drop-shadow(0 0 1.5px rgba(255,255,255,.6))"></ellipse>'; }
+      var c = w / 2, s = '<svg width="' + w + '" height="' + w + '" viewBox="0 0 ' + w + ' ' + w + '" style="overflow:visible"><style>@keyframes rD{0%{opacity:0;transform:scale(.04)}9%{opacity:1}100%{opacity:0;transform:scale(1)}}</style>';
+      [[1.25, 1.5, 2.0, 0, 'rgba(255,240,215,0.92)'], [0.95, 1.0, 2.4, 0.22, 'rgba(255,232,190,0.6)'], [0.62, 0.7, 2.8, 0.45, 'rgba(255,225,170,0.38)']].forEach(function (p) {
+        var R = bw * p[0];
+        s += '<ellipse cx="' + c + '" cy="' + c + '" rx="' + R + '" ry="' + (R * 0.3) + '" fill="none" stroke="' + p[4] + '" stroke-width="' + p[1] + '" style="transform-origin:' + c + 'px ' + c + 'px;opacity:0;animation:rD ' + p[2] + 's cubic-bezier(.1,.65,.25,1) ' + p[3] + 's both;filter:blur(.5px) drop-shadow(0 0 3px rgba(255,215,150,.55))"></ellipse>';
+      });
       d.innerHTML = s + '</svg>';
       document.body.appendChild(d);
-      setTimeout(function () { try { d.remove(); } catch (e) {} }, 2000);
+      setTimeout(function () { try { d.remove(); } catch (e) {} }, 3600);
     } catch (e) {}
   };
   window.alaeRecompense = function () {
