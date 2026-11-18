@@ -2022,7 +2022,7 @@ window.SilkBg = function SilkBg({
       mixBlendMode: 'overlay',
       background: 'var(--silk-glow, none)'
     }
-  }), watermark && /*#__PURE__*/React.createElement("img", {
+  }), React.createElement(window.AlaeParticules || 'span', null), watermark && /*#__PURE__*/React.createElement("img", {
     src: "assets/logo.png",
     alt: "",
     style: {
@@ -4198,14 +4198,19 @@ function _extends() { return _extends = Object.assign ? Object.assign.bind() : f
 @media (prefers-reduced-motion: reduce) { .alae-amb * { animation: none !important; } }
 `; document.head.appendChild(s); })();
 function AlaeAmbiance() {
-  const dots = React.useMemo(() => Array.from({ length: 16 }, (_, i) => {
+  /* 18/11 : les particules sont maintenant dans le fond commun (SilkBg) pour toutes les pages ; ici il ne reste que la chaleur doree du compteur. */
+  return React.createElement("div", { className: "alae-amb", "aria-hidden": "true", style: { position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 1 } },
+    React.createElement("div", { style: { position: 'absolute', left: '50%', top: 468, width: 460, height: 460, borderRadius: '50%', background: 'radial-gradient(circle, rgba(214,140,60,0.20) 0%, rgba(190,115,45,0.10) 42%, rgba(190,115,45,0) 70%)', animation: 'alaeAmbBreathe 7s ease-in-out infinite' } }));
+}
+/* 18/11 : petits points d'or qui montent tout doucement, sur toutes les pages (ALAE). */
+window.AlaeParticules = function AlaeParticules() {
+  const dots = React.useMemo(() => Array.from({ length: 20 }, (_, i) => {
     const r = k => { const x = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453; return x - Math.floor(x); };
-    return { left: 6 + r(1) * 88, top: 30 + r(2) * 60, size: 2 + r(3) * 2.4, dur: 13 + r(4) * 12, delay: -r(5) * 20, px: (r(6) - 0.5) * 36, po: 0.4 + r(7) * 0.35 };
+    return { left: 6 + r(1) * 88, top: 22 + r(2) * 72, size: 2.8 + r(3) * 3, dur: 13 + r(4) * 12, delay: -r(5) * 20, px: (r(6) - 0.5) * 36, po: 0.6 + r(7) * 0.35 };
   }), []);
   return React.createElement("div", { className: "alae-amb", "aria-hidden": "true", style: { position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 1 } },
-    React.createElement("div", { style: { position: 'absolute', left: '50%', top: 468, width: 460, height: 460, borderRadius: '50%', background: 'radial-gradient(circle, rgba(214,140,60,0.20) 0%, rgba(190,115,45,0.10) 42%, rgba(190,115,45,0) 70%)', animation: 'alaeAmbBreathe 7s ease-in-out infinite' } }),
     dots.map((d, i) => React.createElement("span", { key: i, style: { position: 'absolute', left: d.left + '%', top: d.top + '%', width: d.size, height: d.size, borderRadius: '50%', background: 'radial-gradient(circle, #FFE9B8 0%, #F0B960 55%, rgba(240,185,96,0) 100%)', boxShadow: '0 0 6px rgba(245,200,120,0.7)', opacity: 0, '--px': d.px + 'px', '--po': d.po, animation: `alaeAmbFloat ${d.dur}s linear ${d.delay}s infinite`, willChange: 'transform, opacity' } })));
-}
+};
 function CompteurChrome({
   children
 }) {
