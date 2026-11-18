@@ -19302,7 +19302,7 @@ window.AsmaScreen = AsmaScreen;
         r.setProperty('--silk-angle', angles[idx % angles.length] + 'deg');
         r.setProperty('--silk-zoom', '1.07');
       } catch (e) {}
-      try { const _dd = window.DHIKRS[idx]; if (_dd && _dd.id === 'istighfar' && window.alaeIntroJouer && !/[?&]shot/.test(window.location.search)) window.alaeIntroJouer(); } catch (e) {} /* 18/11 : intro doree avant le compteur Istighfar (ALAE). */
+      try { const _dd = window.DHIKRS[idx]; if (_dd && _dd.id === 'istighfar' && window.alaeIntroJouer) window.alaeIntroJouer(); } catch (e) {} /* 18/11 : intro doree avant le compteur Istighfar (ALAE). */
       setDhikrIdx(idx);
       const s = loadState();
       s.dhikrIdx = idx;
