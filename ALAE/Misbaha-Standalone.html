@@ -275,57 +275,6 @@ input,textarea{-webkit-user-select:text;user-select:text}
 @keyframes nightToastIn{from{opacity:0;transform:translate(-50%,-14px) scale(0.94)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
 </style>
 
-<script>/* 18/11 : intro doree (medaillon rond, perles + arabesques qui tournent, rayons, papillons) avant le compteur Istighfar (ALAE). */
-(function(){
-  window.alaeIntroJouer = function(done){
-    try {
-      if (document.getElementById('alae-intro')) return;
-      var W = window.innerWidth, H = window.innerHeight, U = 'url(assets/intro-icon.jpg)';
-      var st = document.createElement('div'); st.id = 'alae-intro';
-      var css = '#alae-intro{position:fixed;inset:0;z-index:100000;background:radial-gradient(120% 80% at 30% 10%,#2a2016 0%,#0a0806 55%,#030302 100%);overflow:hidden;font-family:Georgia,serif;animation:aiFin .6s ease both;transition:opacity .55s ease}'
-      + '@keyframes aiFin{from{opacity:0}to{opacity:1}}'
-      + '#alae-intro .ray{position:absolute;top:-20%;left:-10%;width:34%;height:150%;background:linear-gradient(90deg,transparent,rgba(255,225,170,.16),transparent);transform-origin:top left;filter:blur(8px);mix-blend-mode:screen;animation:aiSw 6s ease-in-out infinite alternate}'
-      + '@keyframes aiSw{from{opacity:.35}to{opacity:.9}}'
-      + '#alae-intro .med{position:absolute;left:50%;top:41%;width:300px;height:300px;margin:-150px 0 0 -150px;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px #c9a24f,0 0 0 4px #2a1f0e,0 0 60px rgba(255,200,110,.38),0 20px 60px #000;opacity:0;transform:scale(.9);animation:aiMed 1.1s cubic-bezier(.2,.7,.2,1) .1s both}'
-      + '@keyframes aiMed{to{opacity:1;transform:scale(1)}}'
-      + '#alae-intro .in{position:absolute;inset:0;transform:translateY(5px) scale(1.05)}'
-      + '#alae-intro .in>*{position:absolute;inset:0;width:100%;height:100%}'
-      + '#alae-intro .rot{background:' + U + ' center/100% 100%;-webkit-mask:radial-gradient(circle at 50% 47.9%,transparent 0 71px,#000 81px 96px,transparent 104px);mask:radial-gradient(circle at 50% 47.9%,transparent 0 71px,#000 81px 96px,transparent 104px);transform-origin:50% 47.9%;animation:aiSpin 34s linear infinite reverse}'
-      + '#alae-intro .rot2{background:' + U + ' center/100% 100%;-webkit-mask:radial-gradient(circle at 50% 48.4%,transparent 0 100px,#000 106px 120px,transparent 125px);mask:radial-gradient(circle at 50% 48.4%,transparent 0 100px,#000 106px 120px,transparent 125px);transform-origin:50% 48.4%;animation:aiSpin 55s linear infinite}'
-      + '@keyframes aiSpin{to{transform:rotate(360deg)}}'
-      + '#alae-intro .tas{background:' + U + ' center/100% 100%;clip-path:polygon(0 62%,32% 62%,32% 80%,0 100%)}'
-      + '#alae-intro .gl{background:linear-gradient(115deg,transparent 40%,rgba(255,240,200,.35) 50%,transparent 60%);transform:translateX(-120%);animation:aiGl 2.4s ease-in-out .8s infinite}'
-      + '@keyframes aiGl{to{transform:translateX(120%)}}'
-      + '#alae-intro .nm{position:absolute;left:0;right:0;top:66%;text-align:center;color:#e8c887;letter-spacing:10px;font-size:34px;opacity:0;animation:aiFin 1s ease .9s both}'
-      + '#alae-intro .sb{position:absolute;left:0;right:0;top:72%;text-align:center;color:#b99d6a;letter-spacing:6px;font-size:12px;opacity:0;animation:aiFin 1s ease 1.2s both}'
-      + '#alae-intro .b{position:absolute;left:0;top:0;width:26px;height:20px;pointer-events:none}'
-      + '#alae-intro .b svg{width:100%;height:100%;animation:aiFlap .22s ease-in-out infinite alternate}'
-      + '@keyframes aiFlap{from{transform:scaleX(1)}to{transform:scaleX(.35)}}'
-      + '#alae-intro .d{position:absolute;width:3px;height:3px;border-radius:50%;background:#ffd98a;box-shadow:0 0 6px #ffcf70;opacity:0}'
-      + '@keyframes aiDr{0%{opacity:0;transform:translateY(0)}20%{opacity:.9}100%{opacity:0;transform:translateY(-320px)}}';
-      var ks = document.createElement('style'); ks.textContent = css; st.appendChild(ks);
-      var h = '<div class=ray style="transform:rotate(-28deg)"></div><div class=ray style="left:8%;transform:rotate(-20deg);animation-delay:-2s"></div><div class=ray style="left:-4%;transform:rotate(-36deg);animation-delay:-4s"></div>'
-      + '<div class=med><div class=in><div class=rot style="inset:0"></div><div class=rot2></div><div class=tas></div><div class=gl></div></div></div><div class=nm>ALAE</div><div class=sb>SIBHA · DHIKR</div>';
-      var base = document.createElement('div'); base.style.cssText = 'position:absolute;inset:0'; base.innerHTML = h; st.appendChild(base);
-      /* image de fond du medaillon (sous les anneaux qui tournent) */
-      var bg = document.createElement('div'); bg.style.cssText = 'background:' + U + ' center/100% 100%'; base.querySelector('.in').insertBefore(bg, base.querySelector('.rot'));
-      var wing = '<svg viewBox="0 0 26 20"><path d="M13 10 C9 0 1 0 1 6 C1 12 8 13 13 10 Z" fill="#f4a9bd"/><path d="M13 10 C17 0 25 0 25 6 C25 12 18 13 13 10 Z" fill="#f08fab"/><path d="M13 10 C8 13 4 19 8 19 C11 19 13 14 13 10 Z" fill="#e87a9b"/><path d="M13 10 C18 13 22 19 18 19 C15 19 13 14 13 10 Z" fill="#df6f92"/></svg>';
-      var raf = [], alive = true;
-      for (var i = 0; i < 10; i++) (function () {
-        var e = document.createElement('div'); e.className = 'b'; e.innerHTML = wing; e.style.opacity = 0; st.appendChild(e);
-        var x0 = Math.random() * W, y0 = H * (0.75 + Math.random() * 0.3), sc = 0.7 + Math.random() * 0.9, t0 = 500 + Math.random() * 1200, dur = 3600 + Math.random() * 1800, ph = Math.random() * 6, amp = 20 + Math.random() * 40, tx = (Math.random() - .5) * W * .7, s = performance.now();
-        (function f(n) { if (!alive) return; var t = n - s - t0; if (t >= 0) { var p = (t / dur) % 1; var x = x0 + tx * p + Math.sin(p * 9 + ph) * amp, y = y0 - p * H; e.style.opacity = Math.sin(Math.PI * p) * .95; e.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + sc + ') rotate(' + (Math.sin(p * 7 + ph) * 18) + 'deg)'; } requestAnimationFrame(f); })(s);
-      })();
-      for (var j = 0; j < 18; j++) { var d = document.createElement('div'); d.className = 'd'; d.style.left = Math.random() * 100 + '%'; d.style.top = (40 + Math.random() * 60) + '%'; d.style.animation = 'aiDr ' + (3 + Math.random() * 3) + 's linear ' + (Math.random() * 2) + 's infinite'; st.appendChild(d); }
-      var fin = false;
-      function end() { if (fin) return; fin = true; st.style.opacity = '0'; setTimeout(function () { alive = false; try { st.remove(); } catch (e) {} try { done && done(); } catch (e) {} }, 560); }
-      st.addEventListener('pointerdown', end); st.addEventListener('touchstart', end, { passive: true });
-      setTimeout(end, 3000);
-      document.body.appendChild(st);
-    } catch (e) { try { done && done(); } catch (_) {} }
-  };
-})();
-</script>
 </head><body>
 <style id="boot-intro-css">
 @font-face { font-family: 'QPC'; src: url('fonts/QPC-V2.woff2') format('woff2'); font-weight: 400; font-display: block; }
@@ -19302,7 +19251,6 @@ window.AsmaScreen = AsmaScreen;
         r.setProperty('--silk-angle', angles[idx % angles.length] + 'deg');
         r.setProperty('--silk-zoom', '1.07');
       } catch (e) {}
-      try { const _dd = window.DHIKRS[idx]; if (_dd && _dd.id === 'istighfar' && window.alaeIntroJouer) window.alaeIntroJouer(); } catch (e) {} /* 18/11 : intro doree avant le compteur Istighfar (ALAE). */
       setDhikrIdx(idx);
       const s = loadState();
       s.dhikrIdx = idx;
@@ -19766,21 +19714,11 @@ window.AsmaScreen = AsmaScreen;
       const t = setTimeout(() => setShowDuaa(false), 7000);
       return () => clearTimeout(t);
     }, [showDuaa, bootDone, state.langSet]);
-    /* 18/11 : au premier lancement, l'intro doree passe d'abord, puis le choix de la langue s'ouvre (ALAE). */
-    const [langPret, setLangPret] = React.useState(!window.__alaePremierLancement || !!state.langSet);
-    React.useEffect(() => {
-      if (langPret) return;
-      let off = false;
-      const lancer = () => { if (off) return; if (window.alaeIntroJouer) window.alaeIntroJouer(() => { if (!off) setLangPret(true); }); else setLangPret(true); };
-      if (window.__bootIntroDone) lancer(); else window.addEventListener('boot-intro-done', lancer);
-      const fb = setTimeout(() => { if (!off) setLangPret(true); }, 20000);
-      return () => { off = true; clearTimeout(fb); window.removeEventListener('boot-intro-done', lancer); };
-    }, [langPret]);
     /* 14/11 : choix de la langue en or, une seule fois au premier lancement (ALAE). */
     if (window.__alaePremierLancement && !state.langSet) {
       return /*#__PURE__*/React.createElement("div", {
         style: frameStyle()
-      }, langPret && /*#__PURE__*/React.createElement(LangChoice, {
+      }, /*#__PURE__*/React.createElement(LangChoice, {
         onPick: l => setLang(l)
       }));
     }
