@@ -11067,8 +11067,9 @@ function SurahReader({
       cursor: 'pointer',
       position: 'relative',
       zIndex: 2,
-      opacity: chrome ? 1 : 0,
-      pointerEvents: chrome ? 'auto' : 'none',
+      /* 18/11 : perles + oiseaux toujours visibles (ALAE) — le toucher simple ne les cache plus */
+      opacity: 1,
+      pointerEvents: 'auto',
       transition: 'opacity 0.3s ease'
     }
   }, /*#__PURE__*/React.createElement("div", {
