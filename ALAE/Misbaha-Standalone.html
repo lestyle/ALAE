@@ -20191,7 +20191,16 @@ window.AsmaScreen = AsmaScreen;
       h('div', { style: { position: 'absolute', left: '50%', top: 380, width: 420, height: 420, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,214,140,.22), rgba(224,162,63,.07) 55%, rgba(0,0,0,0) 100%)', animation: 'lcGlow 5s ease-in-out infinite', pointerEvents: 'none' } }),
       /* titre dans la langue choisie */
       /* 14/11 : titre dans la meme police que Continuer : lettres d'or en relief (ALAE). */
-      h('div', { key: 't' + o.id, lang: o.id, style: { position: 'absolute', top: 116, left: 0, right: 0, textAlign: 'center', animation: 'lcFade .5s ease both' } }, or3d(o.titre, o.ar ? 30 : (o.titre.length > 20 ? 23 : 26), o.ar)),
+      (() => {
+        /* 18/11 : titre long sur deux lignes (coupe au plus pres du milieu) pour qu'il soit plus grand et ne touche plus les bords (ALAE). */
+        const t = o.titre, sp = [];
+        for (let i = 0; i < t.length; i++) if (t[i] === ' ') sp.push(i);
+        const deux = !o.ar && t.length > 16 && sp.length > 0;
+        let lignes = [t];
+        if (deux) { const m = t.length / 2; const c = sp.reduce((a, b) => Math.abs(b - m) < Math.abs(a - m) ? b : a); lignes = [t.slice(0, c), t.slice(c + 1)]; }
+        return h('div', { key: 't' + o.id, lang: o.id, style: { position: 'absolute', top: deux ? 72 : 116, left: 0, right: 0, textAlign: 'center', animation: 'lcFade .5s ease both' } },
+          ...lignes.map((l, i) => h('div', { key: 'l' + i, style: { lineHeight: deux ? '31px' : undefined } }, or3d(l, o.ar ? 30 : (deux ? 30 : (t.length > 20 ? 23 : 26)), o.ar))));
+      })(),
       /* 14/11 : sous le titre, meme filet de lumiere qu'au-dessus de Continuer, avec un point lumineux au milieu (ALAE). */
       h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 127, width: 300, height: 46, marginLeft: -150, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,196,110,.1), rgba(0,0,0,0))', pointerEvents: 'none', animation: 'lcFade 1s ease .3s both' } }),
       h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 149, width: 280, height: 2, marginLeft: -140, background: 'radial-gradient(closest-side, #FFF3D0, rgba(255,200,110,.45) 40%, rgba(255,200,110,0))', pointerEvents: 'none', animation: 'lcFade 1s ease .3s both' } }),
