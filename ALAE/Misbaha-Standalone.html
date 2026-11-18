@@ -19766,11 +19766,21 @@ window.AsmaScreen = AsmaScreen;
       const t = setTimeout(() => setShowDuaa(false), 7000);
       return () => clearTimeout(t);
     }, [showDuaa, bootDone, state.langSet]);
+    /* 18/11 : au premier lancement, l'intro doree passe d'abord, puis le choix de la langue s'ouvre (ALAE). */
+    const [langPret, setLangPret] = React.useState(!window.__alaePremierLancement || !!state.langSet);
+    React.useEffect(() => {
+      if (langPret) return;
+      let off = false;
+      const lancer = () => { if (off) return; if (window.alaeIntroJouer) window.alaeIntroJouer(() => { if (!off) setLangPret(true); }); else setLangPret(true); };
+      if (window.__bootIntroDone) lancer(); else window.addEventListener('boot-intro-done', lancer);
+      const fb = setTimeout(() => { if (!off) setLangPret(true); }, 20000);
+      return () => { off = true; clearTimeout(fb); window.removeEventListener('boot-intro-done', lancer); };
+    }, [langPret]);
     /* 14/11 : choix de la langue en or, une seule fois au premier lancement (ALAE). */
     if (window.__alaePremierLancement && !state.langSet) {
       return /*#__PURE__*/React.createElement("div", {
         style: frameStyle()
-      }, /*#__PURE__*/React.createElement(LangChoice, {
+      }, langPret && /*#__PURE__*/React.createElement(LangChoice, {
         onPick: l => setLang(l)
       }));
     }
