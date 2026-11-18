@@ -4454,7 +4454,7 @@ function Footer({
       bottom: 185,
       left: 0,
       right: 0,
-      display: 'none', /* 17/10 : points de pagination retires a la demande */
+      display: 'none', /* 18/11 : plus de titre ; la ligne qui brille descend jusqu'au cadre (ALAE). */ /* 17/10 : points de pagination retires a la demande */
       alignItems: 'center',
       justifyContent: 'center',
       gap: 6,
@@ -20198,14 +20198,14 @@ window.AsmaScreen = AsmaScreen;
         const deux = !o.ar && t.length > 16 && sp.length > 0;
         let lignes = [t];
         if (deux) { const m = t.length / 2; const c = sp.reduce((a, b) => Math.abs(b - m) < Math.abs(a - m) ? b : a); lignes = [t.slice(0, c), t.slice(c + 1)]; }
-        return h('div', { key: 't' + o.id, lang: o.id, style: { position: 'absolute', top: deux ? 72 : 116, left: 0, right: 0, textAlign: 'center', animation: 'lcFade .5s ease both' } },
+        return h('div', { key: 't' + o.id, lang: o.id, style: { position: 'absolute', top: deux ? 72 : 116, display: 'none', left: 0, right: 0, textAlign: 'center', animation: 'lcFade .5s ease both' } },
           ...lignes.map((l, i) => h('div', { key: 'l' + i, style: { lineHeight: deux ? '31px' : undefined } }, or3d(l, o.ar ? 30 : (deux ? 30 : (t.length > 20 ? 23 : 26)), o.ar))));
       })(),
       /* 14/11 : sous le titre, meme filet de lumiere qu'au-dessus de Continuer, avec un point lumineux au milieu (ALAE). */
-      h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 127, width: 300, height: 46, marginLeft: -150, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,196,110,.1), rgba(0,0,0,0))', pointerEvents: 'none', animation: 'lcFade 1s ease .3s both' } }),
-      h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 149, width: 280, height: 2, marginLeft: -140, background: 'radial-gradient(closest-side, #FFF3D0, rgba(255,200,110,.45) 40%, rgba(255,200,110,0))', pointerEvents: 'none', animation: 'lcFade 1s ease .3s both' } }),
-      h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 150 - 11, width: 140, height: 22, marginLeft: -70, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,246,214,.72), rgba(255,214,140,.38) 38%, rgba(255,200,110,0))', mixBlendMode: 'screen', pointerEvents: 'none', animation: 'lcPoint 3.2s ease-in-out infinite' } }),
-      h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 150 - 2.5, width: 30, height: 5, marginLeft: -15, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,246,222,.7), rgba(255,226,160,.25) 62%, rgba(255,226,160,0))', filter: 'blur(1.4px)', pointerEvents: 'none', animation: 'lcPoint 3.2s ease-in-out infinite' } }),
+      h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 175, width: 300, height: 46, marginLeft: -150, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,196,110,.1), rgba(0,0,0,0))', pointerEvents: 'none', animation: 'lcFade 1s ease .3s both' } }),
+      h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 197, width: 280, height: 2, marginLeft: -140, background: 'radial-gradient(closest-side, #FFF3D0, rgba(255,200,110,.45) 40%, rgba(255,200,110,0))', pointerEvents: 'none', animation: 'lcFade 1s ease .3s both' } }),
+      h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 198 - 11, width: 140, height: 22, marginLeft: -70, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,246,214,.72), rgba(255,214,140,.38) 38%, rgba(255,200,110,0))', mixBlendMode: 'screen', pointerEvents: 'none', animation: 'lcPoint 3.2s ease-in-out infinite' } }),
+      h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 198 - 2.5, width: 30, height: 5, marginLeft: -15, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,246,222,.7), rgba(255,226,160,.25) 62%, rgba(255,226,160,0))', filter: 'blur(1.4px)', pointerEvents: 'none', animation: 'lcPoint 3.2s ease-in-out infinite' } }),
       /* 14/11 : fin trait d'or en demi-rectangle autour du cadran : le haut et les cotes,
          qui s'affinent jusqu'a une pointe a mi-hauteur, comme un rectangle coupe en deux (dessin d'ALAE). */
       h('svg', { 'aria-hidden': true, width: 316, height: 250, viewBox: '0 0 316 250', style: { position: 'absolute', left: '50%', top: 198, marginLeft: -158, overflow: 'visible', pointerEvents: 'none', filter: 'drop-shadow(0 0 4px rgba(255,205,120,.45))', animation: 'lcFade 1.2s ease .6s both' } },
