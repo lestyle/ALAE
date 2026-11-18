@@ -20173,6 +20173,9 @@ window.AsmaScreen = AsmaScreen;
     return h('div', { style: { position: 'absolute', inset: 0, overflow: 'hidden', background: '#0B0906', opacity: sortie ? 0 : 1, transition: 'opacity .6s ease' } },
       h('style', null, `
         @keyframes lcUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+        @keyframes lcShine{0%{transform:translateX(-130%)}55%,100%{transform:translateX(130%)}}
+        @keyframes lcTw{0%,100%{opacity:0;transform:scale(.3) rotate(0deg)}45%{opacity:1;transform:scale(1.15) rotate(25deg)}70%{opacity:.3;transform:scale(.6) rotate(45deg)}}
+        @keyframes lcPulse{0%,100%{opacity:.55;transform:scale(.96)}50%{opacity:1;transform:scale(1.06)}}
         @keyframes lcFade{from{opacity:0}to{opacity:1}}
         @keyframes lcShine{0%,100%{background-position:100% 0}50%{background-position:0% 0}}
         @keyframes lcGlow{0%,100%{opacity:.55;transform:translate(-50%,-50%) scale(1)}50%{opacity:.85;transform:translate(-50%,-50%) scale(1.08)}}
@@ -20201,6 +20204,13 @@ window.AsmaScreen = AsmaScreen;
         return h('div', { key: 't' + o.id, lang: o.id, style: { position: 'absolute', top: deux ? 72 : 116, display: 'none', left: 0, right: 0, textAlign: 'center', animation: 'lcFade .5s ease both' } },
           ...lignes.map((l, i) => h('div', { key: 'l' + i, style: { lineHeight: deux ? '31px' : undefined } }, or3d(l, o.ar ? 30 : (deux ? 30 : (t.length > 20 ? 23 : 26)), o.ar))));
       })(),
+      /* 18/11 : l'icone d'ALAE a la place du titre, avec reflets et etincelles qui scintillent (bling bling) (ALAE). */
+      h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 66, width: 112, height: 112, marginLeft: -56, animation: 'lcFade .8s ease both' } },
+        h('div', { style: { position: 'absolute', inset: -14, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,214,140,.55), rgba(255,200,110,0))', animation: 'lcPulse 3.2s ease-in-out infinite' } }),
+        h('div', { style: { position: 'absolute', inset: 0, borderRadius: '50%', overflow: 'hidden', boxShadow: '0 0 0 1.5px #E9C27A, 0 0 0 3px rgba(40,28,10,.9), 0 0 26px rgba(255,205,120,.55), 0 8px 22px rgba(0,0,0,.6)' } },
+          h('div', { style: { position: 'absolute', inset: 0, background: 'url(assets/lang-icon.jpg) center/cover no-repeat', transform: 'scale(1.2)' } }),
+          h('div', { style: { position: 'absolute', inset: 0, background: 'linear-gradient(115deg, rgba(255,255,255,0) 38%, rgba(255,246,215,.85) 50%, rgba(255,255,255,0) 62%)', mixBlendMode: 'screen', transform: 'translateX(-130%)', animation: 'lcShine 3.4s ease-in-out 1s infinite' } })),
+        ...[[-4, 14, 15, 0], [104, 8, 12, 0.9], [112, 70, 10, 1.7], [-10, 80, 11, 0.5], [30, -10, 9, 2.2], [78, 112, 13, 1.3], [8, 108, 9, 2.6]].map(([x, y, sz, d], i) => h('svg', { key: 'sp' + i, viewBox: '-1 -1 2 2', style: { position: 'absolute', left: x - sz / 2, top: y - sz / 2, width: sz, height: sz, overflow: 'visible', opacity: 0, filter: 'drop-shadow(0 0 4px rgba(255,226,160,.95))', animation: 'lcTw 2.6s ease-in-out ' + d + 's infinite' } }, h('path', { d: 'M 0 -1 C 0.08 -0.3 0.3 -0.08 1 0 C 0.3 0.08 0.08 0.3 0 1 C -0.08 0.3 -0.3 0.08 -1 0 C -0.3 -0.08 -0.08 -0.3 0 -1 Z', fill: '#FFF6DA' })))),
       /* 14/11 : sous le titre, meme filet de lumiere qu'au-dessus de Continuer, avec un point lumineux au milieu (ALAE). */
       h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 175, width: 300, height: 46, marginLeft: -150, borderRadius: '50%', background: 'radial-gradient(closest-side, rgba(255,196,110,.1), rgba(0,0,0,0))', pointerEvents: 'none', animation: 'lcFade 1s ease .3s both' } }),
       h('div', { 'aria-hidden': true, style: { position: 'absolute', left: '50%', top: 197, width: 280, height: 2, marginLeft: -140, background: 'radial-gradient(closest-side, #FFF3D0, rgba(255,200,110,.45) 40%, rgba(255,200,110,0))', pointerEvents: 'none', animation: 'lcFade 1s ease .3s both' } }),
